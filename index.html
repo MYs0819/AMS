@@ -6,7 +6,7 @@
 <title>人資行政管理系統</title>
 
 <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
-<meta property="og:description" content="整合各類行政申請簽核、工時登記、勞報建檔與企業文件中心，全面提升團隊行政效率與協作！" />
+<meta property="og:description" content="專為 MYs 團隊打造的專屬人資行政線上管理平台。整合各類行政申請簽核、每日工時登記、勞報建檔與企業文件中心，全面提升團隊行政效率與協作體驗！" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
     <div class="header-brand">
       <a href="#" class="header-home-btn" onclick="showPage('main',null);return false;" title="首頁">🏠</a>
       
-      <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs Logo" class="header-logo" style="object-fit: contain; padding: 3px;" />
+      <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs Logo" class="header-logo" style="object-fit: contain;" />
       
       <div class="header-title-group">
         <span class="header-title">人資行政管理系統</span>
@@ -601,113 +601,79 @@
       </div>
 
       <div class="page-section" id="page-analytics">
-        <div class="article-wrap">
-          <div class="inner-page-header">
-            <p class="inner-page-title">📈 本月數據分析</p>
-          </div>
-          <div class="chart-grid">
-            <div class="chart-card">
-              <p class="chart-card-title">申請類型分布</p>
-              <div class="chart-bar-group">
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">請假申請</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:73%;background-color:#4caf50;">7件</div></div>
-                  <span class="chart-bar-count">7</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">留職申請</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:30%;background-color:#2196f3;">3件</div></div>
-                  <span class="chart-bar-count">3</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">離職申請</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:20%;background-color:#ff5722;">2件</div></div>
-                  <span class="chart-bar-count">2</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">展延申請</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:20%;background-color:#9c27b0;">2件</div></div>
-                  <span class="chart-bar-count">2</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">復職申請</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:10%;background-color:#c9a84c;">1件</div></div>
-                  <span class="chart-bar-count">1</span>
-                </div>
-              </div>
+        <div class="article-wrap dark-page" style="background-color:#434343; border-color:#555; flex:1; min-height:0;">
+          
+          <div class="inner-page-header" style="justify-content: center; flex-direction: column; gap: 15px; border-bottom: 2px solid var(--color-gold);">
+            <p class="inner-page-title" id="analytics-main-title" style="color:#e8e4d8; font-family:var(--font-display); font-size: 24px;">📈 2026年 4月 數據分析</p>
+            
+            <div class="ym-group" style="background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 50px; border: 1px solid #666;">
+              <span class="ym-year-label" style="background:transparent; border:none; color:#9a9680;">年度</span>
+              <select class="filter-select" id="anaYear" onchange="updateAnalytics()" style="width:75px; background-color:#3a3a3a; color:#e8e4d8; border-color:#555;">
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+              </select>
+              <button class="ym-all-btn" id="anaAllBtn" onclick="toggleAnaAll()" style="border-color:#555; color:#c8c4b4;">全年</button>
+              <select class="filter-select" id="anaMonth" onchange="updateAnalytics()" style="width:65px; background-color:#3a3a3a; color:#e8e4d8; border-color:#555;">
+                <option value="01">01</option><option value="02">02</option><option value="03">03</option>
+                <option value="04" selected>04</option><option value="05">05</option><option value="06">06</option>
+                <option value="07">07</option><option value="08">08</option><option value="09">09</option>
+                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+              </select>
             </div>
-            <div class="chart-card">
-              <p class="chart-card-title">部門申請分布</p>
-              <div class="donut-wrap">
-                <div class="donut">
-                  <div class="donut-center">
-                    <div class="donut-center-num">15</div>
-                    <div class="donut-center-label">件</div>
+          </div>
+
+          <div class="chart-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 10px;">
+            
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
+              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">申請類型分布</p>
+              <div class="chart-bar-group" id="ana-chart-type">
+                </div>
+            </div>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
+              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">申請假別分布</p>
+              <div class="donut-wrap" style="justify-content: center;">
+                <div class="donut" id="ana-donut-subtype" style="background: conic-gradient(var(--color-gold) 0% 45%, #4caf50 45% 70%, #2196f3 70% 85%, #ff5722 85% 100%);">
+                  <div class="donut-center" style="background-color: #4a4a4a;">
+                    <div class="donut-center-num" style="color: #e8e4d8;">15</div>
+                    <div class="donut-center-label">總件數</div>
                   </div>
                 </div>
-                <div class="donut-legend">
-                  <div class="legend-item"><span class="legend-dot" style="background:#c9a84c"></span>外場 6件（40%）</div>
-                  <div class="legend-item"><span class="legend-dot" style="background:#4caf50"></span>吧台 4件（27%）</div>
-                  <div class="legend-item"><span class="legend-dot" style="background:#2196f3"></span>內廚 3件（20%）</div>
-                  <div class="legend-item"><span class="legend-dot" style="background:#ff5722"></span>其他 2件（13%）</div>
-                </div>
+                <div class="donut-legend" id="ana-legend-subtype">
+                  </div>
               </div>
             </div>
-            <div class="chart-card">
-              <p class="chart-card-title">狀態分布</p>
-              <div class="chart-bar-group">
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">進行中</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:40%;background-color:#c9a84c;">6件</div></div>
-                  <span class="chart-bar-count">6</span>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
+              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">部門申請分布</p>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+                <div style="position:relative; width:180px; height:90px; overflow:hidden;">
+                    <div style="width:180px; height:180px; border-radius:50%; border:15px solid #333; border-bottom-color:transparent; border-left-color:transparent; box-sizing:border-box; transform:rotate(-45deg);"></div>
+                    <div id="ana-gauge-fill" style="position:absolute; top:0; left:0; width:180px; height:180px; border-radius:50%; border:15px solid var(--color-gold); border-bottom-color:transparent; border-left-color:transparent; box-sizing:border-box; transform:rotate(45deg); transition: transform 1s ease;"></div>
+                    <div style="position:absolute; bottom:0; width:100%; text-align:center; font-size:24px; font-weight:bold; color:var(--color-gold);" id="ana-gauge-val">68%</div>
                 </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">待審核</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:27%;background-color:#1a3a6b;">4件</div></div>
-                  <span class="chart-bar-count">4</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">補件中</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:13%;background-color:#2196f3;">2件</div></div>
-                  <span class="chart-bar-count">2</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">已完成</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:13%;background-color:#4caf50;">2件</div></div>
-                  <span class="chart-bar-count">2</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">已退件</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:7%;background-color:#f44336;">1件</div></div>
-                  <span class="chart-bar-count">1</span>
-                </div>
+                <p style="color:#9a9680; font-size:12px;">外場佔比最高</p>
               </div>
             </div>
-            <div class="chart-card">
-              <p class="chart-card-title">本月每週申請量</p>
-              <div class="chart-bar-group">
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">第1週</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:27%;background-color:#c9a84c;">4件</div></div>
-                  <span class="chart-bar-count">4</span>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
+              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">部門假別分布</p>
+              <div class="chart-bar-group" id="ana-chart-dept-sub">
                 </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">第2週</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:47%;background-color:#c9a84c;">7件</div></div>
-                  <span class="chart-bar-count">7</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">第3週</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:20%;background-color:#c9a84c;">3件</div></div>
-                  <span class="chart-bar-count">3</span>
-                </div>
-                <div class="chart-bar-row">
-                  <span class="chart-bar-label">第4週</span>
-                  <div class="chart-bar-wrap"><div class="chart-bar-fill" style="width:7%;background-color:#c9a84c;">1件</div></div>
-                  <span class="chart-bar-count">1</span>
-                </div>
-              </div>
             </div>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
+              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">狀態分布</p>
+              <div class="chart-bar-group" id="ana-chart-status">
+                </div>
+            </div>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
+              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;" id="ana-trend-title">本月每週申請量</p>
+              <div style="display:flex; align-items:flex-end; gap:12px; height:120px; padding: 0 10px; border-bottom: 1px solid #666;" id="ana-chart-trend">
+                </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -915,8 +881,9 @@
 /* ============================================================
    系統全域變數設定
    ============================================================ */
-var ROWS_PER_PAGE = 10; /* 表格每頁顯示筆數 ★可調 */
-var allMonthMode  = false; /* 是否預設開啟全年模式 ★可調 */
+var ROWS_PER_PAGE = 10;
+var allMonthMode  = false;
+var anaAllMode    = false;
 
 /* ══ 右側介面跳轉 ══ */
 function showPage(pageId, el) {
@@ -930,6 +897,7 @@ function showPage(pageId, el) {
     var fi = document.querySelector('.sidebar-nav-item[onclick*="\'main\'"]');
     if (fi) fi.classList.add('active');
   }
+  if(pageId === 'analytics') updateAnalytics();
   return false;
 }
 
@@ -986,7 +954,6 @@ function submitForm() {
   if(!fstart) { showErr('start'); ok=false; }
   if(!fend || (fstart && fend < fstart)) { showErr('end'); ok=false; }
 
-  /* 重複送單檢查（示意）*/
   if(ok) {
     var rows=document.querySelectorAll('#tableBody tr');
     for(var i=0;i<rows.length;i++){
@@ -1036,7 +1003,7 @@ function submitBug() {
 }
 
 /* ══ Tab 切換 ══ */
-var currentTab='all', currentPage=1; /* 預設開啟分頁設定 ★可調 */
+var currentTab='all', currentPage=1;
 function switchTab(el,status){
   document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
@@ -1045,7 +1012,6 @@ function switchTab(el,status){
 
 /* ══ 年度切換 ══ */
 function onYearChange() {
-  /* 切換年度時若全年模式維持，否則保留當月 */
   filterTable();
 }
 
@@ -1067,7 +1033,43 @@ function toggleAllMonths() {
   filterTable();
 }
 
-/* ══ 分頁 ══ */
+/* ══ 主表格篩選與分頁 ══ */
+function filterTable() {
+  var rows    = Array.from(document.querySelectorAll('#tableBody tr'));
+  var search  = document.getElementById('searchInput').value.toLowerCase();
+  var typeVal = document.getElementById('typeFilter').value;
+  var teamVal = document.getElementById('teamFilter').value;
+  var year    = document.getElementById('ymYear').value;
+  var month   = allMonthMode ? '' : document.getElementById('ymMonth').value;
+
+  var matched = rows.filter(function(row){
+    var st   = row.getAttribute('data-status');
+    var type = row.getAttribute('data-type')  || '';
+    var name = row.getAttribute('data-name')  || '';
+    var team = row.getAttribute('data-team')  || '';
+    var date = row.getAttribute('data-date')  || '';
+    var tabOk    = (currentTab==='all')||(st===currentTab);
+    var searchOk = !search  || name.toLowerCase().includes(search)||type.includes(search);
+    var typeOk   = !typeVal || type===typeVal;
+    var teamOk   = !teamVal || team===teamVal;
+    var yearOk   = !year   || date.slice(0,4)===year;
+    var monOk    = !month  || date.slice(4,6)===month;
+    return tabOk&&searchOk&&typeOk&&teamOk&&yearOk&&monOk;
+  });
+
+  var total     = matched.length;
+  var totalPage = Math.max(1,Math.ceil(total/ROWS_PER_PAGE));
+  if(currentPage>totalPage) currentPage=totalPage;
+  var start=(currentPage-1)*ROWS_PER_PAGE, end=start+ROWS_PER_PAGE;
+
+  rows.forEach(function(row){row.style.display='none';});
+  matched.forEach(function(row,idx){row.style.display=(idx>=start&&idx<end)?'':'none';});
+
+  document.getElementById('pageInfo').textContent  = currentPage+' / '+totalPage;
+  document.getElementById('rowCount').textContent  = total;
+  renderPagination(totalPage);
+}
+
 function renderPagination(totalPage) {
   var bar=document.getElementById('paginationBar');
   bar.innerHTML='';
@@ -1091,16 +1093,15 @@ function renderPagination(totalPage) {
 }
 
 
-/* ══ 文件中心 ══ */
-/* 文件中心全域變數設定 ★可調 */
+/* ══ 文件中心 (包含分頁修復邏輯) ══ */
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
 var dcPage       = 1;
-var DC_LIST_PER  = 7;  /* 清單模式每頁顯示筆數 ★可調 */
-var DC_GRID_PER  = 12; /* 圖示模式每頁顯示筆數 ★可調 */
-var DC_PER_PAGE  = 7;  /* 預設每頁顯示筆數 ★可調 */
-var dcCatLabels  = {all:'全部文件',hr:'人事相關',admin:'行政表單',training:'教育訓練',announce:'企業公告',law:'法規公告',other:'其他'}; /* 分類對應名稱 ★可調 */
-var dcDlStyle    = 'display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border-radius:4px;border:1px solid #666;background-color:#555;color:#c9a84c;font-family:var(--font-body);font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;'; /* 下載按鈕行內樣式 ★可調 */
+var DC_LIST_PER  = 7;
+var DC_GRID_PER  = 12;
+var DC_PER_PAGE  = 7;
+var dcCatLabels  = {all:'全部文件',hr:'人事相關',admin:'行政表單',training:'教育訓練',announce:'企業公告',law:'法規公告',other:'其他'};
+var dcDlStyle    = 'display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border-radius:4px;border:1px solid #666;background-color:#555;color:#c9a84c;font-family:var(--font-body);font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;';
 
 function dcSwitch(el, cat) {
   document.querySelectorAll('.doccenter-sidebar-item').forEach(function(i){i.classList.remove('active');});
@@ -1112,86 +1113,101 @@ function dcSwitch(el, cat) {
   dcRender();
 }
 
-function dcGetFiltered() {
-  return Array.from(document.querySelectorAll('#dc-file-area .doccenter-file-item')).filter(function(item){
-    return dcCurrentCat==='all' || item.getAttribute('data-cat')===dcCurrentCat;
-  });
-}
-
 function dcRender() {
-  /* 清單模式 */
   var allItems = Array.from(document.querySelectorAll('#dc-file-area .doccenter-file-item'));
   var filteredItems = allItems.filter(function(item){
-    return dcCurrentCat==='all' || item.getAttribute('data-cat')===dcCurrentCat;
+    return (dcCurrentCat==='all' || item.getAttribute('data-cat')===dcCurrentCat) && item.getAttribute('data-search-match') !== '0';
   });
   var listTotal = filteredItems.length;
   var listPages = Math.max(1, Math.ceil(listTotal / DC_LIST_PER));
-  if (dcPage > listPages) dcPage = listPages;
-  var listStart = (dcPage-1)*DC_LIST_PER, listEnd = listStart+DC_LIST_PER;
-  allItems.forEach(function(item){ item.style.display='none'; });
-  filteredItems.forEach(function(item,idx){
-    item.style.display=(idx>=listStart&&idx<listEnd)?'':'none';
-  });
 
-  /* 圖示模式 */
   var allCards = Array.from(document.querySelectorAll('#dc-file-grid .doccenter-file-card'));
   var filteredCards = allCards.filter(function(c){
-    return dcCurrentCat==='all' || c.getAttribute('data-cat')===dcCurrentCat;
+    return (dcCurrentCat==='all' || c.getAttribute('data-cat')===dcCurrentCat) && c.getAttribute('data-search-match') !== '0';
   });
   var gridTotal = filteredCards.length;
   var gridPages = Math.max(1, Math.ceil(gridTotal / DC_GRID_PER));
-  if (dcPage > gridPages) dcPage = Math.min(dcPage, gridPages);
-  var gridStart = (dcPage-1)*DC_GRID_PER, gridEnd = gridStart+DC_GRID_PER;
-  allCards.forEach(function(c){ c.style.display='none'; });
-  filteredCards.forEach(function(c,idx){
-    c.style.display=(idx>=gridStart&&idx<gridEnd)?'':'none';
-  });
 
-  /* 分頁：根據目前 view mode 決定用哪個 total */
   var usedTotal = (dcViewMode==='grid') ? gridTotal : listTotal;
   var usedPages = (dcViewMode==='grid') ? gridPages : listPages;
+  
+  if (dcPage > usedPages) dcPage = usedPages;
+  if (dcPage < 1) dcPage = 1;
+
+  var start = (dcPage-1) * DC_PER_PAGE;
+  var end = start + DC_PER_PAGE;
+
+  allItems.forEach(function(item){ item.style.display='none'; });
+  filteredItems.forEach(function(item,idx){
+    item.style.display=(idx>=start && idx<end)?'':'none';
+  });
+
+  allCards.forEach(function(c){ c.style.display='none'; });
+  filteredCards.forEach(function(c,idx){
+    c.style.display=(idx>=start && idx<end)?'':'none';
+  });
+
   dcRenderPagination(usedPages, usedTotal);
 }
 
 function dcRenderPagination(totalPage, total) {
   var bar = document.getElementById('dc-pagination');
   if (!bar) return;
-  if (total <= DC_PER_PAGE) { bar.innerHTML=''; return; }
   bar.innerHTML='';
+  if (total <= DC_PER_PAGE) return;
+
   function mkBtn(label,page,active,disabled){
     var b=document.createElement('button');
     b.className='page-btn'+(active?' active':'');
     b.textContent=label;
-    b.style.cssText='background-color:'+(active?'var(--color-gold)':'#555')+';color:'+(active?'#1c1c15':'#c8c4b4')+';border-color:#666;';
-    if(!disabled) b.onclick=function(){dcPage=page;dcRender();};
-    else b.disabled=true;
+    
+    if(active) {
+        b.style.backgroundColor = 'var(--color-gold)';
+        b.style.color = '#1c1c15';
+        b.style.borderColor = 'var(--color-gold)';
+        b.style.fontWeight = '600';
+    } else {
+        b.style.backgroundColor = '#555';
+        b.style.color = '#c8c4b4';
+        b.style.borderColor = '#666';
+    }
+
+    if(!disabled && page !== null) {
+        b.onclick=function(){dcPage=page;dcRender();};
+    } else {
+        b.disabled=true;
+    }
     return b;
   }
+  
   bar.appendChild(mkBtn('‹',dcPage-1,false,dcPage===1));
   var s=Math.max(1,dcPage-1),e=Math.min(totalPage,s+2);
   if(e-s<2)s=Math.max(1,e-2);
-  for(var p=s;p<=e;p++) bar.appendChild(mkBtn(p,p,p===dcPage,false));
+  for(var p=s;p<=e;p++) {
+    bar.appendChild(mkBtn(p,p,p===dcPage,false));
+  }
   bar.appendChild(mkBtn('›',dcPage+1,false,dcPage===totalPage));
 }
 
-function dcFilter() { dcPage=1; dcRender(); }
-
 function dcSearch(val) {
+  dcPage = 1; 
   var v = val.toLowerCase();
+  
   var items = Array.from(document.querySelectorAll('#dc-file-area .doccenter-file-item'));
   items.forEach(function(item){
     var nameEl=item.querySelector('.doccenter-file-name');
     var nm=nameEl?nameEl.textContent.toLowerCase():'';
-    var catOk=(dcCurrentCat==='all'||item.getAttribute('data-cat')===dcCurrentCat);
-    /* mark search match */
-    item.setAttribute('data-search-match',(catOk&&(!v||nm.includes(v)))?'1':'0');
+    item.setAttribute('data-search-match', (!v||nm.includes(v)) ? '1' : '0');
   });
-  /* re-render only matched */
-  var matched=items.filter(function(i){return i.getAttribute('data-search-match')==='1';});
-  items.forEach(function(i){i.style.display='none';});
-  var totalPage=Math.max(1,Math.ceil(matched.length/DC_PER_PAGE));
-  matched.slice((dcPage-1)*DC_PER_PAGE,dcPage*DC_PER_PAGE).forEach(function(i){i.style.display='';});
-  dcRenderPagination(totalPage,matched.length);
+  
+  var cards = Array.from(document.querySelectorAll('#dc-file-grid .doccenter-file-card'));
+  cards.forEach(function(c){
+    var nameEl=c.querySelector('.doccenter-card-name');
+    var nm=nameEl?nameEl.textContent.toLowerCase():'';
+    c.setAttribute('data-search-match', (!v||nm.includes(v)) ? '1' : '0');
+  });
+  
+  dcRender();
 }
 
 function dcSetView(mode, btn) {
@@ -1250,7 +1266,6 @@ function dcDeleteItem(btn) {
   var nameText = name ? name.textContent : '此檔案';
   if (!confirm('確定要刪除 [' + nameText + '] ? 此動作無法復原')) return;
 
-  /* 同步刪除圖示模式中同名的 card */
   var cards = document.querySelectorAll('#dc-file-grid .doccenter-file-card');
   cards.forEach(function(card){
     var cn = card.querySelector('.doccenter-card-name');
@@ -1269,7 +1284,6 @@ function dcDeleteCard(btn) {
   var nameText = name ? name.textContent : '此檔案';
   if (!confirm('確定要刪除 [' + nameText + '] ? 此動作無法復原')) return;
 
-  /* 同步刪除清單模式中同名的 item */
   var items = document.querySelectorAll('#dc-file-area .doccenter-file-item');
   items.forEach(function(item){
     var fn = item.querySelector('.doccenter-file-name');
@@ -1296,68 +1310,132 @@ function dcAddCategory(){
   sidebar.insertBefore(item,addBtn);
 }
 
-/* ══ 資料夾分類切換（舊）compat ══ */
-var folderTitles = {all:'全部文件',hr:'人事相關',finance:'財務報表',law:'法規公告',training:'教育訓練',other:'其他'}; /* ★可調 */
-function switchFolder(el, cat) {
-  document.querySelectorAll('.folder-sidebar-item').forEach(function(i){i.classList.remove('active');});
-  el.classList.add('active');
-  document.getElementById('folder-title').textContent = folderTitles[cat] || '全部文件';
-  document.querySelectorAll('#folder-grid .folder-item').forEach(function(item){
-    item.style.display = (cat === 'all' || item.getAttribute('data-cat') === cat) ? '' : 'none';
-  });
-}
-function addFolderCategory() {
-  var name = prompt('請輸入新分類名稱：');
-  if (!name) return;
-  var sidebar = document.querySelector('.folder-sidebar');
-  var catKey = 'custom_' + Date.now();
-  var item = document.createElement('div');
-  item.className = 'folder-sidebar-item';
-  item.setAttribute('data-cat', catKey);
-  item.innerHTML = '📁 ' + name + '<span class="folder-sidebar-count">0</span>';
-  item.onclick = function(){ switchFolder(this, catKey); };
-  sidebar.appendChild(item);
+/* ══ 數據分析功能升級腳本 ══ */
+function toggleAnaAll() {
+    anaAllMode = !anaAllMode;
+    var btn = document.getElementById('anaAllBtn');
+    var monthSel = document.getElementById('anaMonth');
+    if (anaAllMode) {
+        btn.classList.add('active');
+        monthSel.disabled = true;
+        monthSel.style.opacity = '0.3';
+    } else {
+        btn.classList.remove('active');
+        monthSel.disabled = false;
+        monthSel.style.opacity = '1';
+    }
+    updateAnalytics();
 }
 
-/* ══ 篩選 + 分頁 ══ */
-function filterTable() {
-  var rows    = Array.from(document.querySelectorAll('#tableBody tr'));
-  var search  = document.getElementById('searchInput').value.toLowerCase();
-  var typeVal = document.getElementById('typeFilter').value;
-  var teamVal = document.getElementById('teamFilter').value;
-  var year    = document.getElementById('ymYear').value;
-  var month   = allMonthMode ? '' : document.getElementById('ymMonth').value;
-
-  var matched = rows.filter(function(row){
-    var st   = row.getAttribute('data-status');
-    var type = row.getAttribute('data-type')  || '';
-    var name = row.getAttribute('data-name')  || '';
-    var team = row.getAttribute('data-team')  || '';
-    var date = row.getAttribute('data-date')  || '';
-    var tabOk    = (currentTab==='all')||(st===currentTab);
-    var searchOk = !search  || name.toLowerCase().includes(search)||type.includes(search);
-    var typeOk   = !typeVal || type===typeVal;
-    var teamOk   = !teamVal || team===teamVal;
-    var yearOk   = !year   || date.slice(0,4)===year;
-    var monOk    = !month  || date.slice(4,6)===month;
-    return tabOk&&searchOk&&typeOk&&teamOk&&yearOk&&monOk;
-  });
-
-  var total     = matched.length;
-  var totalPage = Math.max(1,Math.ceil(total/ROWS_PER_PAGE));
-  if(currentPage>totalPage) currentPage=totalPage;
-  var start=(currentPage-1)*ROWS_PER_PAGE, end=start+ROWS_PER_PAGE;
-
-  rows.forEach(function(row){row.style.display='none';});
-  matched.forEach(function(row,idx){row.style.display=(idx>=start&&idx<end)?'':'none';});
-
-  document.getElementById('pageInfo').textContent  = currentPage+' / '+totalPage;
-  document.getElementById('rowCount').textContent  = total;
-  renderPagination(totalPage);
+function updateAnalytics() {
+    var year = document.getElementById('anaYear').value;
+    var month = anaAllMode ? "全年度" : document.getElementById('anaMonth').value + "月";
+    document.getElementById('analytics-main-title').textContent = "📈 " + year + "年 " + month + " 數據分析";
+    
+    renderAnaCharts();
 }
 
+function renderAnaCharts() {
+    // 1. 申請類型分布 (Bar)
+    var typeArea = document.getElementById('ana-chart-type');
+    var types = [
+        {l:'請假', v:7, c:'#4caf50', p:'70%'},
+        {l:'留職', v:3, c:'#2196f3', p:'30%'},
+        {l:'離職', v:2, c:'#ff5722', p:'20%'},
+        {l:'展延', v:2, c:'#9c27b0', p:'20%'},
+        {l:'復職', v:1, c:'#c9a84c', p:'10%'}
+    ];
+    typeArea.innerHTML = types.map(t => `
+        <div class="chart-bar-row">
+            <span class="chart-bar-label" style="color:#c8c4b4;">${t.l}</span>
+            <div class="chart-bar-wrap" style="background:#333;">
+                <div class="chart-bar-fill" style="width:${t.p}; background-color:${t.c};">${t.v}件</div>
+            </div>
+        </div>
+    `).join('');
+
+    // 2. 假別分布 (Donut Legend)
+    var legendSub = document.getElementById('ana-legend-subtype');
+    var subs = [
+        {l:'事假', c:'var(--color-gold)'},
+        {l:'病假', c:'#4caf50'},
+        {l:'特休', c:'#2196f3'},
+        {l:'其他', c:'#ff5722'}
+    ];
+    legendSub.innerHTML = subs.map(s => `
+        <div class="legend-item">
+            <span class="legend-dot" style="background:${s.c}"></span>
+            <span style="color:#c8c4b4;">${s.l}</span>
+        </div>
+    `).join('');
+
+    // 3. Gauge 更新
+    var gaugeFill = document.getElementById('ana-gauge-fill');
+    var gaugeVal = document.getElementById('ana-gauge-val');
+    var randomVal = Math.floor(Math.random() * 40) + 40; 
+    gaugeFill.style.transform = `rotate(${45 + (randomVal * 1.8)}deg)`;
+    gaugeVal.textContent = randomVal + "%";
+
+    // 4. 部門假別堆疊圖
+    var deptSubArea = document.getElementById('ana-chart-dept-sub');
+    var depts = ['外場', '吧台', '內廚'];
+    deptSubArea.innerHTML = depts.map(d => `
+        <div class="chart-bar-row">
+            <span class="chart-bar-label" style="color:#c8c4b4;">${d}</span>
+            <div class="chart-bar-wrap" style="background:#333; display:flex;">
+                <div style="width:50%; background:#c9a84c; height:100%;" title="事假"></div>
+                <div style="width:30%; background:#4caf50; height:100%;" title="病假"></div>
+                <div style="width:20%; background:#2196f3; height:100%;" title="特休"></div>
+            </div>
+        </div>
+    `).join('');
+
+    // 5. 狀態分布 (Process)
+    var statusArea = document.getElementById('ana-chart-status');
+    var statuses = [
+        {l:'進行中', v:6, c:'var(--color-gold)'},
+        {l:'待審核', v:4, c:'#1a3a6b'},
+        {l:'補件中', v:2, c:'#2196f3'},
+        {l:'已完成', v:2, c:'#4caf50'}
+    ];
+    statusArea.innerHTML = statuses.map(s => `
+        <div class="chart-bar-row">
+            <span class="chart-bar-label" style="color:#c8c4b4; font-size:12px;">${s.l}</span>
+            <div class="chart-bar-wrap" style="background:#333; height:12px;">
+                <div class="chart-bar-fill" style="width:${s.v * 10}%; background-color:${s.c};"></div>
+            </div>
+            <span style="color:#9a9680; font-size:12px; width:20px;">${s.v}</span>
+        </div>
+    `).join('');
+
+    // 6. 趨勢下鑽邏輯
+    var trendTitle = document.getElementById('ana-trend-title');
+    var trendArea = document.getElementById('ana-chart-trend');
+    if(anaAllMode) {
+        trendTitle.textContent = "2026 全年度 趨勢";
+        var months = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+        trendArea.innerHTML = months.map(m => `
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;">
+                <div style="width:100%; background:linear-gradient(to top, var(--color-gold), transparent); height:${Math.random()*80 + 20}px; border-radius:3px 3px 0 0;"></div>
+                <span style="color:#9a9680; font-size:10px;">${m}月</span>
+            </div>
+        `).join('');
+    } else {
+        trendTitle.textContent = "本月每週申請趨勢";
+        var weeks = ['W1','W2','W3','W4'];
+        trendArea.innerHTML = weeks.map(w => `
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;">
+                <div style="width:20px; background:var(--color-gold); height:${Math.random()*80 + 20}px; border-radius:3px 3px 0 0;"></div>
+                <span style="color:#9a9680; font-size:10px;">${w}</span>
+            </div>
+        `).join('');
+    }
+}
+
+/* 初始化執行 */
 filterTable();
 dcRender();
+updateAnalytics();
 </script>
 </body>
 </html>
