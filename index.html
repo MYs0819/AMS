@@ -1312,8 +1312,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:2px solid var(--color-gold);flex-shrink:0;background-color:#434343;">
             <p class="inner-page-title" style="color:#e8e4d8;">🗂 文件中心</p>
             <div style="display:flex;align-items:center;gap:var(--space-2);">
-              <button class="inner-upload-btn" id="dc-upload-btn" onclick="dcTriggerUpload()">📤 上傳 PDF</button>
-              <input type="file" id="dc-file-input" accept=".pdf" style="display:none" onchange="dcHandleUpload(this)" />
+              <button class="inner-upload-btn" id="dc-upload-btn" onclick="dcTriggerUpload()">📤 上傳</button>
+              <input type="file" id="dc-file-input" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp" style="display:none" onchange="dcHandleUpload(this)" />
               <div class="view-toggle" id="dc-view-toggle">
                 <button class="view-toggle-btn active" onclick="dcSetView('list',this)" title="清單">☰</button>
                 <button class="view-toggle-btn" onclick="dcSetView('grid',this)" title="圖示">⊞</button>
@@ -1371,8 +1371,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <select id="anaYear" onchange="updateAnalytics()" style="height:28px;padding:0 8px;border-radius:6px;border:1px solid #555;background-color:#3a3a3a;color:#e8e4d8;font-size:12px;width:68px;">
                 <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
               </select>
-              <button id="anaAllBtn" onclick="toggleAnaAll()" style="height:28px;padding:0 10px;border-radius:6px;border:1px solid var(--color-gold);background-color:var(--color-gold-bg);color:var(--color-gold);font-size:11px;cursor:pointer;font-family:var(--font-body);">全年</button>
-              <select id="anaMonth" onchange="updateAnalytics()" disabled style="height:28px;padding:0 8px;border-radius:6px;border:1px solid #555;background-color:#3a3a3a;color:#e8e4d8;font-size:12px;width:50px;opacity:0.4;">
+              <button id="anaAllBtn" onclick="toggleAnaAll()" style="height:28px;padding:0 10px;border-radius:6px;border:1px solid #555;background-color:transparent;color:#c8c4b4;font-size:11px;cursor:pointer;font-family:var(--font-body);">全年</button>
+              <select id="anaMonth" onchange="updateAnalytics()" style="height:28px;padding:0 8px;border-radius:6px;border:1px solid #555;background-color:#3a3a3a;color:#e8e4d8;font-size:12px;width:50px;">
                 <option>01</option><option>02</option><option>03</option><option>04</option>
                 <option>05</option><option>06</option><option>07</option><option>08</option>
                 <option>09</option><option>10</option><option>11</option><option>12</option>
@@ -1948,7 +1948,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwZeDxalu41P8LlFtcZVN3xvfHgJqnJsKe4W3i3CdEpcQrZ8TcxiOvcj06P9BSggrLDJQ/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxJaxgOGVfdGeYOe08KVaDBD3k6cZtW9I5O_W9gzf3fx3Z23Uz2QCs2t_DwHSwDls8P0w/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2155,15 +2155,17 @@ function dcHandleUpload(input) {
     return;
   }
 
-  var cat = dcCurrentCat === 'all' ? 'other' : dcCurrentCat;
+  // 把目前分類 key 轉成中文（GAS 依中文決定資料夾）
+  var catLabel = dcCatLabels[dcCurrentCat] || '其他';
+  // 若目前在「全部文件」則預設放「其他」
+  if (dcCurrentCat === 'all') catLabel = '其他';
 
   // 轉 base64
   var reader = new FileReader();
   reader.onload = function(e) {
-    // e.target.result 格式：data:application/pdf;base64,XXXXX
     var base64 = e.target.result.split(',')[1];
 
-    // 顯示上傳中
+    // 上傳中狀態
     var uploadBtn = document.getElementById('dc-upload-btn');
     if (uploadBtn) { uploadBtn.textContent = '⏳ 上傳中…'; uploadBtn.disabled = true; }
 
@@ -2171,24 +2173,24 @@ function dcHandleUpload(input) {
     fetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({
-        action:   'uploadFile',
-        cat:      cat,
-        fileName: file.name,
-        fileData: base64,
-        mimeType: file.type || 'application/pdf',
-        uploader: '管理者', // 之後串接帳號後改為登入者姓名
-        note:     ''
+        action:    'uploadFile',
+        catLabel:  catLabel,        // 傳中文分類
+        fileName:  file.name,
+        fileData:  base64,
+        mimeType:  file.type || 'application/octet-stream',
+        uploader:  '管理者',       // 之後串接帳號後改為登入者姓名
       })
     })
     .then(function(res){ return res.json(); })
     .then(function(data){
-      if (uploadBtn) { uploadBtn.textContent = '📤 上傳 PDF'; uploadBtn.disabled = false; }
+      if (uploadBtn) { uploadBtn.textContent = '📤 上傳'; uploadBtn.disabled = false; }
       if (!data.success) { alert('上傳失敗：' + data.error); return; }
-      // 重新載入列表
-      dcLoadFiles();
+      alert('✅ 上傳成功！正在更新列表…');
+      // 延遲 1.5 秒再重讀（等 GAS 寫入 Sheets 完成）
+      setTimeout(dcLoadFiles, 1500);
     })
     .catch(function(err){
-      if (uploadBtn) { uploadBtn.textContent = '📤 上傳 PDF'; uploadBtn.disabled = false; }
+      if (uploadBtn) { uploadBtn.textContent = '📤 上傳'; uploadBtn.disabled = false; }
       alert('上傳失敗：' + err.message);
     });
   };
@@ -2396,6 +2398,42 @@ function dcSetView(mode, btn) {
 }
 
 function dcTriggerUpload(){document.getElementById('dc-file-input').click();}
+
+/* ══ 數據分析 ══ */
+var anaAllMode = false; /* 預設非全年，讓月份可選 */
+
+function toggleAnaAll() {
+  anaAllMode = !anaAllMode;
+  var btn      = document.getElementById('anaAllBtn');
+  var monthSel = document.getElementById('anaMonth');
+  if (anaAllMode) {
+    btn.style.backgroundColor = 'var(--color-gold-bg)';
+    btn.style.color            = 'var(--color-gold)';
+    btn.style.borderColor      = 'var(--color-gold)';
+    monthSel.disabled          = true;
+    monthSel.style.opacity     = '0.4';
+  } else {
+    btn.style.backgroundColor = 'transparent';
+    btn.style.color            = '#c8c4b4';
+    btn.style.borderColor      = '#555';
+    monthSel.disabled          = false;
+    monthSel.style.opacity     = '1';
+  }
+  updateAnalytics();
+}
+
+function updateAnalytics() {
+  var year  = (document.getElementById('anaYear')  || {}).value || '2026';
+  var month = (document.getElementById('anaMonth') || {}).value || '04';
+  var title = document.getElementById('analytics-main-title');
+  var trendTitle = document.getElementById('ana-trend-title');
+  if (title) {
+    title.textContent = '📊 ' + year + '年 ' + (anaAllMode ? '全年度' : month + '月') + ' 數據分析';
+  }
+  if (trendTitle) {
+    trendTitle.textContent = anaAllMode ? '全年度每月申請趨勢' : month + '月 每週申請趨勢';
+  }
+}
 
 /* ══ 篩選 + 分頁 ══ */
 function filterTable() {
