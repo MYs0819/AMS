@@ -6,7 +6,7 @@
 <title>人資行政管理系統</title>
 
 <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
-<meta property="og:description" content="專為 MYs 團隊打造的專屬人資行政線上管理平台。整合各類行政申請簽核、每日工時登記、勞報建檔與企業文件中心，全面提升團隊行政效率與協作體驗！" />
+<meta property="og:description" content="整合各類行政申請簽核與企業文件中心，全面提升團隊行政效率與協作！" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -601,77 +601,96 @@
       </div>
 
       <div class="page-section" id="page-analytics">
-        <div class="article-wrap dark-page" style="background-color:#434343; border-color:#555; flex:1; min-height:0;">
+        <div class="article-wrap dark-page" style="background-color:#434343; border-color:#555; flex:1; min-height:0; position: relative;">
           
-          <div class="inner-page-header" style="justify-content: center; flex-direction: column; gap: 15px; border-bottom: 2px solid var(--color-gold);">
-            <p class="inner-page-title" id="analytics-main-title" style="color:#e8e4d8; font-family:var(--font-display); font-size: 24px;">📈 2026年 4月 數據分析</p>
-            
-            <div class="ym-group" style="background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 50px; border: 1px solid #666;">
-              <span class="ym-year-label" style="background:transparent; border:none; color:#9a9680;">年度</span>
-              <select class="filter-select" id="anaYear" onchange="updateAnalytics()" style="width:75px; background-color:#3a3a3a; color:#e8e4d8; border-color:#555;">
-                <option value="2026" selected>2026</option>
-                <option value="2027">2027</option>
+          <div style="position: absolute; top: 25px; right: 32px; z-index: 10;">
+            <div class="ym-group" style="gap: 5px;">
+              <span style="color:#9a9680; font-size: 12px;">年度</span>
+              <select class="filter-select" id="anaYear" onchange="updateAnalytics()" style="width:68px; height: 28px; font-size: 12px; background-color:#3a3a3a; color:#e8e4d8; border-color:#555;">
+                <option value="2026">2026</option>
+                <option value="2027" selected>2027</option>
               </select>
-              <button class="ym-all-btn" id="anaAllBtn" onclick="toggleAnaAll()" style="border-color:#555; color:#c8c4b4;">全年</button>
-              <select class="filter-select" id="anaMonth" onchange="updateAnalytics()" style="width:65px; background-color:#3a3a3a; color:#e8e4d8; border-color:#555;">
-                <option value="01">01</option><option value="02">02</option><option value="03">03</option>
-                <option value="04" selected>04</option><option value="05">05</option><option value="06">06</option>
-                <option value="07">07</option><option value="08">08</option><option value="09">09</option>
-                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+              <button class="ym-all-btn" id="anaAllBtn" onclick="toggleAnaAll()" style="height: 28px; font-size: 11px; padding: 0 8px; border-color:#555; color:#c8c4b4;">全年</button>
+              <select class="filter-select" id="anaMonth" onchange="updateAnalytics()" style="width:55px; height: 28px; font-size: 12px; background-color:#3a3a3a; color:#e8e4d8; border-color:#555;">
+                <option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option>
+                <option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option>
+                <option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
               </select>
             </div>
           </div>
 
-          <div class="chart-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 10px;">
+          <div class="inner-page-header" style="justify-content: center; border-bottom: 2px solid var(--color-gold); padding-bottom: 15px;">
+            <p class="inner-page-title" id="analytics-main-title" style="color:#e8e4d8; font-family:var(--font-display); font-size: 26px;">📈 2027年 全年度 數據分析</p>
+          </div>
+
+          <div class="chart-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
             
-            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
-              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">申請類型分布</p>
-              <div class="chart-bar-group" id="ana-chart-type">
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px;">
+              <p class="chart-card-title" style="color: #e8e4d8; margin-bottom: 15px;">申請類型分布</p>
+              <div class="donut-wrap" style="justify-content: center; width: 100%;">
+                <div class="donut" style="width: 110px; height: 110px; background: conic-gradient(#4caf50 0% 40%, #2196f3 40% 70%, #ff5722 70% 85%, #9c27b0 85% 100%);">
+                  <div class="donut-center" style="background-color: #4a4a4a; width: 70px; height: 70px;">
+                    <div class="donut-center-num" style="color: #e8e4d8; font-size: 18px;">15</div>
+                    <div class="donut-center-label" style="font-size: 10px;">總件數</div>
+                  </div>
                 </div>
+                <div class="donut-legend" style="gap: 5px;">
+                   <div class="legend-item"><span class="legend-dot" style="background:#4caf50"></span><span style="color:#c8c4b4; font-size: 12px;">請假 40%</span></div>
+                   <div class="legend-item"><span class="legend-dot" style="background:#2196f3"></span><span style="color:#c8c4b4; font-size: 12px;">留職 30%</span></div>
+                </div>
+              </div>
             </div>
 
-            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
-              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">申請假別分布</p>
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <p class="chart-card-title" style="color: #e8e4d8; margin-bottom: 15px;">申請假別分布</p>
+              <div class="chart-bar-group" style="width: 85%;">
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4;">事假</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:60%; background:#c9a84c;">6</div></div></div>
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4;">病假</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:30%; background:#4caf50;">3</div></div></div>
+              </div>
+            </div>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <p class="chart-card-title" style="color: #e8e4d8; margin-bottom: 15px;">部門申請分布</p>
+              <div class="chart-bar-group" style="width: 85%;">
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; width: 60px;">🚶 外場</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:70%; background:#2196f3;">8</div></div></div>
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; width: 60px;">🍸 吧台</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:40%; background:#2196f3;">4</div></div></div>
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; width: 60px;">👨‍🍳 內廚</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:30%; background:#2196f3;">3</div></div></div>
+              </div>
+            </div>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <p class="chart-card-title" style="color: #e8e4d8; margin-bottom: 15px;">部門假別比例</p>
+              <div class="chart-bar-group" style="width: 85%;">
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; font-size: 11px;">🚶 外場</span><div class="chart-bar-wrap" style="background:#333; display:flex;"><div style="width:50%; background:#c9a84c;"></div><div style="width:30%; background:#4caf50;"></div><div style="width:20%; background:#2196f3;"></div></div></div>
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; font-size: 11px;">🍸 吧台</span><div class="chart-bar-wrap" style="background:#333; display:flex;"><div style="width:40%; background:#c9a84c;"></div><div style="width:40%; background:#4caf50;"></div><div style="width:20%; background:#2196f3;"></div></div></div>
+                <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; font-size: 11px;">👨‍🍳 內廚</span><div class="chart-bar-wrap" style="background:#333; display:flex;"><div style="width:30%; background:#c9a84c;"></div><div style="width:30%; background:#4caf50;"></div><div style="width:40%; background:#2196f3;"></div></div></div>
+              </div>
+            </div>
+
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <p class="chart-card-title" style="color: #e8e4d8; margin-bottom: 15px;">處理狀態分布</p>
               <div class="donut-wrap" style="justify-content: center;">
-                <div class="donut" id="ana-donut-subtype" style="background: conic-gradient(var(--color-gold) 0% 45%, #4caf50 45% 70%, #2196f3 70% 85%, #ff5722 85% 100%);">
-                  <div class="donut-center" style="background-color: #4a4a4a;">
-                    <div class="donut-center-num" style="color: #e8e4d8;">15</div>
-                    <div class="donut-center-label">總件數</div>
-                  </div>
+                <div class="donut" style="width: 90px; height: 90px; background: conic-gradient(#c9a84c 0% 60%, #1a3a6b 60% 85%, #4caf50 85% 100%);">
+                   <div class="donut-center" style="background-color: #4a4a4a; width: 60px; height: 60px;"></div>
                 </div>
-                <div class="donut-legend" id="ana-legend-subtype">
-                  </div>
+                <div class="donut-legend">
+                   <div class="legend-item"><span class="legend-dot" style="background:#c9a84c"></span><span style="color:#c8c4b4; font-size: 11px;">進行中</span></div>
+                   <div class="legend-item"><span class="legend-dot" style="background:#1a3a6b"></span><span style="color:#c8c4b4; font-size: 11px;">待審核</span></div>
+                </div>
               </div>
             </div>
 
-            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
-              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">部門申請分布</p>
-              <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
-                <div style="position:relative; width:180px; height:90px; overflow:hidden;">
-                    <div style="width:180px; height:180px; border-radius:50%; border:15px solid #333; border-bottom-color:transparent; border-left-color:transparent; box-sizing:border-box; transform:rotate(-45deg);"></div>
-                    <div id="ana-gauge-fill" style="position:absolute; top:0; left:0; width:180px; height:180px; border-radius:50%; border:15px solid var(--color-gold); border-bottom-color:transparent; border-left-color:transparent; box-sizing:border-box; transform:rotate(45deg); transition: transform 1s ease;"></div>
-                    <div style="position:absolute; bottom:0; width:100%; text-align:center; font-size:24px; font-weight:bold; color:var(--color-gold);" id="ana-gauge-val">68%</div>
-                </div>
-                <p style="color:#9a9680; font-size:12px;">外場佔比最高</p>
+            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <p class="chart-card-title" style="color: #e8e4d8; margin-bottom: 10px;" id="ana-trend-title">全年度每月申請量</p>
+              <div style="width: 90%; height: 100px; position: relative; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 20px;">
+                <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <polygon points="0,100 0,60 20,40 40,70 60,30 80,50 100,20 100,100" fill="rgba(201, 168, 76, 0.2)" stroke="var(--color-gold)" stroke-width="1"/>
+                </svg>
+                <span style="color:#9a9680; font-size: 9px; z-index: 2;">1月</span>
+                <span style="color:#9a9680; font-size: 9px; z-index: 2;">4月</span>
+                <span style="color:#9a9680; font-size: 9px; z-index: 2;">8月</span>
+                <span style="color:#9a9680; font-size: 9px; z-index: 2;">12月</span>
               </div>
-            </div>
-
-            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
-              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">部門假別分布</p>
-              <div class="chart-bar-group" id="ana-chart-dept-sub">
-                </div>
-            </div>
-
-            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
-              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;">狀態分布</p>
-              <div class="chart-bar-group" id="ana-chart-status">
-                </div>
-            </div>
-
-            <div class="chart-card" style="background-color: #4a4a4a; border-color: #666;">
-              <p class="chart-card-title" style="text-align: center; color: #e8e4d8;" id="ana-trend-title">本月每週申請量</p>
-              <div style="display:flex; align-items:flex-end; gap:12px; height:120px; padding: 0 10px; border-bottom: 1px solid #666;" id="ana-chart-trend">
-                </div>
             </div>
 
           </div>
@@ -883,7 +902,7 @@
    ============================================================ */
 var ROWS_PER_PAGE = 10;
 var allMonthMode  = false;
-var anaAllMode    = false;
+var anaAllMode    = true;
 
 /* ══ 右側介面跳轉 ══ */
 function showPage(pageId, el) {
@@ -1331,104 +1350,109 @@ function updateAnalytics() {
     var year = document.getElementById('anaYear').value;
     var month = anaAllMode ? "全年度" : document.getElementById('anaMonth').value + "月";
     document.getElementById('analytics-main-title').textContent = "📈 " + year + "年 " + month + " 數據分析";
+    document.getElementById('ana-trend-title').textContent = anaAllMode ? "全年度每月申請量" : "本月每週申請量";
     
     renderAnaCharts();
 }
 
 function renderAnaCharts() {
-    // 1. 申請類型分布 (Bar)
+    // 1. 申請類型分布 (甜甜圈圖)
     var typeArea = document.getElementById('ana-chart-type');
-    var types = [
-        {l:'請假', v:7, c:'#4caf50', p:'70%'},
-        {l:'留職', v:3, c:'#2196f3', p:'30%'},
-        {l:'離職', v:2, c:'#ff5722', p:'20%'},
-        {l:'展延', v:2, c:'#9c27b0', p:'20%'},
-        {l:'復職', v:1, c:'#c9a84c', p:'10%'}
-    ];
-    typeArea.innerHTML = types.map(t => `
-        <div class="chart-bar-row">
-            <span class="chart-bar-label" style="color:#c8c4b4;">${t.l}</span>
-            <div class="chart-bar-wrap" style="background:#333;">
-                <div class="chart-bar-fill" style="width:${t.p}; background-color:${t.c};">${t.v}件</div>
+    if (typeArea) {
+      typeArea.innerHTML = `
+        <div class="donut-wrap" style="justify-content: center; width: 100%;">
+          <div class="donut" style="width: 110px; height: 110px; background: conic-gradient(#4caf50 0% 40%, #2196f3 40% 70%, #ff5722 70% 85%, #9c27b0 85% 100%);">
+            <div class="donut-center" style="background-color: #4a4a4a; width: 70px; height: 70px;">
+              <div class="donut-center-num" style="color: #e8e4d8; font-size: 18px;">15</div>
+              <div class="donut-center-label" style="font-size: 10px;">總件數</div>
             </div>
+          </div>
+          <div class="donut-legend" style="gap: 5px;">
+             <div class="legend-item"><span class="legend-dot" style="background:#4caf50"></span><span style="color:#c8c4b4; font-size: 12px;">請假 40%</span></div>
+             <div class="legend-item"><span class="legend-dot" style="background:#2196f3"></span><span style="color:#c8c4b4; font-size: 12px;">留職 30%</span></div>
+             <div class="legend-item"><span class="legend-dot" style="background:#ff5722"></span><span style="color:#c8c4b4; font-size: 12px;">離職 15%</span></div>
+             <div class="legend-item"><span class="legend-dot" style="background:#9c27b0"></span><span style="color:#c8c4b4; font-size: 12px;">其他 15%</span></div>
+          </div>
         </div>
-    `).join('');
+      `;
+    }
 
-    // 2. 假別分布 (Donut Legend)
-    var legendSub = document.getElementById('ana-legend-subtype');
-    var subs = [
-        {l:'事假', c:'var(--color-gold)'},
-        {l:'病假', c:'#4caf50'},
-        {l:'特休', c:'#2196f3'},
-        {l:'其他', c:'#ff5722'}
-    ];
-    legendSub.innerHTML = subs.map(s => `
-        <div class="legend-item">
-            <span class="legend-dot" style="background:${s.c}"></span>
-            <span style="color:#c8c4b4;">${s.l}</span>
-        </div>
-    `).join('');
+    // 2. 申請假別分布 (長條圖)
+    var subtypeArea = document.getElementById('ana-chart-subtype');
+    if (subtypeArea) {
+      subtypeArea.innerHTML = `
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4;">事假</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:60%; background:#c9a84c;">6</div></div></div>
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4;">病假</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:30%; background:#4caf50;">3</div></div></div>
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4;">特休</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:10%; background:#2196f3;">1</div></div></div>
+      `;
+    }
 
-    // 3. Gauge 更新
-    var gaugeFill = document.getElementById('ana-gauge-fill');
-    var gaugeVal = document.getElementById('ana-gauge-val');
-    var randomVal = Math.floor(Math.random() * 40) + 40; 
-    gaugeFill.style.transform = `rotate(${45 + (randomVal * 1.8)}deg)`;
-    gaugeVal.textContent = randomVal + "%";
+    // 3. 部門申請分布 (長條圖)
+    var deptArea = document.getElementById('ana-chart-dept');
+    if (deptArea) {
+      deptArea.innerHTML = `
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; width: 60px;">🚶 外場</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:70%; background:#2196f3;">8</div></div></div>
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; width: 60px;">🍸 吧台</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:40%; background:#2196f3;">4</div></div></div>
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; width: 60px;">👨‍🍳 內廚</span><div class="chart-bar-wrap" style="background:#333;"><div class="chart-bar-fill" style="width:30%; background:#2196f3;">3</div></div></div>
+      `;
+    }
 
-    // 4. 部門假別堆疊圖
+    // 4. 部門假別分布 (堆疊長條圖)
     var deptSubArea = document.getElementById('ana-chart-dept-sub');
-    var depts = ['外場', '吧台', '內廚'];
-    deptSubArea.innerHTML = depts.map(d => `
-        <div class="chart-bar-row">
-            <span class="chart-bar-label" style="color:#c8c4b4;">${d}</span>
-            <div class="chart-bar-wrap" style="background:#333; display:flex;">
-                <div style="width:50%; background:#c9a84c; height:100%;" title="事假"></div>
-                <div style="width:30%; background:#4caf50; height:100%;" title="病假"></div>
-                <div style="width:20%; background:#2196f3; height:100%;" title="特休"></div>
-            </div>
+    if (deptSubArea) {
+      deptSubArea.innerHTML = `
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; font-size: 11px;">🚶 外場</span><div class="chart-bar-wrap" style="background:#333; display:flex;"><div style="width:50%; background:#c9a84c;"></div><div style="width:30%; background:#4caf50;"></div><div style="width:20%; background:#2196f3;"></div></div></div>
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; font-size: 11px;">🍸 吧台</span><div class="chart-bar-wrap" style="background:#333; display:flex;"><div style="width:40%; background:#c9a84c;"></div><div style="width:40%; background:#4caf50;"></div><div style="width:20%; background:#2196f3;"></div></div></div>
+        <div class="chart-bar-row"><span class="chart-bar-label" style="color:#c8c4b4; font-size: 11px;">👨‍🍳 內廚</span><div class="chart-bar-wrap" style="background:#333; display:flex;"><div style="width:30%; background:#c9a84c;"></div><div style="width:30%; background:#4caf50;"></div><div style="width:40%; background:#2196f3;"></div></div></div>
+        <div style="display:flex; justify-content:center; gap:10px; margin-top:5px; font-size:10px;">
+           <span style="color:#c8c4b4;"><span style="display:inline-block; width:8px; height:8px; background:#c9a84c; border-radius:50%; margin-right:3px;"></span>事假</span>
+           <span style="color:#c8c4b4;"><span style="display:inline-block; width:8px; height:8px; background:#4caf50; border-radius:50%; margin-right:3px;"></span>病假</span>
+           <span style="color:#c8c4b4;"><span style="display:inline-block; width:8px; height:8px; background:#2196f3; border-radius:50%; margin-right:3px;"></span>特休</span>
         </div>
-    `).join('');
+      `;
+    }
 
-    // 5. 狀態分布 (Process)
+    // 5. 狀態分布 (甜甜圈)
     var statusArea = document.getElementById('ana-chart-status');
-    var statuses = [
-        {l:'進行中', v:6, c:'var(--color-gold)'},
-        {l:'待審核', v:4, c:'#1a3a6b'},
-        {l:'補件中', v:2, c:'#2196f3'},
-        {l:'已完成', v:2, c:'#4caf50'}
-    ];
-    statusArea.innerHTML = statuses.map(s => `
-        <div class="chart-bar-row">
-            <span class="chart-bar-label" style="color:#c8c4b4; font-size:12px;">${s.l}</span>
-            <div class="chart-bar-wrap" style="background:#333; height:12px;">
-                <div class="chart-bar-fill" style="width:${s.v * 10}%; background-color:${s.c};"></div>
-            </div>
-            <span style="color:#9a9680; font-size:12px; width:20px;">${s.v}</span>
+    if (statusArea) {
+      statusArea.innerHTML = `
+        <div class="donut-wrap" style="justify-content: center; width: 100%;">
+          <div class="donut" style="width: 90px; height: 90px; background: conic-gradient(#c9a84c 0% 60%, #1a3a6b 60% 85%, #4caf50 85% 100%);">
+             <div class="donut-center" style="background-color: #4a4a4a; width: 60px; height: 60px;"></div>
+          </div>
+          <div class="donut-legend">
+             <div class="legend-item"><span class="legend-dot" style="background:#c9a84c"></span><span style="color:#c8c4b4; font-size: 11px;">進行中</span></div>
+             <div class="legend-item"><span class="legend-dot" style="background:#1a3a6b"></span><span style="color:#c8c4b4; font-size: 11px;">待審核</span></div>
+             <div class="legend-item"><span class="legend-dot" style="background:#4caf50"></span><span style="color:#c8c4b4; font-size: 11px;">已完成</span></div>
+          </div>
         </div>
-    `).join('');
+      `;
+    }
 
-    // 6. 趨勢下鑽邏輯
-    var trendTitle = document.getElementById('ana-trend-title');
+    // 6. 趨勢分析 (面積圖模擬切換)
     var trendArea = document.getElementById('ana-chart-trend');
-    if(anaAllMode) {
-        trendTitle.textContent = "2026 全年度 趨勢";
-        var months = ['1','2','3','4','5','6','7','8','9','10','11','12'];
-        trendArea.innerHTML = months.map(m => `
-            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;">
-                <div style="width:100%; background:linear-gradient(to top, var(--color-gold), transparent); height:${Math.random()*80 + 20}px; border-radius:3px 3px 0 0;"></div>
-                <span style="color:#9a9680; font-size:10px;">${m}月</span>
-            </div>
-        `).join('');
-    } else {
-        trendTitle.textContent = "本月每週申請趨勢";
-        var weeks = ['W1','W2','W3','W4'];
-        trendArea.innerHTML = weeks.map(w => `
-            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;">
-                <div style="width:20px; background:var(--color-gold); height:${Math.random()*80 + 20}px; border-radius:3px 3px 0 0;"></div>
-                <span style="color:#9a9680; font-size:10px;">${w}</span>
-            </div>
-        `).join('');
+    if (trendArea) {
+      if(anaAllMode) {
+          trendArea.innerHTML = `
+            <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <polygon points="0,100 0,60 20,40 40,70 60,30 80,50 100,20 100,100" fill="rgba(201, 168, 76, 0.2)" stroke="var(--color-gold)" stroke-width="1"/>
+            </svg>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">1月</span>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">4月</span>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">8月</span>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">12月</span>
+          `;
+      } else {
+          trendArea.innerHTML = `
+            <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <polygon points="0,100 0,80 33,50 66,70 100,30 100,100" fill="rgba(33, 150, 243, 0.2)" stroke="#2196f3" stroke-width="1"/>
+            </svg>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">第1週</span>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">第2週</span>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">第3週</span>
+            <span style="color:#9a9680; font-size: 9px; z-index: 2;">第4週</span>
+          `;
+      }
     }
 }
 
@@ -1437,5 +1461,6 @@ filterTable();
 dcRender();
 updateAnalytics();
 </script>
+
 </body>
 </html>
