@@ -532,7 +532,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
    內頁：SOP / 公告 / 行政表單
    ============================================================ */
 .article-wrap{background-color:var(--article-bg);border:1px solid var(--article-border);border-radius:var(--article-radius);padding:var(--article-padding);box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:20px;}
-.inner-page-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:2px solid var(--color-gold);margin-bottom:0;}
+.inner-page-header{display:flex;align-items:center;justify-content:space-between;padding:16px var(--content-padding-x) 12px;border-bottom:2px solid var(--color-gold);margin-bottom:0;}
 .inner-page-title{font-family:var(--article-title-font);font-size:var(--article-title-size);font-weight:var(--article-title-weight);color:var(--article-title-color);display:flex;align-items:center;gap:var(--space-3);}
 
 /* 清單/圖示切換 */
@@ -1102,201 +1102,6 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               </tr>
             </thead>
             <tbody id="tableBody">
-              <tr data-status="active"  data-type="請假申請" data-name="MeiYang"  data-team="外場" data-date="20260401">
-                <td class="td-mono">20260413_001</td>
-                <td><span class="td-staff-name">MeiYang</span></td>
-                <td><span class="td-team-text">外場－正職</span></td>
-                <td><span class="badge badge-leave">請假申請</span></td>
-                <td class="td-subtype">事假</td>
-                <td class="td-datetime">2026/04/01 09:32:00</td>
-                <td class="td-mono">2026/04/03 ~ 2026/04/05</td>
-                <td><span class="badge badge-active">進行中</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">王主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="pending" data-type="留職申請" data-name="五月天"   data-team="吧台" data-date="20260405">
-                <td class="td-mono">20260413_002</td>
-                <td><span class="td-staff-name">五月天</span></td>
-                <td><span class="td-team-text">吧台－正職</span></td>
-                <td><span class="badge badge-suspend">留職申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/05 14:15:00</td>
-                <td class="td-mono">2026/04/20 ~ 2026/10/19</td>
-                <td><span class="badge badge-pending">待審核</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="active"  data-type="離職申請" data-name="黃霄雲"   data-team="內廚" data-date="20260406">
-                <td class="td-mono">20260413_003</td>
-                <td><span class="td-staff-name">黃霄雲</span></td>
-                <td><span class="td-team-text">內廚－正職</span></td>
-                <td><span class="badge badge-resign">離職申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/06 10:00:00</td>
-                <td class="td-mono">2026/04/30 ~ 2026/04/30</td>
-                <td><span class="badge badge-urgent">緊急</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">王主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="active"  data-type="復職申請" data-name="滅火器"   data-team="外場" data-date="20260407">
-                <td class="td-mono">20260413_004</td>
-                <td><span class="td-staff-name">滅火器</span></td>
-                <td><span class="td-team-text">外場－兼職</span></td>
-                <td><span class="badge badge-return">復職申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/07 11:45:00</td>
-                <td class="td-mono">2026/04/10 ~ 2026/04/10</td>
-                <td><span class="badge badge-active">進行中</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">李主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="active"  data-type="請假申請" data-name="男子漢"   data-team="吧台" data-date="20260408">
-                <td class="td-mono">20260413_005</td>
-                <td><span class="td-staff-name">男子漢</span></td>
-                <td><span class="td-team-text">吧台－兼職</span></td>
-                <td><span class="badge badge-leave">請假申請</span></td>
-                <td class="td-subtype">病假</td>
-                <td class="td-datetime">2026/04/08 09:10:00</td>
-                <td class="td-mono">2026/04/09 ~ 2026/04/10</td>
-                <td><span class="badge badge-active">進行中</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">王主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="pending" data-type="展延申請" data-name="怕胖團"   data-team="內廚" data-date="20260409">
-                <td class="td-mono">20260413_006</td>
-                <td><span class="td-staff-name">怕胖團</span></td>
-                <td><span class="td-team-text">內廚－正職</span></td>
-                <td><span class="badge badge-extend">展延申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/09 16:20:00</td>
-                <td class="td-mono">2026/04/15 ~ 2026/05/14</td>
-                <td><span class="badge badge-pending">待審核</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="active"  data-type="展延申請" data-name="美秀集團" data-team="外場" data-date="20260410">
-                <td class="td-mono">20260413_007</td>
-                <td><span class="td-staff-name">美秀集團</span></td>
-                <td><span class="td-team-text">外場－正職</span></td>
-                <td><span class="badge badge-extend">展延申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/10 13:00:00</td>
-                <td class="td-mono">2026/04/12 ~ 2026/04/18</td>
-                <td><span class="badge badge-active">進行中</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">李主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="pending" data-type="留職申請" data-name="周杰倫"   data-team="吧台" data-date="20260411">
-                <td class="td-mono">20260414_001</td>
-                <td><span class="td-staff-name">周杰倫</span></td>
-                <td><span class="td-team-text">吧台－正職</span></td>
-                <td><span class="badge badge-suspend">留職申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/11 10:30:00</td>
-                <td class="td-mono">2026/04/25 ~ 2026/10/24</td>
-                <td><span class="badge badge-pending">待審核</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="done" data-type="留職申請" data-name="等阮返來" data-team="內廚" data-date="20260401" class="row-locked">
-                <td class="td-mono">20260414_002</td>
-                <td><span class="td-staff-name">等阮返來</span></td>
-                <td><span class="td-team-text">內廚－正職</span></td>
-                <td><span class="badge badge-suspend-locked">留職停薪</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/01 08:00:00</td>
-                <td class="td-mono">2026/04/15 ~ 2026/04/22</td>
-                <td><span class="badge badge-done">已完成</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">李主管</span><span class="reviewer-time">04/01 08:30 <span class="reviewer-badge">✓ 審核</span></span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">MYs</span><span class="reviewer-time">04/01 09:00 <span class="reviewer-badge verifier">✓ 覆核</span></span></div></td>
-                <td class="td-action"><button class="btn-action locked" disabled>🔒</button></td>
-              </tr>
-              <tr data-status="supplement" data-type="請假申請" data-name="Fun4"  data-team="外場" data-date="20260412">
-                <td class="td-mono">20260414_003</td>
-                <td><span class="td-staff-name">Fun4</span></td>
-                <td><span class="td-team-text">外場－兼職</span></td>
-                <td><span class="badge badge-leave">請假申請</span></td>
-                <td class="td-subtype">特休</td>
-                <td class="td-datetime">2026/04/12 15:30:00</td>
-                <td class="td-mono">2026/04/14 ~ 2026/04/15</td>
-                <td><span class="badge badge-pending">補件中</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">王主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="done" data-type="復職申請" data-name="B'z" data-team="吧台" data-date="20260408" class="row-locked">
-                <td class="td-mono">20260414_004</td>
-                <td><span class="td-staff-name">B'z</span></td>
-                <td><span class="td-team-text">吧台－正職</span></td>
-                <td><span class="badge badge-return">復職申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/08 09:00:00</td>
-                <td class="td-mono">2026/04/15 ~ 2026/04/15</td>
-                <td><span class="badge badge-done">已完成</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">李主管</span><span class="reviewer-time">04/09 10:15 <span class="reviewer-badge">✓ 審核</span></span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">MYs</span><span class="reviewer-time">04/09 11:00 <span class="reviewer-badge verifier">✓ 覆核</span></span></div></td>
-                <td class="td-action"><button class="btn-action locked" disabled>🔒</button></td>
-              </tr>
-              <tr data-status="reject" data-type="請假申請" data-name="美秀集團" data-team="外場" data-date="20260410" class="row-locked">
-                <td class="td-mono">20260414_005</td>
-                <td><span class="td-staff-name">美秀集團</span></td>
-                <td><span class="td-team-text">外場－正職</span></td>
-                <td><span class="badge badge-leave">請假申請</span></td>
-                <td class="td-subtype">病假</td>
-                <td class="td-datetime">2026/04/10 17:05:00</td>
-                <td class="td-mono">2026/04/12 ~ 2026/04/13</td>
-                <td><span class="badge badge-reject">已退件</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">李主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action reject-reason" onclick="openRejectModal()">📋 原因</button></td>
-              </tr>
-              <tr data-status="pending" data-type="請假申請" data-name="八青哥"   data-team="內廚" data-date="20260414">
-                <td class="td-mono">20260415_001</td>
-                <td><span class="td-staff-name">八青哥</span></td>
-                <td><span class="td-team-text">內廚－兼職</span></td>
-                <td><span class="badge badge-leave">請假申請</span></td>
-                <td class="td-subtype">公假</td>
-                <td class="td-datetime">2026/04/14 11:00:00</td>
-                <td class="td-mono">2026/04/16 ~ 2026/04/17</td>
-                <td><span class="badge badge-pending">待審核</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="supplement" data-type="離職申請" data-name="芒果醬" data-team="外場" data-date="20260415">
-                <td class="td-mono">20260415_002</td>
-                <td><span class="td-staff-name">芒果醬</span></td>
-                <td><span class="td-team-text">外場－正職</span></td>
-                <td><span class="badge badge-resign">離職申請</span></td>
-                <td class="td-subtype">—</td>
-                <td class="td-datetime">2026/04/15 15:30:00</td>
-                <td class="td-mono">2026/04/30 ~ 2026/04/30</td>
-                <td><span class="badge badge-pending">補件中</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">王主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
-              <tr data-status="active" data-type="請假申請" data-name="梁靜茹"   data-team="吧台" data-date="20260415">
-                <td class="td-mono">20260415_003</td>
-                <td><span class="td-staff-name">梁靜茹</span></td>
-                <td><span class="td-team-text">吧台－兼職</span></td>
-                <td><span class="badge badge-leave">請假申請</span></td>
-                <td class="td-subtype">特休</td>
-                <td class="td-datetime">2026/04/15 08:45:00</td>
-                <td class="td-mono">2026/04/17 ~ 2026/04/18</td>
-                <td><span class="badge badge-active">進行中</span></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">李主管</span></div></td>
-                <td><div class="reviewer-wrap"><span class="reviewer-name">—</span></div></td>
-                <td class="td-action"><button class="btn-action">✏ 編輯</button></td>
-              </tr>
             </tbody>
           </table>
 
@@ -1309,7 +1114,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <!-- ════ 文件中心 ════ -->
       <div class="page-section active" id="page-doccenter">
         <div class="article-wrap" style="padding:0;overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;background-color:#434343;border-color:#555;">
-          <div class="inner-page-header" style="padding:16px 28px 12px;border-bottom:2px solid var(--color-gold);flex-shrink:0;background-color:#434343;margin-bottom:0;">
+          <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#434343;flex-shrink:0;">
             <p class="inner-page-title" style="color:#e8e4d8;">🗂 文件中心</p>
             <div style="display:flex;align-items:center;gap:var(--space-2);">
               <button class="inner-upload-btn" id="dc-upload-btn" onclick="dcTriggerUpload()">📤 上傳</button>
@@ -1797,7 +1602,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     <textarea class="feedback-textarea" id="feedbackText" placeholder="請輸入您的意見內容…"></textarea>
     <div class="feedback-footer">
       <button class="btn-cancel" onclick="closeFeedback()">✕ 取消</button>
-      <button class="btn-submit">✉ 送出</button>
+      <button class="btn-submit" onclick="submitFeedback()">✉ 送出</button>
     </div>
   </div>
 </div>
@@ -1936,6 +1741,38 @@ function closeFeedback() {
 document.getElementById('feedbackModal').addEventListener('click',function(e){if(e.target===this)closeFeedback();});
 function toggleAnon(c){ var n=document.getElementById('nameInput'); n.disabled=c; n.value=''; n.placeholder=c?'匿名':'請輸入姓名'; }
 
+function submitFeedback() {
+  var isAnon   = document.getElementById('anonCheck').checked;
+  var name     = isAnon ? '匿名' : (document.getElementById('nameInput').value.trim() || '匿名');
+  var type     = document.getElementById('feedbackType').value;
+  var content  = document.getElementById('feedbackText').value.trim();
+  if (!type)    { alert('請選擇意見類型'); return; }
+  if (!content) { alert('請填寫意見內容'); return; }
+
+  // 格式化時間
+  var now = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  var ts  = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())
+           +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode:   'no-cors',
+    body: JSON.stringify({
+      action:  'addFeedback',
+      time:    ts,
+      name:    name,
+      type:    type,
+      content: content
+    })
+  }).then(function(){
+    alert('✅ 意見已送出，感謝您的回饋！');
+    closeFeedback();
+  }).catch(function(err){
+    alert('送出失敗：' + err.message);
+  });
+}
+
 /* ══ 退件原因 ══ */
 function openRejectModal()  { document.getElementById('rejectModal').classList.add('open'); }
 function closeRejectModal() { document.getElementById('rejectModal').classList.remove('open'); }
@@ -1947,11 +1784,26 @@ function closeBugReport() { document.getElementById('bugModal').classList.remove
 document.getElementById('bugModal').addEventListener('click',function(e){if(e.target===this)closeBugReport();});
 
 function submitBug() {
-  var desc=document.getElementById('bug-desc').value.trim();
-  if(!desc){ document.getElementById('err-bug').classList.add('show'); return; }
+  var bugType = (document.getElementById('bug-type') || {}).value || '';
+  var desc    = document.getElementById('bug-desc').value.trim();
+  if (!desc) { document.getElementById('err-bug').classList.add('show'); return; }
   document.getElementById('err-bug').classList.remove('show');
-  alert('✅ 問題已回報！\n我們將盡快處理，感謝您的回報。');
-  closeBugReport();
+
+  var now = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  var ts  = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())
+           +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode:   'no-cors',
+    body: JSON.stringify({ action:'addBugReport', time:ts, bugType:bugType, desc:desc })
+  }).then(function(){
+    alert('✅ 問題已回報！我們將盡快處理，感謝您的回報。');
+    closeBugReport();
+  }).catch(function(err){
+    alert('送出失敗：' + err.message);
+  });
 }
 
 /* ══ Tab 切換 ══ */
@@ -2013,7 +1865,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycby0I0AViLdgeVuNEQD4yUNPzS3b2Q02tDeDtk-s8Y7J7LFBLMt4NHYluUzU-WRoKjO2-w/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycby5TOgBohB4eFAYOQT76CUvNEjoJvbWtDJGInGsnI3dIePbRNqUb_6wLcFlyvW6In34Hw/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2192,6 +2044,21 @@ function dcSwitch(el, cat) {
   dcPage = 1;
   var t = document.getElementById('dc-title');
   if (t) t.textContent = dcCatLabels[cat] || cat;
+  // 全部文件不允許上傳，其餘分類才開放
+  var uploadBtn = document.getElementById('dc-upload-btn');
+  if (uploadBtn) {
+    if (cat === 'all') {
+      uploadBtn.disabled = true;
+      uploadBtn.style.opacity = '0.4';
+      uploadBtn.style.cursor  = 'not-allowed';
+      uploadBtn.title = '請選擇分類後再上傳';
+    } else {
+      uploadBtn.disabled = false;
+      uploadBtn.style.opacity = '1';
+      uploadBtn.style.cursor  = 'pointer';
+      uploadBtn.title = '';
+    }
+  }
   dcRender();
 }
 
@@ -2321,7 +2188,7 @@ function dcHandleUpload(input) {
     })
     .then(function() {
       if (uploadBtn) { uploadBtn.textContent = '📤 上傳'; uploadBtn.disabled = false; }
-      alert('✅ 上傳完成');
+      alert('✅ 上傳完成！於 2 秒後更新列表…');
       // no-cors 模式看不到回傳，用延遲重讀確認結果
       setTimeout(dcLoadFiles, 2000);
     })
@@ -2425,6 +2292,21 @@ function dcSwitch(el, cat) {
   dcPage = 1;
   var t = document.getElementById('dc-title');
   if (t) t.textContent = dcCatLabels[cat] || cat;
+  // 全部文件不允許上傳，其餘分類才開放
+  var uploadBtn = document.getElementById('dc-upload-btn');
+  if (uploadBtn) {
+    if (cat === 'all') {
+      uploadBtn.disabled = true;
+      uploadBtn.style.opacity = '0.4';
+      uploadBtn.style.cursor  = 'not-allowed';
+      uploadBtn.title = '請選擇分類後再上傳';
+    } else {
+      uploadBtn.disabled = false;
+      uploadBtn.style.opacity = '1';
+      uploadBtn.style.cursor  = 'pointer';
+      uploadBtn.title = '';
+    }
+  }
   dcRender();
 }
 
