@@ -2011,7 +2011,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbx9dkIv97TT0Z-oQq6YVGwWm2bPkxRdtfHeYxVGTG6nu1wHcSCmbCOhR0fp239bLLdf5Q/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycby0I0AViLdgeVuNEQD4yUNPzS3b2Q02tDeDtk-s8Y7J7LFBLMt4NHYluUzU-WRoKjO2-w/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2025,22 +2025,21 @@ var dcDlStyle    = 'display:inline-flex;align-items:center;gap:4px;height:28px;p
 /* ── 讀取文件列表（從 GAS）── */
 function dcLoadFiles() {
   dcShowLoading(true);
-  // 改用 POST 避免瀏覽器和 GAS 快取問題
-  fetch(GAS_URL, {
-    method: 'POST',
-    cache:  'no-store',
-    body: JSON.stringify({ action: 'getFiles', cat: 'all', _t: Date.now() })
-  })
-    .then(function(res){ return res.json(); })
-    .then(function(data){
+  // GET（GAS 跨域不支援 POST CORS preflight，必須用 GET）
+  // 雙重 cache busting 確保每次都拿最新資料
+  var bust = Date.now() + '_' + Math.floor(Math.random() * 999999);
+  var url  = GAS_URL + '?action=getFiles&cat=all&v=' + bust;
+  fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store' })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
       dcShowLoading(false);
       if (!data.success) { dcShowError(data.error); return; }
       dcBuildFileList(data.files);
       dcRender();
     })
-    .catch(function(err){
+    .catch(function(err) {
       dcShowLoading(false);
-      dcShowError('載入失敗：' + err.message);
+      dcShowError('載入失敗，請重試（' + err.message + '）');
     });
 }
 
@@ -2274,25 +2273,24 @@ function dcHandleUpload(input) {
     var uploadBtn = document.getElementById('dc-upload-btn');
     if (uploadBtn) { uploadBtn.textContent = '⏳ 上傳中…'; uploadBtn.disabled = true; }
 
-    // 呼叫 GAS
+    // 呼叫 GAS（用 no-cors 避免跨域 preflight，代價是看不到回傳值）
     fetch(GAS_URL, {
       method: 'POST',
+      mode:   'no-cors',
       body: JSON.stringify({
         action:    'uploadFile',
-        catLabel:  catLabel,        // 傳中文分類
+        catLabel:  catLabel,
         fileName:  file.name,
         fileData:  base64,
         mimeType:  file.type || 'application/octet-stream',
-        uploader:  '管理者',       // 之後串接帳號後改為登入者姓名
+        uploader:  '管理者',
       })
     })
-    .then(function(res){ return res.json(); })
-    .then(function(data){
+    .then(function() {
       if (uploadBtn) { uploadBtn.textContent = '📤 上傳'; uploadBtn.disabled = false; }
-      if (!data.success) { alert('上傳失敗：' + data.error); return; }
-      alert('✅ 上傳成功！正在更新列表…');
-      // 延遲 1.5 秒再重讀（等 GAS 寫入 Sheets 完成）
-      setTimeout(dcLoadFiles, 1500);
+      alert('✅ 上傳完成！2 秒後更新列表…');
+      // no-cors 模式看不到回傳，用延遲重讀確認結果
+      setTimeout(dcLoadFiles, 2000);
     })
     .catch(function(err){
       if (uploadBtn) { uploadBtn.textContent = '📤 上傳'; uploadBtn.disabled = false; }
@@ -2311,21 +2309,17 @@ function dcDeleteItem(btn) {
   var fileId   = item.getAttribute('data-fileid');
   if (!confirm('確定要刪除 [' + nameText + '] ? 此動作無法復原')) return;
 
+  // no-cors：先移除 DOM，後台同步刪除
+  item.remove();
+  var cards = document.querySelectorAll('#dc-file-grid .doccenter-file-card[data-fileid="'+fileId+'"]');
+  cards.forEach(function(c){ c.remove(); });
+  dcPage = 1;
+  dcRender();
   fetch(GAS_URL, {
     method: 'POST',
+    mode:   'no-cors',
     body: JSON.stringify({ action: 'deleteFile', fileId: fileId })
-  })
-  .then(function(res){ return res.json(); })
-  .then(function(data){
-    if (!data.success) { alert('刪除失敗：' + data.error); return; }
-    // 同步移除 DOM（清單 + 圖示）
-    item.remove();
-    var cards = document.querySelectorAll('#dc-file-grid .doccenter-file-card[data-fileid="'+fileId+'"]');
-    cards.forEach(function(c){ c.remove(); });
-    dcPage = 1;
-    dcRender();
-  })
-  .catch(function(err){ alert('刪除失敗：' + err.message); });
+  }).catch(function(err){ console.warn('刪除後台失敗：', err.message); });
 }
 
 /* ── 刪除（圖示）── */
@@ -2336,20 +2330,17 @@ function dcDeleteCard(btn) {
   var fileId   = card.getAttribute('data-fileid');
   if (!confirm('確定要刪除 [' + nameText + '] ? 此動作無法復原')) return;
 
+  // no-cors：先移除 DOM，後台同步刪除
+  card.remove();
+  var items = document.querySelectorAll('#dc-file-area .doccenter-file-item[data-fileid="'+fileId+'"]');
+  items.forEach(function(i){ i.remove(); });
+  dcPage = 1;
+  dcRender();
   fetch(GAS_URL, {
     method: 'POST',
+    mode:   'no-cors',
     body: JSON.stringify({ action: 'deleteFile', fileId: fileId })
-  })
-  .then(function(res){ return res.json(); })
-  .then(function(data){
-    if (!data.success) { alert('刪除失敗：' + data.error); return; }
-    card.remove();
-    var items = document.querySelectorAll('#dc-file-area .doccenter-file-item[data-fileid="'+fileId+'"]');
-    items.forEach(function(i){ i.remove(); });
-    dcPage = 1;
-    dcRender();
-  })
-  .catch(function(err){ alert('刪除失敗：' + err.message); });
+  }).catch(function(err){ console.warn('刪除後台失敗：', err.message); });
 }
 
 /* ── 新增分類（僅前端 UI，之後可串接 Sheets）── */
