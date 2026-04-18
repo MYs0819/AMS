@@ -76,6 +76,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .f-lbl{font-size:12px;font-weight:500;color:var(--sub);}
 .req{color:#e53935;margin-left:2px;}
 .f-inp,.f-sel,.f-ta{border:1.5px solid var(--border);border-radius:7px;padding:7px 11px;font-family:var(--font);font-size:13px;color:var(--text);background:#fff;outline:none;width:100%;transition:.15s;}
+[type="date"],[type="time"]{text-align:center;}
 .f-inp:focus,.f-sel:focus,.f-ta:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-bg);}
 .f-inp[readonly]{background:#faf9f6;color:var(--muted);cursor:default;}
 .f-ta{resize:none;line-height:1.6;}
@@ -145,9 +146,9 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 </header>
 
 <!-- ── Main ── -->
-<main class="app-main">
+<main class="app-main" style="justify-content:center;">
   <div class="selector-wrap">
-    <div class="selector-title">請選擇申請類型</div>
+    <div class="selector-title" style="margin-bottom:20px;">請選擇申請類型</div>
     <div class="selector-grid">
       <div class="sel-card" onclick="openModal('lvModal')">
         <span class="sel-icon">📋</span>
@@ -168,12 +169,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 </main>
 
 <!-- ── Footer ── -->
-<footer class="app-footer">
-  <div class="footer-logo">
-    <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" onerror="this.parentElement.style.background='#2a2a1a'"/>
-  </div>
-  <span class="footer-text">Copyright 2026 MYs System Version:b1.0.0.0</span>
-</footer>
+<footer class="app-footer"><span class="footer-text">Copyright 2026 MYs System Version:b1.0.0.0</span></footer>
 
 </div><!-- page-wrap -->
 
@@ -203,7 +199,13 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
             <div class="f-lbl" style="margin-bottom:6px;">請假人<span class="req">*</span></div>
             <div class="f-row f-c2" style="margin-bottom:0;">
               <div class="f-g"><label class="f-lbl" style="font-size:11px;">職稱</label><input class="f-inp" id="lv-title" placeholder="例：正職"/></div>
-              <div class="f-g"><label class="f-lbl" style="font-size:11px;">姓名</label><input class="f-inp" id="lv-name" placeholder="姓名"/></div>
+              <div class="f-g">
+                <label class="f-lbl" style="font-size:11px;">姓名（親簽）<span class="req">*</span></label>
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <input class="f-inp" id="lv-name" placeholder="姓名" style="flex:1;"/>
+                  <div onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;width:80px;height:34px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'" id="lv-sig1-preview">✍ 簽名</div>
+                </div>
+              </div>
             </div>
           </div>
           <div>
@@ -218,7 +220,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
       <!-- 假別 -->
       <div>
-        <div class="f-sec">假別*（單選）</div>
+        <div class="f-sec">假別*</div>
         <div class="lt-grid">
           <button class="lt-btn" onclick="pickLv(this,'公假')">公假</button>
           <button class="lt-btn" onclick="pickLv(this,'休假')">休假</button>
@@ -237,22 +239,32 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         </div>
       </div>
 
-      <!-- 請假日數 - 同一排 -->
+      <!-- 請假日數 -->
       <div>
         <div class="f-sec">請假日數*</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div class="date-line">
-            <span class="dl-lbl">自</span>
-            <input class="f-inp" id="lv-fd" type="date" onchange="calcD()"/>
-            <input class="f-inp dl-short" id="lv-ft" type="time" onchange="calcD()"/>
-            <span class="dl-lbl">至</span>
-            <input class="f-inp" id="lv-td" type="date" onchange="calcD()"/>
-            <input class="f-inp dl-short" id="lv-tt" type="time" onchange="calcD()"/>
-            <span class="dl-lbl">共</span>
-            <input class="f-inp dl-vshort" id="lv-days" placeholder="0" readonly/>
-            <span class="dl-lbl">日</span>
-            <input class="f-inp dl-vshort" id="lv-hrs" placeholder="0" readonly/>
-            <span class="dl-lbl">小時</span>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;">
+          <!-- 左欄：自 / 至 兩行 -->
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="date-line">
+              <span class="dl-lbl">自</span>
+              <input class="f-inp" id="lv-fd" type="date" onchange="calcD()" style="text-align:center;"/>
+              <input class="f-inp dl-short" id="lv-ft" type="time" onchange="calcD()" style="text-align:center;max-width:88px;"/>
+            </div>
+            <div class="date-line">
+              <span class="dl-lbl">至</span>
+              <input class="f-inp" id="lv-td" type="date" onchange="calcD()" style="text-align:center;"/>
+              <input class="f-inp dl-short" id="lv-tt" type="time" onchange="calcD()" style="text-align:center;max-width:88px;"/>
+            </div>
+          </div>
+          <!-- 右欄：共 日 小時 置中 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;background:#fdfcf9;border:1px solid var(--border);border-radius:8px;padding:8px 14px;min-width:100px;">
+            <div style="font-size:11px;color:var(--muted);">共</div>
+            <div style="display:flex;align-items:baseline;gap:3px;">
+              <input class="f-inp" id="lv-days" placeholder="0" readonly style="width:44px;text-align:center;padding:4px 6px;font-size:16px;font-weight:600;border-radius:5px;"/>
+              <span style="font-size:12px;color:var(--sub);">日</span>
+              <input class="f-inp" id="lv-hrs" placeholder="0" readonly style="width:44px;text-align:center;padding:4px 6px;font-size:16px;font-weight:600;border-radius:5px;"/>
+              <span style="font-size:12px;color:var(--sub);">時</span>
+            </div>
           </div>
         </div>
       </div>
@@ -263,25 +275,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         <textarea class="f-ta" id="lv-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
       </div>
 
-      <!-- 簽名：請假人姓名親簽 -->
-      <div class="sig-block">
-        <div class="sig-lbl">請假人姓名親簽<span class="req">*</span></div>
-        <div class="sig-wrap">
-          <canvas class="sig-canvas" id="lv-sig1" height="90"></canvas>
-          <button class="sig-clear" onclick="clearSig('lv-sig1')">清除</button>
-        </div>
-      </div>
-
-      <!-- 簽名：申請人已知悉 -->
-      <div class="sig-block">
-        <div class="sig-lbl">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
-        <div class="sig-wrap">
-          <canvas class="sig-canvas" id="lv-sig2" height="90"></canvas>
-          <button class="sig-clear" onclick="clearSig('lv-sig2')">清除</button>
-        </div>
-      </div>
-
-      <!-- 備註說明 -->
+      <!-- 備註說明（申請人已知悉簽名在備註下方）-->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
@@ -293,6 +287,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           <li><span class="n-num">6.</span><span class="n-txt">遇有急病或緊急事故，於當日請假起五天內將請假程序完成。</span></li>
           <li><span class="n-num">7.</span><span class="n-txt">員工請假規定及薪資核定辦法依勞動基準法規定。</span></li>
         </ul>
+        <!-- 申請人已知悉親簽 -->
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
+          <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:6px;">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
+          <div class="sig-wrap" style="max-height:80px;">
+            <canvas class="sig-canvas" id="lv-sig2" height="80"></canvas>
+            <button class="sig-clear" onclick="clearSig('lv-sig2')">清除</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -318,7 +320,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
       <!-- 申請類型 -->
       <div>
-        <div class="f-sec">申請類型*（單選）</div>
+        <div class="f-sec">申請類型*</div>
         <div class="radio-grp">
           <label class="radio-item"><input type="radio" name="rt-type" value="留職"/> 留職</label>
           <label class="radio-item"><input type="radio" name="rt-type" value="復職"/> 復職</label>
@@ -358,9 +360,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           <div class="f-g"><label class="f-lbl">連絡電話</label><input class="f-inp" id="rt-phone" placeholder="0912-345-678"/></div>
           <div class="f-g"><label class="f-lbl">聯絡地址</label><input class="f-inp" id="rt-addr" placeholder="聯絡地址"/></div>
         </div>
-        <div class="f-row f-c2">
-          <div class="f-g"><label class="f-lbl">申請日期</label><input class="f-inp" id="rt-date" readonly/></div>
-        </div>
+
       </div>
 
       <!-- 申請原因 -->
@@ -385,25 +385,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         <textarea class="f-ta" id="rt-note" rows="2" placeholder="其他說明（選填）…"></textarea>
       </div>
 
-      <!-- 簽名：申請人姓名親簽 -->
-      <div class="sig-block">
-        <div class="sig-lbl">申請人姓名親簽<span class="req">*</span></div>
-        <div class="sig-wrap">
-          <canvas class="sig-canvas" id="rt-sig1" height="90"></canvas>
-          <button class="sig-clear" onclick="clearSig('rt-sig1')">清除</button>
-        </div>
-      </div>
-
-      <!-- 簽名：申請人已知悉 -->
-      <div class="sig-block">
-        <div class="sig-lbl">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
-        <div class="sig-wrap">
-          <canvas class="sig-canvas" id="rt-sig2" height="90"></canvas>
-          <button class="sig-clear" onclick="clearSig('rt-sig2')">清除</button>
-        </div>
-      </div>
-
-      <!-- 備註說明 -->
+      <!-- 備註說明（已知悉簽名在下方）-->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
@@ -417,6 +399,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
             &emsp;B. 傷病件：普通病假逾限，經以事假及特別休假底稱後仍未痊癒者須檢附佐證文件。<br>
             &emsp;C. 其他留停件：說明事由及檢附佐證文件。</span></li>
         </ul>
+        <!-- 申請人已知悉親簽 -->
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
+          <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:6px;">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
+          <div class="sig-wrap" style="max-height:80px;">
+            <canvas class="sig-canvas" id="rt-sig2" height="80"></canvas>
+            <button class="sig-clear" onclick="clearSig('rt-sig2')">清除</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -463,11 +453,11 @@ function openModal(id) {
   document.getElementById(id).classList.add('open');
   if (id === 'lvModal') {
     document.getElementById('lv-date').value = today();
-    initSig('lv-sig1'); initSig('lv-sig2');
+    initSig('lv-sig2');
   }
   if (id === 'rtModal') {
     document.getElementById('rt-date').value = today();
-    initSig('rt-sig1'); initSig('rt-sig2');
+    initSig('rt-sig2');
   }
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -664,6 +654,82 @@ function submitRt() {
     showSt('rt-st','送出失敗：' + err.message, 'err');
   });
 }
+
+
+/* ══ 簽名 Modal ══ */
+var _currentSigTarget = null;
+var _sigModalInited   = false;
+
+function openSigModal(targetId, title) {
+  _currentSigTarget = targetId;
+  document.getElementById('sig-modal-title').textContent = title;
+  document.getElementById('sigModal').classList.add('open');
+  if (!_sigModalInited) {
+    _sigModalInited = true;
+    initSig('sig-modal-canvas');
+  }
+}
+
+function closeSigModal() {
+  document.getElementById('sigModal').classList.remove('open');
+}
+
+function confirmSig() {
+  var modalCanvas  = document.getElementById('sig-modal-canvas');
+  var targetCanvas = document.getElementById(_currentSigTarget);
+  if (!targetCanvas) { closeSigModal(); return; }
+
+  // 把 modal canvas 的內容複製到目標 canvas
+  targetCanvas.width  = modalCanvas.width;
+  targetCanvas.height = modalCanvas.height;
+  targetCanvas.getContext('2d').drawImage(modalCanvas, 0, 0);
+
+  // 更新預覽按鈕顯示
+  var previewEl = document.getElementById(_currentSigTarget + '-preview');
+  if (previewEl) {
+    if (!sigEmpty('sig-modal-canvas')) {
+      previewEl.innerHTML = '<img src="' + modalCanvas.toDataURL() + '" style="width:100%;height:100%;object-fit:contain;border-radius:5px;"/>';
+    }
+  }
+
+  // 清除 modal canvas
+  clearSig('sig-modal-canvas');
+  _sigModalInited = false;
+  delete _si['sig-modal-canvas'];
+
+  closeSigModal();
+}
+
+// 關閉 sig modal 點外圍
+document.getElementById('sigModal').addEventListener('click', function(e){
+  if (e.target === this) closeSigModal();
+});
 </script>
+
+<!-- ════ 簽名放大 Modal ════ -->
+<div class="modal-overlay" id="sigModal" style="z-index:300;">
+  <div style="background:#fff;border-radius:12px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;">
+    <div style="padding:14px 20px 10px;border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;">
+      <span id="sig-modal-title" style="font-family:var(--serif);font-size:15px;font-weight:700;color:var(--dark);">簽名</span>
+      <button onclick="closeSigModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);">✕</button>
+    </div>
+    <div style="padding:16px 20px;">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">請用滑鼠或觸控在下方簽名</div>
+      <div class="sig-wrap">
+        <canvas class="sig-canvas" id="sig-modal-canvas" height="140"></canvas>
+        <button class="sig-clear" onclick="clearSig('sig-modal-canvas')">清除</button>
+      </div>
+    </div>
+    <div style="padding:10px 20px 16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;">
+      <button onclick="closeSigModal()" class="btn-c">取消</button>
+      <button onclick="confirmSig()" class="btn-s">✓ 確認簽名</button>
+    </div>
+  </div>
+</div>
+
+<!-- 隱藏的 canvas 存放各簽名 -->
+<canvas id="lv-sig1" width="1" height="1" style="display:none;"></canvas>
+<canvas id="rt-sig1" width="1" height="1" style="display:none;"></canvas>
+
 </body>
 </html>
