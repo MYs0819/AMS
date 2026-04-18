@@ -1445,6 +1445,393 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <!-- ════ 申請紀錄 ════ -->
       <div class="page-section" id="page-myrecords">
+
+        <!-- 今年請假統計 -->
+        <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:16px 20px;box-shadow:var(--shadow-card);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--color-border-card);">
+            <span style="font-size:16px;">📆</span>
+            <span style="font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--color-text-primary);">今年請假統計</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+            <div style="background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">事假</div>
+              <div style="font-size:22px;font-weight:700;color:#ff5722;" id="lc-事假">0</div>
+              <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+            </div>
+            <div style="background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">病假</div>
+              <div style="font-size:22px;font-weight:700;color:#03a9f4;" id="lc-病假">0</div>
+              <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+            </div>
+            <div style="background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">特休</div>
+              <div style="font-size:22px;font-weight:700;color:#8bc34a;" id="lc-特休">0</div>
+              <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+            </div>
+            <div style="background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">公假</div>
+              <div style="font-size:22px;font-weight:700;color:#ffc107;" id="lc-公假">0</div>
+              <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+            </div>
+            <div style="background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">婚假</div>
+              <div style="font-size:22px;font-weight:700;color:#e91e63;" id="lc-婚假">0</div>
+              <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+            </div>
+            <div style="background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">其他</div>
+              <div style="font-size:22px;font-weight:700;color:#9e9e9e;" id="lc-其他">0</div>
+              <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 統計卡片 -->
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+          <div class="stat-card bg-total">
+            <span class="stat-card-label">送出總數</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" id="my-total">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">累計</span>
+          </div>
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">審核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value gold" id="my-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待處理</span>
+          </div>
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">已完成</span>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="my-done">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">已結案</span>
+          </div>
+          <div class="stat-card bg-reject-grp">
+            <span class="stat-card-label">退件</span>
+            <div class="stat-card-value-row"><span class="stat-card-value red" id="my-reject">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">需補件</span>
+          </div>
+        </div>
+
+        <!-- 表格區 -->
+        <div class="tab-bar">
+          <div class="tab-item active" data-tab="all" onclick="switchMyTab(this,'all')">全部 <span class="tab-count" id="mytab-all">0</span></div>
+          <div class="tab-item" data-tab="pending" onclick="switchMyTab(this,'pending')">審核中 <span class="tab-count" id="mytab-pending">0</span></div>
+          <div class="tab-item" data-tab="done" onclick="switchMyTab(this,'done')">已完成 <span class="tab-count" id="mytab-done">0</span></div>
+          <div class="tab-item" data-tab="reject" onclick="switchMyTab(this,'reject')">退件 <span class="tab-count" id="mytab-reject">0</span></div>
+        </div>
+
+        <div class="table-section">
+          <div class="toolbar">
+            <div class="toolbar-right">
+              <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出申請紀錄</button>
+              <span class="toolbar-info">共 <span id="my-row-count">0</span> 筆</span>
+            </div>
+          </div>
+          <table class="data-table" id="my-table">
+            <colgroup>
+              <col style="width:110px;"/>
+              <col style="width:110px;"/>
+              <col style="width:80px;"/>
+              <col style="width:70px;"/>
+              <col style="width:160px;"/>
+              <col style="width:90px;"/>
+              <col style="width:62px;"/>
+              <col style="width:90px;"/>
+              <col style="width:62px;"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>申請編號</th>
+                <th>申請日期</th>
+                <th>申請類型</th>
+                <th>假別</th>
+                <th>起訖期間</th>
+                <th>審核人</th>
+                <th>狀態</th>
+                <th>覆核人</th>
+                <th>狀態</th>
+              </tr>
+            </thead>
+            <tbody id="my-tbody">
+              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+            </tbody>
+          </table>
+          <div class="table-footer">
+            <div class="pagination" id="my-pagination"></div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ════ 申請趨勢分析 ════ -->
+      <div class="page-section" id="page-analytics">
+        <div style="background-color:#2a2a2a;border:none;border-radius:0;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;">
+
+          <!-- 標題列 -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 12px;border-bottom:2px solid #c9a84c;flex-shrink:0;">
+            <p id="analytics-main-title" style="font-family:var(--font-display);font-size:17px;font-weight:700;color:#e8e4d8;">📊 2026年 04月 數據分析</p>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="color:#9a9680;font-size:11px;">年度</span>
+              <select id="anaYear" onchange="updateAnalytics()" style="height:26px;padding:0 6px;border-radius:5px;border:1px solid #555;background:#3a3a3a;color:#e8e4d8;font-size:11px;width:62px;">
+                <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+              </select>
+              <button id="anaAllBtn" onclick="toggleAnaAll()" style="height:26px;padding:0 10px;border-radius:5px;border:1px solid #555;background:transparent;color:#c8c4b4;font-size:11px;cursor:pointer;font-family:var(--font-body);">全年</button>
+              <select id="anaMonth" onchange="updateAnalytics()" style="height:26px;padding:0 6px;border-radius:5px;border:1px solid #555;background:#3a3a3a;color:#e8e4d8;font-size:11px;width:48px;">
+                <option>01</option><option>02</option><option>03</option><option value="04" selected>04</option>
+                <option>05</option><option>06</option><option>07</option><option>08</option>
+                <option>09</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 上半：4欄圖表 -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 18px 0;flex-shrink:0;">
+
+            <!-- C1: 申請類型 帶引線環狀圖 -->
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+              <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">申請類型分布</p>
+              <div style="width:100%;display:flex;justify-content:center;">
+                <svg viewBox="-40 -20 280 240" style="width:100%;max-width:240px;overflow:visible;">
+                  <!-- 環狀扇形 r=70, cx=100,cy=100, 周長=439.82 -->
+                  <!-- 請假35%=153.94, 留職25%=109.95, 離職20%=87.96, 展延12%=52.78, 復職8%=35.18 -->
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#4caf50" stroke-width="30"
+                    stroke-dasharray="153.94 285.88" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#2196f3" stroke-width="30"
+                    stroke-dasharray="109.95 329.87" stroke-dashoffset="-153.94" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#ff9800" stroke-width="30"
+                    stroke-dasharray="87.96 351.86" stroke-dashoffset="-263.89" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#9c27b0" stroke-width="30"
+                    stroke-dasharray="52.78 387.04" stroke-dashoffset="-351.85" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#c9a84c" stroke-width="30"
+                    stroke-dasharray="35.18 404.64" stroke-dashoffset="-404.63" transform="rotate(-90 100 100)"/>
+                  <!-- 中心 -->
+                  <circle cx="100" cy="100" r="55" fill="#333"/>
+                  <text x="100" y="94" text-anchor="middle" font-size="26" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">15</text>
+                  <text x="100" y="112" text-anchor="middle" font-size="12" fill="#9a9680" font-family="sans-serif">件</text>
+
+                  <!-- 引線：請假35% 約在 17.5° 位置 → 外點(100+85*sin17.5, 100-85*cos17.5)=(125.6,18.8) -->
+                  <line x1="125" y1="25"  x2="148" y2="5"   stroke="#4caf50" stroke-width="1.2"/>
+                  <line x1="148" y1="5"   x2="180" y2="5"   stroke="#4caf50" stroke-width="1.2"/>
+                  <text x="184" y="9" font-size="11" fill="#4caf50" font-family="sans-serif" font-weight="600">請假 35%</text>
+
+                  <!-- 留職25% 約在 72.5° -->
+                  <line x1="166" y1="79"  x2="190" y2="60"  stroke="#2196f3" stroke-width="1.2"/>
+                  <line x1="190" y1="60"  x2="220" y2="60"  stroke="#2196f3" stroke-width="1.2"/>
+                  <text x="224" y="64" font-size="11" fill="#2196f3" font-family="sans-serif" font-weight="600">留職 25%</text>
+
+                  <!-- 離職20% 約在 126° -->
+                  <line x1="157" y1="157" x2="180" y2="175" stroke="#ff9800" stroke-width="1.2"/>
+                  <line x1="180" y1="175" x2="220" y2="175" stroke="#ff9800" stroke-width="1.2"/>
+                  <text x="224" y="179" font-size="11" fill="#ff9800" font-family="sans-serif" font-weight="600">離職 20%</text>
+
+                  <!-- 展延12% 約在 169° -->
+                  <line x1="68"  y1="168" x2="40"  y2="185" stroke="#9c27b0" stroke-width="1.2"/>
+                  <line x1="40"  y1="185" x2="-20" y2="185" stroke="#9c27b0" stroke-width="1.2"/>
+                  <text x="-38" y="189" font-size="11" fill="#9c27b0" font-family="sans-serif" font-weight="600" text-anchor="end">展延 12%</text>
+
+                  <!-- 復職8% 約在 192° -->
+                  <line x1="30"  y1="86"  x2="5"   y2="65"  stroke="#c9a84c" stroke-width="1.2"/>
+                  <line x1="5"   y1="65"  x2="-20" y2="65"  stroke="#c9a84c" stroke-width="1.2"/>
+                  <text x="-38" y="69" font-size="11" fill="#c9a84c" font-family="sans-serif" font-weight="600" text-anchor="end">復職 8%</text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- C2: 部門×假別 雙環 -->
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+              <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">部門 × 假別</p>
+              <div style="width:100%;display:flex;justify-content:center;">
+                <svg viewBox="0 0 200 200" style="width:100%;max-width:200px;">
+                  <!-- 外環：部門 r=80 寬14 -->
+                  <!-- 外場40%=201.1, 吧台33%=165.9, 內廚27%=135.7 -->
+                  <circle cx="100" cy="100" r="80" fill="none" stroke="#c9a84c" stroke-width="14"
+                    stroke-dasharray="201.1 301.6" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="80" fill="none" stroke="#4caf50" stroke-width="14"
+                    stroke-dasharray="165.9 336.8" stroke-dashoffset="-201.1" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="80" fill="none" stroke="#2196f3" stroke-width="14"
+                    stroke-dasharray="135.7 367" stroke-dashoffset="-367" transform="rotate(-90 100 100)"/>
+                  <!-- 內環：假別 r=56 寬14 -->
+                  <!-- 事假38%=132.5, 病假30%=105.7, 特休20%=70.4, 公假12%=42.2 -->
+                  <circle cx="100" cy="100" r="56" fill="none" stroke="#ff5722" stroke-width="14"
+                    stroke-dasharray="132.5 219.1" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="56" fill="none" stroke="#03a9f4" stroke-width="14"
+                    stroke-dasharray="105.7 245.9" stroke-dashoffset="-132.5" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="56" fill="none" stroke="#8bc34a" stroke-width="14"
+                    stroke-dasharray="70.4 281.2" stroke-dashoffset="-238.2" transform="rotate(-90 100 100)"/>
+                  <circle cx="100" cy="100" r="56" fill="none" stroke="#ffc107" stroke-width="14"
+                    stroke-dasharray="42.2 309.4" stroke-dashoffset="-308.6" transform="rotate(-90 100 100)"/>
+                  <!-- 中心 -->
+                  <circle cx="100" cy="100" r="42" fill="#333"/>
+                  <text x="100" y="96" text-anchor="middle" font-size="10" fill="#9a9680" font-family="sans-serif">外：部門</text>
+                  <text x="100" y="110" text-anchor="middle" font-size="10" fill="#9a9680" font-family="sans-serif">內：假別</text>
+                </svg>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+                <span style="font-size:10px;color:#c9a84c;display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#c9a84c;border-radius:50%;display:inline-block;"></span>外場</span>
+                <span style="font-size:10px;color:#4caf50;display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#4caf50;border-radius:50%;display:inline-block;"></span>吧台</span>
+                <span style="font-size:10px;color:#2196f3;display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#2196f3;border-radius:50%;display:inline-block;"></span>內廚</span>
+                <span style="font-size:10px;color:#ff5722;display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#ff5722;border-radius:50%;display:inline-block;"></span>事假</span>
+                <span style="font-size:10px;color:#03a9f4;display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#03a9f4;border-radius:50%;display:inline-block;"></span>病假</span>
+                <span style="font-size:10px;color:#8bc34a;display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#8bc34a;border-radius:50%;display:inline-block;"></span>特休</span>
+                <span style="font-size:10px;color:#ffc107;display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#ffc107;border-radius:50%;display:inline-block;"></span>公假</span>
+              </div>
+            </div>
+
+            <!-- C3: 假別量 -->
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+              <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">假別申請量</p>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🔴 事假</span><span style="color:#ff5722;font-weight:600;">6件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:60%;height:100%;background:linear-gradient(90deg,#ff5722,#ff8a65);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🔵 病假</span><span style="color:#03a9f4;font-weight:600;">3件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:30%;height:100%;background:linear-gradient(90deg,#03a9f4,#4fc3f7);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🟢 特休</span><span style="color:#8bc34a;font-weight:600;">3件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:30%;height:100%;background:linear-gradient(90deg,#8bc34a,#aed581);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🟡 公假</span><span style="color:#ffc107;font-weight:600;">1件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:10%;height:100%;background:linear-gradient(90deg,#ffc107,#ffd54f);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>💗 婚假</span><span style="color:#e91e63;font-weight:600;">1件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:10%;height:100%;background:linear-gradient(90deg,#e91e63,#f48fb1);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>⚪ 其他</span><span style="color:#9e9e9e;font-weight:600;">1件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:10%;height:100%;background:linear-gradient(90deg,#9e9e9e,#bdbdbd);border-radius:999px;"></div></div></div>
+              </div>
+            </div>
+
+            <!-- C4: 申請狀態 -->
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+              <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">申請狀態分布</p>
+              <div style="display:flex;flex-direction:column;gap:11px;">
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>⏳ 進行中</span><span style="color:#c9a84c;font-weight:600;">6件，40%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:40%;height:100%;background:linear-gradient(90deg,#c9a84c,#d4b96a);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>👁 待審核</span><span style="color:#2962ff;font-weight:600;">4件，27%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:27%;height:100%;background:linear-gradient(90deg,#1a3a6b,#2962ff);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🔄 補件中</span><span style="color:#ff9800;font-weight:600;">2件，13%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:13%;height:100%;background:linear-gradient(90deg,#ff9800,#ffcc02);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>✅ 已完成</span><span style="color:#4caf50;font-weight:600;">2件，13%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:13%;height:100%;background:linear-gradient(90deg,#4caf50,#81c784);border-radius:999px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>❌ 已退件</span><span style="color:#f44336;font-weight:600;">1件，7%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:7%;height:100%;background:linear-gradient(90deg,#f44336,#ef9a9a);border-radius:999px;"></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 下半：折線圖 + 部門明細 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 18px 14px;flex:1;min-height:0;">
+
+            <!-- 折線圖 -->
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+              <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">全年度每月申請趨勢</p>
+              <div style="flex:1;min-height:0;display:flex;align-items:stretch;">
+                <svg viewBox="0 0 500 150" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
+                  <defs>
+                    <linearGradient id="tg3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/>
+                      <stop offset="100%" stop-color="#c9a84c" stop-opacity="0.03"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- 軸線 -->
+                  <line x1="40" y1="10" x2="40" y2="120" stroke="#555" stroke-width="1"/>
+                  <line x1="40" y1="120" x2="495" y2="120" stroke="#555" stroke-width="1"/>
+                  <!-- 水平格線 + Y標籤 -->
+                  <line x1="40" y1="10"  x2="495" y2="10"  stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
+                  <line x1="40" y1="44"  x2="495" y2="44"  stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
+                  <line x1="40" y1="77"  x2="495" y2="77"  stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
+                  <text x="34" y="14"  text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">15</text>
+                  <text x="34" y="48"  text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">10</text>
+                  <text x="34" y="81"  text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">5</text>
+                  <text x="34" y="124" text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">0</text>
+                  <!-- 12個月 X座標: 40 + i*41.36, i=0..11 -->
+                  <!-- 資料: 4,6,5,9,7,8,12,10,11,14,11,15 → y=120-(v/15)*110 -->
+                  <!-- y: 90.7,76,83.3,54,68.7,61.3,32,46.7,39.3,17.3,39.3,10 -->
+                  <polygon points="40,90.7 81.4,76 122.7,83.3 164.1,54 205.5,68.7 246.9,61.3 288.2,32 329.6,46.7 371,39.3 412.4,17.3 453.7,39.3 495,10 495,120 40,120"
+                    fill="url(#tg3)"/>
+                  <polyline points="40,90.7 81.4,76 122.7,83.3 164.1,54 205.5,68.7 246.9,61.3 288.2,32 329.6,46.7 371,39.3 412.4,17.3 453.7,39.3 495,10"
+                    fill="none" stroke="#c9a84c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+                  <!-- 資料點 -->
+                  <circle cx="40"   cy="90.7" r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="81.4" cy="76"   r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="122.7" cy="83.3" r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="164.1" cy="54"   r="4.5" fill="#fff"    stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="205.5" cy="68.7" r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="246.9" cy="61.3" r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="288.2" cy="32"   r="4.5" fill="#fff"    stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="329.6" cy="46.7" r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="371"   cy="39.3" r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="412.4" cy="17.3" r="4.5" fill="#fff"    stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="453.7" cy="39.3" r="3.5" fill="#2a2a2a" stroke="#c9a84c" stroke-width="2"/>
+                  <circle cx="495"   cy="10"   r="4.5" fill="#fff"    stroke="#c9a84c" stroke-width="2"/>
+                  <!-- 高峰數值 -->
+                  <text x="164.1" y="48"  text-anchor="middle" font-size="9" fill="#e8e4d8" font-family="sans-serif">9</text>
+                  <text x="288.2" y="26"  text-anchor="middle" font-size="9" fill="#e8e4d8" font-family="sans-serif">12</text>
+                  <text x="412.4" y="11"  text-anchor="middle" font-size="9" fill="#e8e4d8" font-family="sans-serif">14</text>
+                  <text x="495"   y="4"   text-anchor="middle" font-size="9" fill="#e8e4d8" font-family="sans-serif">15</text>
+                  <!-- X 月份標籤對齊資料點 -->
+                  <text x="40"    y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">01月</text>
+                  <text x="81.4"  y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">02月</text>
+                  <text x="122.7" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">03月</text>
+                  <text x="164.1" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">04月</text>
+                  <text x="205.5" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">05月</text>
+                  <text x="246.9" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">06月</text>
+                  <text x="288.2" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">07月</text>
+                  <text x="329.6" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">08月</text>
+                  <text x="371"   y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">09月</text>
+                  <text x="412.4" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">10月</text>
+                  <text x="453.7" y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">11月</text>
+                  <text x="495"   y="135" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">12月</text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- 各部門申請明細 -->
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">各部門申請明細</p>
+              <div style="display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:0;">
+
+                <!-- 外場 -->
+                <div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
+                  <span style="font-size:12px;color:#c8c4b4;width:62px;flex-shrink:0;">🚶 外場</span>
+                  <div style="flex:1;height:28px;background:#222;border-radius:6px;overflow:hidden;display:flex;">
+                    <div style="width:33%;background:#ff5722;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">事<span style="font-size:9px;opacity:.85;">×3</span></div>
+                    <div style="width:22%;background:#03a9f4;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">病<span style="font-size:9px;opacity:.85;">×2</span></div>
+                    <div style="width:22%;background:#8bc34a;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">休<span style="font-size:9px;opacity:.85;">×2</span></div>
+                    <div style="width:12%;background:#ffc107;display:flex;align-items:center;justify-content:center;font-size:10px;color:#333;font-weight:700;gap:1px;">公<span style="font-size:9px;opacity:.85;">×1</span></div>
+                    <div style="width:11%;background:#444;"></div>
+                  </div>
+                  <span style="font-size:11px;color:#9a9680;width:30px;text-align:right;flex-shrink:0;">8件</span>
+                </div>
+
+                <div style="height:1px;background:#444;"></div>
+
+                <!-- 吧台 -->
+                <div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
+                  <span style="font-size:12px;color:#c8c4b4;width:62px;flex-shrink:0;">🍸 吧台</span>
+                  <div style="flex:1;height:28px;background:#222;border-radius:6px;overflow:hidden;display:flex;">
+                    <div style="width:40%;background:#ff5722;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">事<span style="font-size:9px;opacity:.85;">×2</span></div>
+                    <div style="width:30%;background:#8bc34a;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">休<span style="font-size:9px;opacity:.85;">×1</span></div>
+                    <div style="width:20%;background:#03a9f4;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">病<span style="font-size:9px;opacity:.85;">×1</span></div>
+                    <div style="width:10%;background:#444;"></div>
+                  </div>
+                  <span style="font-size:11px;color:#9a9680;width:30px;text-align:right;flex-shrink:0;">5件</span>
+                </div>
+
+                <div style="height:1px;background:#444;"></div>
+
+                <!-- 內廚 -->
+                <div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
+                  <span style="font-size:12px;color:#c8c4b4;width:62px;flex-shrink:0;">👨‍🍳 內廚</span>
+                  <div style="flex:1;height:28px;background:#222;border-radius:6px;overflow:hidden;display:flex;">
+                    <div style="width:33%;background:#03a9f4;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">病<span style="font-size:9px;opacity:.85;">×1</span></div>
+                    <div style="width:33%;background:#ff5722;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;">事<span style="font-size:9px;opacity:.85;">×1</span></div>
+                    <div style="width:34%;background:#ffc107;display:flex;align-items:center;justify-content:center;font-size:10px;color:#333;font-weight:700;gap:2px;">公<span style="font-size:9px;opacity:.85;">×1</span></div>
+                  </div>
+                  <span style="font-size:11px;color:#9a9680;width:30px;text-align:right;flex-shrink:0;">3件</span>
+                </div>
+
+                <!-- 圖例 -->
+                <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding-top:6px;border-top:1px solid #444;">
+                  <span style="font-size:10px;color:#ff5722;display:flex;align-items:center;gap:3px;"><span style="display:inline-block;width:10px;height:10px;background:#ff5722;border-radius:2px;"></span>事假</span>
+                  <span style="font-size:10px;color:#03a9f4;display:flex;align-items:center;gap:3px;"><span style="display:inline-block;width:10px;height:10px;background:#03a9f4;border-radius:2px;"></span>病假</span>
+                  <span style="font-size:10px;color:#8bc34a;display:flex;align-items:center;gap:3px;"><span style="display:inline-block;width:10px;height:10px;background:#8bc34a;border-radius:2px;"></span>特休</span>
+                  <span style="font-size:10px;color:#ffc107;display:flex;align-items:center;gap:3px;"><span style="display:inline-block;width:10px;height:10px;background:#ffc107;border-radius:2px;"></span>公假</span>
+                </div>
+
+              </div>
+            </div>
+
+          </div><!-- end 下半 -->
+        </div>
+      </div>
+
+
+      <!-- ════ 申請紀錄 ════ -->
+      <div class="page-section" id="page-myrecords">
         <div style="background-color:#2e2e2e;border:none;border-radius:0;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;margin:calc(-1 * var(--content-padding-y)) calc(-1 * var(--content-padding-x));padding:0;">
 
           <!-- 標題 -->
@@ -1975,7 +2362,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycby5TOgBohB4eFAYOQT76CUvNEjoJvbWtDJGInGsnI3dIePbRNqUb_6wLcFlyvW6In34Hw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyBbKF9e8ebMtLQDGMD9dlG-lLbI9SJsrxRfDE0KLHC8lhsK2fYWUT56ovfePON-pFEnw/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2597,10 +2984,114 @@ function filterTable() {
 
 
 /* ══ 申請紀錄（個人）══ */
+var myRecordsData = [];
+var myCurrentTab = 'all';
+
+function switchMyTab(el, tab) {
+  document.querySelectorAll('#page-myrecords .tab-item').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  myCurrentTab = tab;
+  renderMyTable();
+}
+
 function loadMyRecords() {
-  var tbody = document.getElementById('my-records-body');
+  var tbody = document.getElementById('my-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="6" style="padding:32px;text-align:center;color:#9a9680;font-size:13px;">⏳ 載入中…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  var url = GAS_URL + '?action=getApplications&v=' + Date.now() + '_' + Math.floor(Math.random()*999999);
+  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!data.success || !data.applications) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
+        return;
+      }
+      myRecordsData = data.applications;
+      var total=myRecordsData.length, pending=0, done=0, reject=0;
+      var ld = {};
+      myRecordsData.forEach(function(a){
+        var s = a.status||'';
+        if(s.indexOf('完成')>-1) done++;
+        else if(s.indexOf('退件')>-1) reject++;
+        else pending++;
+        if(a.type==='請假申請'&&a.subtype&&a.days){
+          var base = a.subtype.replace(/\s.*$/,'');
+          ld[base]=(ld[base]||0)+parseFloat(a.days||0);
+        }
+      });
+      document.getElementById('my-total').textContent   = total;
+      document.getElementById('my-pending').textContent = pending;
+      document.getElementById('my-done').textContent    = done;
+      document.getElementById('my-reject').textContent  = reject;
+      document.getElementById('my-row-count').textContent = total;
+      document.getElementById('mytab-all').textContent     = total;
+      document.getElementById('mytab-pending').textContent = pending;
+      document.getElementById('mytab-done').textContent    = done;
+      document.getElementById('mytab-reject').textContent  = reject;
+      ['事假','病假','特休','公假','婚假','其他'].forEach(function(k){
+        var el=document.getElementById('lc-'+k);
+        if(el) el.textContent = ld[k]||0;
+      });
+      renderMyTable();
+    })
+    .catch(function(){
+      document.getElementById('my-tbody').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
+    });
+}
+
+function renderMyTable() {
+  var tbody = document.getElementById('my-tbody');
+  if(!tbody) return;
+  var filtered = myRecordsData.filter(function(a){
+    var s = a.status||'';
+    if(myCurrentTab==='all') return true;
+    if(myCurrentTab==='pending') return s.indexOf('完成')===-1&&s.indexOf('退件')===-1;
+    if(myCurrentTab==='done')    return s.indexOf('完成')>-1;
+    if(myCurrentTab==='reject')  return s.indexOf('退件')>-1;
+    return true;
+  });
+  document.getElementById('my-row-count').textContent = filtered.length;
+  tbody.innerHTML = '';
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">無申請紀錄</td></tr>';
+    return;
+  }
+  filtered.forEach(function(a,i){
+    var s  = a.status||'';
+    var sc = s.indexOf('完成')>-1?'badge-done':s.indexOf('退件')>-1?'badge-reject':s.indexOf('人資')>-1?'badge-done':'badge-pending';
+    var rev1s = a.reviewerStatus||'—'; var rev2s = a.verifierStatus||'—';
+    var r1sc = rev1s.indexOf('完成')>-1||rev1s==='已審核'?'badge-done':'badge-pending';
+    var r2sc = rev2s.indexOf('完成')>-1||rev2s==='已覆核'?'badge-done':'badge-pending';
+    var tr = document.createElement('tr');
+    if(i%2) tr.style.background='var(--color-bg-table-alt)';
+    tr.innerHTML =
+      '<td class="td-mono">'+(a.id||'—')+'</td>'+
+      '<td class="td-datetime">'+(a.applyDate||'—')+'</td>'+
+      '<td style="text-align:center;"><span class="badge badge-leave">'+(a.type||'—')+'</span></td>'+
+      '<td class="td-subtype" style="text-align:center;">'+(a.subtype||'—')+'</td>'+
+      '<td class="td-mono">'+(a.startDate||'—')+' ~ '+(a.endDate||'—')+'</td>'+
+      '<td style="text-align:center;font-size:13px;">'+(a.reviewer||'—')+'</td>'+
+      '<td style="text-align:center;"><span class="badge '+r1sc+'" style="font-size:10px;">'+rev1s+'</span></td>'+
+      '<td style="text-align:center;font-size:13px;">'+(a.verifier||'—')+'</td>'+
+      '<td style="text-align:center;"><span class="badge '+r2sc+'" style="font-size:10px;">'+rev2s+'</span></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function exportMyRecords() {
+  if(!myRecordsData.length){ alert('尚無資料可匯出'); return; }
+  var headers = ['申請編號','申請日期','申請類型','假別','起訖期間','審核人','審核狀態','覆核人','覆核狀態'];
+  var rows = myRecordsData.map(function(a){
+    return [a.id||'',a.applyDate||'',a.type||'',a.subtype||'',(a.startDate||'')+'~'+(a.endDate||''),a.reviewer||'',a.reviewerStatus||'',a.verifier||'',a.verifierStatus||''];
+  });
+    var csv = [headers].concat(rows).map(function(r){ return r.join(','); }).join('\n');
+  var today = new Date(); var p=function(n){return String(n).padStart(2,'0');};
+  var fname = '申請紀錄_'+today.getFullYear()+'_'+p(today.getMonth()+1)+'_'+p(today.getDate())+'.csv';
+  var blob = new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a'); a.href=url; a.download=fname; a.click();
+  URL.revokeObjectURL(url);
+}
 
   var bust = Date.now() + '_' + Math.floor(Math.random()*999999);
   var url  = GAS_URL + '?action=getApplications&cat=all&v=' + bust;
@@ -2655,7 +3146,6 @@ function loadMyRecords() {
     .catch(function(){
       tbody.innerHTML = '<tr><td colspan="6" style="padding:32px;text-align:center;color:#f44336;font-size:13px;">載入失敗，請重試</td></tr>';
     });
-}
 
 filterTable();
 dcLoadFiles(); // 進入文件中心時立即從 GAS 載入
