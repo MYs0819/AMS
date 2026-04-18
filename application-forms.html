@@ -9,294 +9,208 @@
 <style>
 :root {
   --gold:#c9a84c; --gold-bg:rgba(201,168,76,.10); --gold-light:#d4b96a;
-  --dark:#1c1c15; --header-bg:#1c1c15; --sidebar-bg:#1f1f17; --border-dark:#2a2a1e;
-  --bg:#f0ece2; --card:#fff; --border:#e4dfd0; --text:#1c1c15; --muted:#9a9482; --sub:#5a5646;
+  --dark:#1c1c15; --bg:#f0ece2; --card:#fff; --border:#e4dfd0;
+  --text:#1c1c15; --muted:#9a9482; --sub:#5a5646;
   --font:'Noto Sans TC',sans-serif; --serif:'Noto Serif TC',serif;
-  --sidebar-label-color:#e8e4d8; --sidebar-label-size:14px; --sidebar-label-weight:700; --sidebar-label-spacing:0.16em;
-  --sidebar-label-sub-color:#9a9680; --sidebar-label-sub-size:10px;
-  --sidebar-item-color:#c8c4b4; --sidebar-item-size:15px;
+  --footer-text-size:14px; --footer-text-color:#999999;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);}
 
+/* ── 整體 flex 佈局 ── */
+.page-wrap{display:flex;flex-direction:column;min-height:100vh;}
+
 /* ── Header ── */
-.app-header{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 20px;background:var(--header-bg);border-bottom:1px solid var(--border-dark);flex-shrink:0;}
+.app-header{
+  display:flex;align-items:center;justify-content:center;
+  height:62px;background:#1c1c15;border-bottom:2px solid var(--gold);
+  flex-shrink:0;padding:0 24px;
+}
 .header-brand{display:flex;align-items:center;gap:12px;}
 .header-logo{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold-bg);overflow:hidden;flex-shrink:0;}
 .header-logo img{width:100%;height:100%;object-fit:contain;}
-.header-title{font-family:var(--serif);font-size:18px;font-weight:600;color:#f0ece2;letter-spacing:.04em;}
-.header-subtitle{font-size:11px;color:#999;letter-spacing:.04em;}
-
-/* ── Layout ── */
-.app-body{display:flex;height:calc(100vh - 60px);overflow:hidden;}
-
-/* ── Sidebar ── */
-.app-sidebar{width:225px;background:var(--sidebar-bg);border-right:1px solid var(--border-dark);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;padding:16px 0;}
-.sidebar-section{margin-bottom:0;}
-.sidebar-section-label{font-family:var(--font);font-size:var(--sidebar-label-size);font-weight:var(--sidebar-label-weight);color:var(--sidebar-label-color);letter-spacing:var(--sidebar-label-spacing);text-transform:uppercase;padding:0 16px;margin-top:4px;margin-bottom:0;line-height:1.2;}
-.sidebar-section-sub{font-family:var(--font);font-size:var(--sidebar-label-sub-size);color:var(--sidebar-label-sub-color);letter-spacing:.06em;padding:0 16px;margin-bottom:4px;line-height:1.4;}
-.sidebar-nav-item{display:flex;align-items:center;gap:12px;padding:0 16px;height:42px;font-family:var(--font);font-size:var(--sidebar-item-size);font-weight:400;color:var(--sidebar-item-color);cursor:pointer;border-left:2px solid transparent;text-decoration:none;user-select:none;transition:.15s;}
-.sidebar-nav-item:hover{background:#2e2e22;color:#f0ece2;}
-.sidebar-nav-item.active{background:#35300f;color:var(--gold-light);border-left-color:var(--gold);font-weight:500;}
-.sidebar-divider{height:1px;background:rgba(255,255,255,.07);margin:12px 16px;}
+.header-title{font-family:var(--serif);font-size:19px;font-weight:700;color:#f0ece2;letter-spacing:.05em;}
 
 /* ── Main ── */
-.app-main{flex:1;overflow-y:auto;background:var(--bg);padding:28px 26px;display:flex;flex-direction:column;gap:16px;}
+.app-main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px 32px;}
 
-/* ── 卡片選擇器 ── */
-.form-selector{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:600px;}
-.sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:20px 22px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;}
+/* ── 選擇卡片 ── */
+.selector-wrap{width:100%;max-width:560px;}
+.selector-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:20px;text-align:center;}
+.selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:24px 20px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;}
 .sel-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:.2s;}
-.sel-card:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(201,168,76,.12);}
+.sel-card:hover{border-color:var(--gold);box-shadow:0 6px 20px rgba(201,168,76,.15);}
 .sel-card:hover::after{transform:scaleX(1);}
-.sel-icon{font-size:26px;flex-shrink:0;}
+.sel-icon{font-size:30px;flex-shrink:0;}
 .sel-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--dark);}
-.sel-desc{font-size:11px;color:var(--muted);line-height:1.5;margin-top:2px;}
+.sel-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px;}
+
+/* ── Footer ── */
+.app-footer{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 20px;border-top:1px solid var(--border);
+  background:#1c1c15;flex-shrink:0;
+}
+.footer-logo{width:22px;height:22px;border-radius:50%;border:1px solid var(--gold);overflow:hidden;background:var(--gold-bg);}
+.footer-logo img{width:100%;height:100%;object-fit:contain;}
+.footer-text{font-size:var(--footer-text-size);color:var(--footer-text-color);letter-spacing:.04em;}
 
 /* ── Modal ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:200;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.open{display:flex;}
-.modal-box{background:var(--card);border-radius:12px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.22);display:flex;flex-direction:column;}
-.modal-header{padding:18px 24px 14px;border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;background:var(--card);z-index:1;}
-.modal-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--dark);}
-.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:6px;transition:.15s;}
+.modal-box{background:var(--card);border-radius:14px;width:100%;max-width:640px;max-height:93vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.22);display:flex;flex-direction:column;}
+.modal-header{padding:18px 24px 14px;border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;background:var(--card);z-index:2;}
+.modal-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--dark);text-align:center;flex:1;}
+.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:6px;transition:.15s;flex-shrink:0;}
 .modal-close:hover{background:var(--bg);color:var(--dark);}
-.modal-body{padding:20px 24px;display:flex;flex-direction:column;gap:14px;}
-.modal-footer{padding:14px 24px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;sticky:bottom;position:sticky;bottom:0;background:var(--card);}
+.modal-body{padding:22px 24px;display:flex;flex-direction:column;gap:16px;}
+.modal-footer{padding:14px 24px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;position:sticky;bottom:0;background:var(--card);}
 
 /* ── 表單 ── */
-.f-sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.f-sec{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:10px;}
 .f-row{display:grid;gap:10px;margin-bottom:10px;}
-.f-row.c2{grid-template-columns:1fr 1fr;}
-.f-row.c3{grid-template-columns:1fr 1fr 1fr;}
+.f-c2{grid-template-columns:1fr 1fr;}
+.f-c3{grid-template-columns:1fr 1fr 1fr;}
 .f-g{display:flex;flex-direction:column;gap:4px;}
-.f-label{font-size:12px;font-weight:500;color:var(--sub);}
+.f-lbl{font-size:12px;font-weight:500;color:var(--sub);}
 .req{color:#e53935;margin-left:2px;}
-.f-input,.f-select,.f-textarea{border:1.5px solid var(--border);border-radius:7px;padding:7px 11px;font-family:var(--font);font-size:13px;color:var(--text);background:white;outline:none;width:100%;transition:.15s;}
-.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-bg);}
-.f-input.err,.f-select.err,.f-textarea.err{border-color:#e53935;box-shadow:0 0 0 3px rgba(229,57,53,.1);}
-.f-textarea{resize:none;line-height:1.6;}
-.f-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239a9482' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer;}
+.f-inp,.f-sel,.f-ta{border:1.5px solid var(--border);border-radius:7px;padding:7px 11px;font-family:var(--font);font-size:13px;color:var(--text);background:#fff;outline:none;width:100%;transition:.15s;}
+.f-inp:focus,.f-sel:focus,.f-ta:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-bg);}
+.f-inp[readonly]{background:#faf9f6;color:var(--muted);cursor:default;}
+.f-ta{resize:none;line-height:1.6;}
+.f-sel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239a9482' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer;}
 
 /* ── 假別按鈕 ── */
 .lt-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
-.lt-btn{padding:7px 4px;border:1.5px solid var(--border);border-radius:7px;background:white;font-family:var(--font);font-size:12px;font-weight:500;color:var(--sub);cursor:pointer;text-align:center;transition:.15s;}
+.lt-btn{padding:7px 4px;border:1.5px solid var(--border);border-radius:7px;background:#fff;font-family:var(--font);font-size:12px;font-weight:500;color:var(--sub);cursor:pointer;text-align:center;transition:.15s;}
 .lt-btn:hover{border-color:var(--gold);color:var(--gold);}
 .lt-btn.sel{border-color:var(--gold);background:var(--gold-bg);color:var(--dark);font-weight:600;}
 
-/* ── 日期行 ── */
-.dt-row{display:flex;align-items:center;gap:7px;}
-.dt-row .f-input{flex:1;min-width:0;}
-.dt-label{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+/* ── 同一排日期 ── */
+.date-line{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;}
+.date-line .f-inp{flex:1;min-width:0;}
+.dl-lbl{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+.dl-short{max-width:90px!important;}
+.dl-vshort{max-width:68px!important;text-align:center;}
 
 /* ── Radio ── */
-.radio-grp{display:flex;flex-wrap:wrap;gap:7px 14px;}
+.radio-grp{display:flex;flex-wrap:wrap;gap:7px 16px;}
 .radio-item{display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;}
 .radio-item input{accent-color:var(--gold);cursor:pointer;width:14px;height:14px;}
 
-/* ── 簽名 ── */
+/* ── 簽名區 ── */
+.sig-block{display:flex;flex-direction:column;gap:5px;}
+.sig-lbl{font-size:12px;font-weight:500;color:var(--sub);}
 .sig-wrap{border:1.5px solid var(--border);border-radius:8px;background:#fafafa;position:relative;overflow:hidden;}
 .sig-canvas{display:block;width:100%;cursor:crosshair;touch-action:none;}
-.sig-clear{position:absolute;top:6px;right:8px;background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--font);color:var(--muted);transition:.15s;}
+.sig-clear{position:absolute;top:6px;right:8px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--font);color:var(--muted);transition:.15s;}
 .sig-clear:hover{border-color:var(--gold);color:var(--gold);}
 
 /* ── 備註 ── */
-.notes-box{background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:12px 16px;}
-.notes-box p{font-size:11.5px;color:var(--sub);line-height:1.9;}
-.notes-box .nt{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:5px;}
-.notes-sign{display:flex;align-items:center;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid #e8dbb0;font-size:12px;color:var(--dark);font-weight:500;}
+.notes-box{background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:13px 16px;}
+.notes-title{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:7px;letter-spacing:.04em;}
+.notes-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px;}
+.notes-list li{font-size:11.5px;color:var(--sub);line-height:1.7;display:flex;gap:0;}
+.notes-list li .n-num{flex-shrink:0;width:20px;}
+.notes-list li .n-txt{flex:1;}
+.notes-sign{margin-top:10px;padding-top:9px;border-top:1px solid #e8dbb0;font-size:12px;color:var(--dark);font-weight:600;}
 
 /* ── 按鈕 ── */
 .btn-c{height:38px;padding:0 20px;border-radius:8px;border:none;background:#f0ece2;color:var(--sub);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:.15s;}
 .btn-c:hover{background:#e8e3d6;}
-.btn-s{height:38px;padding:0 26px;border-radius:8px;border:1.5px solid var(--gold);background:var(--gold);color:#1c1c15;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px;}
+.btn-s{height:38px;padding:0 26px;border-radius:8px;border:1.5px solid var(--gold);background:var(--gold);color:#1c1c15;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;}
 .btn-s:hover{background:var(--gold-light);}
 .btn-s:disabled{opacity:.5;cursor:not-allowed;}
 
-/* ── 狀態 ── */
-.st-msg{padding:9px 14px;border-radius:8px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:7px;margin-bottom:8px;}
-.st-msg.info{background:#fdf8ee;border:1px solid var(--gold);color:#7a5000;}
-.st-msg.ok{background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;}
-.st-msg.err{background:#fce4e4;border:1px solid #ef9a9a;color:#c62828;}
+/* ── 狀態訊息 ── */
+.st{padding:9px 14px;border-radius:8px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.st.info{background:#fdf8ee;border:1px solid var(--gold);color:#7a5000;}
+.st.ok{background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;}
+.st.err{background:#fce4e4;border:1px solid #ef9a9a;color:#c62828;}
 .hidden{display:none!important;}
-
-/* ── 紀錄表 ── */
-.rec-table{width:100%;border-collapse:collapse;font-family:var(--font);}
-.rec-table th{padding:10px 12px;font-size:11px;font-weight:600;color:var(--muted);text-align:left;letter-spacing:.06em;border-bottom:1px solid var(--border);background:#fdfcf9;}
-.rec-table td{padding:10px 12px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border);}
-.rec-table tr:last-child td{border-bottom:none;}
-.rec-table tr:hover td{background:#faf8f3;}
-.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
-.badge.pending{background:#fff8e1;color:#e65100;border:1px solid #ffcc80;}
-.badge.done{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;}
-.badge.reject{background:#fce4e4;color:#c62828;border:1px solid #ef9a9a;}
-.badge.review{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;}
-
-/* ── 統計卡片 ── */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05);}
-.stat-num{font-size:26px;font-weight:700;margin:4px 0;}
-.stat-lbl{font-size:11px;color:var(--muted);}
-.stat-unit{font-size:10px;color:var(--muted);}
-
-/* ── 假別統計 ── */
-.leave-stat-grid{display:flex;flex-wrap:wrap;gap:8px;}
-.leave-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;}
-.leave-chip .lc-lbl{font-size:10px;color:var(--muted);margin-bottom:2px;}
-.leave-chip .lc-val{font-size:16px;font-weight:600;}
-.leave-chip .lc-unit{font-size:10px;color:var(--muted);margin-left:1px;}
 </style>
 </head>
 <body>
-<div style="display:flex;flex-direction:column;height:100vh;">
+<div class="page-wrap">
 
-<!-- Header -->
+<!-- ── Header ── -->
 <header class="app-header">
   <div class="header-brand">
     <div class="header-logo">
-      <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" onerror="this.parentElement.style.background='var(--gold-bg)'"/>
+      <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" onerror="this.parentElement.style.background='#2a2a1a'"/>
     </div>
-    <div>
-      <div class="header-title">請假申請系統</div>
-      <div class="header-subtitle">Copyright 2026 MYs System Version:b1.0.0.0</div>
-    </div>
+    <div class="header-title">請假申請系統</div>
   </div>
 </header>
 
-<div class="app-body">
-
-<!-- Sidebar -->
-<aside class="app-sidebar">
-  <div class="sidebar-section">
-    <p class="sidebar-section-label">申請</p>
-    <p class="sidebar-section-sub">全體同仁</p>
-    <a class="sidebar-nav-item active" id="nav-apply" onclick="showView('apply',this)" href="#">
-      <span>📝</span>新增申請
-    </a>
-    <a class="sidebar-nav-item" id="nav-records" onclick="showView('records',this)" href="#">
-      <span>📂</span>我的紀錄
-    </a>
-  </div>
-  <div class="sidebar-divider"></div>
-  <div class="sidebar-section">
-    <p class="sidebar-section-label">系統</p>
-    <p class="sidebar-section-sub">返回主系統</p>
-    <a class="sidebar-nav-item" href="index.html" target="_blank">
-      <span>🏠</span>人資行政管理系統
-    </a>
-  </div>
-</aside>
-
-<!-- Main -->
+<!-- ── Main ── -->
 <main class="app-main">
-
-  <!-- ── 新增申請 ── -->
-  <div id="view-apply">
-    <div style="font-family:var(--serif);font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;">請選擇申請類型</div>
-    <div class="form-selector">
-      <div class="sel-card" onclick="openModal('leaveModal')">
-        <span class="sel-icon">🗓</span>
+  <div class="selector-wrap">
+    <div class="selector-title">請選擇申請類型</div>
+    <div class="selector-grid">
+      <div class="sel-card" onclick="openModal('lvModal')">
+        <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">請假申請單</div>
-          <div class="sel-desc">事假、病假、特休、公假、婚假等各類假別申請</div>
+          <div class="sel-desc">各類假別申請，填寫後送出至審核流程</div>
         </div>
       </div>
-      <div class="sel-card" onclick="openModal('retModal')">
+      <div class="sel-card" onclick="openModal('rtModal')">
         <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">留復職申請單</div>
-          <div class="sel-desc">留職、復職、展延申請，含勞健保方式選擇</div>
+          <div class="sel-desc">留職、復職、展延申請，含勞健保選擇</div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- ── 我的紀錄 ── -->
-  <div id="view-records" class="hidden">
-    <!-- 統計卡片 -->
-    <div class="stat-grid" style="margin-bottom:14px;">
-      <div class="stat-card">
-        <div class="stat-lbl">送出總數</div>
-        <div class="stat-num" id="my-total" style="color:var(--dark);">0</div>
-        <div class="stat-unit">件</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-lbl">審核中</div>
-        <div class="stat-num" id="my-pending" style="color:var(--gold);">0</div>
-        <div class="stat-unit">件</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-lbl">已完成</div>
-        <div class="stat-num" id="my-done" style="color:#4caf50;">0</div>
-        <div class="stat-unit">件</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-lbl">退件</div>
-        <div class="stat-num" id="my-reject" style="color:#f44336;">0</div>
-        <div class="stat-unit">件</div>
-      </div>
-    </div>
-
-    <!-- 今年請假統計 -->
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px 18px;margin-bottom:14px;">
-      <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px;">🗓 今年請假統計</div>
-      <div class="leave-stat-grid">
-        <div class="leave-chip"><div class="lc-lbl">事假</div><div class="lc-val" style="color:#ff5722;" id="lc-事假">0</div><span class="lc-unit">日</span></div>
-        <div class="leave-chip"><div class="lc-lbl">病假</div><div class="lc-val" style="color:#03a9f4;" id="lc-病假">0</div><span class="lc-unit">日</span></div>
-        <div class="leave-chip"><div class="lc-lbl">特休</div><div class="lc-val" style="color:#8bc34a;" id="lc-特休">0</div><span class="lc-unit">日</span></div>
-        <div class="leave-chip"><div class="lc-lbl">公假</div><div class="lc-val" style="color:#ffc107;" id="lc-公假">0</div><span class="lc-unit">日</span></div>
-        <div class="leave-chip"><div class="lc-lbl">婚假</div><div class="lc-val" style="color:#e91e63;" id="lc-婚假">0</div><span class="lc-unit">日</span></div>
-        <div class="leave-chip"><div class="lc-lbl">其他</div><div class="lc-val" style="color:#9e9e9e;" id="lc-其他">0</div><span class="lc-unit">日</span></div>
-      </div>
-    </div>
-
-    <!-- 紀錄列表 -->
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:9px;overflow:hidden;">
-      <div style="padding:12px 16px;border-bottom:1px solid var(--border);background:#fdfcf9;font-size:13px;font-weight:600;color:var(--dark);">申請紀錄</div>
-      <table class="rec-table">
-        <thead><tr>
-          <th>申請編號</th><th>類型</th><th>假別</th><th>起訖期間</th><th>天數</th><th>申請日期</th><th>狀態</th>
-        </tr></thead>
-        <tbody id="rec-tbody">
-          <tr><td colspan="7" style="text-align:center;padding:28px;color:var(--muted);">⏳ 載入中…</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
 </main>
-</div>
 
-<!-- ════ 請假申請單 Modal ════ -->
-<div class="modal-overlay" id="leaveModal">
+<!-- ── Footer ── -->
+<footer class="app-footer">
+  <div class="footer-logo">
+    <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" onerror="this.parentElement.style.background='#2a2a1a'"/>
+  </div>
+  <span class="footer-text">Copyright 2026 MYs System Version:b1.0.0.0</span>
+</footer>
+
+</div><!-- page-wrap -->
+
+<!-- ════════════════════════════
+     請假申請單 Modal
+════════════════════════════ -->
+<div class="modal-overlay" id="lvModal">
   <div class="modal-box">
     <div class="modal-header">
-      <span class="modal-title">🗓 請假申請單</span>
-      <button class="modal-close" onclick="closeModal('leaveModal')">✕</button>
+      <div style="width:28px;"></div>
+      <span class="modal-title">📋 請假申請單</span>
+      <button class="modal-close" onclick="closeModal('lvModal')">✕</button>
     </div>
     <div class="modal-body">
-      <div id="lv-st" class="st-msg hidden"></div>
+
+      <div id="lv-st" class="st hidden"></div>
 
       <!-- 基本資料 -->
       <div>
-        <div class="f-sec-title">基本資料</div>
-        <div class="f-row c2">
-          <div class="f-g"><label class="f-label">單位<span class="req">*</span></label><input class="f-input" id="lv-unit" placeholder="例：外場"/></div>
-          <div class="f-g"><label class="f-label">申請日期<span class="req">*</span></label><input class="f-input" id="lv-date" type="date"/></div>
+        <div class="f-sec">基本資料</div>
+        <div class="f-row f-c2">
+          <div class="f-g"><label class="f-lbl">單位<span class="req">*</span></label><input class="f-inp" id="lv-unit" placeholder="例：外場"/></div>
+          <div class="f-g"><label class="f-lbl">申請日期</label><input class="f-inp" id="lv-date" readonly/></div>
         </div>
-        <div class="f-row c2">
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div class="f-label">請假人<span class="req">*</span></div>
-            <div class="f-row c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-label" style="font-size:11px;">職稱</label><input class="f-input" id="lv-title" placeholder="例：正職"/></div>
-              <div class="f-g"><label class="f-label" style="font-size:11px;">姓名</label><input class="f-input" id="lv-name" placeholder="姓名"/></div>
+        <div class="f-row f-c2">
+          <div>
+            <div class="f-lbl" style="margin-bottom:6px;">請假人<span class="req">*</span></div>
+            <div class="f-row f-c2" style="margin-bottom:0;">
+              <div class="f-g"><label class="f-lbl" style="font-size:11px;">職稱</label><input class="f-inp" id="lv-title" placeholder="例：正職"/></div>
+              <div class="f-g"><label class="f-lbl" style="font-size:11px;">姓名</label><input class="f-inp" id="lv-name" placeholder="姓名"/></div>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div class="f-label">代理人</div>
-            <div class="f-row c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-label" style="font-size:11px;">職稱</label><input class="f-input" id="lv-ptitle" placeholder="職稱"/></div>
-              <div class="f-g"><label class="f-label" style="font-size:11px;">姓名</label><input class="f-input" id="lv-pname" placeholder="姓名"/></div>
+          <div>
+            <div class="f-lbl" style="margin-bottom:6px;">代理人</div>
+            <div class="f-row f-c2" style="margin-bottom:0;">
+              <div class="f-g"><label class="f-lbl" style="font-size:11px;">職稱</label><input class="f-inp" id="lv-ptitle" placeholder="職稱"/></div>
+              <div class="f-g"><label class="f-lbl" style="font-size:11px;">姓名</label><input class="f-inp" id="lv-pname" placeholder="姓名"/></div>
             </div>
           </div>
         </div>
@@ -304,85 +218,107 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
       <!-- 假別 -->
       <div>
-        <div class="f-sec-title">假別<span class="req">*</span>（單選）</div>
+        <div class="f-sec">假別*（單選）</div>
         <div class="lt-grid">
-          <button class="lt-btn" onclick="pickLeave(this,'公假')">公假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'休假')">休假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'事假')">事假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'病假')">病假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'喪假')">喪假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'婚假')">婚假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'陪產假')">陪產假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'生理假')">生理假</button>
-          <button class="lt-btn" onclick="pickLeave(this,'補休')">補休</button>
-          <button class="lt-btn" onclick="pickLeave(this,'其他')">其他</button>
+          <button class="lt-btn" onclick="pickLv(this,'公假')">公假</button>
+          <button class="lt-btn" onclick="pickLv(this,'休假')">休假</button>
+          <button class="lt-btn" onclick="pickLv(this,'事假')">事假</button>
+          <button class="lt-btn" onclick="pickLv(this,'病假')">病假</button>
+          <button class="lt-btn" onclick="pickLv(this,'喪假')">喪假</button>
+          <button class="lt-btn" onclick="pickLv(this,'婚假')">婚假</button>
+          <button class="lt-btn" onclick="pickLv(this,'陪產假')">陪產假</button>
+          <button class="lt-btn" onclick="pickLv(this,'生理假')">生理假</button>
+          <button class="lt-btn" onclick="pickLv(this,'補休')">補休</button>
+          <button class="lt-btn" onclick="pickLv(this,'其他')">其他</button>
         </div>
         <input type="hidden" id="lv-type"/>
         <div id="lv-other-box" class="hidden" style="margin-top:8px;">
-          <div class="f-g"><label class="f-label">其他假別說明<span class="req">*</span></label><input class="f-input" id="lv-other" placeholder="請說明假別"/></div>
+          <div class="f-g"><label class="f-lbl">其他假別說明<span class="req">*</span></label><input class="f-inp" id="lv-other" placeholder="請說明假別"/></div>
         </div>
       </div>
 
-      <!-- 請假日期 -->
+      <!-- 請假日數 - 同一排 -->
       <div>
-        <div class="f-sec-title">請假日數</div>
-        <div style="display:flex;flex-direction:column;gap:7px;">
-          <div class="dt-row"><span class="dt-label">自</span><input class="f-input" id="lv-fd" type="date" onchange="calcDays()"/><input class="f-input" id="lv-ft" type="time" onchange="calcDays()" style="max-width:100px;"/></div>
-          <div class="dt-row"><span class="dt-label">至</span><input class="f-input" id="lv-td" type="date" onchange="calcDays()"/><input class="f-input" id="lv-tt" type="time" onchange="calcDays()" style="max-width:100px;"/></div>
-          <div class="dt-row">
-            <span class="dt-label">共</span>
-            <input class="f-input" id="lv-days" placeholder="0" style="max-width:65px;text-align:center;" readonly/>
-            <span class="dt-label">日</span>
-            <input class="f-input" id="lv-hrs" placeholder="0" style="max-width:65px;text-align:center;" readonly/>
-            <span class="dt-label">小時</span>
+        <div class="f-sec">請假日數*</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="date-line">
+            <span class="dl-lbl">自</span>
+            <input class="f-inp" id="lv-fd" type="date" onchange="calcD()"/>
+            <input class="f-inp dl-short" id="lv-ft" type="time" onchange="calcD()"/>
+            <span class="dl-lbl">至</span>
+            <input class="f-inp" id="lv-td" type="date" onchange="calcD()"/>
+            <input class="f-inp dl-short" id="lv-tt" type="time" onchange="calcD()"/>
+            <span class="dl-lbl">共</span>
+            <input class="f-inp dl-vshort" id="lv-days" placeholder="0" readonly/>
+            <span class="dl-lbl">日</span>
+            <input class="f-inp dl-vshort" id="lv-hrs" placeholder="0" readonly/>
+            <span class="dl-lbl">小時</span>
           </div>
         </div>
       </div>
 
       <!-- 事由 -->
       <div>
-        <div class="f-sec-title">事由</div>
-        <textarea class="f-textarea" id="lv-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
+        <div class="f-sec">事由*</div>
+        <textarea class="f-ta" id="lv-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
       </div>
 
-      <!-- 申請人簽名 -->
-      <div>
-        <div class="f-sec-title">申請人簽名<span class="req">*</span></div>
-        <div class="sig-wrap"><canvas class="sig-canvas" id="lv-sig" height="100"></canvas><button class="sig-clear" onclick="clearSig('lv-sig')">清除</button></div>
+      <!-- 簽名：請假人姓名親簽 -->
+      <div class="sig-block">
+        <div class="sig-lbl">請假人姓名親簽<span class="req">*</span></div>
+        <div class="sig-wrap">
+          <canvas class="sig-canvas" id="lv-sig1" height="90"></canvas>
+          <button class="sig-clear" onclick="clearSig('lv-sig1')">清除</button>
+        </div>
+      </div>
+
+      <!-- 簽名：申請人已知悉 -->
+      <div class="sig-block">
+        <div class="sig-lbl">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
+        <div class="sig-wrap">
+          <canvas class="sig-canvas" id="lv-sig2" height="90"></canvas>
+          <button class="sig-clear" onclick="clearSig('lv-sig2')">清除</button>
+        </div>
       </div>
 
       <!-- 備註說明 -->
       <div class="notes-box">
-        <div class="nt">備 註 說 明</div>
-        <p>1. 請假規定依公告系統內之「請假規範及流程」辦理。</p>
-        <p>2. 部分工時同仁請假無須填寫代理人資訊。</p>
-        <p>3. 辦理手續須提供有關證明文件並檢附在此申請單後。</p>
-        <p>4. 如遇有急病或緊急事故，可委託他人代辦請假手續。</p>
-        <p>5. 遇有急病或緊急事故，於當日請假起五天內將請假程序完成。</p>
-        <p>6. 員工請假規定及薪資核定辦法依勞動基準法規定。</p>
-        <div class="notes-sign"><span>申請人已知悉上述規定：</span><span style="font-size:11px;color:var(--muted);">（同上方簽名欄）</span></div>
+        <div class="notes-title">備 註 說 明</div>
+        <ul class="notes-list">
+          <li><span class="n-num">1.</span><span class="n-txt">請假時間為24小時制，填寫須特別注意。</span></li>
+          <li><span class="n-num">2.</span><span class="n-txt">請假規定依公告系統內之「請假規範及流程」辦理。</span></li>
+          <li><span class="n-num">3.</span><span class="n-txt">部分工時同仁請假無須填寫代理人資訊。</span></li>
+          <li><span class="n-num">4.</span><span class="n-txt">辦理手續須提供有關證明文件並檢附在此申請單後。</span></li>
+          <li><span class="n-num">5.</span><span class="n-txt">如遇有急病或緊急事故，可委託他人代辦請假手續。</span></li>
+          <li><span class="n-num">6.</span><span class="n-txt">遇有急病或緊急事故，於當日請假起五天內將請假程序完成。</span></li>
+          <li><span class="n-num">7.</span><span class="n-txt">員工請假規定及薪資核定辦法依勞動基準法規定。</span></li>
+        </ul>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-c" onclick="closeModal('leaveModal')">取消</button>
-      <button class="btn-s" id="lv-btn" onclick="submitLeave()">✓ 確認送出</button>
+      <button class="btn-c" onclick="closeModal('lvModal')">取消</button>
+      <button class="btn-s" id="lv-btn" onclick="submitLv()">✓ 確認送出</button>
     </div>
   </div>
 </div>
 
-<!-- ════ 留復職申請單 Modal ════ -->
-<div class="modal-overlay" id="retModal">
+<!-- ════════════════════════════
+     留復職申請單 Modal
+════════════════════════════ -->
+<div class="modal-overlay" id="rtModal">
   <div class="modal-box">
     <div class="modal-header">
+      <div style="width:28px;"></div>
       <span class="modal-title">📋 留復職申請單</span>
-      <button class="modal-close" onclick="closeModal('retModal')">✕</button>
+      <button class="modal-close" onclick="closeModal('rtModal')">✕</button>
     </div>
     <div class="modal-body">
-      <div id="rt-st" class="st-msg hidden"></div>
+
+      <div id="rt-st" class="st hidden"></div>
 
       <!-- 申請類型 -->
       <div>
-        <div class="f-sec-title">申請類型<span class="req">*</span>（單選）</div>
+        <div class="f-sec">申請類型*（單選）</div>
         <div class="radio-grp">
           <label class="radio-item"><input type="radio" name="rt-type" value="留職"/> 留職</label>
           <label class="radio-item"><input type="radio" name="rt-type" value="復職"/> 復職</label>
@@ -392,326 +328,341 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
       <!-- 基本資料 -->
       <div>
-        <div class="f-sec-title">基本資料</div>
-        <div class="f-row c3">
-          <div class="f-g"><label class="f-label">申請人<span class="req">*</span></label><input class="f-input" id="rt-name" placeholder="姓名"/></div>
-          <div class="f-g"><label class="f-label">申請團隊<span class="req">*</span></label><input class="f-input" id="rt-team" placeholder="例：外場"/></div>
-          <div class="f-g"><label class="f-label">職稱</label><input class="f-input" id="rt-title" placeholder="例：正職"/></div>
+        <div class="f-sec">基本資料*</div>
+        <div class="f-row f-c3">
+          <div class="f-g"><label class="f-lbl">申請人</label><input class="f-inp" id="rt-name" placeholder="姓名"/></div>
+          <div class="f-g"><label class="f-lbl">申請團隊</label><input class="f-inp" id="rt-team" placeholder="例：外場"/></div>
+          <div class="f-g"><label class="f-lbl">職稱</label><input class="f-inp" id="rt-title" placeholder="例：正職"/></div>
         </div>
-        <div class="f-row c2">
+        <div class="f-row f-c2">
           <div class="f-g">
-            <label class="f-label">勞保方式<span class="req">*</span></label>
+            <label class="f-lbl">勞保方式</label>
             <div class="radio-grp" style="margin-top:5px;">
               <label class="radio-item"><input type="radio" name="labor" value="退保"/> 退保</label>
               <label class="radio-item"><input type="radio" name="labor" value="續保"/> 續保</label>
             </div>
           </div>
           <div class="f-g">
-            <label class="f-label">健保方式<span class="req">*</span></label>
+            <label class="f-lbl">健保方式</label>
             <div class="radio-grp" style="margin-top:5px;">
               <label class="radio-item"><input type="radio" name="health" value="退保"/> 退保</label>
               <label class="radio-item"><input type="radio" name="health" value="續保（育嬰用）"/> 續保（育嬰用）</label>
             </div>
           </div>
         </div>
-        <div class="f-row c2">
-          <div class="f-g"><label class="f-label">開始日期<span class="req">*</span></label><input class="f-input" id="rt-start" type="date"/></div>
-          <div class="f-g"><label class="f-label">結束日期<span class="req">*</span></label><input class="f-input" id="rt-end" type="date"/></div>
+        <div class="f-row f-c2">
+          <div class="f-g"><label class="f-lbl">開始日期</label><input class="f-inp" id="rt-start" type="date"/></div>
+          <div class="f-g"><label class="f-lbl">結束日期</label><input class="f-inp" id="rt-end" type="date"/></div>
         </div>
-        <div class="f-row c2">
-          <div class="f-g"><label class="f-label">連絡電話<span class="req">*</span></label><input class="f-input" id="rt-phone" placeholder="0912-345-678"/></div>
-          <div class="f-g"><label class="f-label">聯絡地址<span class="req">*</span></label><input class="f-input" id="rt-addr" placeholder="聯絡地址"/></div>
+        <div class="f-row f-c2">
+          <div class="f-g"><label class="f-lbl">連絡電話</label><input class="f-inp" id="rt-phone" placeholder="0912-345-678"/></div>
+          <div class="f-g"><label class="f-lbl">聯絡地址</label><input class="f-inp" id="rt-addr" placeholder="聯絡地址"/></div>
+        </div>
+        <div class="f-row f-c2">
+          <div class="f-g"><label class="f-lbl">申請日期</label><input class="f-inp" id="rt-date" readonly/></div>
         </div>
       </div>
 
       <!-- 申請原因 -->
       <div>
-        <div class="f-sec-title">申請原因<span class="req">*</span>（單選）</div>
+        <div class="f-sec">申請原因*（單選）</div>
         <div class="radio-grp">
-          <label class="radio-item"><input type="radio" name="rt-reason" value="1" onchange="rtReasonChg()"/> 1. 因病休養</label>
-          <label class="radio-item"><input type="radio" name="rt-reason" value="2" onchange="rtReasonChg()"/> 2. 升學、出國深造</label>
-          <label class="radio-item"><input type="radio" name="rt-reason" value="3" onchange="rtReasonChg()"/> 3. 兵役</label>
-          <label class="radio-item"><input type="radio" name="rt-reason" value="4" onchange="rtReasonChg()"/> 4. 因案被羈押尚未判決</label>
-          <label class="radio-item"><input type="radio" name="rt-reason" value="5" onchange="rtReasonChg()"/> 5. 育嬰留職</label>
-          <label class="radio-item"><input type="radio" name="rt-reason" value="6" onchange="rtReasonChg()"/> 6. 其他私人原因</label>
+          <label class="radio-item"><input type="radio" name="rt-reason" value="因病休養" onchange="rtReason()"/> 因病休養</label>
+          <label class="radio-item"><input type="radio" name="rt-reason" value="升學、出國深造" onchange="rtReason()"/> 升學、出國深造</label>
+          <label class="radio-item"><input type="radio" name="rt-reason" value="兵役" onchange="rtReason()"/> 兵役</label>
+          <label class="radio-item"><input type="radio" name="rt-reason" value="因案被羈押尚未判決" onchange="rtReason()"/> 因案被羈押尚未判決</label>
+          <label class="radio-item"><input type="radio" name="rt-reason" value="育嬰留職" onchange="rtReason()"/> 育嬰留職</label>
+          <label class="radio-item"><input type="radio" name="rt-reason" value="其他" onchange="rtReason()"/> 其他</label>
         </div>
         <div id="rt-other-box" class="hidden" style="margin-top:8px;">
-          <div class="f-g"><label class="f-label">其他原因說明<span class="req">*</span></label><input class="f-input" id="rt-other" placeholder="請說明原因"/></div>
+          <div class="f-g"><label class="f-lbl">其他原因說明<span class="req">*</span></label><input class="f-inp" id="rt-other" placeholder="請說明原因"/></div>
         </div>
       </div>
 
       <!-- 備註 -->
       <div>
-        <div class="f-sec-title">備註說明</div>
-        <textarea class="f-textarea" id="rt-note" rows="2" placeholder="其他說明（選填）…"></textarea>
+        <div class="f-sec">備註說明</div>
+        <textarea class="f-ta" id="rt-note" rows="2" placeholder="其他說明（選填）…"></textarea>
       </div>
 
-      <!-- 申請人簽名 -->
-      <div>
-        <div class="f-sec-title">申請人簽名<span class="req">*</span></div>
-        <div class="sig-wrap"><canvas class="sig-canvas" id="rt-sig" height="100"></canvas><button class="sig-clear" onclick="clearSig('rt-sig')">清除</button></div>
+      <!-- 簽名：申請人姓名親簽 -->
+      <div class="sig-block">
+        <div class="sig-lbl">申請人姓名親簽<span class="req">*</span></div>
+        <div class="sig-wrap">
+          <canvas class="sig-canvas" id="rt-sig1" height="90"></canvas>
+          <button class="sig-clear" onclick="clearSig('rt-sig1')">清除</button>
+        </div>
+      </div>
+
+      <!-- 簽名：申請人已知悉 -->
+      <div class="sig-block">
+        <div class="sig-lbl">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
+        <div class="sig-wrap">
+          <canvas class="sig-canvas" id="rt-sig2" height="90"></canvas>
+          <button class="sig-clear" onclick="clearSig('rt-sig2')">清除</button>
+        </div>
       </div>
 
       <!-- 備註說明 -->
       <div class="notes-box">
-        <div class="nt">備 註 說 明</div>
-        <p>1. 申請原因第2、第5項申請者，勞、健保一律退保；若以第3項申請者，健保須退保；此外，員工可自行選擇是否續保。</p>
-        <p>2. 留職停薪期滿前30天或期滿前申請原因消滅時，應返公司申請復職，逾期經公司通知仍不申請者，依相關法令規定辦理。</p>
-        <p>3. 勞健保如申請續保，費用按原本保費繳納；育嬰留停續保間，申請人應自行負擔保險費，得申請遞延3年繳納。</p>
-        <p>4. 因申請留職停薪之事由且提供之相關附件及說明皆屬事實，若有虛假之情事，立切結書人願接受解雇之處分。</p>
-        <p>5. 立切結書人保證於獲准留職停薪期間不得為本公司以外之其他公司或人員提供勞務之服務。</p>
-        <p>6. 檢附證明文件：育嬰留停件附戶籍謄本；傷病件附佐證文件；其他件說明事由及附佐證文件。</p>
-        <div class="notes-sign">
-          <span>申請人已知悉上述規定：</span>
-          <span style="font-size:11px;color:var(--muted);">（同上方簽名欄）</span>
-          <span style="flex:1;"></span>
-          <span>申請日期：</span>
-          <input class="f-input" id="rt-apply-date" type="date" style="max-width:150px;"/>
-        </div>
+        <div class="notes-title">備 註 說 明</div>
+        <ul class="notes-list">
+          <li><span class="n-num">1.</span><span class="n-txt">申請原因第2、第5項申請者，勞、健保一律退保；若以第3項申請者，健保須退保；<br>&emsp;此外，員工可自行選擇是否續保。</span></li>
+          <li><span class="n-num">2.</span><span class="n-txt">留職停薪期滿前30天或期滿前申請原因消滅時，應返公司申請復職，逾期經公司通知仍不申請者，<br>&emsp;依相關法令規定辦理。</span></li>
+          <li><span class="n-num">3.</span><span class="n-txt">勞健保如申請續保，費用按原本保費繳納；育嬰留停續保間，申請人應自行負擔保險費，<br>&emsp;得申請遞延3年繳納。</span></li>
+          <li><span class="n-num">4.</span><span class="n-txt">因申請留職停薪之事由且提供之相關附件及說明皆屬事實，若有虛假之情事，<br>&emsp;立切結書人願接受解雇之處分。</span></li>
+          <li><span class="n-num">5.</span><span class="n-txt">立切結書人保證於獲准留職停薪期間不得為本公司以外之其他公司或人員提供勞務之服務。</span></li>
+          <li><span class="n-num">6.</span><span class="n-txt">檢附證明文件：<br>
+            &emsp;A. 育嬰留停件：檢附本人及子女戶籍謄本正本。<br>
+            &emsp;B. 傷病件：普通病假逾限，經以事假及特別休假底稱後仍未痊癒者須檢附佐證文件。<br>
+            &emsp;C. 其他留停件：說明事由及檢附佐證文件。</span></li>
+        </ul>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-c" onclick="closeModal('retModal')">取消</button>
-      <button class="btn-s" id="rt-btn" onclick="submitRet()">✓ 確認送出</button>
+      <button class="btn-c" onclick="closeModal('rtModal')">取消</button>
+      <button class="btn-s" id="rt-btn" onclick="submitRt()">✓ 確認送出</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ══ GAS URL（同主系統）══ */
-var GAS_URL = 'https://script.google.com/macros/s/AKfycby5TOgBohB4eFAYOQT76CUvNEjoJvbWtDJGInGsnI3dIePbRNqUb_6wLcFlyvW6In34Hw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyBbKF9e8ebMtLQDGMD9dlG-lLbI9SJsrxRfDE0KLHC8lhsK2fYWUT56ovfePON-pFEnw/exec';
 
-/* ══ 頁面切換 ══ */
-function showView(v, el) {
-  document.querySelectorAll('.sidebar-nav-item').forEach(function(i){ i.classList.remove('active'); });
-  if (el) el.classList.add('active');
-  document.getElementById('view-apply').classList.toggle('hidden', v !== 'apply');
-  document.getElementById('view-records').classList.toggle('hidden', v !== 'records');
-  if (v === 'records') loadRecords();
-  return false;
+/* ── 工具 ── */
+function today() {
+  var d = new Date();
+  var p = function(n){ return String(n).padStart(2,'0'); };
+  return d.getFullYear() + '/' + p(d.getMonth()+1) + '/' + p(d.getDate());
 }
+function fmtD(v) {
+  if (!v) return '';
+  var p = v.split('-');
+  return p[0] + '/' + p[1] + '/' + p[2];
+}
+function nowStr() {
+  var d = new Date();
+  var p = function(n){ return String(n).padStart(2,'0'); };
+  return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+}
+function genId() {
+  var d = new Date();
+  var p = function(n){ return String(n).padStart(2,'0'); };
+  return d.getFullYear()+''+p(d.getMonth()+1)+''+p(d.getDate())+'_'+Math.floor(Math.random()*900+100);
+}
+function showSt(id, msg, type) {
+  var el = document.getElementById(id);
+  el.className = 'st ' + type;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+function hideSt(id) { document.getElementById(id).classList.add('hidden'); }
 
-/* ══ Modal ══ */
+/* ── Modal ── */
 function openModal(id) {
   document.getElementById(id).classList.add('open');
-  if (id === 'leaveModal') { initSig('lv-sig'); document.getElementById('lv-date').value = today(); }
-  if (id === 'retModal')   { initSig('rt-sig'); document.getElementById('rt-apply-date').value = today(); }
+  if (id === 'lvModal') {
+    document.getElementById('lv-date').value = today();
+    initSig('lv-sig1'); initSig('lv-sig2');
+  }
+  if (id === 'rtModal') {
+    document.getElementById('rt-date').value = today();
+    initSig('rt-sig1'); initSig('rt-sig2');
+  }
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(function(m){
-  m.addEventListener('click', function(e){ if (e.target === m) closeModal(m.id); });
+  m.addEventListener('click', function(e){ if(e.target === m) closeModal(m.id); });
 });
 
-/* ══ 假別單選 ══ */
-function pickLeave(btn, type) {
+/* ── 假別單選 ── */
+function pickLv(btn, type) {
   document.querySelectorAll('.lt-btn').forEach(function(b){ b.classList.remove('sel'); });
   btn.classList.add('sel');
   document.getElementById('lv-type').value = type;
   document.getElementById('lv-other-box').classList.toggle('hidden', type !== '其他');
 }
 
-/* ══ 留復職原因 ══ */
-function rtReasonChg() {
+/* ── 申請原因切換 ── */
+function rtReason() {
   var v = (document.querySelector('input[name="rt-reason"]:checked') || {}).value || '';
-  document.getElementById('rt-other-box').classList.toggle('hidden', v !== '6');
+  document.getElementById('rt-other-box').classList.toggle('hidden', v !== '其他');
 }
 
-/* ══ 計算天數 ══ */
-function calcDays() {
-  var fd = document.getElementById('lv-fd').value, ft = document.getElementById('lv-ft').value || '00:00';
-  var td = document.getElementById('lv-td').value, tt = document.getElementById('lv-tt').value || '00:00';
+/* ── 計算天數 ── */
+function calcD() {
+  var fd = document.getElementById('lv-fd').value;
+  var ft = document.getElementById('lv-ft').value || '00:00';
+  var td = document.getElementById('lv-td').value;
+  var tt = document.getElementById('lv-tt').value || '00:00';
   if (!fd || !td) return;
-  var f = new Date(fd + 'T' + ft), t = new Date(td + 'T' + tt);
+  var f = new Date(fd + 'T' + ft);
+  var t = new Date(td + 'T' + tt);
   if (t < f) return;
-  var d = t - f;
-  document.getElementById('lv-days').value = Math.floor(d / 86400000);
-  document.getElementById('lv-hrs').value  = Math.floor((d % 86400000) / 3600000);
+  var diff = t - f;
+  document.getElementById('lv-days').value = Math.floor(diff / 86400000);
+  document.getElementById('lv-hrs').value  = Math.floor((diff % 86400000) / 3600000);
 }
 
-/* ══ 手寫簽名 ══ */
-var _sigs = {};
+/* ── 手寫簽名 ── */
+var _si = {};
 function initSig(id) {
   setTimeout(function(){
     var c = document.getElementById(id);
-    if (!c || _sigs[id]) return;
-    _sigs[id] = true;
+    if (!c || _si[id]) return;
+    _si[id] = true;
     c.width = c.parentElement.offsetWidth;
     var ctx = c.getContext('2d');
-    ctx.strokeStyle='#1c1c15'; ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round';
-    var dn=false, lx, ly;
-    function pos(e){ var r=c.getBoundingClientRect(); var sx=c.width/r.width; var sy=c.height/r.height; var s=e.touches?e.touches[0]:e; return{x:(s.clientX-r.left)*sx,y:(s.clientY-r.top)*sy}; }
+    ctx.strokeStyle = '#1c1c15'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    var dn = false, lx, ly;
+    function pos(e) {
+      var r = c.getBoundingClientRect();
+      var sx = c.width/r.width, sy = c.height/r.height;
+      var s = e.touches ? e.touches[0] : e;
+      return { x:(s.clientX-r.left)*sx, y:(s.clientY-r.top)*sy };
+    }
     function start(e){ e.preventDefault(); dn=true; var p=pos(e); lx=p.x; ly=p.y; ctx.beginPath(); ctx.moveTo(lx,ly); }
     function move(e){ e.preventDefault(); if(!dn)return; var p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); lx=p.x; ly=p.y; }
     function end(){ dn=false; }
-    c.addEventListener('mousedown',start); c.addEventListener('mousemove',move); c.addEventListener('mouseup',end); c.addEventListener('mouseleave',end);
-    c.addEventListener('touchstart',start,{passive:false}); c.addEventListener('touchmove',move,{passive:false}); c.addEventListener('touchend',end);
+    c.addEventListener('mousedown',start); c.addEventListener('mousemove',move);
+    c.addEventListener('mouseup',end); c.addEventListener('mouseleave',end);
+    c.addEventListener('touchstart',start,{passive:false});
+    c.addEventListener('touchmove',move,{passive:false});
+    c.addEventListener('touchend',end);
   }, 150);
 }
-function clearSig(id){ var c=document.getElementById(id); c.getContext('2d').clearRect(0,0,c.width,c.height); }
-function sigEmpty(id){ var d=document.getElementById(id).getContext('2d').getImageData(0,0,document.getElementById(id).width,document.getElementById(id).height).data; for(var i=3;i<d.length;i+=4){if(d[i]>0)return false;} return true; }
+function clearSig(id) {
+  var c = document.getElementById(id);
+  c.getContext('2d').clearRect(0, 0, c.width, c.height);
+}
+function sigEmpty(id) {
+  var c = document.getElementById(id);
+  var d = c.getContext('2d').getImageData(0,0,c.width,c.height).data;
+  for (var i=3; i<d.length; i+=4) { if(d[i]>0) return false; }
+  return true;
+}
 
-/* ══ 工具 ══ */
-function today(){ return new Date().toISOString().slice(0,10); }
-function fmtD(v){ if(!v)return''; var p=v.split('-'); return p[0]+'/'+p[1]+'/'+p[2]; }
-function now(){ var n=new Date(); var p=function(x){return String(x).padStart(2,'0');}; return n.getFullYear()+'/'+p(n.getMonth()+1)+'/'+p(n.getDate())+' '+p(n.getHours())+':'+p(n.getMinutes())+':'+p(n.getSeconds()); }
-function showSt(id,msg,type){ var e=document.getElementById(id); e.className='st-msg '+type; e.textContent=msg; e.classList.remove('hidden'); }
-function hideSt(id){ document.getElementById(id).classList.add('hidden'); }
-function genId(){ return new Date().getFullYear()+''+(new Date().getMonth()+1+'').padStart(2,'0')+(new Date().getDate()+'').padStart(2,'0')+'_'+Math.floor(Math.random()*900+100); }
+/* ── 送出請假 ── */
+function submitLv() {
+  var unit  = document.getElementById('lv-unit').value.trim();
+  var name  = document.getElementById('lv-name').value.trim();
+  var type  = document.getElementById('lv-type').value;
+  var fd    = document.getElementById('lv-fd').value;
+  var reason= document.getElementById('lv-reason').value.trim();
 
-/* ══ 送出請假 ══ */
-function submitLeave() {
-  var unit = document.getElementById('lv-unit').value.trim();
-  var name = document.getElementById('lv-name').value.trim();
-  var type = document.getElementById('lv-type').value;
-  var fd   = document.getElementById('lv-fd').value;
-
-  if (!unit) { showSt('lv-st','請填寫單位','err'); return; }
-  if (!name) { showSt('lv-st','請填寫請假人姓名','err'); return; }
-  if (!type) { showSt('lv-st','請選擇假別','err'); return; }
-  if (!fd)   { showSt('lv-st','請填寫起始日期','err'); return; }
-  if (type === '其他' && !document.getElementById('lv-other').value.trim()) { showSt('lv-st','請填寫其他假別說明','err'); return; }
-  if (sigEmpty('lv-sig')) { showSt('lv-st','請完成申請人簽名','err'); return; }
+  if (!unit)   { showSt('lv-st','⚠ 請填寫單位','err'); return; }
+  if (!name)   { showSt('lv-st','⚠ 請填寫請假人姓名','err'); return; }
+  if (!type)   { showSt('lv-st','⚠ 請選擇假別','err'); return; }
+  if (!fd)     { showSt('lv-st','⚠ 請填寫起始日期','err'); return; }
+  if (!reason) { showSt('lv-st','⚠ 請填寫事由','err'); return; }
+  if (type === '其他' && !document.getElementById('lv-other').value.trim()) {
+    showSt('lv-st','⚠ 請填寫其他假別說明','err'); return;
+  }
+  if (sigEmpty('lv-sig1')) { showSt('lv-st','⚠ 請完成請假人姓名親簽','err'); return; }
+  if (sigEmpty('lv-sig2')) { showSt('lv-st','⚠ 請完成申請人已知悉欄親簽','err'); return; }
 
   var btn = document.getElementById('lv-btn');
   btn.disabled = true; btn.textContent = '⏳ 送出中…';
   showSt('lv-st','正在送出申請…','info');
 
-  var payload = {
-    action:    'addApplication',
-    id:        genId(),
-    name:      name,
-    team:      document.getElementById('lv-unit').value.trim(),
-    type:      '請假申請',
-    subtype:   type + (type==='其他'?' ('+document.getElementById('lv-other').value.trim()+')':''),
-    startDate: fmtD(fd),
-    endDate:   fmtD(document.getElementById('lv-td').value),
-    days:      document.getElementById('lv-days').value,
-    hours:     document.getElementById('lv-hrs').value,
-    reason:    document.getElementById('lv-reason').value.trim(),
-    applyDate: now(),
-    status:    '主管待審核',
-    proxyName: document.getElementById('lv-pname').value.trim(),
-    proxyTitle:document.getElementById('lv-ptitle').value.trim(),
-    applyTitle:document.getElementById('lv-title').value.trim(),
-  };
+  var subtype = type + (type==='其他' ? ' ('+document.getElementById('lv-other').value.trim()+')' : '');
 
-  fetch(GAS_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(payload) })
-    .then(function(){
-      btn.disabled = false; btn.textContent = '✓ 確認送出';
-      showSt('lv-st','✅ 申請已送出！目前狀態：主管待審核中。','ok');
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    body: JSON.stringify({
+      action: 'addApplication',
+      id:          genId(),
+      name:        name,
+      team:        unit,
+      applyTitle:  document.getElementById('lv-title').value.trim(),
+      type:        '請假申請',
+      subtype:     subtype,
+      startDate:   fmtD(fd) + ' ' + (document.getElementById('lv-ft').value||''),
+      endDate:     fmtD(document.getElementById('lv-td').value) + ' ' + (document.getElementById('lv-tt').value||''),
+      days:        document.getElementById('lv-days').value,
+      hours:       document.getElementById('lv-hrs').value,
+      reason:      reason,
+      proxyName:   document.getElementById('lv-pname').value.trim(),
+      proxyTitle:  document.getElementById('lv-ptitle').value.trim(),
+      applyDate:   nowStr(),
+      status:      '主管待審核',
     })
-    .catch(function(err){
-      btn.disabled = false; btn.textContent = '✓ 確認送出';
-      showSt('lv-st','送出失敗：' + err.message, 'err');
-    });
+  })
+  .then(function(){
+    btn.disabled = false; btn.textContent = '✓ 確認送出';
+    showSt('lv-st','✅ 申請已送出！狀態：主管待審核中。','ok');
+  })
+  .catch(function(err){
+    btn.disabled = false; btn.textContent = '✓ 確認送出';
+    showSt('lv-st','送出失敗：' + err.message, 'err');
+  });
 }
 
-/* ══ 送出留復職 ══ */
-function submitRet() {
+/* ── 送出留復職 ── */
+function submitRt() {
   var name   = document.getElementById('rt-name').value.trim();
   var team   = document.getElementById('rt-team').value.trim();
-  var rtype  = (document.querySelector('input[name="rt-type"]:checked')||{}).value||'';
-  var labor  = (document.querySelector('input[name="labor"]:checked')||{}).value||'';
-  var health = (document.querySelector('input[name="health"]:checked')||{}).value||'';
+  var rtype  = (document.querySelector('input[name="rt-type"]:checked') || {}).value || '';
+  var labor  = (document.querySelector('input[name="labor"]:checked') || {}).value || '';
+  var health = (document.querySelector('input[name="health"]:checked') || {}).value || '';
   var start  = document.getElementById('rt-start').value;
   var end    = document.getElementById('rt-end').value;
   var phone  = document.getElementById('rt-phone').value.trim();
   var addr   = document.getElementById('rt-addr').value.trim();
-  var reason = (document.querySelector('input[name="rt-reason"]:checked')||{}).value||'';
-  var reasonMap = {'1':'1. 因病休養','2':'2. 升學、出國深造','3':'3. 兵役','4':'4. 因案被羈押','5':'5. 育嬰留職','6':'6. 其他私人原因'};
+  var reason = (document.querySelector('input[name="rt-reason"]:checked') || {}).value || '';
 
-  if (!name)   { showSt('rt-st','請填寫申請人姓名','err'); return; }
-  if (!team)   { showSt('rt-st','請填寫申請團隊','err'); return; }
-  if (!rtype)  { showSt('rt-st','請選擇申請類型','err'); return; }
-  if (!labor)  { showSt('rt-st','請選擇勞保方式','err'); return; }
-  if (!health) { showSt('rt-st','請選擇健保方式','err'); return; }
-  if (!start)  { showSt('rt-st','請填寫開始日期','err'); return; }
-  if (!end)    { showSt('rt-st','請填寫結束日期','err'); return; }
-  if (!phone)  { showSt('rt-st','請填寫連絡電話','err'); return; }
-  if (!addr)   { showSt('rt-st','請填寫聯絡地址','err'); return; }
-  if (!reason) { showSt('rt-st','請選擇申請原因','err'); return; }
-  if (reason==='6' && !document.getElementById('rt-other').value.trim()) { showSt('rt-st','請填寫其他原因說明','err'); return; }
-  if (sigEmpty('rt-sig')) { showSt('rt-st','請完成申請人簽名','err'); return; }
+  if (!name)   { showSt('rt-st','⚠ 請填寫申請人姓名','err'); return; }
+  if (!team)   { showSt('rt-st','⚠ 請填寫申請團隊','err'); return; }
+  if (!rtype)  { showSt('rt-st','⚠ 請選擇申請類型','err'); return; }
+  if (!labor)  { showSt('rt-st','⚠ 請選擇勞保方式','err'); return; }
+  if (!health) { showSt('rt-st','⚠ 請選擇健保方式','err'); return; }
+  if (!start)  { showSt('rt-st','⚠ 請填寫開始日期','err'); return; }
+  if (!end)    { showSt('rt-st','⚠ 請填寫結束日期','err'); return; }
+  if (!phone)  { showSt('rt-st','⚠ 請填寫連絡電話','err'); return; }
+  if (!addr)   { showSt('rt-st','⚠ 請填寫聯絡地址','err'); return; }
+  if (!reason) { showSt('rt-st','⚠ 請選擇申請原因','err'); return; }
+  if (reason === '其他' && !document.getElementById('rt-other').value.trim()) {
+    showSt('rt-st','⚠ 請填寫其他原因說明','err'); return;
+  }
+  if (sigEmpty('rt-sig1')) { showSt('rt-st','⚠ 請完成申請人姓名親簽','err'); return; }
+  if (sigEmpty('rt-sig2')) { showSt('rt-st','⚠ 請完成申請人已知悉欄親簽','err'); return; }
 
   var btn = document.getElementById('rt-btn');
   btn.disabled = true; btn.textContent = '⏳ 送出中…';
   showSt('rt-st','正在送出申請…','info');
 
-  var reasonText = reasonMap[reason] || reason;
-  if (reason==='6') reasonText += ' - ' + document.getElementById('rt-other').value.trim();
+  var reasonFull = reason + (reason==='其他' ? ' - '+document.getElementById('rt-other').value.trim() : '');
 
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
-      action:'addApplication', id:genId(), name:name, team:team,
-      title:document.getElementById('rt-title').value.trim(),
-      type:'留復職申請', subtype:rtype,
-      labor:labor, health:health,
-      startDate:fmtD(start), endDate:fmtD(end),
-      phone:phone, addr:addr, reason:reasonText,
-      note:document.getElementById('rt-note').value.trim(),
-      applyDate:now(), status:'主管待審核',
+      action:    'addApplication',
+      id:        genId(),
+      name:      name,
+      team:      team,
+      title:     document.getElementById('rt-title').value.trim(),
+      type:      '留復職申請',
+      subtype:   rtype,
+      labor:     labor,
+      health:    health,
+      startDate: fmtD(start),
+      endDate:   fmtD(end),
+      phone:     phone,
+      addr:      addr,
+      reason:    reasonFull,
+      note:      document.getElementById('rt-note').value.trim(),
+      applyDate: nowStr(),
+      status:    '主管待審核',
     })
   })
   .then(function(){
-    btn.disabled=false; btn.textContent='✓ 確認送出';
-    showSt('rt-st','✅ 申請已送出！目前狀態：主管待審核中。','ok');
+    btn.disabled = false; btn.textContent = '✓ 確認送出';
+    showSt('rt-st','✅ 申請已送出！狀態：主管待審核中。','ok');
   })
   .catch(function(err){
-    btn.disabled=false; btn.textContent='✓ 確認送出';
-    showSt('rt-st','送出失敗：'+err.message,'err');
+    btn.disabled = false; btn.textContent = '✓ 確認送出';
+    showSt('rt-st','送出失敗：' + err.message, 'err');
   });
-}
-
-/* ══ 載入紀錄 ══ */
-function loadRecords() {
-  var tbody = document.getElementById('rec-tbody');
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">⏳ 載入中…</td></tr>';
-  var url = GAS_URL + '?action=getApplications&v=' + Date.now() + '_' + Math.random();
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      if (!data.success || !data.applications || !data.applications.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">目前尚無申請紀錄</td></tr>';
-        return;
-      }
-      var apps = data.applications;
-      var total=apps.length, pending=0, done=0, reject=0;
-      var ld = {};
-      tbody.innerHTML = '';
-      apps.forEach(function(a,i){
-        var s = a.status||'';
-        if(s==='已完成') done++;
-        else if(s==='已退件') reject++;
-        else pending++;
-        if(a.type==='請假申請' && a.subtype && a.days) {
-          var base = a.subtype.split(' ')[0];
-          ld[base] = (ld[base]||0) + parseFloat(a.days||0);
-        }
-        var sc = s==='已完成'?'done':s==='已退件'?'reject':s==='主管待審核'||s==='人資待審核'?'review':'pending';
-        var tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td style="font-size:12px;color:var(--muted);font-family:monospace;">'+(a.id||'-')+'</td>'+
-          '<td>'+( a.type||'-')+'</td>'+
-          '<td>'+(a.subtype||'-')+'</td>'+
-          '<td style="font-size:12px;">'+(a.startDate||'-')+' ~ '+(a.endDate||'-')+'</td>'+
-          '<td style="text-align:center;">'+(a.days||'-')+'</td>'+
-          '<td style="font-size:12px;color:var(--muted);">'+(a.applyDate||'-')+'</td>'+
-          '<td style="text-align:center;"><span class="badge '+sc+'">'+s+'</span></td>';
-        tbody.appendChild(tr);
-      });
-      document.getElementById('my-total').textContent   = total;
-      document.getElementById('my-pending').textContent = pending;
-      document.getElementById('my-done').textContent    = done;
-      document.getElementById('my-reject').textContent  = reject;
-      ['事假','病假','特休','公假','婚假','其他'].forEach(function(k){
-        var el = document.getElementById('lc-'+k);
-        if(el) el.textContent = ld[k]||0;
-      });
-    })
-    .catch(function(){
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#f44336;">載入失敗，請重試</td></tr>';
-    });
 }
 </script>
 </body>
