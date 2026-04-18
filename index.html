@@ -305,6 +305,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
    主內容
    ============================================================ */
 .app-main{flex:1;background-color:var(--color-bg-main);overflow-y:auto;padding:var(--content-padding-y) var(--content-padding-x);display:flex;flex-direction:column;gap:var(--space-4);min-height:0;}
+/* 文件中心 / 數據分析 頁面貼滿邊（無 padding）*/
+#page-doccenter.active,#page-analytics.active,#page-workhour.active,#page-labor.active{margin:calc(-1 * var(--content-padding-y)) calc(-1 * var(--content-padding-x));padding:0;}
 .page-section{display:none;flex-direction:column;gap:var(--space-4);}
 .page-section.active{display:flex;}
 #page-doccenter.active{flex:1;min-height:0;}
@@ -878,7 +880,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       </div>
     </div>
     <div class="header-right">
-      <button class="btn" onclick="openFormModal()">＋ 新增申請</button>
+      <button class="btn" onclick="window.open('application-forms.html','_blank')">＋ 新增申請</button>
       <button class="btn">↓ 匯出 CSV</button>
       <button class="btn-feedback" onclick="openFeedback()">！意見欄</button>
       <button class="btn-danger" onclick="openBugReport()">❌ 回報問題</button>
@@ -1113,7 +1115,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
             <!-- ════ 文件中心 ════ -->
       <div class="page-section active" id="page-doccenter">
-        <div class="article-wrap" style="padding:0;overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;background-color:#434343;border-color:#555;">
+        <div style="padding:0;overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;background-color:#434343;border:none;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#434343;flex-shrink:0;">
             <p class="inner-page-title" style="color:#e8e4d8;">🗂 文件中心</p>
             <div style="display:flex;align-items:center;gap:var(--space-2);">
@@ -1167,7 +1169,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <!-- ════ 申請趨勢分析 ════ -->
       <div class="page-section" id="page-analytics">
-        <div style="background-color:#2a2a2a;border:1px solid #555;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;">
+        <div style="background-color:#2a2a2a;border:none;border-radius:0;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;">
 
           <!-- 標題列 -->
           <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 12px;border-bottom:2px solid #c9a84c;flex-shrink:0;">
@@ -1310,8 +1312,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
             <!-- 折線圖 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
-              <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;">全年度每月申請趨勢</p>
-              <div style="flex:1;min-height:0;display:flex;align-items:center;">
+              <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">全年度每月申請趨勢</p>
+              <div style="flex:1;min-height:0;display:flex;align-items:stretch;">
                 <svg viewBox="0 0 500 150" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
                   <defs>
                     <linearGradient id="tg3" x1="0" y1="0" x2="0" y2="1">
@@ -1374,7 +1376,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
             <!-- 各部門申請明細 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;">
-              <p style="font-size:12px;font-weight:600;color:#e8e4d8;">各部門申請明細</p>
+              <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">各部門申請明細</p>
               <div style="display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:0;">
 
                 <!-- 外場 -->
@@ -1433,7 +1435,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       </div>
 
       <div class="page-section" id="page-workhour">
-        <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;overflow-y:auto;">
+        <div class="article-wrap dark-page" style="background-color:#434343;border:none;border-radius:0;flex:1;min-height:0;overflow-y:auto;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;"><p class="inner-page-title" style="color:#e8e4d8;font-family:var(--font-display);">🕐 每日工時登記</p></div>
           <div class="article-section">
             <p class="article-section-title">© 登記工時</p>
@@ -1469,7 +1471,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <!-- ════ 勞報稅務建檔 ════ -->
       <div class="page-section" id="page-labor">
-        <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;">
+        <div class="article-wrap dark-page" style="background-color:#434343;border:none;border-radius:0;flex:1;min-height:0;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;"><p class="inner-page-title" style="color:#e8e4d8;font-family:var(--font-display);">📑 勞報稅務建檔</p></div>
           <div class="article-section">
             <p class="article-section-title">© 勞報稅務建檔表</p>
@@ -1749,7 +1751,10 @@ function submitFeedback() {
   if (!type)    { alert('請選擇意見類型'); return; }
   if (!content) { alert('請填寫意見內容'); return; }
 
-  // 格式化時間
+  // 送出中狀態
+  var submitBtn = document.querySelector('#feedbackModal .btn-submit');
+  if (submitBtn) { submitBtn.textContent = '⏳ 送出中…'; submitBtn.disabled = true; }
+
   var now = new Date();
   var pad = function(n){ return String(n).padStart(2,'0'); };
   var ts  = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())
@@ -1758,17 +1763,13 @@ function submitFeedback() {
   fetch(GAS_URL, {
     method: 'POST',
     mode:   'no-cors',
-    body: JSON.stringify({
-      action:  'addFeedback',
-      time:    ts,
-      name:    name,
-      type:    type,
-      content: content
-    })
+    body: JSON.stringify({ action:'addFeedback', time:ts, name:name, type:type, content:content })
   }).then(function(){
-    alert('✅ 意見已送出，感謝您的回饋！');
+    if (submitBtn) { submitBtn.textContent = '✉ 送出'; submitBtn.disabled = false; }
+    alert('✅ 意見已送出！感謝您的回饋。');
     closeFeedback();
   }).catch(function(err){
+    if (submitBtn) { submitBtn.textContent = '✉ 送出'; submitBtn.disabled = false; }
     alert('送出失敗：' + err.message);
   });
 }
@@ -1786,8 +1787,13 @@ document.getElementById('bugModal').addEventListener('click',function(e){if(e.ta
 function submitBug() {
   var bugType = (document.getElementById('bug-type') || {}).value || '';
   var desc    = document.getElementById('bug-desc').value.trim();
-  if (!desc) { document.getElementById('err-bug').classList.add('show'); return; }
+  if (!bugType) { alert('請選擇問題類型'); return; }
+  if (!desc)    { document.getElementById('err-bug').classList.add('show'); return; }
   document.getElementById('err-bug').classList.remove('show');
+
+  // 送出中狀態
+  var submitBtn = document.querySelector('#bugModal .btn-submit');
+  if (submitBtn) { submitBtn.textContent = '⏳ 送出中…'; submitBtn.disabled = true; }
 
   var now = new Date();
   var pad = function(n){ return String(n).padStart(2,'0'); };
@@ -1799,9 +1805,11 @@ function submitBug() {
     mode:   'no-cors',
     body: JSON.stringify({ action:'addBugReport', time:ts, bugType:bugType, desc:desc })
   }).then(function(){
+    if (submitBtn) { submitBtn.textContent = '📤 送出回報'; submitBtn.disabled = false; }
     alert('✅ 問題已回報！我們將盡快處理，感謝您的回報。');
     closeBugReport();
   }).catch(function(err){
+    if (submitBtn) { submitBtn.textContent = '📤 送出回報'; submitBtn.disabled = false; }
     alert('送出失敗：' + err.message);
   });
 }
