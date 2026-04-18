@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>申請單系統 — MYs System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- pdf-lib：用於疊加文字到 PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<!-- fontkit：讓 pdf-lib 支援中文字型 -->
+<script src="https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+<style>
+:root {
+  --gold:    #c9a84c;
+  --dark:    #2a2a20;
+  --bg:      #f0ece2;
+  --card:    #ffffff;
+  --border:  #e4dfd0;
+  --text:    #1c1c15;
+  --muted:   #9a9482;
+  --font:    'Noto Sans TC', sans-serif;
+  --serif:   'Noto Serif TC', serif;
+  --radius:  10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;padding:32px 20px;}
+
+/* ── 頁面標題 ── */
+.page-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--dark);margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.page-title::before{content:'';display:inline-block;width:4px;height:24px;background:var(--gold);border-radius:2px;}
+
+/* ── 選單卡片 ── */
+.form-selector{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:680px;margin:0 auto 32px;}
+.form-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:24px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;}
+.form-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:.2s;}
+.form-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,168,76,.15);}
+.form-card:hover::after{transform:scaleX(1);}
+.form-card-icon{font-size:28px;}
+.form-card-title{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--dark);}
+.form-card-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ── Modal 覆蓋 ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--card);border-radius:14px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+.modal-header{padding:20px 28px 16px;border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-header-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--dark);}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);transition:.15s;padding:4px 8px;border-radius:6px;}
+.modal-close:hover{background:#f0ece2;color:var(--dark);}
+.modal-body{padding:24px 28px;display:flex;flex-direction:column;gap:18px;}
+.modal-footer{padding:16px 28px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;}
+
+/* ── 表單元素 ── */
+.form-section-title{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.form-row{display:grid;gap:12px;}
+.form-row.col2{grid-template-columns:1fr 1fr;}
+.form-row.col3{grid-template-columns:1fr 1fr 1fr;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-size:12px;font-weight:500;color:#5a5646;}
+.form-label .req{color:#e53935;margin-left:2px;}
+.form-input,.form-select,.form-textarea{
+  border:1.5px solid var(--border);border-radius:7px;
+  padding:8px 12px;font-family:var(--font);font-size:13px;
+  color:var(--text);background:white;outline:none;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12);
+}
+.form-textarea{height:80px;resize:none;}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239a9482' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;cursor:pointer;}
+
+/* ── 勾選框組 ── */
+.check-group{display:flex;flex-wrap:wrap;gap:10px 16px;padding:8px 0;}
+.check-item{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;}
+.check-item input[type="checkbox"]{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;}
+
+/* ── 日期時間群組 ── */
+.datetime-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.datetime-row .form-input{flex:1;min-width:120px;}
+.datetime-label{font-size:13px;color:var(--muted);white-space:nowrap;}
+
+/* ── 簽名區 ── */
+.sig-block{display:flex;flex-direction:column;gap:8px;}
+.sig-label{font-size:12px;font-weight:500;color:#5a5646;}
+.sig-note{font-size:11px;color:var(--muted);}
+.sig-canvas-wrap{position:relative;border:1.5px solid var(--border);border-radius:8px;background:#fafafa;overflow:hidden;}
+.sig-canvas{display:block;cursor:crosshair;touch-action:none;}
+.sig-clear-btn{position:absolute;top:6px;right:8px;background:rgba(255,255,255,.85);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--font);color:var(--muted);transition:.15s;}
+.sig-clear-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── 按鈕 ── */
+.btn-cancel{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 20px;border-radius:8px;border:none;background:#fce4e4;color:#c62828;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:.15s;}
+.btn-cancel:hover{background:#f8d0d0;}
+.btn-submit{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 24px;border-radius:8px;border:1.5px solid var(--gold);background:var(--gold);color:#1c1c15;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-submit:hover{background:#d4b96a;border-color:#d4b96a;}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── 進度提示 ── */
+.status-bar{display:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:500;margin-bottom:8px;}
+.status-bar.info{background:#fdf8ee;border:1px solid var(--gold);color:#7a5000;display:flex;align-items:center;gap:8px;}
+.status-bar.success{background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;display:flex;align-items:center;gap:8px;}
+.status-bar.error{background:#fce4e4;border:1px solid #ef9a9a;color:#c62828;display:flex;align-items:center;gap:8px;}
+
+/* ── 步驟指示 ── */
+.steps{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+.step{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.step.active{color:var(--gold);font-weight:600;}
+.step.done{color:#4caf50;}
+.step-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.step-arrow{color:var(--border);font-size:10px;}
+</style>
+</head>
+<body>
+
+<div class="page-title">📄 申請單系統</div>
+
+<!-- 選單 -->
+<div class="form-selector">
+  <div class="form-card" onclick="openLeaveForm()">
+    <span class="form-card-icon">🗓</span>
+    <div class="form-card-title">請假申請單</div>
+    <div class="form-card-desc">事假、病假、特休、公假、婚假等各類假別申請，填寫後可直接匯出 PDF。</div>
+  </div>
+  <div class="form-card" onclick="openRetentionForm()">
+    <span class="form-card-icon">📋</span>
+    <div class="form-card-title">留復職申請單</div>
+    <div class="form-card-desc">留職停薪、復職、展延申請，含勞健保方式選擇。</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     請假申請單 Modal
+════════════════════════════════════ -->
+<div class="modal-overlay" id="leaveModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-header-title">🗓 請假申請單</span>
+      <button class="modal-close" onclick="closeModal('leaveModal')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="steps">
+        <div class="step active" id="leave-step1"><span class="step-dot">1</span>填寫資料</div>
+        <span class="step-arrow">›</span>
+        <div class="step" id="leave-step2"><span class="step-dot">2</span>申請人簽名</div>
+        <span class="step-arrow">›</span>
+        <div class="step" id="leave-step3"><span class="step-dot">3</span>產生 PDF</div>
+      </div>
+
+      <div id="leave-status" class="status-bar"></div>
+
+      <!-- 步驟1：填寫 -->
+      <div id="leave-page1">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-section-title">基本資料</div>
+          <div class="form-row col3">
+            <div class="form-group">
+              <label class="form-label">單位<span class="req">*</span></label>
+              <input class="form-input" id="lv-unit" placeholder="例：外場"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">申請日期<span class="req">*</span></label>
+              <input class="form-input" id="lv-apply-date" type="date"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">請假人</div>
+          <div class="form-row col2">
+            <div class="form-group">
+              <label class="form-label">職稱<span class="req">*</span></label>
+              <input class="form-input" id="lv-title" placeholder="例：外場正職"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">姓名<span class="req">*</span></label>
+              <input class="form-input" id="lv-name" placeholder="請輸入姓名"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">代理人</div>
+          <div class="form-row col2">
+            <div class="form-group">
+              <label class="form-label">職稱</label>
+              <input class="form-input" id="lv-proxy-title" placeholder="例：吧台正職"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">姓名</label>
+              <input class="form-input" id="lv-proxy-name" placeholder="代理人姓名"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">假別<span class="req">*</span></div>
+          <div class="check-group" id="leave-types">
+            <label class="check-item"><input type="checkbox" value="公假"/> 公假</label>
+            <label class="check-item"><input type="checkbox" value="休假"/> 休假</label>
+            <label class="check-item"><input type="checkbox" value="事假"/> 事假</label>
+            <label class="check-item"><input type="checkbox" value="病假"/> 病假</label>
+            <label class="check-item"><input type="checkbox" value="喪假"/> 喪假</label>
+            <label class="check-item"><input type="checkbox" value="婚假"/> 婚假</label>
+            <label class="check-item"><input type="checkbox" value="陪產假"/> 陪產假</label>
+            <label class="check-item"><input type="checkbox" value="生理假"/> 生理假</label>
+            <label class="check-item"><input type="checkbox" value="補休"/> 補休</label>
+            <label class="check-item"><input type="checkbox" value="other-leave"/> 其他</label>
+          </div>
+
+          <div class="form-section-title">請假日期</div>
+          <div class="form-row">
+            <div class="datetime-row">
+              <span class="datetime-label">自</span>
+              <input class="form-input" id="lv-from-date" type="date"/>
+              <input class="form-input" id="lv-from-time" type="time" style="max-width:110px;"/>
+            </div>
+            <div class="datetime-row" style="margin-top:6px;">
+              <span class="datetime-label">至</span>
+              <input class="form-input" id="lv-to-date" type="date"/>
+              <input class="form-input" id="lv-to-time" type="time" style="max-width:110px;"/>
+            </div>
+            <div class="datetime-row" style="margin-top:6px;">
+              <span class="datetime-label">共計</span>
+              <input class="form-input" id="lv-days" placeholder="0" style="max-width:80px;"/>
+              <span class="datetime-label">日</span>
+              <input class="form-input" id="lv-hours" placeholder="0" style="max-width:80px;"/>
+              <span class="datetime-label">小時</span>
+            </div>
+          </div>
+
+          <div class="form-section-title">事由</div>
+          <textarea class="form-textarea" id="lv-reason" placeholder="請輸入請假事由…" style="height:72px;"></textarea>
+        </div>
+      </div>
+
+      <!-- 步驟2：簽名 -->
+      <div id="leave-page2" style="display:none;">
+        <div class="sig-block">
+          <div class="sig-label">申請人簽名<span class="req" style="color:#e53935;margin-left:2px;">*</span></div>
+          <div class="sig-note">請用滑鼠或觸控螢幕手寫簽名（不可打字）</div>
+          <div class="sig-canvas-wrap">
+            <canvas class="sig-canvas" id="lv-sig-canvas" width="600" height="130"></canvas>
+            <button class="sig-clear-btn" onclick="clearSig('lv-sig-canvas')">清除</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn-cancel" id="lv-back-btn" onclick="leaveBack()" style="display:none;">← 上一步</button>
+      <button class="btn-cancel" onclick="closeModal('leaveModal')">取消</button>
+      <button class="btn-submit" id="lv-next-btn" onclick="leaveNext()">下一步 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     留復職申請單 Modal
+════════════════════════════════════ -->
+<div class="modal-overlay" id="retentionModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-header-title">📋 留復職申請單</span>
+      <button class="modal-close" onclick="closeModal('retentionModal')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="steps">
+        <div class="step active" id="ret-step1"><span class="step-dot">1</span>填寫資料</div>
+        <span class="step-arrow">›</span>
+        <div class="step" id="ret-step2"><span class="step-dot">2</span>申請人簽名</div>
+        <span class="step-arrow">›</span>
+        <div class="step" id="ret-step3"><span class="step-dot">3</span>產生 PDF</div>
+      </div>
+
+      <div id="ret-status" class="status-bar"></div>
+
+      <!-- 步驟1：填寫 -->
+      <div id="ret-page1">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="form-section-title">申請類型<span class="req">*</span></div>
+          <div class="check-group" id="ret-types">
+            <label class="check-item"><input type="checkbox" value="留職"/> 留職</label>
+            <label class="check-item"><input type="checkbox" value="停薪"/> 停薪</label>
+            <label class="check-item"><input type="checkbox" value="復職"/> 復職</label>
+            <label class="check-item"><input type="checkbox" value="延展"/> 延展</label>
+          </div>
+
+          <div class="form-section-title">基本資料</div>
+          <div class="form-row col3">
+            <div class="form-group">
+              <label class="form-label">申請人<span class="req">*</span></label>
+              <input class="form-input" id="rt-name" placeholder="姓名"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">申請團隊<span class="req">*</span></label>
+              <input class="form-input" id="rt-team" placeholder="例：外場"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">職稱</label>
+              <input class="form-input" id="rt-title" placeholder="例：正職"/>
+            </div>
+          </div>
+
+          <div class="form-row col2">
+            <div class="form-group">
+              <label class="form-label">勞保方式</label>
+              <div class="check-group" style="padding:6px 0;">
+                <label class="check-item"><input type="radio" name="labor" value="退保"/> 退保</label>
+                <label class="check-item"><input type="radio" name="labor" value="續保"/> 續保</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">健保方式</label>
+              <div class="check-group" style="padding:6px 0;">
+                <label class="check-item"><input type="radio" name="health" value="退保"/> 退保</label>
+                <label class="check-item"><input type="radio" name="health" value="續保"/> 續保（育嬰用）</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row col2">
+            <div class="form-group">
+              <label class="form-label">開始日期</label>
+              <input class="form-input" id="rt-start" type="date"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">結束日期</label>
+              <input class="form-input" id="rt-end" type="date"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">申請原因</div>
+          <div class="check-group" id="ret-reasons">
+            <label class="check-item"><input type="checkbox" value="1"/> 1. 因病休養</label>
+            <label class="check-item"><input type="checkbox" value="2"/> 2. 升學、出國深造</label>
+            <label class="check-item"><input type="checkbox" value="3"/> 3. 兵役</label>
+            <label class="check-item"><input type="checkbox" value="4"/> 4. 因案被羈押尚未判決</label>
+            <label class="check-item"><input type="checkbox" value="5"/> 5. 育嬰留職</label>
+            <label class="check-item"><input type="checkbox" value="6"/> 6. 其他私人原因</label>
+          </div>
+
+          <div class="form-row col2">
+            <div class="form-group">
+              <label class="form-label">連絡電話</label>
+              <input class="form-input" id="rt-phone" placeholder="0912-345-678"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">聯絡地址</label>
+              <input class="form-input" id="rt-addr" placeholder="請輸入聯絡地址"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">擬復職／延展</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <label class="check-item" style="align-items:flex-start;gap:8px;">
+              <input type="radio" name="ret-plan" value="original" style="margin-top:2px;"/>
+              <span>依原核定日復職</span>
+            </label>
+            <div style="display:flex;align-items:center;gap:8px;padding-left:22px;">
+              <span style="font-size:13px;color:var(--muted);">日期</span>
+              <input class="form-input" id="rt-original-date" type="date" style="max-width:180px;"/>
+            </div>
+
+            <label class="check-item" style="align-items:flex-start;gap:8px;margin-top:4px;">
+              <input type="radio" name="ret-plan" value="early" style="margin-top:2px;"/>
+              <span>提前復職</span>
+            </label>
+            <div style="display:flex;flex-direction:column;gap:6px;padding-left:22px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:13px;color:var(--muted);">日期</span>
+                <input class="form-input" id="rt-early-date" type="date" style="max-width:180px;"/>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:13px;color:var(--muted);">原因</span>
+                <input class="form-input" id="rt-early-reason" placeholder="提前復職原因"/>
+              </div>
+            </div>
+
+            <label class="check-item" style="align-items:flex-start;gap:8px;margin-top:4px;">
+              <input type="radio" name="ret-plan" value="extend" style="margin-top:2px;"/>
+              <span>延展</span>
+            </label>
+            <div style="display:flex;flex-direction:column;gap:6px;padding-left:22px;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:13px;color:var(--muted);">日期</span>
+                <input class="form-input" id="rt-ext-from" type="date" style="max-width:160px;"/>
+                <span style="font-size:13px;color:var(--muted);">至</span>
+                <input class="form-input" id="rt-ext-to" type="date" style="max-width:160px;"/>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:13px;color:var(--muted);">原因</span>
+                <input class="form-input" id="rt-ext-reason" placeholder="延展原因"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">備註說明</label>
+            <textarea class="form-textarea" id="rt-note" placeholder="其他說明事項…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 步驟2：簽名 -->
+      <div id="ret-page2" style="display:none;">
+        <div class="sig-block">
+          <div class="sig-label">申請人簽名<span class="req" style="color:#e53935;margin-left:2px;">*</span></div>
+          <div class="sig-note">請用滑鼠或觸控螢幕手寫簽名（不可打字）</div>
+          <div class="sig-canvas-wrap">
+            <canvas class="sig-canvas" id="rt-sig-canvas" width="600" height="130"></canvas>
+            <button class="sig-clear-btn" onclick="clearSig('rt-sig-canvas')">清除</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="rt-back-btn" onclick="retBack()" style="display:none;">← 上一步</button>
+      <button class="btn-cancel" onclick="closeModal('retentionModal')">取消</button>
+      <button class="btn-submit" id="rt-next-btn" onclick="retNext()">下一步 →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ PDF 路徑設定（對應 GitHub 上的路徑）══ */
+var LEAVE_PDF_URL     = 'https://mys0819.github.io/AMS/file/SC-請假申請單.pdf';
+var RETENTION_PDF_URL = 'https://mys0819.github.io/AMS/file/SC-留復職申請單.pdf';
+
+/* ══ Modal 開關 ══ */
+function openLeaveForm()     { document.getElementById('leaveModal').classList.add('open');     initSig('lv-sig-canvas'); setLeaveToday(); }
+function openRetentionForm() { document.getElementById('retentionModal').classList.add('open'); initSig('rt-sig-canvas'); }
+function closeModal(id)      { document.getElementById(id).classList.remove('open'); }
+
+/* ══ 請假申請單流程 ══ */
+var lvPage = 1;
+function setLeaveToday() {
+  var today = new Date().toISOString().slice(0,10);
+  document.getElementById('lv-apply-date').value = today;
+}
+
+function leaveNext() {
+  if (lvPage === 1) {
+    // 驗證
+    if (!document.getElementById('lv-unit').value.trim())      { showStatus('leave-status','請填寫單位','error'); return; }
+    if (!document.getElementById('lv-name').value.trim())      { showStatus('leave-status','請填寫請假人姓名','error'); return; }
+    if (!document.getElementById('lv-from-date').value)        { showStatus('leave-status','請填寫請假起始日期','error'); return; }
+    var checked = document.querySelectorAll('#leave-types input:checked');
+    if (!checked.length)                                        { showStatus('leave-status','請選擇假別','error'); return; }
+    // 到步驟2
+    lvPage = 2;
+    document.getElementById('leave-page1').style.display = 'none';
+    document.getElementById('leave-page2').style.display = '';
+    document.getElementById('lv-back-btn').style.display = '';
+    document.getElementById('lv-next-btn').textContent   = '✓ 產生 PDF';
+    setStep('leave', 2);
+    clearStatus('leave-status');
+  } else if (lvPage === 2) {
+    // 產生 PDF
+    var sigEmpty = isSigEmpty('lv-sig-canvas');
+    if (sigEmpty) { showStatus('leave-status','請先完成申請人簽名','error'); return; }
+    generateLeavePDF();
+  }
+}
+
+function leaveBack() {
+  lvPage = 1;
+  document.getElementById('leave-page1').style.display = '';
+  document.getElementById('leave-page2').style.display = 'none';
+  document.getElementById('lv-back-btn').style.display = 'none';
+  document.getElementById('lv-next-btn').textContent   = '下一步 →';
+  setStep('leave', 1);
+}
+
+/* ══ 留復職申請單流程 ══ */
+var rtPage = 1;
+function retNext() {
+  if (rtPage === 1) {
+    if (!document.getElementById('rt-name').value.trim()) { showStatus('ret-status','請填寫申請人姓名','error'); return; }
+    if (!document.getElementById('rt-team').value.trim()) { showStatus('ret-status','請填寫申請團隊','error'); return; }
+    var retTypes = document.querySelectorAll('#ret-types input:checked');
+    if (!retTypes.length) { showStatus('ret-status','請選擇申請類型','error'); return; }
+    rtPage = 2;
+    document.getElementById('ret-page1').style.display = 'none';
+    document.getElementById('ret-page2').style.display = '';
+    document.getElementById('rt-back-btn').style.display = '';
+    document.getElementById('rt-next-btn').textContent  = '✓ 產生 PDF';
+    setStep('ret', 2);
+    clearStatus('ret-status');
+  } else if (rtPage === 2) {
+    if (isSigEmpty('rt-sig-canvas')) { showStatus('ret-status','請先完成申請人簽名','error'); return; }
+    generateRetentionPDF();
+  }
+}
+
+function retBack() {
+  rtPage = 1;
+  document.getElementById('ret-page1').style.display = '';
+  document.getElementById('ret-page2').style.display = 'none';
+  document.getElementById('rt-back-btn').style.display = 'none';
+  document.getElementById('rt-next-btn').textContent  = '下一步 →';
+  setStep('ret', 1);
+}
+
+/* ══ 步驟指示器 ══ */
+function setStep(prefix, step) {
+  for (var i=1;i<=3;i++) {
+    var el = document.getElementById(prefix+'-step'+i);
+    el.className = 'step' + (i < step ? ' done' : (i === step ? ' active' : ''));
+  }
+}
+
+/* ══ 狀態提示 ══ */
+function showStatus(id, msg, type) {
+  var el = document.getElementById(id);
+  el.className = 'status-bar ' + type;
+  el.innerHTML = (type==='info'?'⏳':type==='success'?'✅':'⚠') + ' ' + msg;
+  el.style.display = 'flex';
+}
+function clearStatus(id) { document.getElementById(id).style.display='none'; }
+
+/* ══ 手寫簽名 ══ */
+function initSig(canvasId) {
+  setTimeout(function() {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas || canvas._sigInited) return;
+    canvas._sigInited = true;
+    var ctx = canvas.getContext('2d');
+    ctx.strokeStyle = '#1c1c15';
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+    var drawing = false, lastX, lastY;
+
+    function getPos(e) {
+      var r = canvas.getBoundingClientRect();
+      var scaleX = canvas.width / r.width;
+      var scaleY = canvas.height / r.height;
+      var src = e.touches ? e.touches[0] : e;
+      return { x: (src.clientX - r.left) * scaleX, y: (src.clientY - r.top) * scaleY };
+    }
+    function start(e) { e.preventDefault(); drawing=true; var p=getPos(e); lastX=p.x; lastY=p.y; ctx.beginPath(); ctx.moveTo(lastX,lastY); }
+    function move(e)  { e.preventDefault(); if(!drawing)return; var p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; }
+    function end()    { drawing=false; }
+    canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); canvas.addEventListener('mouseup',end); canvas.addEventListener('mouseleave',end);
+    canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); canvas.addEventListener('touchend',end);
+  }, 100);
+}
+
+function clearSig(canvasId) {
+  var canvas = document.getElementById(canvasId);
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function isSigEmpty(canvasId) {
+  var canvas = document.getElementById(canvasId);
+  var data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+  for (var i=3; i<data.length; i+=4) { if (data[i] > 0) return false; }
+  return true;
+}
+
+/* ══ 格式化日期 ══ */
+function fmtDate(d) {
+  if (!d) return '';
+  var parts = d.split('-');
+  return parts[0] + '/' + parts[1] + '/' + parts[2];
+}
+
+/* ══ 產生請假申請 PDF ══ */
+async function generateLeavePDF() {
+  var btn = document.getElementById('lv-next-btn');
+  btn.disabled = true; btn.textContent = '⏳ 產生中…';
+  showStatus('leave-status','正在載入 PDF 底圖…','info');
+
+  try {
+    // 讀取底圖 PDF
+    var pdfBytes = await fetch(LEAVE_PDF_URL).then(r => r.arrayBuffer());
+    var pdfDoc   = await PDFLib.PDFDocument.load(pdfBytes);
+    pdfDoc.registerFontkit(fontkit);
+
+    var page    = pdfDoc.getPages()[0];
+    var { width, height } = page.getSize();
+
+    // 嵌入標準字型（Helvetica 支援 ASCII，中文要另外處理）
+    // 因為中文需要嵌入字型，這裡用座標疊加方式
+    var font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+
+    // ── 讀取表單值 ──
+    var unit       = document.getElementById('lv-unit').value.trim();
+    var applyDate  = fmtDate(document.getElementById('lv-apply-date').value);
+    var lvTitle    = document.getElementById('lv-title').value.trim();
+    var lvName     = document.getElementById('lv-name').value.trim();
+    var proxyTitle = document.getElementById('lv-proxy-title').value.trim();
+    var proxyName  = document.getElementById('lv-proxy-name').value.trim();
+    var fromDate   = fmtDate(document.getElementById('lv-from-date').value);
+    var fromTime   = document.getElementById('lv-from-time').value;
+    var toDate     = fmtDate(document.getElementById('lv-to-date').value);
+    var toTime     = document.getElementById('lv-to-time').value;
+    var days       = document.getElementById('lv-days').value;
+    var hours      = document.getElementById('lv-hours').value;
+    var reason     = document.getElementById('lv-reason').value.trim();
+    var leaveTypes = Array.from(document.querySelectorAll('#leave-types input:checked')).map(c=>c.value).join('、');
+
+    // ── 簽名圖片 ──
+    var sigCanvas  = document.getElementById('lv-sig-canvas');
+    var sigDataUrl = sigCanvas.toDataURL('image/png');
+    var sigImage   = await pdfDoc.embedPng(sigDataUrl);
+
+    // ── 疊加文字（座標以 PDF 座標系，左下角為原點）══
+    // 請假申請單版面（A4 595×842）各欄位大約位置
+    var sz = 10;
+    var drawText = function(text, x, y) {
+      page.drawText(text, { x, y: height - y, font, size: sz, color: PDFLib.rgb(0.1,0.1,0.1) });
+    };
+
+    // 單位
+    drawText(unit,      130, 134);
+    // 申請日期
+    drawText(applyDate, 400, 134);
+    // 請假人職稱、姓名
+    drawText(lvTitle,   150, 166);
+    drawText(lvName,    150, 186);
+    // 代理人職稱、姓名
+    drawText(proxyTitle,390, 166);
+    drawText(proxyName, 390, 186);
+    // 假別
+    drawText(leaveTypes,150, 218);
+    // 請假期間
+    drawText(fromDate+' '+fromTime, 80,  268);
+    drawText(toDate  +' '+toTime,   80,  288);
+    drawText(days,   430, 268);
+    drawText(hours,  480, 268);
+    // 事由
+    var reasonLines = reason.match(/.{1,30}/g) || [''];
+    reasonLines.forEach(function(line, i) { drawText(line, 80, 320 + i * 16); });
+
+    // 申請日期再疊在核定欄
+    drawText(applyDate, 380, 572);
+
+    // 簽名圖片疊加（申請人欄位）
+    page.drawImage(sigImage, { x: 60, y: height - 636, width: 120, height: 36 });
+
+    setStep('leave', 3);
+
+    // 下載
+    var outBytes = await pdfDoc.save();
+    var blob = new Blob([outBytes], { type: 'application/pdf' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href   = url;
+    a.download = '請假申請單_' + lvName + '_' + applyDate.replace(/\//g,'-') + '.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showStatus('leave-status','✅ PDF 已產生並下載！主管審核後將回傳簽名版本。','success');
+    btn.disabled = false; btn.textContent = '✓ 再次下載';
+
+  } catch(err) {
+    showStatus('leave-status','產生失敗：' + err.message,'error');
+    btn.disabled = false; btn.textContent = '✓ 產生 PDF';
+  }
+}
+
+/* ══ 產生留復職申請 PDF ══ */
+async function generateRetentionPDF() {
+  var btn = document.getElementById('rt-next-btn');
+  btn.disabled = true; btn.textContent = '⏳ 產生中…';
+  showStatus('ret-status','正在載入 PDF 底圖…','info');
+
+  try {
+    var pdfBytes = await fetch(RETENTION_PDF_URL).then(r => r.arrayBuffer());
+    var pdfDoc   = await PDFLib.PDFDocument.load(pdfBytes);
+    pdfDoc.registerFontkit(fontkit);
+    var page    = pdfDoc.getPages()[0];
+    var { width, height } = page.getSize();
+    var font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    var sz   = 10;
+
+    var drawText = function(text, x, y) {
+      page.drawText(text, { x, y: height - y, font, size: sz, color: PDFLib.rgb(0.1,0.1,0.1) });
+    };
+
+    var rtName   = document.getElementById('rt-name').value.trim();
+    var rtTeam   = document.getElementById('rt-team').value.trim();
+    var rtTitle  = document.getElementById('rt-title').value.trim();
+    var rtStart  = fmtDate(document.getElementById('rt-start').value);
+    var rtEnd    = fmtDate(document.getElementById('rt-end').value);
+    var rtPhone  = document.getElementById('rt-phone').value.trim();
+    var rtAddr   = document.getElementById('rt-addr').value.trim();
+    var rtNote   = document.getElementById('rt-note').value.trim();
+    var labor    = (document.querySelector('input[name="labor"]:checked') || {}).value || '';
+    var health   = (document.querySelector('input[name="health"]:checked') || {}).value || '';
+    var retTypes = Array.from(document.querySelectorAll('#ret-types input:checked')).map(c=>c.value).join(' ');
+
+    // 申請人 / 團隊 / 職稱
+    drawText(rtName,  145, 148);
+    drawText(rtTeam,  310, 148);
+    drawText(rtTitle, 470, 148);
+    // 勞健保
+    drawText(labor,   145, 175);
+    drawText(health,  340, 175);
+    // 日期
+    drawText(rtStart, 430, 165);
+    drawText(rtEnd,   430, 185);
+    // 連絡
+    drawText(rtPhone, 170, 278);
+    drawText(rtAddr,  390, 278);
+    // 備註
+    if (rtNote) {
+      var noteLines = rtNote.match(/.{1,40}/g) || [];
+      noteLines.forEach(function(line,i){ drawText(line, 80, 480+i*14); });
+    }
+    // 申請類型勾選（僅文字）
+    drawText(retTypes, 80, 128);
+
+    // 申請日期
+    var today = new Date().toISOString().slice(0,10);
+    drawText(fmtDate(today), 370, 560);
+
+    // 簽名
+    var sigCanvas  = document.getElementById('rt-sig-canvas');
+    var sigDataUrl = sigCanvas.toDataURL('image/png');
+    var sigImage   = await pdfDoc.embedPng(sigDataUrl);
+    page.drawImage(sigImage, { x: 60, y: height - 616, width: 120, height: 36 });
+
+    setStep('ret', 3);
+
+    var outBytes = await pdfDoc.save();
+    var blob = new Blob([outBytes], { type: 'application/pdf' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href   = url;
+    a.download = '留復職申請單_' + rtName + '_' + fmtDate(today).replace(/\//g,'-') + '.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showStatus('ret-status','✅ PDF 已產生並下載！','success');
+    btn.disabled = false; btn.textContent = '✓ 再次下載';
+
+  } catch(err) {
+    showStatus('ret-status','產生失敗：' + err.message,'error');
+    btn.disabled = false; btn.textContent = '✓ 產生 PDF';
+  }
+}
+
+/* ══ Modal 點外圍關閉 ══ */
+document.querySelectorAll('.modal-overlay').forEach(function(m){
+  m.addEventListener('click',function(e){ if(e.target===m) closeModal(m.id); });
+});
+</script>
+</body>
+</html>
