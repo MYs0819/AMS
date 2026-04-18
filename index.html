@@ -894,7 +894,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-section">
         <p class="sidebar-section-label">文件</p>
         <p class="sidebar-section-sub">全體同仁</p>
-        <a href="#" class="sidebar-nav-item" onclick="return showPage('doccenter',this)"><span class="sidebar-icon">🗂</span>文件中心</a>
+        <a href="#" class="sidebar-nav-item active" onclick="return showPage('doccenter',this)"><span class="sidebar-icon">🗂</span>文件中心</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -913,7 +913,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-section">
         <p class="sidebar-section-label">功能</p>
         <p class="sidebar-section-sub">營運限定</p>
-        <a href="#" class="sidebar-nav-item active" onclick="return showPage('main',this)"><span class="sidebar-icon">📁</span>所有申請</a>
+        <a href="#" class="sidebar-nav-item" onclick="return showPage('main',this)"><span class="sidebar-icon">📁</span>所有申請</a>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('main',this)"><span class="sidebar-icon">🚨</span>緊急待辦<span class="sidebar-badge">2</span></a>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('main',this)"><span class="sidebar-icon">✅</span>申請審核</a>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('main',this)"><span class="sidebar-icon">⏰</span>近期到期</a>
@@ -943,7 +943,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     <main class="app-main">
 
       <!-- ════ 所有申請 ════ -->
-      <div class="page-section active" id="page-main">
+      <div class="page-section" id="page-main">
 
         <!-- 統計卡片 -->
         <div class="stats-grid">
@@ -1307,9 +1307,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       </div><!-- end page-main -->
 
             <!-- ════ 文件中心 ════ -->
-      <div class="page-section" id="page-doccenter">
+      <div class="page-section active" id="page-doccenter">
         <div class="article-wrap" style="padding:0;overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;background-color:#434343;border-color:#555;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:2px solid var(--color-gold);flex-shrink:0;background-color:#434343;">
+          <div class="inner-page-header" style="padding:16px 28px 12px;border-bottom:2px solid var(--color-gold);flex-shrink:0;background-color:#434343;margin-bottom:0;">
             <p class="inner-page-title" style="color:#e8e4d8;">🗂 文件中心</p>
             <div style="display:flex;align-items:center;gap:var(--space-2);">
               <button class="inner-upload-btn" id="dc-upload-btn" onclick="dcTriggerUpload()">📤 上傳</button>
@@ -1844,9 +1844,11 @@ function showPage(pageId, el) {
   if (el) {
     el.classList.add('active');
   } else {
-    var fi = document.querySelector('.sidebar-nav-item[onclick*="\'main\'"]');
+    var fi = document.querySelector('.sidebar-nav-item[onclick*="doccenter"]');
     if (fi) fi.classList.add('active');
   }
+  if (pageId === 'doccenter') dcLoadFiles();
+  if (pageId === 'analytics') updateAnalytics();
   return false;
 }
 
@@ -2043,6 +2045,36 @@ function dcLoadFiles() {
     });
 }
 
+/* ── 重新計算側邊欄分類數量 ── */
+function dcUpdateCounts() {
+  var counts = {all:0,hr:0,admin:0,training:0,announce:0,law:0,other:0};
+  document.querySelectorAll('#dc-file-area .doccenter-file-item').forEach(function(item){
+    var key = item.getAttribute('data-cat') || 'other';
+    counts.all++;
+    if (counts[key] !== undefined) counts[key]++;
+    else counts.other++;
+  });
+  Object.keys(counts).forEach(function(k){
+    var el = document.getElementById('cnt-'+k);
+    if (el) el.textContent = counts[k];
+  });
+}
+
+/* ── 圖片點擊預覽 ── */
+function dcPreviewFile(fileId, name) {
+  var ext = (name || '').split('.').pop().toLowerCase();
+  var isImg = ['jpg','jpeg','png','gif','webp'].indexOf(ext) >= 0;
+  var url;
+  if (isImg) {
+    // 圖片用 thumbnail URL 直接顯示
+    url = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200';
+  } else {
+    // PDF 用 Google Drive 預覽頁
+    url = 'https://drive.google.com/file/d/' + fileId + '/view';
+  }
+  window.open(url, '_blank');
+}
+
 /* ── 中文分類 → DOM key 對應表 ── */
 var dcLabelToKey = {
   '人事相關':'hr','行政表單':'admin','教育訓練':'training',
@@ -2128,9 +2160,10 @@ function dcBuildFileList(files) {
     gc.innerHTML =
       '<span class="doccenter-card-icon">' + icon + '</span>' +
       '<span class="doccenter-card-name">' + dcStripExt(f.name) + '</span>' +
-      '<span class="doccenter-card-date">' + f.date + '</span>' +
+      '<span class="doccenter-card-date">' + dcFormatDate(f.date) + '</span>' +
       '<a class="doccenter-card-dl" href="' + dlUrl + '" target="_blank">⬇</a>' +
       '<button class="dc-card-del-btn" onclick="dcDeleteCard(this)" title="刪除">✕</button>';
+    (function(id, nm){ gc.addEventListener('dblclick', function(){ dcPreviewFile(id, nm); }); })(f.fileId, f.name);
     grid.appendChild(gc);
   });
 }
@@ -2288,7 +2321,7 @@ function dcHandleUpload(input) {
     })
     .then(function() {
       if (uploadBtn) { uploadBtn.textContent = '📤 上傳'; uploadBtn.disabled = false; }
-      alert('✅ 上傳完成！2 秒後更新列表…');
+      alert('✅ 上傳完成');
       // no-cors 模式看不到回傳，用延遲重讀確認結果
       setTimeout(dcLoadFiles, 2000);
     })
@@ -2313,6 +2346,7 @@ function dcDeleteItem(btn) {
   item.remove();
   var cards = document.querySelectorAll('#dc-file-grid .doccenter-file-card[data-fileid="'+fileId+'"]');
   cards.forEach(function(c){ c.remove(); });
+  dcUpdateCounts();
   dcPage = 1;
   dcRender();
   fetch(GAS_URL, {
@@ -2334,6 +2368,7 @@ function dcDeleteCard(btn) {
   card.remove();
   var items = document.querySelectorAll('#dc-file-area .doccenter-file-item[data-fileid="'+fileId+'"]');
   items.forEach(function(i){ i.remove(); });
+  dcUpdateCounts();
   dcPage = 1;
   dcRender();
   fetch(GAS_URL, {
@@ -2569,7 +2604,7 @@ function filterTable() {
 }
 
 filterTable();
-dcRender();
+dcLoadFiles(); // 進入文件中心時立即從 GAS 載入
 </script>
 </body>
 </html>
