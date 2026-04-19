@@ -221,10 +221,8 @@ input[type="time"] { color-scheme: dark; }
               <div class="f-g"><label class="f-lbl" style="font-size:11px;">職稱</label><input class="f-inp" id="lv-title" placeholder="例：正職"/></div>
               <div class="f-g">
                 <label class="f-lbl" style="font-size:11px;">姓名*（親簽）</label>
-                <div class="sig-wrap" style="flex:1;">
-                  <canvas class="sig-canvas" id="lv-sig1" height="36"></canvas>
-                  <button class="sig-clear" onclick="clearSig('lv-sig1')">清除</button>
-                </div>
+                <div id="lv-sig1-preview" onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;width:100%;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
+                <canvas id="lv-sig1" width="1" height="1" style="display:none;"></canvas>
                 <input id="lv-name" type="hidden" value="（簽名）"/>
               </div>
             </div>
@@ -269,12 +267,28 @@ input[type="time"] { color-scheme: dark; }
             <div class="date-line">
               <span class="dl-lbl">自</span>
               <input class="f-inp" id="lv-fd" type="date" onchange="calcD()" style="text-align:center;max-width:138px;"/>
-              <input class="f-inp" id="lv-ft" type="time" onchange="calcD()" style="text-align:center;max-width:130px;" step="60" placeholder="時間"/>
+              <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
+              <select id="lv-fth" onchange="calcD()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">時</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+              </select>
+              <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
+              <select id="lv-ftm" onchange="calcD()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">分</option><option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
+              </select>
+            </div>
             </div>
             <div class="date-line">
               <span class="dl-lbl">至</span>
               <input class="f-inp" id="lv-td" type="date" onchange="calcD()" style="text-align:center;max-width:138px;"/>
-              <input class="f-inp" id="lv-tt" type="time" onchange="calcD()" style="text-align:center;max-width:130px;" step="60" placeholder="時間"/>
+              <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
+              <select id="lv-tth" onchange="calcD()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">時</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+              </select>
+              <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
+              <select id="lv-ttm" onchange="calcD()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">分</option><option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
+              </select>
+            </div>
             </div>
           </div>
           <!-- 右欄：共 日 小時 置中 -->
@@ -352,42 +366,46 @@ input[type="time"] { color-scheme: dark; }
       <!-- 基本資料 -->
       <div>
         <div class="f-sec">基本資料*</div>
+        <!-- 第一排：申請人、申請團隊、職稱 -->
         <div class="f-row f-c3">
-          <div class="f-g"><label class="f-lbl">申請人*（親簽）</label>
-            <div class="sig-wrap">
-              <canvas class="sig-canvas" id="rt-sig1-canvas" height="36"></canvas>
-              <button class="sig-clear" onclick="clearSig('rt-sig1-canvas')">清除</button>
-            </div>
+          <div class="f-g">
+            <label class="f-lbl">申請人*（親簽）</label>
+            <div id="rt-sig1-canvas-preview" onclick="openSigModal('rt-sig1-canvas','申請人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;width:100%;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
+            <canvas id="rt-sig1-canvas" width="1" height="1" style="display:none;"></canvas>
             <input id="rt-name" type="hidden" value="（簽名）"/>
           </div>
-          <div class="f-g"><label class="f-lbl">申請團隊</label><input class="f-inp" id="rt-team" placeholder="例：外場"/></div>
+          <div class="f-g"><label class="f-lbl">申請團隊<span class="req">*</span></label><input class="f-inp" id="rt-team" placeholder="例：外場"/></div>
           <div class="f-g"><label class="f-lbl">職稱</label><input class="f-inp" id="rt-title" placeholder="例：正職"/></div>
         </div>
+        <!-- 第二排：勞保、健保 -->
         <div class="f-row f-c2">
           <div class="f-g">
-            <label class="f-lbl">勞保方式</label>
+            <label class="f-lbl">勞保方式<span class="req">*</span></label>
             <div class="radio-grp" style="margin-top:5px;">
               <label class="radio-item"><input type="radio" name="labor" value="退保"/> 退保</label>
               <label class="radio-item"><input type="radio" name="labor" value="續保"/> 續保</label>
             </div>
           </div>
           <div class="f-g">
-            <label class="f-lbl">健保方式</label>
+            <label class="f-lbl">健保方式<span class="req">*</span></label>
             <div class="radio-grp" style="margin-top:5px;">
               <label class="radio-item"><input type="radio" name="health" value="退保"/> 退保</label>
               <label class="radio-item"><input type="radio" name="health" value="續保（育嬰用）"/> 續保（育嬰用）</label>
             </div>
           </div>
         </div>
+        <!-- 第三排：開始、結束日期 -->
         <div class="f-row f-c2">
-          <div class="f-g"><label class="f-lbl">開始日期</label><input class="f-inp" id="rt-start" type="date"/></div>
-          <div class="f-g"><label class="f-lbl">結束日期</label><input class="f-inp" id="rt-end" type="date"/></div>
+          <div class="f-g"><label class="f-lbl">開始日期<span class="req">*</span></label><input class="f-inp" id="rt-start" type="date" style="text-align:center;"/></div>
+          <div class="f-g"><label class="f-lbl">結束日期<span class="req">*</span></label><input class="f-inp" id="rt-end" type="date" style="text-align:center;"/></div>
         </div>
+        <!-- 第四排：電話、地址 -->
         <div class="f-row f-c2">
-          <div class="f-g"><label class="f-lbl">連絡電話</label><input class="f-inp" id="rt-phone" placeholder="0912-345-678"/></div>
-          <div class="f-g"><label class="f-lbl">聯絡地址</label><input class="f-inp" id="rt-addr" placeholder="聯絡地址"/></div>
+          <div class="f-g"><label class="f-lbl">連絡電話<span class="req">*</span></label><input class="f-inp" id="rt-phone" placeholder="0912-345-678"/></div>
+          <div class="f-g"><label class="f-lbl">聯絡地址<span class="req">*</span></label><input class="f-inp" id="rt-addr" placeholder="聯絡地址"/></div>
         </div>
-
+        <!-- 填寫日期（隱藏，自動帶入）-->
+        <input id="rt-date" type="hidden"/>
       </div>
 
       <!-- 申請原因 -->
@@ -465,7 +483,7 @@ function showToast(msg, type, duration) {
 var _lvSubmitted = false;
 var _rtSubmitted = false;
 
-var GAS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyBbKF9e8ebMtLQDGMD9dlG-lLbI9SJsrxRfDE0KLHC8lhsK2fYWUT56ovfePON-pFEnw/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -501,11 +519,11 @@ function openModal(id) {
   document.getElementById(id).classList.add('open');
   if (id === 'lvModal') {
     document.getElementById('lv-date').value = today();
-    setTimeout(function(){initSig('lv-sig1');},200);
+    // lv-sig1 用 modal 模式，不需 initSig
   }
   if (id === 'rtModal') {
     document.getElementById('rt-date').value = today();
-    setTimeout(function(){initSig('rt-sig1-canvas');},200);
+    // rt-sig1 用 modal 模式，不需 initSig
   }
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -529,11 +547,15 @@ function rtReason() {
 
 /* ── 計算天數 ── */
 function calcD() {
-  var fd = document.getElementById('lv-fd').value;
-  var ft = document.getElementById('lv-ft').value || '00:00';
-  var td = document.getElementById('lv-td').value;
-  var tt = document.getElementById('lv-tt').value || '00:00';
+  var fd  = document.getElementById('lv-fd').value;
+  var fth = document.getElementById('lv-fth').value || '00';
+  var ftm = document.getElementById('lv-ftm').value || '00';
+  var td  = document.getElementById('lv-td').value;
+  var tth = document.getElementById('lv-tth').value || '00';
+  var ttm = document.getElementById('lv-ttm').value || '00';
   if (!fd || !td) return;
+  var ft = fth + ':' + ftm;
+  var tt = tth + ':' + ttm;
   var f = new Date(fd + 'T' + ft);
   var t = new Date(td + 'T' + tt);
   if (t < f) return;
@@ -598,7 +620,7 @@ function submitLv() {
   if (type === '其他' && !document.getElementById('lv-other').value.trim()) {
     showToast('請填寫其他假別說明','err'); return;
   }
-  if (sigEmpty('lv-sig1')) { showToast('請完成請假人姓名簽名（點姓名欄旁的 ✍ 按鈕）','err'); return; }
+  if (sigEmpty('lv-sig1')) { showToast('請完成請假人姓名簽名（點姓名欄的 ✍ 按鈕）','err'); return; }
   if (sigEmpty('lv-sig2')) { showToast('請完成申請人已知悉上述規定簽名','err'); return; }
 
   var btn = document.getElementById('lv-btn');
@@ -617,8 +639,8 @@ function submitLv() {
       applyTitle:  document.getElementById('lv-title').value.trim(),
       type:        '請假申請',
       subtype:     subtype,
-      startDate:   fmtD(fd) + ' ' + (document.getElementById('lv-ft').value||''),
-      endDate:     fmtD(document.getElementById('lv-td').value) + ' ' + (document.getElementById('lv-tt').value||''),
+      startDate:   fmtD(fd) + ' ' + (document.getElementById('lv-fth').value||'00') + ':' + (document.getElementById('lv-ftm').value||'00'),
+      endDate:     fmtD(document.getElementById('lv-td').value) + ' ' + (document.getElementById('lv-tth').value||'00') + ':' + (document.getElementById('lv-ttm').value||'00'),
       days:        document.getElementById('lv-days').value,
       hours:       document.getElementById('lv-hrs').value,
       reason:      reason,
@@ -671,7 +693,7 @@ function submitRt() {
   if (reason === '其他' && !document.getElementById('rt-other').value.trim()) {
     showToast('請填寫其他原因說明','err'); return;
   }
-  if (sigEmpty('rt-sig1-canvas')) { showToast('請完成申請人親簽','err'); return; }
+  if (sigEmpty('rt-sig1-canvas')) { showToast('請完成申請人姓名簽名（點申請人欄的 ✍ 按鈕）','err'); return; }
   if (sigEmpty('rt-sig2')) { showToast('請完成申請人已知悉上述規定簽名','err'); return; }
 
   var btn = document.getElementById('rt-btn');
@@ -746,15 +768,16 @@ function confirmSig() {
   targetCanvas.height = modalCanvas.height;
   targetCanvas.getContext('2d').drawImage(modalCanvas, 0, 0);
 
-  // 更新預覽按鈕顯示
+  // 更新預覽按鈕顯示（縮圖回填）
   var previewEl = document.getElementById(_currentSigTarget + '-preview');
-  if (previewEl) {
-    if (!sigEmpty('sig-modal-canvas')) {
-      previewEl.innerHTML = '<img src="' + modalCanvas.toDataURL() + '" style="width:100%;height:100%;object-fit:contain;border-radius:5px;"/>';
-    }
+  if (previewEl && !sigEmpty('sig-modal-canvas')) {
+    var img = modalCanvas.toDataURL();
+    previewEl.style.padding = '0';
+    previewEl.style.border = '1.5px solid var(--gold)';
+    previewEl.innerHTML = '<img src="' + img + '" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:5px;" title="點擊重新簽名"/>';
   }
 
-  // 清除 modal canvas
+  // 清除 modal canvas，重置狀態
   clearSig('sig-modal-canvas');
   _sigModalInited = false;
   delete _si['sig-modal-canvas'];
