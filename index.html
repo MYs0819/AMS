@@ -865,7 +865,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .app-sidebar::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.08);}
 
 /* ════ 登入系統 ════ */
-.login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.96);z-index:9000;display:flex;align-items:center;justify-content:center;}
+.login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.45);z-index:9000;display:none;align-items:center;justify-content:center;}
 .login-box{background:#fff;border-radius:16px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:20px;}
 .login-logo-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:4px;}
 .login-logo{width:48px;height:48px;object-fit:contain;}
@@ -909,32 +909,41 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   <!-- ══ Header ══ -->
     
 <!-- ════ 登入畫面 ════ -->
-<div class="login-overlay" id="loginOverlay">
+<div class="login-overlay" id="loginOverlay" onclick="if(event.target===this)this.style.display='none'">
   <div class="login-box">
     <div class="login-logo-row">
       <img class="login-logo" src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" onerror="this.style.display='none'"/>
       <span class="login-title">人資行政管理系統</span>
     </div>
-    <div class="login-subtitle">請登入以繼續使用</div>
+    <div class="login-subtitle">請登入以使用完整功能</div>
 
+    <!-- 信箱：單一輸入框 + datalist 建議 -->
     <div class="login-field">
       <label class="login-label">電子信箱</label>
-      <div class="login-email-row">
-        <input class="login-input" id="login-user" placeholder="請輸入帳號" autocomplete="username" style="flex:1;" onkeydown="if(event.key==='Enter')doLogin()"/>
-        <span style="display:flex;align-items:center;font-size:14px;color:#555;padding:0 2px;">@</span>
-        <select class="login-domain" id="login-domain">
-          <option value="gmail.com">gmail.com</option>
-          <option value="yahoo.com.tw">yahoo.com.tw</option>
-          <option value="outlook.com">outlook.com</option>
-          <option value="hotmail.com">hotmail.com</option>
-          <option value="icloud.com">icloud.com</option>
-        </select>
+      <div style="position:relative;">
+        <input class="login-input" id="login-mail" type="email"
+          placeholder="example@gmail.com"
+          autocomplete="email"
+          oninput="updateMailSuggestions()"
+          onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"
+          list="mail-suggestions"
+          style="padding-right:12px;"/>
+        <datalist id="mail-suggestions"></datalist>
       </div>
     </div>
 
+    <!-- 密碼 + 顯示按鈕 -->
     <div class="login-field">
       <label class="login-label">密碼</label>
-      <input class="login-input" id="login-pass" type="password" placeholder="請輸入密碼" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <div style="position:relative;">
+        <input class="login-input" id="login-pass" type="password"
+          placeholder="請輸入密碼"
+          autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')doLogin()"
+          style="padding-right:44px;"/>
+        <button onclick="togglePassView()" type="button"
+          style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#9a9680;padding:4px;" id="pass-eye" title="顯示/隱藏密碼">👁</button>
+      </div>
     </div>
 
     <div class="login-err" id="login-err"></div>
@@ -965,6 +974,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <button class="btn">↓ 匯出 CSV</button>
       <button class="btn-feedback" onclick="openFeedback()">！意見欄</button>
       <button class="btn-danger" onclick="openBugReport()">❌ 回報問題</button>
+      <button onclick="openLoginModal()" id="loginNavBtn" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid var(--color-gold);background:var(--color-gold-bg);color:var(--color-gold);font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold)';this.style.color='#1c1c15'" onmouseout="this.style.background='var(--color-gold-bg)';this.style.color='var(--color-gold)'">🔑 登入</button>
       <div class="user-chip" id="userChip" onclick="toggleUserMenu()" style="display:none;"><div class="user-chip-avatar" id="userInitial">?</div><span class="user-chip-name" id="userName">訪客</span></div>
       <a href="#" class="header-home-btn" onclick="showPage('main',null);return false;" title="首頁" style="font-size:20px;margin-left:4px;">🏠</a>
     </div>
@@ -3040,6 +3050,7 @@ var ROLE_BADGE = {
 
 /* ── 各角色可見的側邊欄 item（data-role 屬性）── */
 var ROLE_PAGES = {
+  guest:    [],  // 訪客：可見介面但所有按鈕/連結不可操作
   admin:    ['doccenter','leave','myrecords','workhour','labor','main','analytics','salary','account','settings'],
   manager:  ['doccenter','leave','myrecords','workhour','labor','main'],
   employee: ['doccenter','leave','myrecords'],
@@ -3055,20 +3066,19 @@ function initAuth() {
       return;
     } catch(e) {}
   }
-  // 未登入 → 顯示登入畫面
-  document.getElementById('loginOverlay').style.display = 'flex';
+  // 未登入 → 不強制顯示，只套用訪客限制
+  applyPermissions('guest');
 }
 
 /* ══ 執行登入 ══ */
 function doLogin() {
-  var user   = document.getElementById('login-user').value.trim();
-  var domain = document.getElementById('login-domain').value;
+  var mail   = (document.getElementById('login-mail').value||'').trim().toLowerCase();
   var pass   = document.getElementById('login-pass').value;
   var errEl  = document.getElementById('login-err');
   var btn    = document.getElementById('login-btn');
 
-  if (!user || !pass) { errEl.textContent = '請填寫帳號和密碼'; return; }
-  var mail = user + '@' + domain;
+  if (!mail || !pass) { errEl.textContent = '請填寫信箱和密碼'; return; }
+  if (mail.indexOf('@') < 0) { errEl.textContent = '請輸入完整的電子信箱（含 @）'; return; }
 
   btn.disabled = true; btn.textContent = '登入中…';
   errEl.textContent = '';
@@ -3103,6 +3113,8 @@ function doLogin() {
 function onLoginSuccess(user, silent) {
   // 隱藏登入畫面
   document.getElementById('loginOverlay').style.display = 'none';
+  var lb = document.getElementById('loginNavBtn');
+  if (lb) lb.style.display = 'none';
 
   // 顯示 User Chip
   var chip = document.getElementById('userChip');
@@ -3125,7 +3137,32 @@ function onLoginSuccess(user, silent) {
 function applyPermissions(role) {
   var allowed = ROLE_PAGES[role] || ROLE_PAGES.employee;
 
-  // 側邊欄權限
+  var isGuest = (role === 'guest');
+
+  // 訪客：所有 sidebar item 顯示但加鎖定樣式
+  document.querySelectorAll('.sidebar-section').forEach(function(sec){
+    sec.style.display = '';
+    var items = sec.querySelectorAll('.sidebar-nav-item');
+    items.forEach(function(item){
+      item.style.display = '';
+      if (isGuest) {
+        item.style.opacity = '0.45';
+        item.style.pointerEvents = 'none';
+        item.style.cursor = 'default';
+      } else {
+        item.style.opacity = '';
+        item.style.pointerEvents = '';
+        item.style.cursor = '';
+      }
+    });
+  });
+
+  if (isGuest) {
+    document.querySelectorAll('.sidebar-divider').forEach(function(div){ div.style.display = ''; });
+    return;
+  }
+
+  // 登入用戶：根據角色顯示/隱藏
   document.querySelectorAll('.sidebar-section').forEach(function(sec){
     var items = sec.querySelectorAll('.sidebar-nav-item');
     var hasVisible = false;
@@ -3133,7 +3170,6 @@ function applyPermissions(role) {
       var onclick = item.getAttribute('onclick') || item.getAttribute('href') || '';
       var pageMatch = onclick.match(/showPage\('([^']+)'/);
       var pageName  = pageMatch ? pageMatch[1] : '';
-      // 特殊：請假申請是 external link，employee 可用
       if (item.classList.contains('external') && item.href && item.href.includes('application-forms')) {
         item.style.display = '';
         hasVisible = true;
@@ -3143,11 +3179,9 @@ function applyPermissions(role) {
       item.style.display = ok ? '' : 'none';
       if (ok) hasVisible = true;
     });
-    // 如果整個 section 沒有可見項目，隱藏 section
     sec.style.display = hasVisible ? '' : 'none';
   });
 
-  // 隱藏 divider（根據前後 section 是否顯示）
   document.querySelectorAll('.sidebar-divider').forEach(function(div){
     var prev = div.previousElementSibling;
     var next = div.nextElementSibling;
@@ -3156,12 +3190,62 @@ function applyPermissions(role) {
 }
 
 /* ══ 登出 ══ */
+
+/* ── 信箱自動建議 ── */
+var MAIL_DOMAINS = ['gmail.com','yahoo.com.tw','outlook.com','hotmail.com','icloud.com'];
+function updateMailSuggestions() {
+  var val  = document.getElementById('login-mail').value;
+  var list = document.getElementById('mail-suggestions');
+  list.innerHTML = '';
+  var atIdx = val.indexOf('@');
+  if (atIdx < 0) {
+    // 還沒打 @，補全各個 domain
+    MAIL_DOMAINS.forEach(function(d){
+      var opt = document.createElement('option');
+      opt.value = val + '@' + d;
+      list.appendChild(opt);
+    });
+  } else {
+    // 已有 @，比對 domain
+    var user   = val.slice(0, atIdx);
+    var domain = val.slice(atIdx + 1).toLowerCase();
+    MAIL_DOMAINS.filter(function(d){ return d.startsWith(domain); })
+      .forEach(function(d){
+        var opt = document.createElement('option');
+        opt.value = user + '@' + d;
+        list.appendChild(opt);
+      });
+  }
+}
+
+/* ── 顯示/隱藏密碼 ── */
+function togglePassView() {
+  var inp = document.getElementById('login-pass');
+  var eye = document.getElementById('pass-eye');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    eye.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    eye.textContent = '👁';
+  }
+}
+
+function openLoginModal() {
+  document.getElementById('loginOverlay').style.display = 'flex';
+  var lb = document.getElementById('loginNavBtn');
+  if (lb) lb.style.display = '';
+  document.getElementById('login-mail').focus();
+}
+
 function doLogout() {
   localStorage.removeItem('mys_user');
   CURRENT_USER = null;
   document.getElementById('userMenu').style.display = 'none';
   document.getElementById('userChip').style.display = 'none';
   document.getElementById('loginOverlay').style.display = 'flex';
+  var lb = document.getElementById('loginNavBtn');
+  if (lb) lb.style.display = '';
   document.getElementById('login-pass').value = '';
   document.getElementById('login-err').textContent = '';
 }
