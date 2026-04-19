@@ -865,6 +865,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 ::-webkit-scrollbar-thumb{background-color:rgba(0,0,0,.15);border-radius:var(--radius-full);}
 .app-sidebar::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.08);}
 </style>
+  <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
+  <meta property="og:description" content="整合各類行政申請簽核與企業文件中心，全面提升團隊行政效率與協作！" />
 </head>
 <body>
 
@@ -876,7 +878,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs Logo" class="header-logo" style="width:42px;height:42px;object-fit:contain;border-radius:50%;border:1.5px solid var(--color-gold);background-color:var(--color-gold-bg);" />
       <div class="header-title-group">
         <span class="header-title">人資行政管理系統</span>
-        <span class="header-subtitle">Copyright 2026 MYs System Version:b1.0.0.0</span>
+        <span class="header-subtitle">© Copyright 2026 MYs System Version:b1.0.0.0-04-13-2026-115</span>
       </div>
     </div>
     <div class="header-right">
@@ -1124,7 +1126,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <!-- ════ 文件中心 ════ -->
       <div class="page-section active" id="page-doccenter">
         <div style="padding:0;overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;background-color:#434343;border:none;">
-          <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#434343;flex-shrink:0;">
+          <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#434343;">
             <p class="inner-page-title" style="color:#e8e4d8;">🗂 文件中心</p>
             <div style="display:flex;align-items:center;gap:var(--space-2);">
               <button class="inner-upload-btn" id="dc-upload-btn" onclick="dcTriggerUpload()">📤 上傳</button>
@@ -1509,15 +1511,13 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="toolbar-left" style="gap:8px;align-items:center;">
             <select class="filter-select" id="my-type-filter" onchange="renderMyTable()">
               <option value="">全部類型</option>
-              <option value="請假申請">請假申請</option>
-              <option value="留復職申請">留復職申請</option>
             </select>
+            <button id="my-allbtn" onclick="toggleMyAllYear(this)" style="height:30px;padding:0 12px;border-radius:6px;border:1px solid #ccc;background:transparent;font-family:var(--font-body);font-size:12px;cursor:pointer;color:var(--color-text-secondary);">全年</button>
             <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()">
               <option value="2026">2026</option>
               <option value="2025">2025</option>
-              <option value="all">全部年度</option>
+              <option value="2024">2024</option>
             </select>
-            <button id="my-allbtn" onclick="toggleMyAllYear(this)" style="height:30px;padding:0 12px;border-radius:6px;border:1px solid #ccc;background:transparent;font-family:var(--font-body);font-size:12px;cursor:pointer;color:var(--color-text-secondary);">全年</button>
           </div>
           <div class="toolbar-right">
             <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出申請紀錄</button>
@@ -2683,12 +2683,28 @@ function loadMyRecords() {
       }
       myRecordsData = data.applications;
       var total=myRecordsData.length, pending=0, done=0, reject=0;
+      var typeSet = {};
       myRecordsData.forEach(function(a){
         var s = a.status || '';
         if (s.indexOf('完成') > -1)     done++;
         else if (s.indexOf('退件') > -1) reject++;
         else                              pending++;
+        // 收集申請類型（用 subtype 細分）
+        var key = a.subtype || a.type || '';
+        if (key) typeSet[key] = true;
       });
+      // 動態更新類型選單
+      var typeFilter = document.getElementById('my-type-filter');
+      if (typeFilter) {
+        var curVal = typeFilter.value;
+        typeFilter.innerHTML = '<option value="">全部類型</option>';
+        Object.keys(typeSet).sort().forEach(function(t){
+          var opt = document.createElement('option');
+          opt.value = t; opt.textContent = t;
+          if (t === curVal) opt.selected = true;
+          typeFilter.appendChild(opt);
+        });
+      }
       document.getElementById('my-total').textContent   = total;
       document.getElementById('my-pending').textContent = pending;
       document.getElementById('my-done').textContent    = done;
