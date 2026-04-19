@@ -863,6 +863,41 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background-color:rgba(0,0,0,.15);border-radius:var(--radius-full);}
 .app-sidebar::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.08);}
+
+/* ════ 登入系統 ════ */
+.login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.96);z-index:9000;display:flex;align-items:center;justify-content:center;}
+.login-box{background:#fff;border-radius:16px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:20px;}
+.login-logo-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:4px;}
+.login-logo{width:48px;height:48px;object-fit:contain;}
+.login-title{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--color-text-primary);}
+.login-subtitle{font-size:12px;color:var(--color-text-muted);text-align:center;}
+.login-field{display:flex;flex-direction:column;gap:5px;}
+.login-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);}
+.login-email-row{display:flex;gap:6px;}
+.login-input{border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;transition:.15s;}
+.login-input:focus{border-color:var(--color-gold);box-shadow:0 0 0 3px var(--color-gold-bg);}
+.login-domain{border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 10px;font-family:var(--font-body);font-size:13px;color:var(--color-text-primary);background:#fff;outline:none;cursor:pointer;white-space:nowrap;}
+.login-domain:focus{border-color:var(--color-gold);}
+.login-btn{height:44px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:15px;font-weight:700;cursor:pointer;transition:.15s;letter-spacing:.04em;}
+.login-btn:hover{background:var(--color-gold-light);}
+.login-btn:disabled{opacity:.5;cursor:not-allowed;}
+.login-err{font-size:12px;color:#c62828;text-align:center;min-height:16px;}
+.login-version{font-size:11px;color:var(--color-text-muted);text-align:center;margin-top:4px;}
+
+/* 登入者標示 */
+.user-chip{display:flex;align-items:center;gap:7px;background:var(--color-gold-bg);border:1px solid var(--color-gold);border-radius:20px;padding:4px 12px 4px 8px;cursor:pointer;transition:.15s;}
+.user-chip:hover{background:#e8dbb0;}
+.user-chip-avatar{width:22px;height:22px;border-radius:50%;background:var(--color-gold);color:#1c1c15;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.user-chip-name{font-size:12px;font-weight:600;color:var(--color-text-primary);}
+.user-menu{position:absolute;top:52px;right:16px;background:#fff;border:1px solid var(--color-border-card);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:500;overflow:hidden;min-width:160px;}
+.user-menu-item{padding:10px 16px;font-size:13px;color:var(--color-text-primary);cursor:pointer;transition:.1s;}
+.user-menu-item:hover{background:#faf8f3;}
+.user-menu-divider{height:1px;background:var(--color-border-card);}
+
+/* 權限鎖定 */
+.permission-locked{opacity:.35;pointer-events:none;user-select:none;}
+.lock-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;color:#9a9680;padding:1px 6px;border:1px solid #ccc;border-radius:10px;margin-left:4px;}
+
 </style>
   <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
   <meta property="og:description" content="整合各類行政申請簽核與企業文件中心，全面提升團隊行政效率與協作！" />
@@ -872,9 +907,55 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 <div class="app-wrapper">
 
   <!-- ══ Header ══ -->
-    <header class="app-header">
+    
+<!-- ════ 登入畫面 ════ -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo-row">
+      <img class="login-logo" src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" onerror="this.style.display='none'"/>
+      <span class="login-title">人資行政管理系統</span>
+    </div>
+    <div class="login-subtitle">請登入以繼續使用</div>
+
+    <div class="login-field">
+      <label class="login-label">電子信箱</label>
+      <div class="login-email-row">
+        <input class="login-input" id="login-user" placeholder="請輸入帳號" autocomplete="username" style="flex:1;" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <span style="display:flex;align-items:center;font-size:14px;color:#555;padding:0 2px;">@</span>
+        <select class="login-domain" id="login-domain">
+          <option value="gmail.com">gmail.com</option>
+          <option value="yahoo.com.tw">yahoo.com.tw</option>
+          <option value="outlook.com">outlook.com</option>
+          <option value="hotmail.com">hotmail.com</option>
+          <option value="icloud.com">icloud.com</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label class="login-label">密碼</label>
+      <input class="login-input" id="login-pass" type="password" placeholder="請輸入密碼" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+
+    <div class="login-err" id="login-err"></div>
+
+    <button class="login-btn" id="login-btn" onclick="doLogin()">登 入</button>
+
+    <div class="login-version">© Copyright 2026 MYs System Version:b1.0.0.0-04-13-2026-115</div>
+  </div>
+</div>
+
+<!-- 使用者選單 -->
+<div class="user-menu" id="userMenu" style="display:none;">
+  <div class="user-menu-item" id="um-name" style="font-weight:600;color:var(--color-gold);pointer-events:none;"></div>
+  <div class="user-menu-item" id="um-role" style="font-size:11px;color:var(--color-text-muted);pointer-events:none;"></div>
+  <div class="user-menu-divider"></div>
+  <div class="user-menu-item" onclick="doLogout()">🚪 登出</div>
+</div>
+
+  <header class="app-header">
     <div class="header-brand">
-      <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs Logo" class="header-logo" style="width:42px;height:42px;object-fit:contain;border-radius:50%;border:1.5px solid var(--color-gold);background-color:var(--color-gold-bg);" />
+      <img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs Logo" class="header-logo" style="height:38px;width:auto;opacity:.9;" />
       <div class="header-title-group">
         <span class="header-title">人資行政管理系統</span>
         <span class="header-subtitle">© Copyright 2026 MYs System Version:b1.0.0.0-04-13-2026-115</span>
@@ -884,6 +965,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <button class="btn">↓ 匯出 CSV</button>
       <button class="btn-feedback" onclick="openFeedback()">！意見欄</button>
       <button class="btn-danger" onclick="openBugReport()">❌ 回報問題</button>
+      <div class="user-chip" id="userChip" onclick="toggleUserMenu()" style="display:none;"><div class="user-chip-avatar" id="userInitial">?</div><span class="user-chip-name" id="userName">訪客</span></div>
       <a href="#" class="header-home-btn" onclick="showPage('main',null);return false;" title="首頁" style="font-size:20px;margin-left:4px;">🏠</a>
     </div>
   </header>
@@ -945,7 +1027,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-label">設定</p>
         <p class="sidebar-section-sub">後台限定</p>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('main',this)"><span class="sidebar-icon">⚙️</span>系統設定</a>
-        <a href="#" class="sidebar-nav-item" onclick="return showPage('main',this)"><span class="sidebar-icon bright">🧑‍💼</span>帳號管理</a>
+        <a href="#" class="sidebar-nav-item" onclick="return showPage('account',this)"><span class="sidebar-icon bright">🧑‍💼</span>帳號管理</a>
       </div>
 
     </aside>
@@ -1612,6 +1694,151 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
       </div>
 
+    
+      <!-- ════ 帳號管理 ════ -->
+      <div class="page-section" id="page-account">
+
+        <!-- 標題列 + 新增按鈕 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div>
+            <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text-primary);">帳號管理</div>
+            <div style="font-size:12px;color:var(--color-text-muted);margin-top:2px;">管理系統帳號、角色與權限設定</div>
+          </div>
+          <button class="btn" onclick="openAccountModal('add')" style="display:flex;align-items:center;gap:6px;">＋ 新增帳號</button>
+        </div>
+
+        <!-- 統計列 -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+          <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">員工</span><div class="stat-card-value-row"><span class="stat-card-value gold" id="acc-emp">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">主管</span><div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="acc-mgr">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-reject-grp"><span class="stat-card-label">停用</span><div class="stat-card-value-row"><span class="stat-card-value red" id="acc-dis">0</span><span class="stat-card-unit">人</span></div></div>
+        </div>
+
+        <!-- 表格 -->
+        <div class="table-section" style="border-top:none;border-radius:var(--radius-lg);">
+          <div class="toolbar">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input class="search-input" id="acc-search" placeholder="搜尋姓名或信箱…" oninput="renderAccTable()"/>
+            </div>
+            <select class="filter-select" id="acc-role-filter" onchange="renderAccTable()">
+              <option value="">全部角色</option>
+              <option value="admin">管理員</option>
+              <option value="manager">主管</option>
+              <option value="employee">員工</option>
+            </select>
+            <select class="filter-select" id="acc-status-filter" onchange="renderAccTable()">
+              <option value="">全部狀態</option>
+              <option value="啟用">啟用</option>
+              <option value="停用">停用</option>
+            </select>
+          </div>
+          <table class="data-table">
+            <colgroup>
+              <col style="width:200px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:80px;"/>
+              <col style="width:90px;"/><col style="width:70px;"/><col style="width:110px;"/><col style="width:100px;"/>
+            </colgroup>
+            <thead><tr>
+              <th>電子信箱</th><th>姓名</th><th>團隊</th><th>職稱</th><th>角色</th><th>狀態</th><th>建立日期</th><th>操作</th>
+            </tr></thead>
+            <tbody id="acc-tbody">
+              <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- 帳號 Modal -->
+      <div class="modal-overlay" id="accModal">
+        <div class="modal-box" style="max-width:500px;">
+          <div class="modal-header">
+            <p class="modal-title" id="accModalTitle">新增帳號</p>
+            <button class="modal-close" onclick="closeModal('accModal')">✕</button>
+          </div>
+          <div class="modal-body" style="gap:14px;">
+            <div id="acc-form-err" style="display:none;color:#c62828;font-size:12px;background:#fce4e4;padding:8px 12px;border-radius:7px;"></div>
+
+            <!-- 信箱 -->
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">電子信箱<span style="color:#e53935;margin-left:2px;">*</span></label>
+              <div style="display:flex;gap:6px;">
+                <input class="form-input" id="acc-mail-user" placeholder="帳號" style="flex:1;"/>
+                <span style="display:flex;align-items:center;font-size:14px;color:#555;">@</span>
+                <select class="filter-select" id="acc-mail-domain" style="width:auto;">
+                  <option value="gmail.com">gmail.com</option>
+                  <option value="yahoo.com.tw">yahoo.com.tw</option>
+                  <option value="outlook.com">outlook.com</option>
+                  <option value="hotmail.com">hotmail.com</option>
+                  <option value="icloud.com">icloud.com</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 姓名 + 團隊 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">姓名<span style="color:#e53935;margin-left:2px;">*</span></label>
+                <input class="form-input" id="acc-name" placeholder="真實姓名"/>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">團隊</label>
+                <select class="filter-select" id="acc-team" style="height:36px;">
+                  <option value="">請選擇</option>
+                  <option value="外場">外場</option>
+                  <option value="吧台">吧台</option>
+                  <option value="內廚">內廚</option>
+                  <option value="管理">管理</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 職稱 + 角色 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">職稱</label>
+                <select class="filter-select" id="acc-title" style="height:36px;">
+                  <option value="">請選擇</option>
+                  <option value="正職">正職</option>
+                  <option value="兼職">兼職</option>
+                  <option value="臨時工">臨時工</option>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">角色<span style="color:#e53935;margin-left:2px;">*</span></label>
+                <select class="filter-select" id="acc-role" style="height:36px;">
+                  <option value="employee">員工</option>
+                  <option value="manager">主管</option>
+                  <option value="admin">管理員（Admin）</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 密碼 -->
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">密碼<span style="color:#e53935;margin-left:2px;">*</span><span id="acc-pass-hint" style="font-size:11px;color:var(--color-text-muted);margin-left:6px;">（留空則保持不變）</span></label>
+              <input class="form-input" id="acc-pass" type="password" placeholder="設定密碼"/>
+            </div>
+
+            <!-- 狀態開關 -->
+            <div style="display:flex;align-items:center;gap:10px;">
+              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">帳號狀態</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" id="acc-active" checked style="width:16px;height:16px;accent-color:var(--color-gold);"/>
+                <span style="font-size:13px;" id="acc-active-label">啟用</span>
+              </label>
+            </div>
+
+            <input type="hidden" id="acc-edit-id"/>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal('accModal')">取消</button>
+            <button class="btn-submit" id="acc-save-btn" onclick="saveAccount()">💾 儲存</button>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -1772,6 +1999,7 @@ function showPage(pageId, el) {
     if (fi) fi.classList.add('active');
   }
   if (pageId === 'doccenter') dcLoadFiles();
+  if (pageId === 'account') loadAccounts();
   if (pageId === 'myrecords') loadMyRecords();
   if (pageId === 'analytics') updateAnalytics();
   return false;
@@ -1991,7 +2219,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyBbKF9e8ebMtLQDGMD9dlG-lLbI9SJsrxRfDE0KLHC8lhsK2fYWUT56ovfePON-pFEnw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbx6XiMri5Rbxba0Dx_9sWDN4GVUJl5h31a4V-pofoQWVbYUPJevOtil0EAasYc_dFLO7A/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2794,8 +3022,350 @@ function exportMyRecords() {
 }
 
 
+
+/* ════════════════════════════════════════
+   登入 / 帳號管理系統
+   ════════════════════════════════════════ */
+
+var CURRENT_USER = null; // { mail, name, team, title, role }
+var ACCOUNTS_DATA = [];  // 所有帳號
+
+/* ── 角色中文對照 ── */
+var ROLE_LABEL = { admin:'管理員', manager:'主管', employee:'員工' };
+var ROLE_BADGE = {
+  admin:    'background:#7b1fa2;color:#fff;',
+  manager:  'background:#1565c0;color:#fff;',
+  employee: 'background:#2e7d32;color:#fff;'
+};
+
+/* ── 各角色可見的側邊欄 item（data-role 屬性）── */
+var ROLE_PAGES = {
+  admin:    ['doccenter','leave','myrecords','workhour','labor','main','analytics','salary','account','settings'],
+  manager:  ['doccenter','leave','myrecords','workhour','labor','main'],
+  employee: ['doccenter','leave','myrecords'],
+};
+
+/* ══ 初始化：檢查 localStorage ══ */
+function initAuth() {
+  var saved = localStorage.getItem('mys_user');
+  if (saved) {
+    try {
+      CURRENT_USER = JSON.parse(saved);
+      onLoginSuccess(CURRENT_USER, true);
+      return;
+    } catch(e) {}
+  }
+  // 未登入 → 顯示登入畫面
+  document.getElementById('loginOverlay').style.display = 'flex';
+}
+
+/* ══ 執行登入 ══ */
+function doLogin() {
+  var user   = document.getElementById('login-user').value.trim();
+  var domain = document.getElementById('login-domain').value;
+  var pass   = document.getElementById('login-pass').value;
+  var errEl  = document.getElementById('login-err');
+  var btn    = document.getElementById('login-btn');
+
+  if (!user || !pass) { errEl.textContent = '請填寫帳號和密碼'; return; }
+  var mail = user + '@' + domain;
+
+  btn.disabled = true; btn.textContent = '登入中…';
+  errEl.textContent = '';
+
+  // 從 GAS 驗證帳號
+  var url = GAS_URL + '?action=login&mail=' + encodeURIComponent(mail) + '&v=' + Date.now();
+  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      btn.disabled = false; btn.textContent = '登 入';
+      if (!data.success || !data.account) {
+        errEl.textContent = '帳號不存在或已停用';
+        return;
+      }
+      var acc = data.account;
+      if (acc.password !== pass) {
+        errEl.textContent = '密碼錯誤，請重新輸入';
+        return;
+      }
+      // 登入成功
+      CURRENT_USER = { mail:acc.mail, name:acc.name, team:acc.team, title:acc.title, role:acc.role };
+      localStorage.setItem('mys_user', JSON.stringify(CURRENT_USER));
+      onLoginSuccess(CURRENT_USER, false);
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = '登 入';
+      errEl.textContent = '連線失敗，請稍後再試';
+    });
+}
+
+/* ══ 登入成功後的處理 ══ */
+function onLoginSuccess(user, silent) {
+  // 隱藏登入畫面
+  document.getElementById('loginOverlay').style.display = 'none';
+
+  // 顯示 User Chip
+  var chip = document.getElementById('userChip');
+  chip.style.display = 'flex';
+  document.getElementById('userInitial').textContent = user.name.charAt(0);
+  document.getElementById('userName').textContent = user.name;
+
+  // 設定 User Menu
+  document.getElementById('um-name').textContent = user.name + '（' + (user.team||'') + ' ' + (user.title||'') + '）';
+  document.getElementById('um-role').textContent = '角色：' + (ROLE_LABEL[user.role]||user.role);
+
+  // 套用權限
+  applyPermissions(user.role);
+
+  // 載入文件中心
+  if (typeof dcLoadFiles === 'function') dcLoadFiles();
+}
+
+/* ══ 套用權限（根據角色顯示/隱藏側邊欄）══ */
+function applyPermissions(role) {
+  var allowed = ROLE_PAGES[role] || ROLE_PAGES.employee;
+
+  // 側邊欄權限
+  document.querySelectorAll('.sidebar-section').forEach(function(sec){
+    var items = sec.querySelectorAll('.sidebar-nav-item');
+    var hasVisible = false;
+    items.forEach(function(item){
+      var onclick = item.getAttribute('onclick') || item.getAttribute('href') || '';
+      var pageMatch = onclick.match(/showPage\('([^']+)'/);
+      var pageName  = pageMatch ? pageMatch[1] : '';
+      // 特殊：請假申請是 external link，employee 可用
+      if (item.classList.contains('external') && item.href && item.href.includes('application-forms')) {
+        item.style.display = '';
+        hasVisible = true;
+        return;
+      }
+      var ok = !pageName || allowed.indexOf(pageName) > -1;
+      item.style.display = ok ? '' : 'none';
+      if (ok) hasVisible = true;
+    });
+    // 如果整個 section 沒有可見項目，隱藏 section
+    sec.style.display = hasVisible ? '' : 'none';
+  });
+
+  // 隱藏 divider（根據前後 section 是否顯示）
+  document.querySelectorAll('.sidebar-divider').forEach(function(div){
+    var prev = div.previousElementSibling;
+    var next = div.nextElementSibling;
+    div.style.display = (prev && prev.style.display !== 'none' && next && next.style.display !== 'none') ? '' : 'none';
+  });
+}
+
+/* ══ 登出 ══ */
+function doLogout() {
+  localStorage.removeItem('mys_user');
+  CURRENT_USER = null;
+  document.getElementById('userMenu').style.display = 'none';
+  document.getElementById('userChip').style.display = 'none';
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-err').textContent = '';
+}
+
+/* ══ User Menu 開關 ══ */
+function toggleUserMenu() {
+  var m = document.getElementById('userMenu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e){
+  var chip = document.getElementById('userChip');
+  var menu = document.getElementById('userMenu');
+  if (chip && menu && !chip.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+
+/* ════════════
+   帳號管理
+   ════════════ */
+
+/* ── 載入所有帳號 ── */
+function loadAccounts() {
+  var tbody = document.getElementById('acc-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+
+  var url = GAS_URL + '?action=getAccounts&v=' + Date.now() + '_' + Math.random();
+  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!data.success) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#f44336;padding:24px;">載入失敗</td></tr>'; return; }
+      ACCOUNTS_DATA = data.accounts || [];
+      updateAccStats();
+      renderAccTable();
+    })
+    .catch(function(){
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#f44336;padding:24px;">連線失敗</td></tr>';
+    });
+}
+
+/* ── 統計 ── */
+function updateAccStats() {
+  var total=ACCOUNTS_DATA.length, emp=0, mgr=0, dis=0;
+  ACCOUNTS_DATA.forEach(function(a){
+    if(a.status==='停用') dis++;
+    else if(a.role==='manager') mgr++;
+    else if(a.role==='employee') emp++;
+  });
+  document.getElementById('acc-total').textContent = total;
+  document.getElementById('acc-emp').textContent   = emp;
+  document.getElementById('acc-mgr').textContent   = mgr;
+  document.getElementById('acc-dis').textContent   = dis;
+}
+
+/* ── 渲染表格 ── */
+function renderAccTable() {
+  var tbody  = document.getElementById('acc-tbody');
+  var search = (document.getElementById('acc-search')||{}).value||'';
+  var rf     = (document.getElementById('acc-role-filter')||{}).value||'';
+  var sf     = (document.getElementById('acc-status-filter')||{}).value||'';
+  var v      = search.toLowerCase();
+
+  var list = ACCOUNTS_DATA.filter(function(a){
+    if (rf && a.role   !== rf)     return false;
+    if (sf && a.status !== sf)     return false;
+    if (v  && (a.name||'').toLowerCase().indexOf(v) < 0 && (a.mail||'').toLowerCase().indexOf(v) < 0) return false;
+    return true;
+  });
+
+  tbody.innerHTML = '';
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--color-text-muted);">無符合帳號</td></tr>';
+    return;
+  }
+  list.forEach(function(a, i){
+    var roleStyle = ROLE_BADGE[a.role] || 'background:#eee;color:#333;';
+    var stColor   = a.status==='停用'?'color:#c62828;':'color:#2e7d32;';
+    var tr = document.createElement('tr');
+    if(i%2) tr.style.background='var(--color-bg-table-alt)';
+    tr.innerHTML =
+      '<td style="font-size:12px;">'+(a.mail||'—')+'</td>'+
+      '<td style="font-weight:500;">'+(a.name||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(a.title||'—')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;'+roleStyle+'">'+(ROLE_LABEL[a.role]||a.role)+'</span></td>'+
+      '<td style="text-align:center;font-size:12px;font-weight:600;'+stColor+'">'+(a.status||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--color-text-muted);text-align:center;">'+(a.createdAt||'—')+'</td>'+
+      '<td style="text-align:center;">' +
+        '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:4px;">編輯</button>' +
+        '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;">重設密碼</button>' +
+      '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+/* ── 開啟帳號 Modal ── */
+function openAccountModal(mode, dataStr) {
+  document.getElementById('acc-form-err').style.display = 'none';
+  document.getElementById('acc-edit-id').value = '';
+  document.getElementById('acc-pass-hint').style.display = mode==='edit' ? 'inline' : 'none';
+
+  if (mode === 'add') {
+    document.getElementById('accModalTitle').textContent = '新增帳號';
+    document.getElementById('acc-mail-user').value = '';
+    document.getElementById('acc-name').value  = '';
+    document.getElementById('acc-team').value  = '';
+    document.getElementById('acc-title').value = '';
+    document.getElementById('acc-role').value  = 'employee';
+    document.getElementById('acc-pass').value  = '';
+    document.getElementById('acc-active').checked = true;
+    document.getElementById('acc-active-label').textContent = '啟用';
+  } else {
+    var a = JSON.parse(decodeURIComponent(dataStr));
+    document.getElementById('accModalTitle').textContent = '編輯帳號';
+    var parts = (a.mail||'').split('@');
+    document.getElementById('acc-mail-user').value = parts[0]||'';
+    var domainEl = document.getElementById('acc-mail-domain');
+    for(var i=0;i<domainEl.options.length;i++){
+      if(domainEl.options[i].value===(parts[1]||'gmail.com')){ domainEl.selectedIndex=i; break; }
+    }
+    document.getElementById('acc-name').value  = a.name||'';
+    document.getElementById('acc-team').value  = a.team||'';
+    document.getElementById('acc-title').value = a.title||'';
+    document.getElementById('acc-role').value  = a.role||'employee';
+    document.getElementById('acc-pass').value  = '';
+    var isActive = a.status !== '停用';
+    document.getElementById('acc-active').checked = isActive;
+    document.getElementById('acc-active-label').textContent = isActive ? '啟用' : '停用';
+    document.getElementById('acc-edit-id').value = a.mail||'';
+  }
+
+  document.getElementById('acc-active').onchange = function(){
+    document.getElementById('acc-active-label').textContent = this.checked ? '啟用' : '停用';
+  };
+
+  document.getElementById('accModal').classList.add('open');
+}
+
+/* ── 儲存帳號 ── */
+function saveAccount() {
+  var mailUser = document.getElementById('acc-mail-user').value.trim();
+  var domain   = document.getElementById('acc-mail-domain').value;
+  var name     = document.getElementById('acc-name').value.trim();
+  var team     = document.getElementById('acc-team').value;
+  var title    = document.getElementById('acc-title').value;
+  var role     = document.getElementById('acc-role').value;
+  var pass     = document.getElementById('acc-pass').value;
+  var active   = document.getElementById('acc-active').checked;
+  var editId   = document.getElementById('acc-edit-id').value;
+  var errEl    = document.getElementById('acc-form-err');
+
+  if (!mailUser) { errEl.textContent='請填寫信箱帳號'; errEl.style.display='block'; return; }
+  if (!name)     { errEl.textContent='請填寫姓名';     errEl.style.display='block'; return; }
+  if (!editId && !pass) { errEl.textContent='新增帳號必須設定密碼'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+
+  var btn = document.getElementById('acc-save-btn');
+  btn.disabled = true; btn.textContent = '⏳ 儲存中…';
+
+  var now = new Date(); var p=function(n){return String(n).padStart(2,'0');};
+  var ts  = now.getFullYear()+'/'+p(now.getMonth()+1)+'/'+p(now.getDate())+' '+p(now.getHours())+':'+p(now.getMinutes());
+
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    body: JSON.stringify({
+      action:    editId ? 'updateAccount' : 'addAccount',
+      mail:      mailUser + '@' + domain,
+      name:      name,
+      team:      team,
+      title:     title,
+      role:      role,
+      password:  pass,
+      status:    active ? '啟用' : '停用',
+      createdAt: editId ? undefined : ts,
+    })
+  })
+  .then(function(){
+    btn.disabled=false; btn.textContent='💾 儲存';
+    closeModal('accModal');
+    setTimeout(loadAccounts, 1500);
+  })
+  .catch(function(err){
+    btn.disabled=false; btn.textContent='💾 儲存';
+    errEl.textContent='儲存失敗：'+err.message; errEl.style.display='block';
+  });
+}
+
+/* ── 重設密碼 ── */
+function resetPassword(mail) {
+  var np = prompt('為 '+mail+' 設定新密碼：');
+  if (!np) return;
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    body: JSON.stringify({ action:'updateAccount', mail:mail, password:np })
+  }).then(function(){
+    alert('✅ 密碼已重設');
+  });
+}
+
+
 filterTable();
-dcLoadFiles(); // 進入文件中心時立即從 GAS 載入
+dcLoadFiles();
+initAuth(); // 進入文件中心時立即從 GAS 載入
 </script>
 </body>
 </html>
