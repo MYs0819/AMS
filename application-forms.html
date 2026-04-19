@@ -130,7 +130,19 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .st.ok{background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;}
 .st.err{background:#fce4e4;border:1px solid #ef9a9a;color:#c62828;}
 .hidden{display:none!important;}
+
+/* ── Toast 通知 ── */
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 8px 24px rgba(0,0,0,.18);font-family:var(--font);font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;min-width:260px;max-width:380px;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;border-left:4px solid transparent;}
+.toast.show{transform:translateX(0);}
+.toast.ok{border-left-color:#4caf50;color:#2e7d32;background:#f1f8f1;}
+.toast.err{border-left-color:#f44336;color:#c62828;background:#fff5f5;}
+.toast.info{border-left-color:var(--gold);color:#7a5000;background:#fdf8ee;}
+.toast-icon{font-size:16px;flex-shrink:0;}
+.toast-msg{flex:1;line-height:1.4;}
 </style>
+  <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
+  <meta property="og:description" content="整合各類行政申請簽核與企業文件中心，全面提升團隊行政效率與協作！" />
 </head>
 <body>
 <div class="page-wrap">
@@ -146,6 +158,9 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 </header>
 
 <!-- ── Main ── -->
+
+<!-- Toast 容器 -->
+<div class="toast-container" id="toast-container"></div>
 <main class="app-main" style="justify-content:center;">
   <div class="selector-wrap">
     <div class="selector-title" style="margin-bottom:20px;">請選擇申請類型</div>
@@ -169,7 +184,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 </main>
 
 <!-- ── Footer ── -->
-<footer class="app-footer"><span class="footer-text">Copyright 2026 MYs System Version:b1.0.0.0</span></footer>
+<footer class="app-footer"><img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" style="height:22px;width:auto;opacity:.8;"/><span class="footer-text">© Copyright 2026 MYs System Version:b1.0.0.0-04-13-2026-115</span></footer>
 
 </div><!-- page-wrap -->
 
@@ -199,13 +214,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
             <div class="f-lbl" style="margin-bottom:6px;">請假人<span class="req">*</span></div>
             <div class="f-row f-c2" style="margin-bottom:0;">
               <div class="f-g"><label class="f-lbl" style="font-size:11px;">職稱</label><input class="f-inp" id="lv-title" placeholder="例：正職"/></div>
-              <div class="f-g">
-                <label class="f-lbl" style="font-size:11px;">姓名（親簽）<span class="req">*</span></label>
-                <div style="display:flex;gap:6px;align-items:center;">
-                  <input class="f-inp" id="lv-name" placeholder="姓名" style="flex:1;"/>
-                  <div onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;width:80px;height:34px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'" id="lv-sig1-preview">✍ 簽名</div>
-                </div>
-              </div>
+              <div class="f-g"><label class="f-lbl" style="font-size:11px;">姓名<span class="req">*</span></label><input class="f-inp" id="lv-name" placeholder="姓名"/></div>
             </div>
           </div>
           <div>
@@ -247,13 +256,13 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div class="date-line">
               <span class="dl-lbl">自</span>
-              <input class="f-inp" id="lv-fd" type="date" onchange="calcD()" style="text-align:center;"/>
-              <input class="f-inp dl-short" id="lv-ft" type="time" onchange="calcD()" style="text-align:center;max-width:88px;"/>
+              <input class="f-inp" id="lv-fd" type="date" onchange="calcD()" style="text-align:center;max-width:118px;"/>
+              <input class="f-inp" id="lv-ft" type="time" onchange="calcD()" style="text-align:center;max-width:130px;" step="60"/>
             </div>
             <div class="date-line">
               <span class="dl-lbl">至</span>
-              <input class="f-inp" id="lv-td" type="date" onchange="calcD()" style="text-align:center;"/>
-              <input class="f-inp dl-short" id="lv-tt" type="time" onchange="calcD()" style="text-align:center;max-width:88px;"/>
+              <input class="f-inp" id="lv-td" type="date" onchange="calcD()" style="text-align:center;max-width:118px;"/>
+              <input class="f-inp" id="lv-tt" type="time" onchange="calcD()" style="text-align:center;max-width:130px;" step="60"/>
             </div>
           </div>
           <!-- 右欄：共 日 小時 置中 -->
@@ -289,17 +298,17 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         </ul>
         <!-- 申請人已知悉親簽 -->
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
-          <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:6px;">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
-          <div class="sig-wrap" style="max-height:80px;">
-            <canvas class="sig-canvas" id="lv-sig2" height="80"></canvas>
-            <button class="sig-clear" onclick="clearSig('lv-sig2')">清除</button>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:12px;font-weight:600;color:var(--dark);">申請人已知悉上述規定<span class="req">*</span></span>
+            <div onclick="openSigModal('lv-sig2','申請人已知悉上述規定')" id="lv-sig2-preview" style="border:1.5px solid var(--border);border-radius:7px;min-width:90px;height:32px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">✍ 點擊簽名</div>
           </div>
+          <canvas id="lv-sig2" width="1" height="1" style="display:none;"></canvas>
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-c" onclick="closeModal('lvModal')">取消</button>
-      <button class="btn-s" id="lv-btn" onclick="submitLv()">✓ 確認送出</button>
+      <button class="btn-s" id="lv-btn" onclick="submitLv()">📤 送出申請</button>
     </div>
   </div>
 </div>
@@ -401,22 +410,43 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         </ul>
         <!-- 申請人已知悉親簽 -->
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
-          <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:6px;">申請人已知悉上述規定（親簽）<span class="req">*</span></div>
-          <div class="sig-wrap" style="max-height:80px;">
-            <canvas class="sig-canvas" id="rt-sig2" height="80"></canvas>
-            <button class="sig-clear" onclick="clearSig('rt-sig2')">清除</button>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:12px;font-weight:600;color:var(--dark);">申請人已知悉上述規定<span class="req">*</span></span>
+            <div onclick="openSigModal('rt-sig2','申請人已知悉上述規定')" id="rt-sig2-preview" style="border:1.5px solid var(--border);border-radius:7px;min-width:90px;height:32px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">✍ 點擊簽名</div>
           </div>
+          <canvas id="rt-sig2" width="1" height="1" style="display:none;"></canvas>
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-c" onclick="closeModal('rtModal')">取消</button>
-      <button class="btn-s" id="rt-btn" onclick="submitRt()">✓ 確認送出</button>
+      <button class="btn-s" id="rt-btn" onclick="submitRt()">📤 送出申請</button>
     </div>
   </div>
 </div>
 
 <script>
+
+/* ══ Toast 通知 ══ */
+function showToast(msg, type, duration) {
+  duration = duration || 3500;
+  var ct  = document.getElementById('toast-container');
+  var t   = document.createElement('div');
+  var icon = type==='ok'?'✅':type==='err'?'⚠️':'ℹ️';
+  t.className = 'toast ' + (type||'info');
+  t.innerHTML = '<span class="toast-icon">' + icon + '</span><span class="toast-msg">' + msg + '</span>';
+  ct.appendChild(t);
+  setTimeout(function(){ t.classList.add('show'); }, 20);
+  setTimeout(function(){
+    t.classList.remove('show');
+    setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 350);
+  }, duration);
+}
+
+/* ══ 送出後鎖定狀態 ══ */
+var _lvSubmitted = false;
+var _rtSubmitted = false;
+
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbyBbKF9e8ebMtLQDGMD9dlG-lLbI9SJsrxRfDE0KLHC8lhsK2fYWUT56ovfePON-pFEnw/exec';
 
 /* ── 工具 ── */
@@ -534,33 +564,35 @@ function sigEmpty(id) {
 
 /* ── 送出請假 ── */
 function submitLv() {
+  if (_lvSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
+
   var unit  = document.getElementById('lv-unit').value.trim();
   var name  = document.getElementById('lv-name').value.trim();
   var type  = document.getElementById('lv-type').value;
   var fd    = document.getElementById('lv-fd').value;
   var reason= document.getElementById('lv-reason').value.trim();
 
-  if (!unit)   { showSt('lv-st','⚠ 請填寫單位','err'); return; }
-  if (!name)   { showSt('lv-st','⚠ 請填寫請假人姓名','err'); return; }
-  if (!type)   { showSt('lv-st','⚠ 請選擇假別','err'); return; }
-  if (!fd)     { showSt('lv-st','⚠ 請填寫起始日期','err'); return; }
-  if (!reason) { showSt('lv-st','⚠ 請填寫事由','err'); return; }
+  if (!unit)   { showToast('請填寫單位','err'); return; }
+  if (!name)   { showToast('請填寫請假人姓名','err'); return; }
+  if (!type)   { showToast('請選擇假別','err'); return; }
+  if (!fd)     { showToast('請填寫起始日期','err'); return; }
+  if (!reason) { showToast('請填寫事由','err'); return; }
   if (type === '其他' && !document.getElementById('lv-other').value.trim()) {
-    showSt('lv-st','⚠ 請填寫其他假別說明','err'); return;
+    showToast('請填寫其他假別說明','err'); return;
   }
-  if (sigEmpty('lv-sig1')) { showSt('lv-st','⚠ 請完成請假人姓名親簽','err'); return; }
-  if (sigEmpty('lv-sig2')) { showSt('lv-st','⚠ 請完成申請人已知悉欄親簽','err'); return; }
+  if (sigEmpty('lv-sig1')) { showToast('請完成請假人姓名簽名（點姓名欄旁的 ✍ 按鈕）','err'); return; }
+  if (sigEmpty('lv-sig2')) { showToast('請完成申請人已知悉上述規定簽名','err'); return; }
 
   var btn = document.getElementById('lv-btn');
   btn.disabled = true; btn.textContent = '⏳ 送出中…';
-  showSt('lv-st','正在送出申請…','info');
+  showToast('正在送出申請，請稍候…','info');
 
   var subtype = type + (type==='其他' ? ' ('+document.getElementById('lv-other').value.trim()+')' : '');
 
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
-      action: 'addApplication',
+      action:'addApplication',
       id:          genId(),
       name:        name,
       team:        unit,
@@ -579,17 +611,24 @@ function submitLv() {
     })
   })
   .then(function(){
-    btn.disabled = false; btn.textContent = '✓ 確認送出';
-    showSt('lv-st','✅ 申請已送出！狀態：主管待審核中。','ok');
+    _lvSubmitted = true;
+    btn.textContent = '✅ 已送出';
+    btn.style.background = '#e8f5e9';
+    btn.style.borderColor = '#4caf50';
+    btn.style.color = '#2e7d32';
+    showToast('申請已送出！目前狀態：主管待審核中。', 'ok', 5000);
   })
   .catch(function(err){
-    btn.disabled = false; btn.textContent = '✓ 確認送出';
-    showSt('lv-st','送出失敗：' + err.message, 'err');
+    btn.disabled = false; btn.textContent = '📤 送出申請';
+    showToast('送出失敗：' + err.message, 'err');
   });
 }
 
+
 /* ── 送出留復職 ── */
 function submitRt() {
+  if (_rtSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
+
   var name   = document.getElementById('rt-name').value.trim();
   var team   = document.getElementById('rt-team').value.trim();
   var rtype  = (document.querySelector('input[name="rt-type"]:checked') || {}).value || '';
@@ -601,32 +640,32 @@ function submitRt() {
   var addr   = document.getElementById('rt-addr').value.trim();
   var reason = (document.querySelector('input[name="rt-reason"]:checked') || {}).value || '';
 
-  if (!name)   { showSt('rt-st','⚠ 請填寫申請人姓名','err'); return; }
-  if (!team)   { showSt('rt-st','⚠ 請填寫申請團隊','err'); return; }
-  if (!rtype)  { showSt('rt-st','⚠ 請選擇申請類型','err'); return; }
-  if (!labor)  { showSt('rt-st','⚠ 請選擇勞保方式','err'); return; }
-  if (!health) { showSt('rt-st','⚠ 請選擇健保方式','err'); return; }
-  if (!start)  { showSt('rt-st','⚠ 請填寫開始日期','err'); return; }
-  if (!end)    { showSt('rt-st','⚠ 請填寫結束日期','err'); return; }
-  if (!phone)  { showSt('rt-st','⚠ 請填寫連絡電話','err'); return; }
-  if (!addr)   { showSt('rt-st','⚠ 請填寫聯絡地址','err'); return; }
-  if (!reason) { showSt('rt-st','⚠ 請選擇申請原因','err'); return; }
+  if (!name)   { showToast('請填寫申請人姓名','err'); return; }
+  if (!team)   { showToast('請填寫申請團隊','err'); return; }
+  if (!rtype)  { showToast('請選擇申請類型','err'); return; }
+  if (!labor)  { showToast('請選擇勞保方式','err'); return; }
+  if (!health) { showToast('請選擇健保方式','err'); return; }
+  if (!start)  { showToast('請填寫開始日期','err'); return; }
+  if (!end)    { showToast('請填寫結束日期','err'); return; }
+  if (!phone)  { showToast('請填寫連絡電話','err'); return; }
+  if (!addr)   { showToast('請填寫聯絡地址','err'); return; }
+  if (!reason) { showToast('請選擇申請原因','err'); return; }
   if (reason === '其他' && !document.getElementById('rt-other').value.trim()) {
-    showSt('rt-st','⚠ 請填寫其他原因說明','err'); return;
+    showToast('請填寫其他原因說明','err'); return;
   }
-  if (sigEmpty('rt-sig1')) { showSt('rt-st','⚠ 請完成申請人姓名親簽','err'); return; }
-  if (sigEmpty('rt-sig2')) { showSt('rt-st','⚠ 請完成申請人已知悉欄親簽','err'); return; }
+  if (sigEmpty('rt-sig1')) { showToast('請完成申請人簽名（點申請人欄旁的 ✍ 按鈕）','err'); return; }
+  if (sigEmpty('rt-sig2')) { showToast('請完成申請人已知悉上述規定簽名','err'); return; }
 
   var btn = document.getElementById('rt-btn');
   btn.disabled = true; btn.textContent = '⏳ 送出中…';
-  showSt('rt-st','正在送出申請…','info');
+  showToast('正在送出申請，請稍候…','info');
 
   var reasonFull = reason + (reason==='其他' ? ' - '+document.getElementById('rt-other').value.trim() : '');
 
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
-      action:    'addApplication',
+      action:'addApplication',
       id:        genId(),
       name:      name,
       team:      team,
@@ -646,14 +685,19 @@ function submitRt() {
     })
   })
   .then(function(){
-    btn.disabled = false; btn.textContent = '✓ 確認送出';
-    showSt('rt-st','✅ 申請已送出！狀態：主管待審核中。','ok');
+    _rtSubmitted = true;
+    btn.textContent = '✅ 已送出';
+    btn.style.background = '#e8f5e9';
+    btn.style.borderColor = '#4caf50';
+    btn.style.color = '#2e7d32';
+    showToast('申請已送出！目前狀態：主管待審核中。', 'ok', 5000);
   })
   .catch(function(err){
-    btn.disabled = false; btn.textContent = '✓ 確認送出';
-    showSt('rt-st','送出失敗：' + err.message, 'err');
+    btn.disabled = false; btn.textContent = '📤 送出申請';
+    showToast('送出失敗：' + err.message, 'err');
   });
 }
+
 
 
 /* ══ 簽名 Modal ══ */
