@@ -304,13 +304,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 /* ============================================================
    主內容
    ============================================================ */
-.app-main{flex:1;background-color:var(--color-bg-main);overflow-y:auto;overflow-x:hidden;padding:var(--content-padding-y) var(--content-padding-x);display:flex;flex-direction:column;gap:var(--space-4);min-height:0;}
+.app-main{flex:1;background-color:var(--color-bg-main);overflow-y:auto;padding:var(--content-padding-y) var(--content-padding-x);display:flex;flex-direction:column;gap:var(--space-4);min-height:0;}
 /* 文件中心 / 數據分析 頁面貼滿邊（無 padding）*/
-#page-doccenter.active,#page-analytics.active,#page-workhour.active,#page-labor.active,
-.page-section{display:none;flex-direction:column;gap:var(--space-4);overflow-x:hidden;}
-.page-section.active{display:flex;}
-#page-doccenter.active{flex:1;min-height:0;}
-#page-workhour.active,#page-labor.active,#page-analytics.active{flex:1;min-height:0;}
+#page-doccenter.active,#page-analytics.active,.page-section{display:none;flex-direction:column;gap:var(--space-4);overflow-x:hidden;}
+.page-section.active{display:flex;flex-direction:column;}
+#page-doccenter.active{display:flex;flex:1;min-height:0;flex-direction:column;}
+#page-workhour.active,#page-labor.active,#page-analytics.active{display:flex;flex:1;min-height:0;flex-direction:column;}
 
 /* ============================================================
    統計卡片
@@ -1552,7 +1551,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       </div>
 
-      </div><div class="page-section" id="page-workhour">
+      <div class="page-section" id="page-workhour">
         <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;overflow-y:auto;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;"><p class="inner-page-title" style="color:#e8e4d8;font-family:var(--font-display);">🕐 每日工時登記</p></div>
           <div class="article-section">
@@ -1992,7 +1991,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyBbKF9e8ebMtLQDGMD9dlG-lLbI9SJsrxRfDE0KLHC8lhsK2fYWUT56ovfePON-pFEnw/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
