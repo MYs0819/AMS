@@ -304,10 +304,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 /* ============================================================
    主內容
    ============================================================ */
-.app-main{flex:1;background-color:var(--color-bg-main);overflow-y:auto;padding:var(--content-padding-y) var(--content-padding-x);display:flex;flex-direction:column;gap:var(--space-4);min-height:0;}
+.app-main{flex:1;background-color:var(--color-bg-main);overflow-y:auto;overflow-x:hidden;padding:var(--content-padding-y) var(--content-padding-x);display:flex;flex-direction:column;gap:var(--space-4);min-height:0;}
 /* 文件中心 / 數據分析 頁面貼滿邊（無 padding）*/
-#page-doccenter.active,#page-analytics.active,#page-workhour.active,#page-labor.active,#page-myrecords.active{margin:calc(-1 * var(--content-padding-y)) calc(-1 * var(--content-padding-x));padding:0;}
-.page-section{display:none;flex-direction:column;gap:var(--space-4);}
+#page-doccenter.active,#page-analytics.active,#page-workhour.active,#page-labor.active,
+.page-section{display:none;flex-direction:column;gap:var(--space-4);overflow-x:hidden;}
 .page-section.active{display:flex;}
 #page-doccenter.active{flex:1;min-height:0;}
 #page-workhour.active,#page-labor.active,#page-analytics.active{flex:1;min-height:0;}
@@ -534,7 +534,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
    內頁：SOP / 公告 / 行政表單
    ============================================================ */
 .article-wrap{background-color:var(--article-bg);border:1px solid var(--article-border);border-radius:var(--article-radius);padding:var(--article-padding);box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:20px;}
-.inner-page-header{display:flex;align-items:center;justify-content:space-between;padding:16px var(--content-padding-x) 12px;border-bottom:2px solid var(--color-gold);margin-bottom:0;}
+.inner-page-header{display:flex;align-items:center;justify-content:space-between;padding:16px 28px 12px;border-bottom:2px solid var(--color-gold);margin-bottom:0;flex-shrink:0;}
 .inner-page-title{font-family:var(--article-title-font);font-size:var(--article-title-size);font-weight:var(--article-title-weight);color:var(--article-title-color);display:flex;align-items:center;gap:var(--space-3);}
 
 /* 清單/圖示切換 */
@@ -1125,8 +1125,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
             <!-- ════ 文件中心 ════ -->
       <div class="page-section active" id="page-doccenter">
-        <div style="padding:0;overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;background-color:#434343;border:none;">
-          <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#434343;">
+        <div class="article-wrap" style="padding:0;overflow:hidden;flex:1;min-height:0;display:flex;flex-direction:column;background-color:#434343;border-color:#555;">
+          <div class="inner-page-header" style="padding:16px 28px 12px;border-bottom:2px solid var(--color-gold);flex-shrink:0;background-color:#434343;margin-bottom:0;">
             <p class="inner-page-title" style="color:#e8e4d8;">🗂 文件中心</p>
             <div style="display:flex;align-items:center;gap:var(--space-2);">
               <button class="inner-upload-btn" id="dc-upload-btn" onclick="dcTriggerUpload()">📤 上傳</button>
@@ -1450,39 +1450,39 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
         <!-- 假別統計 -->
         <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
-          <div onclick="filterLeaveType('事假')" style="background:#f5f5f5;border:1.5px solid #ddd;border-radius:9px;padding:12px 8px;text-align:center;cursor:pointer;transition:.15s;" onmouseover="this.style.borderColor='var(--color-gold)'" onmouseout="this.style.borderColor='#ddd'">
-            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">事假</div>
-            <div style="font-size:22px;font-weight:700;color:#e53935;" id="lc-事假">0</div>
-            <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+          <div onclick="filterMyLeaveType('事假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+            <div class="stat-card-label">事假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value red" id="lc-事假">0</span></div>
+            <div class="stat-card-sub">日</div>
           </div>
-          <div onclick="filterLeaveType('病假')" style="background:#f5f5f5;border:1.5px solid #ddd;border-radius:9px;padding:12px 8px;text-align:center;cursor:pointer;transition:.15s;" onmouseover="this.style.borderColor='var(--color-gold)'" onmouseout="this.style.borderColor='#ddd'">
-            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">病假</div>
-            <div style="font-size:22px;font-weight:700;color:#039be5;" id="lc-病假">0</div>
-            <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+          <div onclick="filterMyLeaveType('病假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+            <div class="stat-card-label">病假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="lc-病假">0</span></div>
+            <div class="stat-card-sub">日</div>
           </div>
-          <div onclick="filterLeaveType('生理假')" style="background:#f5f5f5;border:1.5px solid #ddd;border-radius:9px;padding:12px 8px;text-align:center;cursor:pointer;transition:.15s;" onmouseover="this.style.borderColor='var(--color-gold)'" onmouseout="this.style.borderColor='#ddd'">
-            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">生理假</div>
-            <div style="font-size:22px;font-weight:700;color:#e91e63;" id="lc-生理假">0</div>
-            <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+          <div onclick="filterMyLeaveType('生理假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+            <div class="stat-card-label">生理假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="lc-生理假">0</span></div>
+            <div class="stat-card-sub">日</div>
           </div>
-          <div onclick="filterLeaveType('國假')" style="background:#f5f5f5;border:1.5px solid #ddd;border-radius:9px;padding:12px 8px;text-align:center;cursor:pointer;transition:.15s;" onmouseover="this.style.borderColor='var(--color-gold)'" onmouseout="this.style.borderColor='#ddd'">
-            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">國假</div>
-            <div style="font-size:22px;font-weight:700;color:#43a047;" id="lc-國假">0</div>
-            <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+          <div onclick="filterMyLeaveType('國假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+            <div class="stat-card-label">國假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span></div>
+            <div class="stat-card-sub">日</div>
           </div>
-          <div onclick="filterLeaveType('特休')" style="background:#f3e5f5;border:1.5px solid #ce93d8;border-radius:9px;padding:12px 8px;text-align:center;cursor:pointer;transition:.15s;" onmouseover="this.style.borderColor='#9c27b0'" onmouseout="this.style.borderColor='#ce93d8'">
-            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">特休</div>
-            <div style="font-size:22px;font-weight:700;color:#7b1fa2;" id="lc-特休">0</div>
-            <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+          <div onclick="filterMyLeaveType('特休',this)" style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+            <div class="stat-card-label">特休</div>
+            <div class="stat-card-value-row"><span class="stat-card-value purple" id="lc-特休">0</span></div>
+            <div class="stat-card-sub">日</div>
           </div>
-          <div onclick="filterLeaveType('其他')" style="background:#e3f2fd;border:1.5px solid #90caf9;border-radius:9px;padding:12px 8px;text-align:center;cursor:pointer;transition:.15s;" onmouseover="this.style.borderColor='#1565c0'" onmouseout="this.style.borderColor='#90caf9'">
-            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px;">其他</div>
-            <div style="font-size:22px;font-weight:700;color:#1565c0;" id="lc-其他">0</div>
-            <div style="font-size:10px;color:var(--color-text-muted);">日</div>
+          <div onclick="filterMyLeaveType('其他',this)" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+            <div class="stat-card-label">其他</div>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="lc-其他">0</span></div>
+            <div class="stat-card-sub">日</div>
           </div>
         </div>
 
-        <!-- 統計卡片 -->
+        <!-- 統計卡片（跟所有申請同樣的 stat-card）-->
         <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
           <div class="stat-card bg-total">
             <span class="stat-card-label">送出總數</span>
@@ -1506,26 +1506,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
         </div>
 
-        <!-- 篩選列 -->
-        <div class="toolbar">
-          <div class="toolbar-left" style="gap:8px;align-items:center;">
-            <select class="filter-select" id="my-type-filter" onchange="renderMyTable()">
-              <option value="">全部類型</option>
-            </select>
-            <button id="my-allbtn" onclick="toggleMyAllYear(this)" style="height:30px;padding:0 12px;border-radius:6px;border:1px solid #ccc;background:transparent;font-family:var(--font-body);font-size:12px;cursor:pointer;color:var(--color-text-secondary);">全年</button>
-            <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()">
-              <option value="2026">2026</option>
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
-            </select>
-          </div>
-          <div class="toolbar-right">
-            <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出申請紀錄</button>
-            <span class="toolbar-info">共 <span id="my-row-count">0</span> 筆</span>
-          </div>
-        </div>
-
-        <!-- Tab -->
+        <!-- Tab（跟所有申請同樣的 tab-bar）-->
         <div class="tab-bar">
           <div class="tab-item active" onclick="switchMyTab(this,'all')">全部 <span class="tab-count" id="mytab-all">0</span></div>
           <div class="tab-item" onclick="switchMyTab(this,'pending')">審核中 <span class="tab-count" id="mytab-pending">0</span></div>
@@ -1533,12 +1514,30 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="tab-item" onclick="switchMyTab(this,'reject')">退件 <span class="tab-count" id="mytab-reject">0</span></div>
         </div>
 
-        <!-- 表格 -->
+        <!-- 篩選列（跟所有申請同樣的 toolbar）-->
         <div class="table-section">
+          <div class="toolbar">
+            <select class="filter-select" id="my-type-filter" onchange="renderMyTable()" style="width:120px;">
+              <option value="">全部類型</option>
+            </select>
+            <button id="my-allbtn" onclick="toggleMyAllYear(this)" style="height:30px;padding:0 12px;border-radius:6px;border:1px solid var(--color-border-table);background:transparent;font-family:var(--font-body);font-size:12px;cursor:pointer;color:var(--color-text-secondary);">全年</button>
+            <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()" style="width:72px;">
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+            </select>
+            <div style="flex:1;"></div>
+            <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出申請紀錄</button>
+            <span class="toolbar-info">共 <span id="my-row-count">0</span> 筆</span>
+          </div>
+
+          <!-- 表格（跟所有申請同樣的 data-table 樣式）-->
           <table class="data-table">
             <colgroup>
-              <col style="width:110px;"/><col style="width:100px;"/><col style="width:80px;"/><col style="width:70px;"/>
-              <col style="width:155px;"/><col style="width:85px;"/><col style="width:62px;"/><col style="width:85px;"/><col style="width:62px;"/>
+              <col style="width:120px;"/><col style="width:112px;"/><col style="width:82px;"/>
+              <col style="width:70px;"/><col style="width:158px;"/>
+              <col style="width:82px;"/><col style="width:64px;"/>
+              <col style="width:82px;"/><col style="width:64px;"/>
             </colgroup>
             <thead><tr>
               <th>申請編號</th><th>申請日期</th><th>申請類型</th><th>假別</th>
@@ -1551,8 +1550,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="table-footer"><div class="pagination" id="my-pagination"></div></div>
         </div>
 
+      </div>
+
       </div><div class="page-section" id="page-workhour">
-        <div class="article-wrap dark-page" style="background-color:#434343;border:none;border-radius:0;flex:1;min-height:0;overflow-y:auto;">
+        <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;overflow-y:auto;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;"><p class="inner-page-title" style="color:#e8e4d8;font-family:var(--font-display);">🕐 每日工時登記</p></div>
           <div class="article-section">
             <p class="article-section-title">© 登記工時</p>
@@ -1588,7 +1589,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <!-- ════ 勞報稅務建檔 ════ -->
       <div class="page-section" id="page-labor">
-        <div class="article-wrap dark-page" style="background-color:#434343;border:none;border-radius:0;flex:1;min-height:0;">
+        <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;"><p class="inner-page-title" style="color:#e8e4d8;font-family:var(--font-display);">📑 勞報稅務建檔</p></div>
           <div class="article-section">
             <p class="article-section-title">© 勞報稅務建檔表</p>
@@ -1991,7 +1992,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyBbKF9e8ebMtLQDGMD9dlG-lLbI9SJsrxRfDE0KLHC8lhsK2fYWUT56ovfePON-pFEnw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2644,7 +2645,7 @@ function toggleMyAllYear(btn) {
   renderMyTable();
 }
 
-function filterLeaveType(type) {
+function filterMyLeaveType(type, el) {
   myLeaveFilter = (myLeaveFilter === type) ? '' : type;
   renderMyTable();
 }
@@ -2738,8 +2739,8 @@ function renderMyTable() {
     if (typeVal && a.type !== typeVal) return false;
     if (yearVal !== 'all' && a.startDate && a.startDate.slice(0,4) !== yearVal) return false;
     if (myLeaveFilter) {
-      var base = (a.subtype || '').split(' ')[0].split('(')[0];
-      if (base !== myLeaveFilter) return false;
+      var sub = a.subtype || '';
+      if (sub.indexOf(myLeaveFilter) === -1) return false;
     }
     return true;
   });
