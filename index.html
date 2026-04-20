@@ -867,7 +867,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 /* ════ 登入系統 ════ */
 .login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.45);z-index:9000;display:none;align-items:center;justify-content:center;}
 .login-box{background:#fff;border-radius:16px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:20px;}
-.login-logo-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:4px;}
+.login-logo-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .login-logo{width:48px;height:48px;object-fit:contain;}
 .login-title{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--color-text-primary);}
 .login-subtitle{font-size:12px;color:var(--color-text-muted);text-align:center;}
@@ -1067,7 +1067,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <div class="stats-grid">
           <div class="stat-card bg-total clickable">
             <span class="stat-card-label">申請總數</span>
-            <div class="stat-card-value-row"><span class="stat-card-value">15</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value" data-stat="total" id="stat-total">—</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">本月累計</span>
             <div class="stat-tooltip">
               <div class="stat-tooltip-title">本月所有申請</div>
@@ -1081,7 +1081,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <div class="stat-card bg-progress clickable">
             <span class="stat-card-label">進行中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold">6</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value gold" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">處理中</span>
             <div class="stat-tooltip">
               <div class="stat-tooltip-title">進行中</div>
@@ -1092,7 +1092,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <div class="stat-card bg-progress clickable">
             <span class="stat-card-label">待審核</span>
-            <div class="stat-card-value-row"><span class="stat-card-value deep-blue">4</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待處理</span>
             <div class="stat-tooltip">
               <div class="stat-tooltip-title">待審核</div>
@@ -1102,7 +1102,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <div class="stat-card bg-reject-grp clickable">
             <span class="stat-card-label">退件總數</span>
-            <div class="stat-card-value-row"><span class="stat-card-value red">2</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value red" data-stat="reject" id="stat-reject">—</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">本月累計</span>
             <div class="stat-tooltip">
               <div class="stat-tooltip-title">退件案件</div>
@@ -1111,7 +1111,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <div class="stat-card bg-reject-grp clickable">
             <span class="stat-card-label">補件總數</span>
-            <div class="stat-card-value-row"><span class="stat-card-value alert">1</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value alert" data-stat="supp" id="stat-supp">—</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待補件</span>
             <div class="stat-tooltip">
               <div class="stat-tooltip-title">補件中</div>
@@ -1777,28 +1777,21 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       </div>
 
       <!-- 帳號 Modal -->
-      <div class="modal-overlay" id="accModal">
-        <div class="modal-box" style="max-width:500px;">
-          <div class="modal-header">
-            <p class="modal-title" id="accModalTitle">新增帳號</p>
-            <button class="modal-close" onclick="closeModal('accModal')">✕</button>
+      <div class="modal-overlay" id="accModal" onclick="if(event.target===this)closeModal('accModal')">
+        <div style="background:#fff;border-radius:16px;padding:32px 36px;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text-primary);" id="accModalTitle">新增帳號</div>
+            <button onclick="closeModal('accModal')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--color-text-muted);line-height:1;">✕</button>
           </div>
-          <div class="modal-body" style="gap:14px;">
+          <div style="display:flex;flex-direction:column;gap:14px;">
             <div id="acc-form-err" style="display:none;color:#c62828;font-size:12px;background:#fce4e4;padding:8px 12px;border-radius:7px;"></div>
 
             <!-- 信箱 -->
             <div style="display:flex;flex-direction:column;gap:5px;">
               <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">電子信箱<span style="color:#e53935;margin-left:2px;">*</span></label>
-              <div style="display:flex;gap:6px;">
-                <input class="form-input" id="acc-mail-user" placeholder="帳號" style="flex:1;"/>
-                <span style="display:flex;align-items:center;font-size:14px;color:#555;">@</span>
-                <select class="filter-select" id="acc-mail-domain" style="width:auto;">
-                  <option value="gmail.com">gmail.com</option>
-                  <option value="yahoo.com.tw">yahoo.com.tw</option>
-                  <option value="outlook.com">outlook.com</option>
-                  <option value="hotmail.com">hotmail.com</option>
-                  <option value="icloud.com">icloud.com</option>
-                </select>
+              <div style="position:relative;">
+                <input style="border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;box-sizing:border-box;" id="acc-mail-input" type="email" placeholder="example@gmail.com" autocomplete="email" oninput="updateAccMailSuggestions()" list="acc-mail-suggestions"/>
+                <datalist id="acc-mail-suggestions"></datalist>
               </div>
             </div>
 
@@ -1856,12 +1849,13 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               </label>
             </div>
 
-            <input type="hidden" id="acc-edit-id"/>
+
           </div>
-          <div class="modal-footer">
-            <button class="btn-cancel" onclick="closeModal('accModal')">取消</button>
-            <button class="btn-submit" id="acc-save-btn" onclick="saveAccount()">💾 儲存</button>
+          <div style="display:flex;justify-content:center;gap:12px;margin-top:4px;">
+            <button onclick="closeModal('accModal')" style="height:40px;padding:0 24px;border-radius:10px;border:1.5px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:14px;cursor:pointer;transition:.15s;" onmouseover="this.style.background='#e8e3d6'" onmouseout="this.style.background='#f5f5f5'">取消</button>
+            <button id="acc-save-btn" onclick="saveAccount()" style="height:40px;padding:0 32px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold-light)'" onmouseout="this.style.background='var(--color-gold)'">💾 儲存</button>
           </div>
+          <input type="hidden" id="acc-edit-id2"/>
         </div>
       </div>
 
@@ -2267,7 +2261,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbx3n293WeT9J0WaBTlFEUND-s2JHwi6p5sqIDws6c7HOw6Q32c3AKwT73AOEz_SK902kA/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzoHUKo_TizsvuBH7bsmukuQK7UDMoEMUFrSFm6UuHvIBZI6zYauW57CiiqsTfT2Wieag/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2855,6 +2849,26 @@ function updateAnalytics() {
 /* ════ 所有申請：從 GAS 動態載入 ════ */
 var ALL_APPS_DATA = [];
 
+
+/* ── 日期格式化 ── */
+function fmtDT(v) {
+  if (!v) return '—';
+  var s = String(v).trim();
+  // 已有 / 格式直接回傳
+  if (/\d{4}\/\d{2}\/\d{2}/.test(s)) return s;
+  // 嘗試解析
+  var d = new Date(s);
+  if (isNaN(d)) return s;
+  var p = function(n){ return String(n).padStart(2,'0'); };
+  return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+}
+function fmtDRange(s, e) {
+  if (!s && !e) return '—';
+  var fs = s ? s.split(' ')[0] : '—';
+  var fe = e ? e.split(' ')[0] : '—';
+  return fs + ' ~ ' + fe;
+}
+
 function loadMainData() {
   var tbody = document.getElementById('tableBody');
   if (!tbody) return;
@@ -2887,18 +2901,12 @@ function updateMainStats(apps) {
     else if (s.indexOf('待')>-1 || s.indexOf('審')>-1) { active++; pending++; }
   });
   // 更新統計卡（找 data-stat 屬性）
-  var els = {
-    'total': document.querySelector('.stat-card-value[data-stat="total"]'),
-    'active': document.querySelector('.stat-card-value[data-stat="active"]'),
-    'pending': document.querySelector('.stat-card-value[data-stat="pending"]'),
-    'done': document.querySelector('.stat-card-value[data-stat="done"]'),
-    'reject': document.querySelector('.stat-card-value[data-stat="reject"]'),
-  };
-  if (els.total) els.total.textContent = total;
-  if (els.active) els.active.textContent = active;
-  if (els.pending) els.pending.textContent = pending;
-  if (els.done) els.done.textContent = done;
-  if (els.reject) els.reject.textContent = reject;
+  var g = function(id){ return document.getElementById(id); };
+  if (g('stat-total'))   g('stat-total').textContent   = total;
+  if (g('stat-active'))  g('stat-active').textContent  = active;
+  if (g('stat-pending')) g('stat-pending').textContent = pending;
+  if (g('stat-reject'))  g('stat-reject').textContent  = reject;
+  if (g('stat-supp'))    g('stat-supp').textContent    = supp;
 }
 
 function renderMainTable(apps) {
@@ -2912,6 +2920,7 @@ function renderMainTable(apps) {
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
   apps.forEach(function(a, i){
     var s   = a.status||'';
+    var sDisplay = s.indexOf('覆核')>-1?'待覆核':s.indexOf('完成')>-1?'已完成':s.indexOf('退件')>-1?'退件':'待審核';
     var sColor = s.indexOf('完成')>-1?'#2e7d32':s.indexOf('退件')>-1?'#c62828':s.indexOf('緊急')>-1?'#c62828':'#d4a017';
     var sBg    = s.indexOf('完成')>-1?'#e8f5e9':s.indexOf('退件')>-1?'#fce4e4':s.indexOf('緊急')>-1?'#fce4e4':'#fff8e1';
     var tr = document.createElement('tr');
@@ -2942,9 +2951,9 @@ function renderMainTable(apps) {
       '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
-      '<td class="td-datetime" style="font-size:11px;">'+(a.applyDate||'—')+'</td>'+
-      '<td class="td-mono" style="font-size:11px;">'+(a.startDate||'—')+' ~ '+(a.endDate||'—')+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+s+'</span></td>'+
+      '<td class="td-mono" style="font-size:11px;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
+      '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.reviewer||'—')+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.verifier||'—')+'</td>'+
       '<td style="text-align:center;"></td>';
@@ -2952,7 +2961,7 @@ function renderMainTable(apps) {
     // 加入審核按鈕
     if (canReview && reviewBtn === '__REVIEW_BTN_PLACEHOLDER__') {
       var lastTd = tr.lastElementChild;
-      var rvType2 = (userRole==='manager') ? 'reviewer' : 'verifier';
+      var rvType2 = (userRole==='admin') ? 'verifier' : 'reviewer';
       var rvBtn2  = document.createElement('button');
       rvBtn2.className = 'review-btn approve';
       rvBtn2.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
@@ -3100,7 +3109,10 @@ function loadMyRecords() {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
         return;
       }
-      myRecordsData = data.applications;
+      // 只顯示登入者自己的申請
+      var myName = CURRENT_USER ? CURRENT_USER.name : '';
+      var allApps = data.applications;
+      myRecordsData = myName ? allApps.filter(function(a){ return (a.name||'')=== myName; }) : allApps;
       var total=myRecordsData.length, pending=0, done=0, reject=0;
       var typeSet = {};
       myRecordsData.forEach(function(a){
@@ -3233,8 +3245,8 @@ var ROLE_BADGE = {
 var ROLE_PAGES = {
   guest:    [],  // 訪客：可見介面但所有按鈕/連結不可操作
   admin:    ['doccenter','leave','myrecords','workhour','labor','main','analytics','salary','account','settings'],
-  manager:  ['doccenter','leave','myrecords','workhour','labor','main'],
-  employee: ['doccenter','leave','myrecords'],
+  manager:  ['doccenter','leave','myrecords','workhour','labor','main','analytics'],
+  employee: ['doccenter','leave','myrecords'],  // 不含 workhour, labor, main 等
 };
 
 /* ══ 初始化：檢查 localStorage ══ */
@@ -3530,14 +3542,47 @@ function renderAccTable() {
       '<td style="text-align:center;font-size:12px;font-weight:600;'+stColor+'">'+(a.status||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--color-text-muted);text-align:center;">'+(a.createdAt||'—')+'</td>'+
       '<td style="text-align:center;">' +
-        '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:4px;">編輯</button>' +
-        '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;">重設密碼</button>' +
+        '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:3px;">編輯</button>' +
+        '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;margin-right:3px;">重設密碼</button>' +
+        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;">停用</button>') +
       '</td>';
     tbody.appendChild(tr);
   });
 }
 
 /* ── 開啟帳號 Modal ── */
+
+/* ── 帳號 Modal 信箱建議 ── */
+function updateAccMailSuggestions() {
+  var val  = (document.getElementById('acc-mail-input')||{value:''}).value;
+  var list = document.getElementById('acc-mail-suggestions');
+  if (!list) return;
+  list.innerHTML = '';
+  var domains = ['gmail.com','yahoo.com.tw','outlook.com','hotmail.com','icloud.com'];
+  var atIdx = val.indexOf('@');
+  if (atIdx < 0) {
+    domains.forEach(function(d){ var o=document.createElement('option'); o.value=val+'@'+d; list.appendChild(o); });
+  } else {
+    var u=val.slice(0,atIdx), dom=val.slice(atIdx+1).toLowerCase();
+    domains.filter(function(d){return d.startsWith(dom);}).forEach(function(d){ var o=document.createElement('option'); o.value=u+'@'+d; list.appendChild(o); });
+  }
+}
+
+/* ── 停用帳號 ── */
+function disableAccount(mail) {
+  if (!confirm('確定要停用 '+mail+' 的帳號？')) return;
+  fetch(GAS_URL, { method:'POST', mode:'no-cors',
+    body: JSON.stringify({ action:'updateAccount', mail:mail, status:'停用' })
+  }).then(function(){ showToastGlobal('帳號已停用','ok'); setTimeout(loadAccounts,1200); });
+}
+
+/* ── 啟用帳號 ── */
+function enableAccount(mail) {
+  fetch(GAS_URL, { method:'POST', mode:'no-cors',
+    body: JSON.stringify({ action:'updateAccount', mail:mail, status:'啟用' })
+  }).then(function(){ showToastGlobal('帳號已啟用','ok'); setTimeout(loadAccounts,1200); });
+}
+
 function openAccountModal(mode, dataStr) {
   document.getElementById('acc-form-err').style.display = 'none';
   document.getElementById('acc-edit-id').value = '';
@@ -3545,7 +3590,7 @@ function openAccountModal(mode, dataStr) {
 
   if (mode === 'add') {
     document.getElementById('accModalTitle').textContent = '新增帳號';
-    document.getElementById('acc-mail-user').value = '';
+    document.getElementById('acc-mail-input').value = '';
     document.getElementById('acc-name').value  = '';
     document.getElementById('acc-team').value  = '';
     document.getElementById('acc-title').value = '';
@@ -3556,12 +3601,7 @@ function openAccountModal(mode, dataStr) {
   } else {
     var a = JSON.parse(decodeURIComponent(dataStr));
     document.getElementById('accModalTitle').textContent = '編輯帳號';
-    var parts = (a.mail||'').split('@');
-    document.getElementById('acc-mail-user').value = parts[0]||'';
-    var domainEl = document.getElementById('acc-mail-domain');
-    for(var i=0;i<domainEl.options.length;i++){
-      if(domainEl.options[i].value===(parts[1]||'gmail.com')){ domainEl.selectedIndex=i; break; }
-    }
+    document.getElementById('acc-mail-input').value = a.mail||'';
     document.getElementById('acc-name').value  = a.name||'';
     document.getElementById('acc-team').value  = a.team||'';
     document.getElementById('acc-title').value = a.title||'';
@@ -3582,8 +3622,8 @@ function openAccountModal(mode, dataStr) {
 
 /* ── 儲存帳號 ── */
 function saveAccount() {
-  var mailUser = document.getElementById('acc-mail-user').value.trim();
-  var domain   = document.getElementById('acc-mail-domain').value;
+  var fullMail = (document.getElementById('acc-mail-input')||{value:''}).value.trim().toLowerCase();
+  var mailUser = fullMail; var domain = '';
   var name     = document.getElementById('acc-name').value.trim();
   var team     = document.getElementById('acc-team').value;
   var title    = document.getElementById('acc-title').value;
@@ -3593,7 +3633,7 @@ function saveAccount() {
   var editId   = document.getElementById('acc-edit-id').value;
   var errEl    = document.getElementById('acc-form-err');
 
-  if (!mailUser) { errEl.textContent='請填寫信箱帳號'; errEl.style.display='block'; return; }
+  if (!fullMail || fullMail.indexOf('@')<0) { errEl.textContent='請填寫完整的電子信箱（含 @）'; errEl.style.display='block'; return; }
   if (!name)     { errEl.textContent='請填寫姓名';     errEl.style.display='block'; return; }
   if (!editId && !pass) { errEl.textContent='新增帳號必須設定密碼'; errEl.style.display='block'; return; }
   errEl.style.display = 'none';
@@ -3608,7 +3648,7 @@ function saveAccount() {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
       action:    editId ? 'updateAccount' : 'addAccount',
-      mail:      mailUser + '@' + domain,
+      mail:      fullMail,
       name:      name,
       team:      team,
       title:     title,
@@ -3669,14 +3709,16 @@ function submitReview(action) {
   var now     = new Date(); var p=function(n){return String(n).padStart(2,'0');};
   var ts      = now.getFullYear()+'/'+p(now.getMonth()+1)+'/'+p(now.getDate())+' '+p(now.getHours())+':'+p(now.getMinutes());
   var newStatus = action === 'approve' ?
-    (_reviewTarget.type === 'reviewer' ? '主管已核准，人資待覆核' : '已完成') :
-    '退件—需補件';
+    (_reviewTarget.type === 'reviewer' ? '待覆核' : '已完成') :
+    '退件';
 
   var approver = _reviewTarget.type === 'reviewer' ? user : undefined;
   var verifier = _reviewTarget.type === 'verifier' ? user : undefined;
 
   var btn = action === 'approve' ? document.getElementById('reviewApproveBtn') : document.getElementById('reviewRejectBtn');
   btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.textContent = '⏳ 處理中…';
 
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors',
@@ -3695,11 +3737,13 @@ function submitReview(action) {
     btn.disabled = false;
     closeReviewModal();
     showToastGlobal('✅ 審核完成，狀態已更新', 'ok');
-    // 重新載入申請列表
-    setTimeout(function(){ filterTable(); loadMyRecords(); }, 1500);
+    // 審核後重新載入（給 GAS 寫入時間）
+    setTimeout(function(){ if(typeof loadMainData==='function') loadMainData(); if(typeof loadMyRecords==='function') loadMyRecords(); }, 2000);
   })
   .catch(function(){
     btn.disabled = false;
+    btn.style.opacity = '';
+    btn.textContent = action==='approve' ? '✓ 核准' : '✕ 退件';
     showToastGlobal('❌ 審核失敗，請重試', 'err');
   });
 }
