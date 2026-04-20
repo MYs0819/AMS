@@ -174,7 +174,7 @@ input[type="time"] { color-scheme: dark; }
         <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">請假申請單</div>
-          <div class="sel-desc">各類假別申請，填寫後送出至審核流程</div>
+          <div class="sel-desc">各類假別事前及當日申請</div>
         </div>
       </div>
       <div class="sel-card" onclick="openModal('rtModal')">
@@ -182,6 +182,13 @@ input[type="time"] { color-scheme: dark; }
         <div>
           <div class="sel-title">留復職申請單</div>
           <div class="sel-desc">留職、復職、展延申請，含勞健保選擇</div>
+        </div>
+      </div>
+      <div class="sel-card" onclick="openModal('lvSupModal')">
+        <span class="sel-icon">📋</span>
+        <div>
+          <div class="sel-title">請假補件申請單</div>
+          <div class="sel-desc">各類假別補件申請</div>
         </div>
       </div>
     </div>
@@ -211,14 +218,14 @@ input[type="time"] { color-scheme: dark; }
       <div>
         <div class="f-sec">基本資料</div>
         <div class="f-row f-c2">
-          <div class="f-g"><label class="f-lbl">單位<span class="req">*</span></label><input class="f-inp" id="lv-unit" placeholder="例：外場"/></div>
+          <div class="f-g"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
           <div class="f-g"><label class="f-lbl">申請日期</label><input class="f-inp" id="lv-date" readonly/></div>
         </div>
         <div class="f-row f-c2">
           <div>
             <div class="f-lbl" style="margin-bottom:6px;">請假人<span class="req">*</span></div>
             <div class="f-row f-c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-lbl">職稱</label><input class="f-inp" id="lv-title" placeholder="例：正職"/></div>
+              <div class="f-g"><label class="f-lbl">職稱</label><select class="f-sel" id="lv-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
               <div class="f-g">
                 <label class="f-lbl">姓名*（親簽）</label>
                 <div id="lv-sig1-preview" onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;width:100%;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
@@ -230,7 +237,7 @@ input[type="time"] { color-scheme: dark; }
           <div>
             <div class="f-lbl" style="margin-bottom:6px;">代理人</div>
             <div class="f-row f-c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-lbl">職稱</label><input class="f-inp" id="lv-ptitle" placeholder="職稱"/></div>
+              <div class="f-g"><label class="f-lbl">職稱</label><select class="f-sel" id="lv-ptitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
               <div class="f-g"><label class="f-lbl">姓名</label><input class="f-inp" id="lv-pname" placeholder="姓名"/></div>
             </div>
           </div>
@@ -339,6 +346,154 @@ input[type="time"] { color-scheme: dark; }
   </div>
 </div>
 
+
+<!-- ════════════════════════════
+     請假補件申請單 Modal
+════════════════════════════ -->
+<div class="modal-overlay" id="lvSupModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div style="width:28px;"></div>
+      <span class="modal-title">📋 請假補件申請單</span>
+      <button class="modal-close" onclick="closeModal('lvSupModal')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div id="lvs-st" class="st hidden"></div>
+
+      <!-- 基本資料 -->
+      <div>
+        <div class="f-sec">基本資料</div>
+        <div class="f-row f-c2">
+          <div class="f-g"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="lvs-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+          <div class="f-g"><label class="f-lbl">補件日期</label><input class="f-inp" id="lvs-date" readonly/></div>
+        </div>
+        <div class="f-row f-c2">
+          <div>
+            <div class="f-lbl" style="margin-bottom:6px;">請假人<span class="req">*</span></div>
+            <div class="f-row f-c2" style="margin-bottom:0;">
+              <div class="f-g"><label class="f-lbl">職稱</label><select class="f-sel" id="lvs-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+              <div class="f-g">
+                <label class="f-lbl">姓名*（親簽）</label>
+                <div id="lvs-sig1-preview" onclick="openSigModal('lvs-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;width:100%;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
+                <canvas id="lvs-sig1" width="1" height="1" style="display:none;"></canvas>
+                <input id="lvs-name" type="hidden" value="（簽名）"/>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="f-lbl" style="margin-bottom:6px;">代理人</div>
+            <div class="f-row f-c2" style="margin-bottom:0;">
+              <div class="f-g"><label class="f-lbl">職稱</label><select class="f-sel" id="lvs-ptitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+              <div class="f-g"><label class="f-lbl">姓名</label><input class="f-inp" id="lvs-pname" placeholder="姓名"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 假別 -->
+      <div>
+        <div class="f-sec">假別*</div>
+        <div class="lt-grid">
+          <button class="lt-btn" onclick="pickLvs(this,'公假')">公假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'休假')">休假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'事假')">事假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'病假')">病假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'喪假')">喪假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'婚假')">婚假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'陪產假')">陪產假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'生理假')">生理假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'補休')">補休</button>
+          <button class="lt-btn" onclick="pickLvs(this,'其他')">其他</button>
+        </div>
+        <input type="hidden" id="lvs-type"/>
+        <div id="lvs-other-box" class="hidden" style="margin-top:8px;">
+          <div class="f-g"><label class="f-lbl">其他假別說明<span class="req">*</span></label><input class="f-inp" id="lvs-other" placeholder="請說明假別"/></div>
+        </div>
+      </div>
+
+      <!-- 請假日數 -->
+      <div>
+        <div class="f-sec">請假日數*</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;">
+          <!-- 左欄：自 / 至 兩行 -->
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="date-line">
+              <span class="dl-lbl">自</span>
+              <input class="f-inp" id="lvs-fd" type="date" onchange="calcDs()" style="text-align:center;max-width:138px;"/>
+              <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
+              <select id="lvs-fth" onchange="calcDs()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">時</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+              </select>
+              <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
+              <select id="lvs-ftm" onchange="calcDs()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">分</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+              </select>
+            </div>
+            </div>
+            <div class="date-line">
+              <span class="dl-lbl">至</span>
+              <input class="f-inp" id="lvs-td" type="date" onchange="calcDs()" style="text-align:center;max-width:138px;"/>
+              <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
+              <select id="lvs-tth" onchange="calcDs()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">時</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+              </select>
+              <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
+              <select id="lvs-ttm" onchange="calcDs()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">分</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+              </select>
+            </div>
+            </div>
+          </div>
+          <!-- 右欄：共 日 小時 置中 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;background:#fdfcf9;border:1px solid var(--border);border-radius:8px;padding:8px 14px;min-width:100px;">
+            <div style="font-size:11px;color:var(--muted);">共</div>
+            <div style="display:flex;align-items:baseline;gap:3px;">
+              <input class="f-inp" id="lvs-days" placeholder="0" readonly style="width:44px;text-align:center;padding:4px 6px;font-size:16px;font-weight:600;border-radius:5px;"/>
+              <span style="font-size:12px;color:var(--sub);">日</span>
+              <input class="f-inp" id="lvs-hrs" placeholder="0" readonly style="width:44px;text-align:center;padding:4px 6px;font-size:16px;font-weight:600;border-radius:5px;"/>
+              <span style="font-size:12px;color:var(--sub);">時</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 事由 -->
+      <div>
+        <div class="f-sec">事由*</div>
+        <textarea class="f-ta" id="lvs-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
+      </div>
+
+      <!-- 備註說明（申請人已知悉簽名在備註下方）-->
+      <div class="notes-box">
+        <div class="notes-title">備 註 說 明</div>
+        <ul class="notes-list">
+          <li><span class="n-num">1.</span><span class="n-txt">請假時間為24小時制，填寫須特別注意。</span></li>
+          <li><span class="n-num">2.</span><span class="n-txt">請假規定依公告系統內之「請假規範及流程」辦理。</span></li>
+          <li><span class="n-num">3.</span><span class="n-txt">部分工時同仁請假無須填寫代理人資訊。</span></li>
+          <li><span class="n-num">4.</span><span class="n-txt">辦理手續須提供有關證明文件並檢附在此申請單後。</span></li>
+          <li><span class="n-num">5.</span><span class="n-txt">如遇有急病或緊急事故，可委託他人代辦請假手續。</span></li>
+          <li><span class="n-num">6.</span><span class="n-txt">遇有急病或緊急事故，於當日請假起五天內將請假程序完成。</span></li>
+          <li><span class="n-num">7.</span><span class="n-txt">員工請假規定及薪資核定辦法依勞動基準法規定。</span></li>
+        </ul>
+        <!-- 申請人已知悉親簽 -->
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:600;color:var(--dark);">申請人已知悉上述規定<span class="req">*</span></span>
+            <div id="lvs-sig2-preview" onclick="openSigModal('lvs-sig2','申請人已知悉上述規定（親簽）')" style="border:1.5px solid var(--border);border-radius:7px;min-width:100px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:4px;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
+          </div>
+          <canvas id="lvs-sig2" width="1" height="1" style="display:none;"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-c" onclick="closeModal('lvSupModal')">取消</button>
+      <button class="btn-s" id="lvs-btn" onclick="submitLvSup()">📤 送出申請</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- ════════════════════════════
      留復職申請單 Modal
 ════════════════════════════ -->
@@ -374,8 +529,8 @@ input[type="time"] { color-scheme: dark; }
             <canvas id="rt-sig1-canvas" width="1" height="1" style="display:none;"></canvas>
             <input id="rt-name" type="hidden" value="（簽名）"/>
           </div>
-          <div class="f-g"><label class="f-lbl">申請團隊<span class="req">*</span></label><input class="f-inp" id="rt-team" placeholder="例：外場"/></div>
-          <div class="f-g"><label class="f-lbl">職稱</label><input class="f-inp" id="rt-title" placeholder="例：正職"/></div>
+          <div class="f-g"><label class="f-lbl">申請團隊<span class="req">*</span></label><select class="f-sel" id="rt-team"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+          <div class="f-g"><label class="f-lbl">職稱</label><select class="f-sel" id="rt-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
         </div>
         <!-- 第二排：勞保、健保 -->
         <div class="f-row f-c2">
@@ -492,7 +647,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbx3n293WeT9J0WaBTlFEUND-s2JHwi6p5sqIDws6c7HOw6Q32c3AKwT73AOEz_SK902kA/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzoHUKo_TizsvuBH7bsmukuQK7UDMoEMUFrSFm6UuHvIBZI6zYauW57CiiqsTfT2Wieag/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -513,7 +668,9 @@ function nowStr() {
 function genId() {
   var d = new Date();
   var p = function(n){ return String(n).padStart(2,'0'); };
-  return d.getFullYear()+''+p(d.getMonth()+1)+''+p(d.getDate())+'_'+Math.floor(Math.random()*900+100);
+  var base = d.getFullYear()+''+p(d.getMonth()+1)+''+p(d.getDate());
+  var seq = String(Math.floor(Math.random()*900+100)).padStart(3,'0');
+  return base + '_' + seq;
 }
 function showSt(id, msg, type) {
   var el = document.getElementById(id);
@@ -528,7 +685,10 @@ function openModal(id) {
   document.getElementById(id).classList.add('open');
   if (id === 'lvModal') {
     document.getElementById('lv-date').value = today();
-    // lv-sig1 用 modal 模式，不需 initSig
+  }
+  if (id === 'lvSupModal') {
+    document.getElementById('lvs-date').value = today();
+    _lvsSubmitted = false;
   }
   if (id === 'rtModal') {
     document.getElementById('rt-date').value = today();
@@ -612,6 +772,98 @@ function sigEmpty(id) {
 }
 
 /* ── 送出請假 ── */
+
+/* ══ 補件申請單 JS ══ */
+var _lvsSubmitted = false;
+
+function pickLvs(btn, type) {
+  document.querySelectorAll('#lvSupModal .lt-btn').forEach(function(b){ b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  document.getElementById('lvs-type').value = type;
+  document.getElementById('lvs-other-box').classList.toggle('hidden', type !== '其他');
+}
+
+function calcDs() {
+  var fd  = document.getElementById('lvs-fd').value;
+  var fth = document.getElementById('lvs-fth').value || '00';
+  var ftm = document.getElementById('lvs-ftm').value || '00';
+  var td  = document.getElementById('lvs-td').value;
+  var tth = document.getElementById('lvs-tth').value || '00';
+  var ttm = document.getElementById('lvs-ttm').value || '00';
+  if (!fd || !td) return;
+  var f = new Date(fd + 'T' + fth + ':' + ftm);
+  var t = new Date(td + 'T' + tth + ':' + ttm);
+  if (t < f) return;
+  var diff = t - f;
+  document.getElementById('lvs-days').value = Math.floor(diff / 86400000);
+  document.getElementById('lvs-hrs').value  = Math.floor((diff % 86400000) / 3600000);
+}
+
+function submitLvSup() {
+  if (_lvsSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
+  var unit   = document.getElementById('lvs-unit').value;
+  var type   = document.getElementById('lvs-type').value;
+  var fd     = document.getElementById('lvs-fd').value;
+  var reason = document.getElementById('lvs-reason').value.trim();
+
+  if (!unit)   { showToast('請選擇單位','err'); return; }
+  if (!type)   { showToast('請選擇假別','err'); return; }
+  if (!fd)     { showToast('請填寫起始日期','err'); return; }
+  if (!reason) { showToast('請填寫事由','err'); return; }
+  if (type === '其他' && !document.getElementById('lvs-other').value.trim()) {
+    showToast('請填寫其他假別說明','err'); return;
+  }
+  if (sigEmpty('lvs-sig1')) { showToast('請完成請假人姓名簽名','err'); return; }
+  if (sigEmpty('lvs-sig2')) { showToast('請完成申請人已知悉上述規定簽名','err'); return; }
+
+  var btn = document.getElementById('lvs-btn');
+  btn.disabled = true; btn.textContent = '⏳ 送出中…';
+  showToast('正在送出補件申請，請稍候…','info');
+
+  var subtype  = type + (type==='其他'?' ('+document.getElementById('lvs-other').value.trim()+')':'');
+  var fth = document.getElementById('lvs-fth').value||'00';
+  var ftm = document.getElementById('lvs-ftm').value||'00';
+  var tth = document.getElementById('lvs-tth').value||'00';
+  var ttm = document.getElementById('lvs-ttm').value||'00';
+
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    body: JSON.stringify({
+      action:    'addApplication',
+      id:        genId(),
+      name:      getLoginName(),
+      team:      document.getElementById('lvs-unit').value,
+      applyTitle:document.getElementById('lvs-title').value,
+      type:      '請假申請',
+      subtype:   subtype,
+      startDate: fmtD(fd) + ' ' + fth + ':' + ftm,
+      endDate:   fmtD(document.getElementById('lvs-td').value) + ' ' + tth + ':' + ttm,
+      days:      document.getElementById('lvs-days').value,
+      hours:     document.getElementById('lvs-hrs').value,
+      reason:    reason + '【補件】補件日期：' + document.getElementById('lvs-date').value,
+      proxyName: document.getElementById('lvs-pname').value.trim(),
+      proxyTitle:document.getElementById('lvs-ptitle').value,
+      applyDate: nowStr(),
+      status:    '補件待審核',
+      sig1: (function(){ var cv=document.getElementById('lvs-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+      sig2: (function(){ var cv=document.getElementById('lvs-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+    })
+  })
+  .then(function(){
+    _lvsSubmitted = true;
+    showToast('✅ 補件申請已送出！', 'ok', 3000);
+    var body = document.querySelector('#lvSupModal .modal-body');
+    var footer = document.querySelector('#lvSupModal .modal-footer');
+    if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
+    if (footer) footer.style.display='none';
+    setTimeout(function(){ closeModal('lvSupModal'); window.location.href='index.html'; }, 2000);
+  })
+  .catch(function(err){
+    btn.disabled=false; btn.textContent='📤 送出申請';
+    showToast('送出失敗：'+err.message,'err');
+  });
+}
+
 function submitLv() {
   if (_lvSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
 
