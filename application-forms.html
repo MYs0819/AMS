@@ -189,7 +189,7 @@ input[type="time"] { color-scheme: dark; }
 </main>
 
 <!-- ── Footer ── -->
-<footer class="app-footer"><img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" style="height:30px;width:auto;opacity:.85;"/><span class="footer-text">© Copyright 2026 MYs System Version:b1.0.0.0-04-13-2026-115</span></footer>
+<footer class="app-footer"><img src="https://mys0819.github.io/AMS/assets/MYs_logo_去背.png" alt="MYs" style="height:48px;width:auto;opacity:.9;"/><span class="footer-text">© Copyright 2026 MYs System Version:b1.0.0.0-04-13-2026-115</span></footer>
 
 </div><!-- page-wrap -->
 
@@ -218,9 +218,9 @@ input[type="time"] { color-scheme: dark; }
           <div>
             <div class="f-lbl" style="margin-bottom:6px;">請假人<span class="req">*</span></div>
             <div class="f-row f-c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-lbl" style="font-size:11px;">職稱</label><input class="f-inp" id="lv-title" placeholder="例：正職"/></div>
+              <div class="f-g"><label class="f-lbl">職稱</label><input class="f-inp" id="lv-title" placeholder="例：正職"/></div>
               <div class="f-g">
-                <label class="f-lbl" style="font-size:11px;">姓名*（親簽）</label>
+                <label class="f-lbl">姓名*（親簽）</label>
                 <div id="lv-sig1-preview" onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;width:100%;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
                 <canvas id="lv-sig1" width="1" height="1" style="display:none;"></canvas>
                 <input id="lv-name" type="hidden" value="（簽名）"/>
@@ -230,8 +230,8 @@ input[type="time"] { color-scheme: dark; }
           <div>
             <div class="f-lbl" style="margin-bottom:6px;">代理人</div>
             <div class="f-row f-c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-lbl" style="font-size:11px;">職稱</label><input class="f-inp" id="lv-ptitle" placeholder="職稱"/></div>
-              <div class="f-g"><label class="f-lbl" style="font-size:11px;">姓名</label><input class="f-inp" id="lv-pname" placeholder="姓名"/></div>
+              <div class="f-g"><label class="f-lbl">職稱</label><input class="f-inp" id="lv-ptitle" placeholder="職稱"/></div>
+              <div class="f-g"><label class="f-lbl">姓名</label><input class="f-inp" id="lv-pname" placeholder="姓名"/></div>
             </div>
           </div>
         </div>
@@ -273,7 +273,7 @@ input[type="time"] { color-scheme: dark; }
               </select>
               <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
               <select id="lv-ftm" onchange="calcD()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
-                <option value="">分</option><option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
+                <option value="">分</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
               </select>
             </div>
             </div>
@@ -286,7 +286,7 @@ input[type="time"] { color-scheme: dark; }
               </select>
               <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
               <select id="lv-ttm" onchange="calcD()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
-                <option value="">分</option><option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
+                <option value="">分</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
               </select>
             </div>
             </div>
@@ -483,7 +483,16 @@ function showToast(msg, type, duration) {
 var _lvSubmitted = false;
 var _rtSubmitted = false;
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwKPzLvQWOYWhlq6RhMAqlz_f-NuzoIfPPjg5mEkx-NjZ4OJcapFKM_-_Xty-NSlr9ssg/exec';
+
+/* ── 讀取登入者資訊 ── */
+var _loginUser = null;
+try {
+  var _u = localStorage.getItem('mys_user') || sessionStorage.getItem('mys_user');
+  if (_u) _loginUser = JSON.parse(_u);
+} catch(e) {}
+function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
+
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbx3n293WeT9J0WaBTlFEUND-s2JHwi6p5sqIDws6c7HOw6Q32c3AKwT73AOEz_SK902kA/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -613,7 +622,7 @@ function submitLv() {
   var reason= document.getElementById('lv-reason').value.trim();
 
   if (!unit)   { showToast('請填寫單位','err'); return; }
-  var name = '（簽名）'; // 姓名由手寫取代
+  var name = getLoginName(); // 從登入者取名
   if (!type)   { showToast('請選擇假別','err'); return; }
   if (!fd)     { showToast('請填寫起始日期','err'); return; }
   if (!reason) { showToast('請填寫事由','err'); return; }
@@ -635,6 +644,8 @@ function submitLv() {
       action:'addApplication',
       id:          genId(),
       name:        name,
+      sig1: (function(){ var cv=document.getElementById('lv-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+      sig2: (function(){ var cv=document.getElementById('lv-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
       team:        unit,
       applyTitle:  document.getElementById('lv-title').value.trim(),
       type:        '請假申請',
@@ -652,11 +663,17 @@ function submitLv() {
   })
   .then(function(){
     _lvSubmitted = true;
-    btn.textContent = '✅ 已送出';
-    btn.style.background = '#e8f5e9';
-    btn.style.borderColor = '#4caf50';
-    btn.style.color = '#2e7d32';
-    showToast('申請已送出！目前狀態：主管待審核中。', 'ok', 5000);
+    showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
+    // 鎖定整個 Modal
+    var body = document.querySelector('#lvModal .modal-body');
+    var footer = document.querySelector('#lvModal .modal-footer');
+    if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
+    if (footer) footer.style.display = 'none';
+    // 2秒後關閉跳回主頁
+    setTimeout(function(){
+      closeModal('lvModal');
+      window.location.href = 'index.html';
+    }, 2000);
   })
   .catch(function(err){
     btn.disabled = false; btn.textContent = '📤 送出申請';
@@ -669,7 +686,7 @@ function submitLv() {
 function submitRt() {
   if (_rtSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
 
-  var name   = '（簽名）'; // 申請人由手寫簽名代替
+  var name   = getLoginName(); // 從登入者取名
   var team   = document.getElementById('rt-team').value.trim();
   var rtype  = (document.querySelector('input[name="rt-type"]:checked') || {}).value || '';
   var labor  = (document.querySelector('input[name="labor"]:checked') || {}).value || '';
@@ -708,6 +725,8 @@ function submitRt() {
       action:'addApplication',
       id:        genId(),
       name:      name,
+      sig1: (function(){ var cv=document.getElementById('rt-sig1-canvas'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+      sig2: (function(){ var cv=document.getElementById('rt-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
       team:      team,
       title:     document.getElementById('rt-title').value.trim(),
       type:      '留復職申請',
@@ -726,11 +745,15 @@ function submitRt() {
   })
   .then(function(){
     _rtSubmitted = true;
-    btn.textContent = '✅ 已送出';
-    btn.style.background = '#e8f5e9';
-    btn.style.borderColor = '#4caf50';
-    btn.style.color = '#2e7d32';
-    showToast('申請已送出！目前狀態：主管待審核中。', 'ok', 5000);
+    showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
+    var body = document.querySelector('#rtModal .modal-body');
+    var footer = document.querySelector('#rtModal .modal-footer');
+    if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
+    if (footer) footer.style.display = 'none';
+    setTimeout(function(){
+      closeModal('rtModal');
+      window.location.href = 'index.html';
+    }, 2000);
   })
   .catch(function(err){
     btn.disabled = false; btn.textContent = '📤 送出申請';
