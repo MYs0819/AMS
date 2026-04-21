@@ -2262,7 +2262,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbw9TtrfmJENuOaVkH1vBbWWxaCnTUgOBpbbY22j6r_V9RIFcVZP8GhdrEDMtL7kSVu_qw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycby8AYvjHlkfER0Uyc9hCAIzYEYE_mHL8y91RCvAkMDJMJw1So432OE9nqoUvOaAkVCf5g/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3316,7 +3316,8 @@ function doLogin() {
         return;
       }
       var acc = data.account;
-      if (acc.password !== pass) {
+      // 密碼比對：強制轉字串（避免 Sheets 把純數字密碼轉成 number）
+      if (String(acc.password).trim() !== String(pass).trim()) {
         errEl.textContent = '密碼錯誤，請重新輸入';
         return;
       }
