@@ -2261,7 +2261,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzoHUKo_TizsvuBH7bsmukuQK7UDMoEMUFrSFm6UuHvIBZI6zYauW57CiiqsTfT2Wieag/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxlFWZUVO-_K6kDc79f19Er1ABaONKHoWsOPbXLnPBIMmCUewBoEJyebPOJ1-YlZbhdrA/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3243,10 +3243,18 @@ var ROLE_BADGE = {
 
 /* ── 各角色可見的側邊欄 item（data-role 屬性）── */
 var ROLE_PAGES = {
-  guest:    [],  // 訪客：可見介面但所有按鈕/連結不可操作
-  admin:    ['doccenter','leave','myrecords','workhour','labor','main','analytics','salary','account','settings'],
+  guest:    [],
+  employee: ['doccenter','leave','myrecords'],
   manager:  ['doccenter','leave','myrecords','workhour','labor','main','analytics'],
-  employee: ['doccenter','leave','myrecords'],  // 不含 workhour, labor, main 等
+  admin:    ['doccenter','leave','myrecords','workhour','labor','main','analytics','salary','account','settings'],
+};
+
+/* 各角色可見的側邊欄 onclick showPage 頁面 */
+var ROLE_SIDEBAR_MAP = {
+  guest:    [],
+  employee: ['doccenter','leave','myrecords'],
+  manager:  ['doccenter','leave','myrecords','workhour','labor','main','analytics'],
+  admin:    ['doccenter','leave','myrecords','workhour','labor','main','analytics','salary','account','settings'],
 };
 
 /* ══ 初始化：檢查 localStorage ══ */
@@ -3335,57 +3343,52 @@ function onLoginSuccess(user, silent) {
 
 /* ══ 套用權限（根據角色顯示/隱藏側邊欄）══ */
 function applyPermissions(role) {
-  var allowed = ROLE_PAGES[role] || ROLE_PAGES.employee;
-
   var isGuest = (role === 'guest');
+  var allowed = ROLE_SIDEBAR_MAP[role] || [];
 
-  // 訪客：所有 sidebar item 顯示但加鎖定樣式
-  document.querySelectorAll('.sidebar-section').forEach(function(sec){
-    sec.style.display = '';
-    var items = sec.querySelectorAll('.sidebar-nav-item');
-    items.forEach(function(item){
-      item.style.display = '';
-      if (isGuest) {
-        item.style.opacity = '0.45';
-        item.style.pointerEvents = 'none';
-        item.style.cursor = 'default';
-      } else {
-        item.style.opacity = '';
-        item.style.pointerEvents = '';
-        item.style.cursor = '';
-      }
-    });
+  // 側邊欄項目：逐一檢查 onclick 裡的 showPage id
+  document.querySelectorAll('.sidebar-nav-item').forEach(function(item){
+    if (item.classList.contains('external')) {
+      // 外部連結（請假申請跳轉）：employee 以上可見
+      item.style.display    = isGuest ? 'none' : '';
+      item.style.opacity    = '';
+      item.style.pointerEvents = '';
+      return;
+    }
+    var onc  = item.getAttribute('onclick') || '';
+    var m    = onc.match(/showPage\('([^']+)'/);
+    var page = m ? m[1] : '';
+
+    if (isGuest) {
+      // 訪客：全部顯示但不可點
+      item.style.display       = '';
+      item.style.opacity       = '0.4';
+      item.style.pointerEvents = 'none';
+      item.style.cursor        = 'default';
+    } else {
+      var ok = !page || allowed.indexOf(page) > -1;
+      item.style.display       = ok ? '' : 'none';
+      item.style.opacity       = '';
+      item.style.pointerEvents = '';
+      item.style.cursor        = '';
+    }
   });
 
-  if (isGuest) {
-    document.querySelectorAll('.sidebar-divider').forEach(function(div){ div.style.display = ''; });
-    return;
-  }
-
-  // 登入用戶：根據角色顯示/隱藏
+  // 側邊欄 section：若全部 item 都隱藏則隱藏整個 section
   document.querySelectorAll('.sidebar-section').forEach(function(sec){
-    var items = sec.querySelectorAll('.sidebar-nav-item');
-    var hasVisible = false;
-    items.forEach(function(item){
-      var onclick = item.getAttribute('onclick') || item.getAttribute('href') || '';
-      var pageMatch = onclick.match(/showPage\('([^']+)'/);
-      var pageName  = pageMatch ? pageMatch[1] : '';
-      if (item.classList.contains('external') && item.href && item.href.includes('application-forms')) {
-        item.style.display = '';
-        hasVisible = true;
-        return;
-      }
-      var ok = !pageName || allowed.indexOf(pageName) > -1;
-      item.style.display = ok ? '' : 'none';
-      if (ok) hasVisible = true;
+    if (isGuest) { sec.style.display = ''; return; }
+    var visible = Array.from(sec.querySelectorAll('.sidebar-nav-item')).some(function(i){
+      return i.style.display !== 'none';
     });
-    sec.style.display = hasVisible ? '' : 'none';
+    sec.style.display = visible ? '' : 'none';
   });
 
+  // divider 跟著 section 顯示/隱藏
   document.querySelectorAll('.sidebar-divider').forEach(function(div){
+    if (isGuest) { div.style.display = ''; return; }
     var prev = div.previousElementSibling;
     var next = div.nextElementSibling;
-    div.style.display = (prev && prev.style.display !== 'none' && next && next.style.display !== 'none') ? '' : 'none';
+    div.style.display = (prev && prev.style.display!=='none' && next && next.style.display!=='none') ? '' : 'none';
   });
 }
 
@@ -3447,14 +3450,30 @@ function openLoginModal() {
 
 function doLogout() {
   localStorage.removeItem('mys_user');
+  sessionStorage.removeItem('mys_user');
   CURRENT_USER = null;
-  document.getElementById('userMenu').style.display = 'none';
-  document.getElementById('userChip').style.display = 'none';
-  document.getElementById('loginOverlay').style.display = 'flex';
+
+  // 隱藏 User Chip，顯示登入按鈕
+  var chip = document.getElementById('userChip');
+  if (chip) chip.style.display = 'none';
+  var menu = document.getElementById('userMenu');
+  if (menu) menu.style.display = 'none';
   var lb = document.getElementById('loginNavBtn');
   if (lb) lb.style.display = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('login-err').textContent = '';
+
+  // 清除登入表單
+  var mp = document.getElementById('login-mail');
+  var pp = document.getElementById('login-pass');
+  var ep = document.getElementById('login-err');
+  if (mp) mp.value = '';
+  if (pp) pp.value = '';
+  if (ep) ep.textContent = '';
+
+  // 立即套用訪客模式（鎖定側邊欄）
+  applyPermissions('guest');
+  // 立即模糊化
+  applyBlur(true);
+  // 不自動顯示登入畫面
 }
 
 /* ══ User Menu 開關 ══ */
