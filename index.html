@@ -965,6 +965,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     <div class="login-err" id="login-err"></div>
 
     <button class="login-btn" id="login-btn" onclick="doLogin()">登 入</button>
+    <div style="text-align:center;margin-top:-8px;"><a href="#" onclick="testGasConnection();return false;" style="font-size:11px;color:var(--color-text-muted);text-decoration:underline;">⚙ 測試 GAS 連線</a></div>
 
   </div>
 </div>
@@ -2261,7 +2262,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbxlFWZUVO-_K6kDc79f19Er1ABaONKHoWsOPbXLnPBIMmCUewBoEJyebPOJ1-YlZbhdrA/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbw9TtrfmJENuOaVkH1vBbWWxaCnTUgOBpbbY22j6r_V9RIFcVZP8GhdrEDMtL7kSVu_qw/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3273,6 +3274,25 @@ function initAuth() {
 }
 
 /* ══ 執行登入 ══ */
+
+/* ── 測試 GAS 連線 ── */
+function testGasConnection() {
+  var errEl = document.getElementById('login-err');
+  errEl.style.color = '#7a5000';
+  errEl.textContent = '⏳ 測試連線中…';
+  var url = GAS_URL + '?action=ping&v=' + Date.now();
+  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      errEl.style.color = '#2e7d32';
+      errEl.textContent = '✅ GAS 連線正常！時間戳：' + (d._ts || '—');
+    })
+    .catch(function(err){
+      errEl.style.color = '#c62828';
+      errEl.textContent = '❌ 無法連線 GAS：' + (err.message || '未知錯誤') + '。請確認已重新部署且設定為「所有人」。';
+    });
+}
+
 function doLogin() {
   var mail   = (document.getElementById('login-mail').value||'').trim().toLowerCase();
   var pass   = document.getElementById('login-pass').value;
@@ -3306,9 +3326,15 @@ function doLogin() {
   sessionStorage.setItem('mys_user', JSON.stringify(CURRENT_USER));
       onLoginSuccess(CURRENT_USER, false);
     })
-    .catch(function(){
+    .catch(function(err){
       btn.disabled = false; btn.textContent = '登 入';
-      errEl.textContent = '連線失敗，請稍後再試';
+      // 區分連線失敗和 CORS 問題
+      var msg = err && err.message ? err.message : '';
+      if (msg.indexOf('Failed to fetch') > -1 || msg.indexOf('NetworkError') > -1 || msg === '') {
+        errEl.textContent = 'GAS 連線失敗，請確認：1) GAS 已重新部署新版本 2) 部署設定為「所有人」可存取';
+      } else {
+        errEl.textContent = '連線失敗：' + msg;
+      }
     });
 }
 
