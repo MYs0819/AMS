@@ -169,7 +169,7 @@ input[type="time"] { color-scheme: dark; }
 <main class="app-main" style="justify-content:center;">
   <div class="selector-wrap">
     <div class="selector-title" style="margin-bottom:20px;">請選擇申請類型</div>
-    <div class="selector-grid">
+    <div class="selector-grid" style="grid-template-columns:repeat(4,1fr);gap:12px;">
       <div class="sel-card" onclick="openModal('lvModal')">
         <span class="sel-icon">📋</span>
         <div>
@@ -177,18 +177,18 @@ input[type="time"] { color-scheme: dark; }
           <div class="sel-desc">各類假別事前及當日申請</div>
         </div>
       </div>
-      <div class="sel-card" onclick="openModal('rtModal')">
-        <span class="sel-icon">📋</span>
-        <div>
-          <div class="sel-title">留復職申請單</div>
-          <div class="sel-desc">留職、復職、展延申請，含勞健保選擇</div>
-        </div>
-      </div>
       <div class="sel-card" onclick="openModal('lvSupModal')">
         <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">請假補件申請單</div>
           <div class="sel-desc">各類假別補件申請</div>
+        </div>
+      </div>
+      <div class="sel-card" onclick="openModal('rtModal')">
+        <span class="sel-icon">📋</span>
+        <div>
+          <div class="sel-title">留復職申請單</div>
+          <div class="sel-desc">留職、復職、展延申請</div>
         </div>
       </div>
     </div>
@@ -339,9 +339,22 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-c" onclick="closeModal('lvModal')">取消</button>
-      <button class="btn-s" id="lv-btn" onclick="submitLv()">📤 送出申請</button>
+      <!-- 附件上傳區 -->
+      <div id="lv-attachment-area" style="padding:14px 24px 0;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fafafa;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            📎 選擇檔案（PDF/圖片）
+            <input type="file" id="lv-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lv-attachment','lv-attach-name')"/>
+          </label>
+          <span id="lv-attach-name" style="font-size:12px;color:var(--sub);"></span>
+        </div>
+      </div>
+
+    <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
+      <button class="btn-c" onclick="closeModal('lvModal')" style="width:100%;justify-content:center;">取消</button>
+      <button class="btn-c" id="lv-supp-btn" onclick="openLvSupEdit('lv')" style="width:100%;justify-content:center;border-color:var(--gold);color:var(--gold);">✏️ 編輯補件</button>
+      <button class="btn-s" id="lv-btn" onclick="submitLv()" style="width:100%;justify-content:center;">📤 送出申請</button>
     </div>
   </div>
 </div>
@@ -486,9 +499,22 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-c" onclick="closeModal('lvSupModal')">取消</button>
-      <button class="btn-s" id="lvs-btn" onclick="submitLvSup()">📤 送出申請</button>
+      <!-- 附件上傳區 -->
+      <div id="lvs-attachment-area" style="padding:14px 24px 0;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fafafa;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            📎 選擇檔案（PDF/圖片）
+            <input type="file" id="lvs-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lvs-attachment','lvs-attach-name')"/>
+          </label>
+          <span id="lvs-attach-name" style="font-size:12px;color:var(--sub);"></span>
+        </div>
+      </div>
+
+    <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
+      <button class="btn-c" onclick="closeModal('lvSupModal')" style="width:100%;justify-content:center;">取消</button>
+      <button class="btn-c" id="lvs-supp-btn" onclick="openLvSupEdit('lvs')" style="width:100%;justify-content:center;border-color:var(--gold);color:var(--gold);">✏️ 編輯補件</button>
+      <button class="btn-s" id="lvs-btn" onclick="submitLvSup()" style="width:100%;justify-content:center;">📤 送出申請</button>
     </div>
   </div>
 </div>
@@ -609,9 +635,22 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-c" onclick="closeModal('rtModal')">取消</button>
-      <button class="btn-s" id="rt-btn" onclick="submitRt()">📤 送出申請</button>
+      <!-- 附件上傳區 -->
+      <div id="rt-attachment-area" style="padding:14px 24px 0;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fafafa;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            📎 選擇檔案（PDF/圖片）
+            <input type="file" id="rt-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('rt-attachment','rt-attach-name')"/>
+          </label>
+          <span id="rt-attach-name" style="font-size:12px;color:var(--sub);"></span>
+        </div>
+      </div>
+
+    <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
+      <button class="btn-c" onclick="closeModal('rtModal')" style="width:100%;justify-content:center;">取消</button>
+      <button class="btn-c" id="rt-supp-btn" onclick="openLvSupEdit('rt')" style="width:100%;justify-content:center;border-color:var(--gold);color:var(--gold);">✏️ 編輯補件</button>
+      <button class="btn-s" id="rt-btn" onclick="submitRt()" style="width:100%;justify-content:center;">📤 送出申請</button>
     </div>
   </div>
 </div>
@@ -647,7 +686,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzoHUKo_TizsvuBH7bsmukuQK7UDMoEMUFrSFm6UuHvIBZI6zYauW57CiiqsTfT2Wieag/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxlFWZUVO-_K6kDc79f19Er1ABaONKHoWsOPbXLnPBIMmCUewBoEJyebPOJ1-YlZbhdrA/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -863,6 +902,87 @@ function submitLvSup() {
     showToast('送出失敗：'+err.message,'err');
   });
 }
+
+
+/* ══ 附件輔助 ══ */
+function showAttachName(inputId, nameId) {
+  var inp = document.getElementById(inputId);
+  var nm  = document.getElementById(nameId);
+  if (inp && nm && inp.files[0]) {
+    nm.textContent = '📄 ' + inp.files[0].name;
+  }
+}
+
+/* ══ 編輯補件：只開放上傳，其他欄位鎖定 ══ */
+function openLvSupEdit(prefix) {
+  // 鎖定所有欄位（body 內容）
+  var body = document.querySelector('#' + (prefix==='rt' ? 'rt' : (prefix==='lvs'?'lvs':'lv')) + 'Modal .modal-body');
+  if (body) {
+    body.querySelectorAll('input:not([type="file"]),select,textarea,button:not(.sig-clear),canvas').forEach(function(el){
+      el.disabled = true;
+      el.style.opacity = '0.5';
+    });
+  }
+  // 只開放附件上傳
+  var fileInput = document.getElementById(prefix + '-attachment');
+  var fileLabel = fileInput ? fileInput.closest('label') : null;
+  if (fileInput) { fileInput.disabled = false; fileInput.style.opacity = ''; }
+  if (fileLabel) { fileLabel.style.opacity = ''; }
+  var nameEl = document.getElementById(prefix + '-attach-name');
+  if (nameEl) { nameEl.style.opacity = ''; }
+
+  // 底部按鈕：隱藏送出，顯示上傳送出
+  var sendBtn = document.getElementById(prefix + '-btn');
+  var suppBtn = document.getElementById(prefix + '-supp-btn');
+  if (sendBtn) sendBtn.style.display = 'none';
+  if (suppBtn) {
+    suppBtn.style.background = 'var(--gold)';
+    suppBtn.style.color = '#1c1c15';
+    suppBtn.style.borderColor = 'var(--gold)';
+    suppBtn.textContent = '📤 送出補件';
+    suppBtn.onclick = function(){ submitAttachOnly(prefix); };
+  }
+  showToast('補件模式：只可上傳附件，其他欄位已鎖定', 'info', 4000);
+}
+
+/* ══ 只送出附件（補件用）══ */
+function submitAttachOnly(prefix) {
+  var fileInput = document.getElementById(prefix + '-attachment');
+  if (!fileInput || !fileInput.files[0]) {
+    showToast('請先選擇要上傳的附件', 'err'); return;
+  }
+  var btn = document.getElementById(prefix + '-supp-btn');
+  btn.disabled = true; btn.textContent = '⏳ 上傳中…';
+  showToast('正在上傳附件…', 'info');
+
+  var file   = fileInput.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var b64 = e.target.result.split(',')[1];
+    fetch(GAS_URL, {
+      method:'POST', mode:'no-cors',
+      body: JSON.stringify({
+        action:    'uploadAttachment',
+        prefix:    prefix,
+        filename:  file.name,
+        mimeType:  file.type,
+        data:      b64,
+      })
+    })
+    .then(function(){
+      showToast('✅ 附件已上傳！', 'ok', 3000);
+      btn.disabled = false;
+      btn.textContent = '✅ 已上傳';
+      setTimeout(function(){ window.location.href = 'index.html'; }, 2000);
+    })
+    .catch(function(err){
+      btn.disabled = false; btn.textContent = '📤 送出補件';
+      showToast('上傳失敗：' + err.message, 'err');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
 
 function submitLv() {
   if (_lvSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
