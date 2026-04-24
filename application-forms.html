@@ -217,30 +217,24 @@ input[type="time"] { color-scheme: dark; }
       <!-- 基本資料 -->
       <div>
         <div class="f-sec">基本資料</div>
-        <div class="f-row f-c2">
+        <!-- 橫排：單位 | 申請日期 | 請假人職稱 | 請假人姓名親簽 -->
+        <div class="f-row" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
           <div class="f-g"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
-          <div class="f-g"><label class="f-lbl">申請日期</label><input class="f-inp" id="lv-date" readonly/></div>
+          <div class="f-g"><label class="f-lbl">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:center;"/></div>
+          <div class="f-g"><label class="f-lbl">請假人職稱</label><select class="f-sel" id="lv-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+          <div class="f-g">
+            <label class="f-lbl">請假人姓名*（親簽）</label>
+            <div id="lv-sig1-preview" onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
+            <canvas id="lv-sig1" width="1" height="1" style="display:none;"></canvas>
+            <input id="lv-name" type="hidden" value="（簽名）"/>
+          </div>
         </div>
-        <div class="f-row f-c2">
-          <div>
-            <div class="f-lbl" style="margin-bottom:6px;">請假人<span class="req">*</span></div>
-            <div class="f-row f-c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-lbl">職稱</label><select class="f-sel" id="lv-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
-              <div class="f-g">
-                <label class="f-lbl">姓名*（親簽）</label>
-                <div id="lv-sig1-preview" onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;width:100%;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
-                <canvas id="lv-sig1" width="1" height="1" style="display:none;"></canvas>
-                <input id="lv-name" type="hidden" value="（簽名）"/>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="f-lbl" style="margin-bottom:6px;">代理人</div>
-            <div class="f-row f-c2" style="margin-bottom:0;">
-              <div class="f-g"><label class="f-lbl">職稱</label><select class="f-sel" id="lv-ptitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
-              <div class="f-g"><label class="f-lbl">姓名</label><input class="f-inp" id="lv-pname" placeholder="姓名"/></div>
-            </div>
-          </div>
+        <!-- 橫排：（空）| （空）| 代理人職稱 | 代理人姓名 -->
+        <div class="f-row" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
+          <div></div>
+          <div></div>
+          <div class="f-g"><label class="f-lbl">代理人職稱</label><select class="f-sel" id="lv-ptitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+          <div class="f-g"><label class="f-lbl">代理人姓名</label><input class="f-inp" id="lv-pname" placeholder="姓名（選填）"/></div>
         </div>
       </div>
 
@@ -339,21 +333,10 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
     </div>
-      <!-- 附件上傳區 -->
-      <div id="lv-attachment-area" style="padding:14px 24px 0;border-top:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fafafa;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            📎 選擇檔案（PDF/圖片）
-            <input type="file" id="lv-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lv-attachment','lv-attach-name')"/>
-          </label>
-          <span id="lv-attach-name" style="font-size:12px;color:var(--sub);"></span>
-        </div>
-      </div>
 
     <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
       <button class="btn-c" onclick="closeModal('lvModal')" style="width:100%;justify-content:center;">取消</button>
-      <button class="btn-c" id="lv-supp-btn" onclick="openLvSupEdit('lv')" style="width:100%;justify-content:center;border-color:var(--gold);color:var(--gold);">✏️ 編輯補件</button>
+      <button class="btn-c" id="lv-supp-btn" onclick="openLvSupEdit('lv')" style="width:100%;justify-content:center;border-color:#ccc;color:#ccc;cursor:not-allowed;" disabled title="請先送出申請後才能補件">✏️ 編輯補件</button>
       <button class="btn-s" id="lv-btn" onclick="submitLv()" style="width:100%;justify-content:center;">📤 送出申請</button>
     </div>
   </div>
@@ -513,7 +496,7 @@ input[type="time"] { color-scheme: dark; }
 
     <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
       <button class="btn-c" onclick="closeModal('lvSupModal')" style="width:100%;justify-content:center;">取消</button>
-      <button class="btn-c" id="lvs-supp-btn" onclick="openLvSupEdit('lvs')" style="width:100%;justify-content:center;border-color:var(--gold);color:var(--gold);">✏️ 編輯補件</button>
+      <button class="btn-c" id="lvs-supp-btn" onclick="openLvSupEdit('lvs')" style="width:100%;justify-content:center;border-color:#ccc;color:#ccc;cursor:not-allowed;" disabled title="請先送出申請後才能補件">✏️ 編輯補件</button>
       <button class="btn-s" id="lvs-btn" onclick="submitLvSup()" style="width:100%;justify-content:center;">📤 送出申請</button>
     </div>
   </div>
@@ -649,7 +632,7 @@ input[type="time"] { color-scheme: dark; }
 
     <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
       <button class="btn-c" onclick="closeModal('rtModal')" style="width:100%;justify-content:center;">取消</button>
-      <button class="btn-c" id="rt-supp-btn" onclick="openLvSupEdit('rt')" style="width:100%;justify-content:center;border-color:var(--gold);color:var(--gold);">✏️ 編輯補件</button>
+      <button class="btn-c" id="rt-supp-btn" onclick="openLvSupEdit('rt')" style="width:100%;justify-content:center;border-color:#ccc;color:#ccc;cursor:not-allowed;" disabled title="請先送出申請後才能補件">✏️ 編輯補件</button>
       <button class="btn-s" id="rt-btn" onclick="submitRt()" style="width:100%;justify-content:center;">📤 送出申請</button>
     </div>
   </div>
@@ -686,7 +669,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbw9TtrfmJENuOaVkH1vBbWWxaCnTUgOBpbbY22j6r_V9RIFcVZP8GhdrEDMtL7kSVu_qw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyK9izn8EtEpY_H2Wpo05kPYqHzdiKdXehxWvAiVDt9_IRYwSm9m8Kdak4jf2vVdUb4lQ/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -1036,6 +1019,9 @@ function submitLv() {
   .then(function(){
     _lvSubmitted = true;
     showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
+    // 啟用補件按鈕
+    var suppB = document.getElementById('lv-supp-btn');
+    if (suppB) { suppB.disabled=false; suppB.style.borderColor='var(--gold)'; suppB.style.color='var(--gold)'; suppB.style.cursor='pointer'; suppB.removeAttribute('title'); }
     // 鎖定整個 Modal
     var body = document.querySelector('#lvModal .modal-body');
     var footer = document.querySelector('#lvModal .modal-footer');
@@ -1118,6 +1104,8 @@ function submitRt() {
   .then(function(){
     _rtSubmitted = true;
     showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
+    var suppB2 = document.getElementById('rt-supp-btn');
+    if (suppB2) { suppB2.disabled=false; suppB2.style.borderColor='var(--gold)'; suppB2.style.color='var(--gold)'; suppB2.style.cursor='pointer'; suppB2.removeAttribute('title'); }
     var body = document.querySelector('#rtModal .modal-body');
     var footer = document.querySelector('#rtModal .modal-footer');
     if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
