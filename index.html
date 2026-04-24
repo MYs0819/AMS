@@ -1052,7 +1052,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-section">
         <p class="sidebar-section-label">設定</p>
         <p class="sidebar-section-sub">後台限定</p>
-        <a href="#" class="sidebar-nav-item" onclick="return showPage('main',this)"><span class="sidebar-icon">⚙️</span>系統設定</a>
+        <a href="#" class="sidebar-nav-item" onclick="showToastGlobal('系統設定開發中…','info');return false;" style="opacity:0.5;cursor:default;"><span class="sidebar-icon">⚙️</span>系統設定</a>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('account',this)"><span class="sidebar-icon bright">🧑‍💼</span>帳號管理</a>
       </div>
 
@@ -1735,10 +1735,11 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
 
         <!-- 統計列 -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
           <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">員工</span><div class="stat-card-value-row"><span class="stat-card-value gold" id="acc-emp">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">主管</span><div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="acc-mgr">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">營運</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#7b1fa2;" id="acc-ops">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-reject-grp"><span class="stat-card-label">停用</span><div class="stat-card-value-row"><span class="stat-card-value red" id="acc-dis">0</span><span class="stat-card-unit">人</span></div></div>
         </div>
 
@@ -2262,7 +2263,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycby8AYvjHlkfER0Uyc9hCAIzYEYE_mHL8y91RCvAkMDJMJw1So432OE9nqoUvOaAkVCf5g/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyK9izn8EtEpY_H2Wpo05kPYqHzdiKdXehxWvAiVDt9_IRYwSm9m8Kdak4jf2vVdUb4lQ/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3358,7 +3359,7 @@ function onLoginSuccess(user, silent) {
   document.getElementById('um-role').textContent = '角色：' + (ROLE_LABEL[user.role]||user.role);
 
   // 套用權限
-  applyPermissions(user.role);
+  setTimeout(function(){ applyPermissions(user.role); }, 50);
 
   // 載入文件中心
   if (typeof dcLoadFiles === 'function') dcLoadFiles();
@@ -3542,15 +3543,17 @@ function loadAccounts() {
 
 /* ── 統計 ── */
 function updateAccStats() {
-  var total=ACCOUNTS_DATA.length, emp=0, mgr=0, dis=0;
+  var total=ACCOUNTS_DATA.length, emp=0, mgr=0, ops=0, dis=0;
   ACCOUNTS_DATA.forEach(function(a){
     if(a.status==='停用') dis++;
+    else if(a.role==='admin') ops++;
     else if(a.role==='manager') mgr++;
     else if(a.role==='employee') emp++;
   });
   document.getElementById('acc-total').textContent = total;
   document.getElementById('acc-emp').textContent   = emp;
   document.getElementById('acc-mgr').textContent   = mgr;
+  var opsEl = document.getElementById('acc-ops'); if(opsEl) opsEl.textContent = ops;
   document.getElementById('acc-dis').textContent   = dis;
 }
 
@@ -3688,7 +3691,7 @@ function saveAccount() {
   btn.disabled = true; btn.textContent = '⏳ 儲存中…';
 
   var now = new Date(); var p=function(n){return String(n).padStart(2,'0');};
-  var ts  = now.getFullYear()+'/'+p(now.getMonth()+1)+'/'+p(now.getDate())+' '+p(now.getHours())+':'+p(now.getMinutes());
+  var ts  = now.getFullYear()+'/'+p(now.getMonth()+1)+'/'+p(now.getDate())+' '+p(now.getHours())+':'+p(now.getMinutes())+':'+p(now.getSeconds());
 
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors',
