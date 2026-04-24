@@ -311,6 +311,18 @@ input[type="time"] { color-scheme: dark; }
         <textarea class="f-ta" id="lv-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
       </div>
 
+      <!-- 附件上傳（事由與備註說明之間）-->
+      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            選擇檔案（PDF/圖片）
+            <input type="file" id="lv-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lv-attachment','lv-attach-name')"/>
+          </label>
+          <span id="lv-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </div>
+      </div>
+
       <!-- 備註說明（申請人已知悉簽名在備註下方）-->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
@@ -460,7 +472,32 @@ input[type="time"] { color-scheme: dark; }
         <textarea class="f-ta" id="lvs-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
       </div>
 
+      <!-- 附件上傳（事由與備註說明之間）-->
+      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            選擇檔案（PDF/圖片）
+            <input type="file" id="lv-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lv-attachment','lv-attach-name')"/>
+          </label>
+          <span id="lv-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </div>
+      </div>
+
       <!-- 備註說明（申請人已知悉簽名在備註下方）-->
+
+      <!-- 附件上傳（事由與備註說明之間）-->
+      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            選擇檔案（PDF/圖片）
+            <input type="file" id="lvs-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lvs-attachment','lvs-attach-name')"/>
+          </label>
+          <span id="lvs-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </div>
+      </div>
+
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
@@ -482,17 +519,6 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
     </div>
-      <!-- 附件上傳區 -->
-      <div id="lvs-attachment-area" style="padding:14px 24px 0;border-top:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fafafa;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            📎 選擇檔案（PDF/圖片）
-            <input type="file" id="lvs-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lvs-attachment','lvs-attach-name')"/>
-          </label>
-          <span id="lvs-attach-name" style="font-size:12px;color:var(--sub);"></span>
-        </div>
-      </div>
 
     <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
       <button class="btn-c" onclick="closeModal('lvSupModal')" style="width:100%;justify-content:center;">取消</button>
@@ -595,6 +621,19 @@ input[type="time"] { color-scheme: dark; }
       </div>
 
       <!-- 備註說明（已知悉簽名在下方）-->
+
+      <!-- 附件上傳（事由與備註說明之間）-->
+      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            選擇檔案（PDF/圖片）
+            <input type="file" id="rt-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('rt-attachment','rt-attach-name')"/>
+          </label>
+          <span id="rt-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </div>
+      </div>
+
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
@@ -618,17 +657,6 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
     </div>
-      <!-- 附件上傳區 -->
-      <div id="rt-attachment-area" style="padding:14px 24px 0;border-top:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fafafa;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            📎 選擇檔案（PDF/圖片）
-            <input type="file" id="rt-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('rt-attachment','rt-attach-name')"/>
-          </label>
-          <span id="rt-attach-name" style="font-size:12px;color:var(--sub);"></span>
-        </div>
-      </div>
 
     <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 24px 18px;">
       <button class="btn-c" onclick="closeModal('rtModal')" style="width:100%;justify-content:center;">取消</button>
