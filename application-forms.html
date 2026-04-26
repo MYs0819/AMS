@@ -35,14 +35,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .app-main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px 32px;}
 
 /* ── 選擇卡片 ── */
-.selector-wrap{width:100%;max-width:560px;}
+.selector-wrap{width:100%;max-width:760px;}
 .selector-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:20px;text-align:center;}
-.selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:24px 20px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;}
-.sel-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:.2s;}
-.sel-card:hover{border-color:var(--gold);box-shadow:0 6px 20px rgba(201,168,76,.15);}
-.sel-card:hover::after{transform:scaleX(1);}
-.sel-icon{font-size:30px;flex-shrink:0;}
+.selector-grid{display:flex;flex-direction:column;gap:12px;}
+.sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:18px 24px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;}
+.sel-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transform-origin:top;transition:.2s;}
+.sel-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,168,76,.15);}
+.sel-card:hover::after{transform:scaleY(1);}
+.sel-icon{font-size:28px;flex-shrink:0;}
 .sel-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--dark);}
 .sel-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px;}
 
@@ -169,27 +169,22 @@ input[type="time"] { color-scheme: dark; }
 <main class="app-main" style="justify-content:center;">
   <div class="selector-wrap">
     <div class="selector-title" style="margin-bottom:20px;">請選擇申請類型</div>
-    <div class="selector-grid" style="grid-template-columns:repeat(4,1fr);gap:12px;">
+    <div class="selector-grid">
       <div class="sel-card" onclick="openModal('lvModal')">
         <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">請假申請單</div>
-          <div class="sel-desc">各類假別事前及當日申請</div>
+          <div class="sel-desc">各類假別事前及當日申請（事假、病假、特休、婚假…等）</div>
         </div>
-      </div>
-      <div class="sel-card" onclick="openModal('lvSupModal')">
-        <span class="sel-icon">📋</span>
-        <div>
-          <div class="sel-title">請假補件申請單</div>
-          <div class="sel-desc">各類假別補件申請</div>
-        </div>
+        <span style="margin-left:auto;color:var(--muted);font-size:20px;">›</span>
       </div>
       <div class="sel-card" onclick="openModal('rtModal')">
         <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">留復職申請單</div>
-          <div class="sel-desc">留職、復職、展延申請</div>
+          <div class="sel-desc">留職停薪、復職、展延申請</div>
         </div>
+        <span style="margin-left:auto;color:var(--muted);font-size:20px;">›</span>
       </div>
     </div>
   </div>
@@ -217,24 +212,31 @@ input[type="time"] { color-scheme: dark; }
       <!-- 基本資料 -->
       <div>
         <div class="f-sec">基本資料</div>
-        <!-- 橫排：單位 | 申請日期 | 請假人職稱 | 請假人姓名親簽 -->
-        <div class="f-row" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
-          <div class="f-g"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
-          <div class="f-g"><label class="f-lbl">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:center;"/></div>
-          <div class="f-g"><label class="f-lbl">請假人職稱</label><select class="f-sel" id="lv-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+        <!-- 第一行：單位 | 申請日期（靠右） -->
+        <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
+          <div class="f-g" style="flex:1;"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+          <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:right;display:block;">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:right;"/></div>
+        </div>
+        <!-- 第二行：(請假人)職稱 | (請假人)姓名親簽 | (代理人)職稱 | (代理人)姓名 -->
+        <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr 1fr;gap:10px;align-items:end;">
           <div class="f-g">
-            <label class="f-lbl">請假人姓名*（親簽）</label>
+            <label class="f-lbl">（請假人）職稱</label>
+            <select class="f-sel" id="lv-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select>
+          </div>
+          <div class="f-g">
+            <label class="f-lbl">（請假人）姓名*（親簽）</label>
             <div id="lv-sig1-preview" onclick="openSigModal('lv-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
             <canvas id="lv-sig1" width="1" height="1" style="display:none;"></canvas>
             <input id="lv-name" type="hidden" value="（簽名）"/>
           </div>
-        </div>
-        <!-- 橫排：（空）| （空）| 代理人職稱 | 代理人姓名 -->
-        <div class="f-row" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
-          <div></div>
-          <div></div>
-          <div class="f-g"><label class="f-lbl">代理人職稱</label><select class="f-sel" id="lv-ptitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
-          <div class="f-g"><label class="f-lbl">代理人姓名</label><input class="f-inp" id="lv-pname" placeholder="姓名（選填）"/></div>
+          <div class="f-g">
+            <label class="f-lbl">（代理人）職稱</label>
+            <select class="f-sel" id="lv-ptitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select>
+          </div>
+          <div class="f-g">
+            <label class="f-lbl">（代理人）姓名</label>
+            <input class="f-inp" id="lv-pname" placeholder="姓名（選填）"/>
+          </div>
         </div>
       </div>
 
@@ -486,18 +488,6 @@ input[type="time"] { color-scheme: dark; }
 
       <!-- 備註說明（申請人已知悉簽名在備註下方）-->
 
-      <!-- 附件上傳（事由與備註說明之間）-->
-      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            選擇檔案（PDF/圖片）
-            <input type="file" id="lvs-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lvs-attachment','lvs-attach-name')"/>
-          </label>
-          <span id="lvs-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        </div>
-      </div>
-
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
@@ -697,7 +687,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyK9izn8EtEpY_H2Wpo05kPYqHzdiKdXehxWvAiVDt9_IRYwSm9m8Kdak4jf2vVdUb4lQ/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbz1m990Ys5R_aRfxeIb_CSGAw32SxW053vNWPlR1eNn6AsxZ223zIrgaziJNLLUfMZpZA/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -715,12 +705,13 @@ function nowStr() {
   var p = function(n){ return String(n).padStart(2,'0'); };
   return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
 }
-function genId() {
+function genId(type) {
   var d = new Date();
   var p = function(n){ return String(n).padStart(2,'0'); };
   var base = d.getFullYear()+''+p(d.getMonth()+1)+''+p(d.getDate());
-  var seq = String(Math.floor(Math.random()*900+100)).padStart(3,'0');
-  return base + '_' + seq;
+  var seq = String(Math.floor(Math.random()*90+1)).padStart(2,'0');
+  var prefix = (type === 'retain') ? 'B' : 'A';
+  return base + '_' + prefix + seq;
 }
 function showSt(id, msg, type) {
   var el = document.getElementById(id);
@@ -880,7 +871,7 @@ function submitLvSup() {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
       action:    'addApplication',
-      id:        genId(),
+      id:        genId("leave"),
       name:      getLoginName(),
       team:      document.getElementById('lvs-unit').value,
       applyTitle:document.getElementById('lvs-title').value,
@@ -1025,7 +1016,7 @@ function submitLv() {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
       action:'addApplication',
-      id:          genId(),
+      id:          genId("leave"),
       name:        name,
       sig1: (function(){ var cv=document.getElementById('lv-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
       sig2: (function(){ var cv=document.getElementById('lv-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
@@ -1109,7 +1100,7 @@ function submitRt() {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
       action:'addApplication',
-      id:        genId(),
+      id:        genId("retain"),
       name:      name,
       sig1: (function(){ var cv=document.getElementById('rt-sig1-canvas'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
       sig2: (function(){ var cv=document.getElementById('rt-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
