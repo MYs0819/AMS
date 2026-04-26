@@ -1023,8 +1023,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="workhour" onclick="return showPage('workhour',this)"><span class="sidebar-icon">🕐</span>每日工時登記</a>
         <a href="#" class="sidebar-nav-item" data-perm="labor" onclick="return showPage('labor',this)"><span class="sidebar-icon">📑</span>勞報稅務建檔</a>
-        <a href="https://docs.google.com/spreadsheets/d/1_rWMMZDsfxztQhuZNZyMpey1RqhkS_ufs4InAbxUNus/edit?gid=0#gid=0" target="_blank" class="sidebar-nav-item external"><span class="sidebar-icon">🧾</span>核銷帳務登記</a>
-        <a href="https://docs.google.com/spreadsheets/d/1SMXjeTg0H4iFAXOovIdqFs-eSuziysDGhQpxVMHoLu4/edit?gid=1754838196#gid=1754838196" target="_blank" class="sidebar-nav-item external"><span class="sidebar-icon">💳</span>每月匯款明細</a>
+        <a href="https://docs.google.com/spreadsheets/d/1_rWMMZDsfxztQhuZNZyMpey1RqhkS_ufs4InAbxUNus/edit?gid=0#gid=0" target="_blank" class="sidebar-nav-item external" data-perm="main"><span class="sidebar-icon">🧾</span>核銷帳務登記</a>
+        <a href="https://docs.google.com/spreadsheets/d/1SMXjeTg0H4iFAXOovIdqFs-eSuziysDGhQpxVMHoLu4/edit?gid=1754838196#gid=1754838196" target="_blank" class="sidebar-nav-item external" data-perm="main"><span class="sidebar-icon">💳</span>每月匯款明細</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1649,10 +1649,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </colgroup>
             <thead><tr>
               <th>申請編號</th><th>申請日期</th><th>申請類型</th><th>假別</th>
-              <th>起訖期間</th><th>審核人</th><th>狀態</th><th>覆核人</th><th>狀態</th>
+              <th>起訖期間</th><th>審核人</th><th>狀態</th><th>覆核人</th><th>狀態</th><th>進度</th>
             </tr></thead>
             <tbody id="my-tbody">
-              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+              <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
             </tbody>
           </table>
           <div class="table-footer"><div class="pagination" id="my-pagination"></div></div>
@@ -1869,14 +1869,48 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     
 <!-- 審核 Modal -->
 <div class="review-modal-overlay" id="reviewModal">
-  <div class="review-modal">
-    <div class="review-modal-title" id="reviewModalTitle">審核申請</div>
-    <div class="review-modal-info" id="reviewModalInfo"></div>
-    <div style="display:flex;flex-direction:column;gap:6px;">
+  <div class="review-modal" style="max-width:500px;width:100%;">
+    <!-- 標題 -->
+    <div class="review-modal-title" id="reviewModalTitle" style="text-align:center;">審核申請</div>
+
+    <!-- 流程狀態條 -->
+    <div id="reviewFlowBar" style="display:flex;align-items:center;justify-content:center;gap:0;margin:8px 0 4px;font-family:var(--font-body);">
+      <!-- 已遞出 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px;">
+        <div style="font-size:12px;font-weight:600;color:#2e7d32;">員工</div>
+        <div style="font-size:10px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:1px 8px;">已遞出</div>
+      </div>
+      <div style="flex:1;height:2px;background:linear-gradient(90deg,#a5d6a7,#ccc);min-width:24px;"></div>
+      <!-- 主管審核 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px;">
+        <div style="font-size:12px;font-weight:600;color:var(--color-text-primary);text-align:center;">主管審核</div>
+        <div id="flow-manager-status" style="font-size:10px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:8px;padding:1px 8px;">審核中</div>
+      </div>
+      <div style="flex:1;height:2px;background:#e0e0e0;min-width:24px;" id="flow-line-2"></div>
+      <!-- 人資審核 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px;">
+        <div style="font-size:12px;font-weight:600;color:var(--color-text-primary);text-align:center;">人資審核</div>
+        <div id="flow-admin-status" style="font-size:10px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:8px;padding:1px 8px;">等待中</div>
+      </div>
+    </div>
+
+    <!-- 申請資訊 -->
+    <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--color-text-secondary);line-height:1.8;"></div>
+
+    <!-- 審核意見 -->
+    <div style="display:flex;flex-direction:column;gap:6px;" id="reviewCommentWrap">
       <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">審核意見（選填）</label>
       <textarea id="reviewComment" rows="2" style="border:1.5px solid var(--color-border-card);border-radius:7px;padding:8px 12px;font-family:var(--font-body);font-size:13px;resize:none;outline:none;" placeholder="可填寫審核備註…"></textarea>
     </div>
-    <div class="review-modal-footer">
+
+    <!-- 已審核人員顯示 -->
+    <div id="reviewerDisplay" style="display:none;text-align:center;padding:10px;background:#f5f5f5;border-radius:8px;">
+      <div id="reviewerDisplayName" style="font-size:15px;font-weight:600;color:var(--color-text-primary);"></div>
+      <div id="reviewerDisplayTime" style="font-size:11px;color:var(--color-text-muted);font-family:var(--font-mono);margin-top:2px;"></div>
+      <div style="font-size:13px;margin-top:4px;">✅</div>
+    </div>
+
+    <div class="review-modal-footer" style="justify-content:center;gap:10px;">
       <button onclick="closeReviewModal()" style="height:34px;padding:0 16px;border-radius:7px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">取消</button>
       <button class="review-btn reject" id="reviewRejectBtn" onclick="submitReview('reject')">✕ 退件</button>
       <button class="review-btn approve" id="reviewApproveBtn" onclick="submitReview('approve')">✓ 核准</button>
@@ -2022,6 +2056,40 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     <div class="feedback-footer">
       <button class="btn-cancel" onclick="closeBugReport()">✕ 取消</button>
       <button class="btn-submit" onclick="submitBug()">📤 送出回報</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 流程查看 Modal（員工用）══ -->
+<div class="modal-overlay" id="flowModal" onclick="if(event.target===this)document.getElementById('flowModal').classList.remove('open')">
+  <div style="background:#fff;border-radius:14px;padding:28px 32px;width:100%;max-width:460px;box-shadow:0 16px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:16px;">
+    <div style="font-family:var(--font-display);font-size:16px;font-weight:700;text-align:center;color:var(--color-text-primary);">📋 申請進度</div>
+    <div id="flowModalInfo" style="font-size:13px;color:var(--color-text-secondary);background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;line-height:1.9;"></div>
+    <!-- 流程條 -->
+    <div style="display:flex;align-items:flex-start;gap:0;">
+      <!-- 已遞出 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;">✓</div>
+        <div style="font-size:12px;font-weight:600;color:#2e7d32;">已遞出</div>
+        <div style="font-size:10px;color:#2e7d32;text-align:center;" id="flow-submitted-label">已遞出</div>
+      </div>
+      <div style="flex:1;height:2px;margin-top:15px;background:linear-gradient(90deg,#a5d6a7,#ccc);" id="flow-line1"></div>
+      <!-- 主管審核 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+        <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;" id="flow-mgr-icon" style="background:#ccc;color:#fff;">⏳</div>
+        <div style="font-size:12px;font-weight:600;text-align:center;color:var(--color-text-primary);">主管審核</div>
+        <div style="font-size:10px;text-align:center;" id="flow-mgr-label" style="color:#9a9482;">等待中</div>
+      </div>
+      <div style="flex:1;height:2px;margin-top:15px;background:#e0e0e0;" id="flow-line2"></div>
+      <!-- 人資審核 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+        <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;" id="flow-admin-icon" style="background:#ccc;color:#fff;">⏳</div>
+        <div style="font-size:12px;font-weight:600;text-align:center;color:var(--color-text-primary);">人資審核</div>
+        <div style="font-size:10px;text-align:center;" id="flow-admin-label" style="color:#9a9482;">等待中</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <button onclick="document.getElementById('flowModal').classList.remove('open')" style="height:36px;padding:0 24px;border-radius:8px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">關閉</button>
     </div>
   </div>
 </div>
@@ -2268,7 +2336,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyK9izn8EtEpY_H2Wpo05kPYqHzdiKdXehxWvAiVDt9_IRYwSm9m8Kdak4jf2vVdUb4lQ/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbz1m990Ys5R_aRfxeIb_CSGAw32SxW053vNWPlR1eNn6AsxZ223zIrgaziJNLLUfMZpZA/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -2871,8 +2939,12 @@ function fmtDT(v) {
 }
 function fmtDRange(s, e) {
   if (!s && !e) return '—';
-  var fs = s ? s.split(' ')[0] : '—';
-  var fe = e ? e.split(' ')[0] : '—';
+  // 只取 yyyy/mm/dd 部分（去掉時間）
+  var fs = s ? String(s).replace(/(\d{4}\/\d{2}\/\d{2}).*/, '$1') : '—';
+  var fe = e ? String(e).replace(/(\d{4}\/\d{2}\/\d{2}).*/, '$1') : '—';
+  // 若是 ISO 日期字串 (yyyy-mm-dd...) 轉換
+  if (fs.indexOf('-') > -1) { var p=fs.split('T')[0].split('-'); fs=p[0]+'/'+p[1]+'/'+p[2]; }
+  if (fe.indexOf('-') > -1) { var p=fe.split('T')[0].split('-'); fe=p[0]+'/'+p[1]+'/'+p[2]; }
   return fs + ' ~ ' + fe;
 }
 
@@ -2927,70 +2999,87 @@ function renderMainTable(apps) {
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
   apps.forEach(function(a, i){
     var s   = a.status||'';
-    var sDisplay = s.indexOf('覆核')>-1?'待覆核':s.indexOf('完成')>-1?'已完成':s.indexOf('退件')>-1?'退件':'待審核';
-    var sColor = s.indexOf('完成')>-1?'#2e7d32':s.indexOf('退件')>-1?'#c62828':s.indexOf('緊急')>-1?'#c62828':'#d4a017';
-    var sBg    = s.indexOf('完成')>-1?'#e8f5e9':s.indexOf('退件')>-1?'#fce4e4':s.indexOf('緊急')>-1?'#fce4e4':'#fff8e1';
+    var isDone   = s.indexOf('完成')>-1;
+    var isReject = s.indexOf('退件')>-1;
+    var isPendingManager = s.indexOf('主管')>-1 && s.indexOf('待')>-1;
+    var isPendingAdmin   = s.indexOf('覆核')>-1 || (s.indexOf('待')>-1 && a.reviewer && !a.verifier);
+    var sDisplay = isDone?'已完成':isReject?'退件':isPendingAdmin?'待覆核':'待審核';
+    var sColor = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
+    var sBg    = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var tr = document.createElement('tr');
     tr.setAttribute('data-status', s);
     tr.setAttribute('data-type',   a.type||'');
     tr.setAttribute('data-name',   a.name||'');
     tr.setAttribute('data-team',   a.team||'');
     if (i%2) tr.style.background='var(--color-bg-table-alt)';
-    var canReview = (userRole==='manager'||userRole==='admin');
-    var reviewBtn = '';
-    if (canReview) {
-      var rvType = (userRole==='manager') ? 'reviewer' : 'verifier';
-      var rvBtn  = document.createElement('button');
-      rvBtn.className = 'review-btn approve';
-      rvBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;margin-right:3px;';
-      rvBtn.textContent = '→ 審核';
-      rvBtn.dataset.id   = a.id||'';
-      rvBtn.dataset.name = a.name||'';
-      rvBtn.dataset.type = rvType;
-      rvBtn.onclick = function(){ openReview(this.dataset.id, this.dataset.name, this.dataset.type); };
-      // 存為 outerHTML 不好，改為直接在後面 append
-      reviewBtn = '__REVIEW_BTN_PLACEHOLDER__';
-      // 存在 tr 上，等下 append
-    }
+
+    // 審核人/覆核人欄顯示
+    var reviewerCell = a.reviewer ?
+      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.reviewer+'</span>'+(a.reviewerTime?'<span class="reviewer-time">'+a.reviewerTime+'</span>':'')+'<span class="reviewer-badge">✅ 已審核</span></div>' :
+      '<span style="color:var(--color-text-muted);font-size:11px;">待審核</span>';
+    var verifierCell = a.verifier ?
+      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.verifier+'</span>'+(a.verifierTime?'<span class="reviewer-time">'+a.verifierTime+'</span>':'')+'<span class="reviewer-badge verifier">✅ 已覆核</span></div>' :
+      (a.reviewer ? '<span style="color:var(--color-text-muted);font-size:11px;">待覆核</span>' : '<span style="color:#ccc;font-size:11px;">—</span>');
+
     tr.innerHTML =
       '<td class="td-mono" style="font-size:11px;">'+(a.id||'—')+'</td>'+
       '<td style="font-weight:500;">'+(a.name||'—')+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
-      '<td class="td-mono" style="font-size:11px;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
+      '<td class="td-mono" style="font-size:11px;text-align:right;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span></td>'+
-      '<td style="text-align:center;font-size:12px;">'+(a.reviewer||'—')+'</td>'+
-      '<td style="text-align:center;font-size:12px;">'+(a.verifier||'—')+'</td>'+
+      '<td style="text-align:center;">'+reviewerCell+'</td>'+
+      '<td style="text-align:center;">'+verifierCell+'</td>'+
       '<td style="text-align:center;"></td>';
     tbody.appendChild(tr);
-    // 加入審核按鈕
-    if (canReview && reviewBtn === '__REVIEW_BTN_PLACEHOLDER__') {
-      var lastTd = tr.lastElementChild;
-      var rvType2 = (userRole==='admin') ? 'verifier' : 'reviewer';
-      var rvBtn2  = document.createElement('button');
-      rvBtn2.className = 'review-btn approve';
-      rvBtn2.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
-      rvBtn2.textContent = '→ 審核';
-      rvBtn2.setAttribute('data-id',   a.id||'');
-      rvBtn2.setAttribute('data-name', a.name||'');
-      rvBtn2.setAttribute('data-type', rvType2);
-      rvBtn2.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), this.getAttribute('data-type')); };
-      if (lastTd) lastTd.appendChild(rvBtn2);
+
+    // 審核按鈕邏輯
+    var lastTd = tr.lastElementChild;
+    if (userRole === 'manager' && !a.reviewer && !isDone && !isReject) {
+      // 主管審核（尚未審核）
+      var rvBtn = document.createElement('button');
+      rvBtn.className = 'review-btn approve';
+      rvBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
+      rvBtn.textContent = '→ 審核';
+      rvBtn.setAttribute('data-id', a.id||'');
+      rvBtn.setAttribute('data-name', a.name||'');
+      rvBtn.setAttribute('data-type', 'reviewer');
+      rvBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'reviewer'); };
+      lastTd.appendChild(rvBtn);
+    } else if (userRole === 'admin' && a.reviewer && !a.verifier && !isDone && !isReject) {
+      // Admin 覆核（主管已審，admin 尚未覆核）
+      var vBtn = document.createElement('button');
+      vBtn.className = 'review-btn approve';
+      vBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
+      vBtn.textContent = '→ 覆核';
+      vBtn.setAttribute('data-id', a.id||'');
+      vBtn.setAttribute('data-name', a.name||'');
+      vBtn.setAttribute('data-type', 'verifier');
+      vBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'verifier'); };
+      lastTd.appendChild(vBtn);
+    } else if (userRole === 'admin' && !a.reviewer && !isDone && !isReject) {
+      // Admin 也可以看到按鈕但顯示「等待主管」
+      var waitSpan = document.createElement('span');
+      waitSpan.style.cssText = 'font-size:10px;color:#ccc;';
+      waitSpan.textContent = '等待主管';
+      lastTd.appendChild(waitSpan);
     }
   });
-  // 更新分頁列
+
+  // 更新 tab count
+  var allApps = ALL_APPS_DATA.length ? ALL_APPS_DATA : apps;
   document.querySelectorAll('.tab-count').forEach(function(el){
     var tab = el.closest('.tab-item');
-    if (tab) {
-      var dt = tab.getAttribute('data-tab')||'';
-      if (dt==='all')     el.textContent = apps.length;
-      if (dt==='active')  el.textContent = apps.filter(function(a){return (a.status||'').indexOf('待')>-1||(a.status||'').indexOf('審')>-1;}).length;
-      if (dt==='pending') el.textContent = apps.filter(function(a){return (a.status||'').indexOf('待審')>-1;}).length;
-      if (dt==='done')    el.textContent = apps.filter(function(a){return (a.status||'').indexOf('完成')>-1;}).length;
-      if (dt==='reject')  el.textContent = apps.filter(function(a){return (a.status||'').indexOf('退件')>-1;}).length;
-    }
+    if (!tab) return;
+    var dt = tab.getAttribute('data-tab')||'';
+    if (dt==='all')        el.textContent = allApps.length;
+    if (dt==='active')     el.textContent = allApps.filter(function(a){var s=a.status||'';return !s.includes('完成')&&!s.includes('退件')&&!s.includes('補件');}).length;
+    if (dt==='pending')    el.textContent = allApps.filter(function(a){var s=a.status||'';return s.indexOf('主管')>-1&&s.indexOf('待')>-1;}).length;
+    if (dt==='done')       el.textContent = allApps.filter(function(a){return (a.status||'').indexOf('完成')>-1;}).length;
+    if (dt==='reject')     el.textContent = allApps.filter(function(a){return (a.status||'').indexOf('退件')>-1;}).length;
+    if (dt==='supplement') el.textContent = allApps.filter(function(a){return (a.status||'').indexOf('補件')>-1;}).length;
   });
 }
 
@@ -3002,6 +3091,16 @@ function filterTable() {
     var teamVal = (document.getElementById('teamFilter')||{value:''}).value;
     var year    = (document.getElementById('ymYear')||{value:''}).value;
     var filtered = ALL_APPS_DATA.filter(function(a){
+      var s = a.status || '';
+      // Tab filter
+      if (currentTab === 'active'     && !(s.indexOf('審核') > -1 || s.indexOf('待') > -1 || s.indexOf('進行') > -1)) return false;
+      if (currentTab === 'pending'    && s.indexOf('待審核') === -1 && s.indexOf('待') === -1) {
+        // pending = 待審核 (主管尚未審核)
+        if (!(s.indexOf('主管') > -1 && s.indexOf('待') > -1)) return false;
+      }
+      if (currentTab === 'done'       && s.indexOf('完成') === -1) return false;
+      if (currentTab === 'reject'     && s.indexOf('退件') === -1) return false;
+      if (currentTab === 'supplement' && s.indexOf('補件') === -1) return false;
       if (typeVal && (a.type||'') !== typeVal) return false;
       if (teamVal && (a.team||'') !== teamVal) return false;
       if (year    && (a.applyDate||'').slice(0,4) !== year) return false;
@@ -3106,14 +3205,14 @@ function updateLeaveStats() {
 function loadMyRecords() {
   var tbody = document.getElementById('my-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
         return;
       }
       // 只顯示登入者自己的申請
@@ -3157,7 +3256,7 @@ function loadMyRecords() {
     })
     .catch(function(){
       if (document.getElementById('my-tbody'))
-        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
+        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
     });
 }
 
@@ -3173,8 +3272,8 @@ function renderMyTable() {
     if (tab === 'pending' && (s.indexOf('完成') > -1 || s.indexOf('退件') > -1)) return false;
     if (tab === 'done'    && s.indexOf('完成') === -1) return false;
     if (tab === 'reject'  && s.indexOf('退件') === -1) return false;
-    if (typeVal && a.type !== typeVal) return false;
-    if (yearVal !== 'all' && a.startDate && a.startDate.slice(0,4) !== yearVal) return false;
+    if (typeVal && (a.type !== typeVal && a.subtype !== typeVal)) return false;
+    if (yearVal !== 'all' && a.applyDate && a.applyDate.slice(0,4) !== yearVal) return false;
     if (myLeaveFilter) {
       var sub = a.subtype || '';
       if (sub.indexOf(myLeaveFilter) === -1) return false;
@@ -3187,31 +3286,45 @@ function renderMyTable() {
   tbody.innerHTML = '';
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
     return;
   }
 
   filtered.forEach(function(a, i){
     var s   = a.status || '';
-    var r1  = a.reviewer || '—';
-    var r1s = a.reviewerStatus || (r1 !== '—' ? '已審核' : '待審核');
-    var r2  = a.verifier || '—';
-    var r2s = a.verifierStatus || (r2 !== '—' ? '已覆核' : '待覆核');
-    var r1c = r1s.indexOf('待') > -1 ? 'badge-pending' : 'badge-done';
-    var r2c = r2s.indexOf('待') > -1 ? 'badge-pending' : 'badge-done';
+    var r1  = a.reviewer || '';
+    var r1t = a.reviewerTime || '';
+    var r2  = a.verifier || '';
+    var r2t = a.verifierTime || '';
+    // 審核人欄：有名字顯示名字+時間+✅，沒有顯示待審核
+    var r1Cell = r1 ? r1+'<br><span style="font-size:10px;color:var(--color-text-muted);">'+r1t+'</span>' : '—';
+    var r1StatusBadge = r1 ? '<span class="badge badge-done" style="font-size:10px;">已審核</span>' : '<span class="badge badge-pending" style="font-size:10px;">待審核</span>';
+    var r2Cell = r2 ? r2+'<br><span style="font-size:10px;color:var(--color-text-muted);">'+r2t+'</span>' : (r1 ? '待覆核' : '—');
+    var r2StatusBadge = r2 ? '<span class="badge badge-done" style="font-size:10px;">已覆核</span>' : '<span class="badge badge-pending" style="font-size:10px;">'+(r1?'待覆核':'等待中')+'</span>';
     var sc  = s.indexOf('完成') > -1 ? 'badge-done' : s.indexOf('退件') > -1 ? 'badge-reject' : 'badge-pending';
+    var sLabel = s.indexOf('完成')>-1?'已完成':s.indexOf('退件')>-1?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var tr  = document.createElement('tr');
     if (i % 2) tr.style.background = 'var(--color-bg-table-alt)';
     tr.innerHTML =
       '<td class="td-mono">'   + (a.id        || '—') + '</td>' +
-      '<td class="td-datetime">'+ (a.applyDate || '—') + '</td>' +
+      '<td class="td-datetime" style="text-align:right;">'+ (a.applyDate || '—') + '</td>' +
       '<td style="text-align:center;"><span class="badge badge-leave" style="font-size:10px;">' + (a.type || '—') + '</span></td>' +
       '<td style="text-align:center;font-size:12px;">' + (a.subtype || '—') + '</td>' +
-      '<td class="td-mono">'   + (a.startDate  || '—') + ' ~ ' + (a.endDate || '—') + '</td>' +
-      '<td style="text-align:center;font-size:12px;">' + r1 + '</td>' +
-      '<td style="text-align:center;"><span class="badge ' + r1c + '" style="font-size:10px;">' + r1s + '</span></td>' +
-      '<td style="text-align:center;font-size:12px;">' + r2 + '</td>' +
-      '<td style="text-align:center;"><span class="badge ' + r2c + '" style="font-size:10px;">' + r2s + '</span></td>';
+      '<td class="td-mono">'   + fmtDRange(a.startDate, a.endDate) + '</td>' +
+      '<td style="text-align:center;font-size:12px;">' + r1Cell + '</td>' +
+      '<td style="text-align:center;">' + r1StatusBadge + '</td>' +
+      '<td style="text-align:center;font-size:12px;">' + r2Cell + '</td>' +
+      '<td style="text-align:center;">' + r2StatusBadge + '</td>';
+    // 操作欄：點擊顯示流程
+    var lastTd = document.createElement('td');
+    lastTd.style.textAlign = 'center';
+    var viewBtn = document.createElement('button');
+    viewBtn.className = 'btn-action';
+    viewBtn.style.cssText = 'font-size:10px;width:auto;padding:0 8px;';
+    viewBtn.textContent = '查看流程';
+    (function(app){ viewBtn.onclick = function(){ openFlowModal(app); }; })(a);
+    lastTd.appendChild(viewBtn);
+    tr.appendChild(lastTd);
     tbody.appendChild(tr);
   });
 }
@@ -3382,8 +3495,16 @@ function applyPermissions(role) {
   // 側邊欄項目：逐一檢查 onclick 裡的 showPage id
   document.querySelectorAll('.sidebar-nav-item').forEach(function(item){
     if (item.classList.contains('external')) {
-      // 外部連結（請假申請跳轉）：employee 以上可見
-      item.style.display    = isGuest ? 'none' : '';
+      // 外部連結：先判斷是否有 data-perm 限制
+      var extPerm = item.getAttribute('data-perm') || '';
+      if (isGuest) {
+        item.style.display = 'none';
+      } else if (extPerm) {
+        var extOk = allowed.indexOf(extPerm) > -1;
+        item.style.display = extOk ? '' : 'none';
+      } else {
+        item.style.display = '';
+      }
       item.style.opacity    = '';
       item.style.pointerEvents = '';
       return;
@@ -3761,13 +3882,53 @@ function resetPassword(mail) {
 var _reviewTarget = null; // { id, type, name }
 
 function openReview(id, name, type) {
-  // type: 'reviewer'（主管）或 'verifier'（覆核人/人資）
-  _reviewTarget = { id:id, name:name, type:type };
+  // 從 ALL_APPS_DATA 找到這筆申請
+  var app = null;
+  for (var i=0; i<ALL_APPS_DATA.length; i++) {
+    if (ALL_APPS_DATA[i].id === id) { app = ALL_APPS_DATA[i]; break; }
+  }
+  _reviewTarget = { id:id, name:name, type:type, app:app };
+
+  // 標題
   var title = type === 'reviewer' ? '主管審核' : '人資覆核';
   document.getElementById('reviewModalTitle').textContent = title;
+
+  // 申請資訊
   document.getElementById('reviewModalInfo').innerHTML =
-    '申請編號：<strong>' + id + '</strong><br>申請人：<strong>' + name + '</strong>';
+    '申請編號：<strong>' + id + '</strong><br>申請人：<strong>' + name + '</strong>' +
+    (app ? '<br>類型：' + (app.type||'') + '　假別：' + (app.subtype||'') +
+           '<br>起訖：' + fmtDRange(app.startDate, app.endDate) : '');
+
+  // 流程狀態條
+  var managerStatus = document.getElementById('flow-manager-status');
+  var adminStatus   = document.getElementById('flow-admin-status');
+  var flowLine2     = document.getElementById('flow-line-2');
+  if (app && app.reviewer) {
+    // 主管已完成
+    managerStatus.textContent = '已通過';
+    managerStatus.style.cssText = 'font-size:10px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:1px 8px;';
+    flowLine2.style.background = 'linear-gradient(90deg,#a5d6a7,#ccc)';
+    adminStatus.textContent = '審核中';
+    adminStatus.style.cssText = 'font-size:10px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:8px;padding:1px 8px;';
+  } else {
+    managerStatus.textContent = '審核中';
+    managerStatus.style.cssText = 'font-size:10px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:8px;padding:1px 8px;';
+    flowLine2.style.background = '#e0e0e0';
+    adminStatus.textContent = '等待中';
+    adminStatus.style.cssText = 'font-size:10px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:8px;padding:1px 8px;';
+  }
+
+  // 重置 modal 狀態
   document.getElementById('reviewComment').value = '';
+  document.getElementById('reviewCommentWrap').style.display = '';
+  document.getElementById('reviewerDisplay').style.display = 'none';
+  document.getElementById('reviewApproveBtn').disabled = false;
+  document.getElementById('reviewApproveBtn').style.opacity = '';
+  document.getElementById('reviewApproveBtn').textContent = '✓ 核准';
+  document.getElementById('reviewRejectBtn').disabled = false;
+  document.getElementById('reviewRejectBtn').style.opacity = '';
+  document.getElementById('reviewRejectBtn').textContent = '✕ 退件';
+
   document.getElementById('reviewModal').classList.add('open');
 }
 
@@ -3789,10 +3950,11 @@ function submitReview(action) {
   var approver = _reviewTarget.type === 'reviewer' ? user : undefined;
   var verifier = _reviewTarget.type === 'verifier' ? user : undefined;
 
-  var btn = action === 'approve' ? document.getElementById('reviewApproveBtn') : document.getElementById('reviewRejectBtn');
-  btn.disabled = true;
-  btn.style.opacity = '0.5';
-  btn.textContent = '⏳ 處理中…';
+  var approveBtn = document.getElementById('reviewApproveBtn');
+  var rejectBtn  = document.getElementById('reviewRejectBtn');
+  approveBtn.disabled = true; approveBtn.style.opacity = '0.5';
+  rejectBtn.disabled = true;  rejectBtn.style.opacity = '0.5';
+  approveBtn.textContent = '⏳ 處理中…';
 
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors',
@@ -3808,16 +3970,35 @@ function submitReview(action) {
     })
   })
   .then(function(){
-    btn.disabled = false;
-    closeReviewModal();
+    // 顯示已完成狀態
+    approveBtn.textContent = action === 'approve' ? '✅ 已完成' : '退件完成';
+    // 更新流程狀態條
+    if (action === 'approve') {
+      if (_reviewTarget.type === 'reviewer') {
+        document.getElementById('flow-manager-status').textContent = '已通過';
+        document.getElementById('flow-manager-status').style.cssText = 'font-size:10px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:1px 8px;';
+        document.getElementById('flow-admin-status').textContent = '審核中';
+        document.getElementById('flow-admin-status').style.cssText = 'font-size:10px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:8px;padding:1px 8px;';
+      } else {
+        document.getElementById('flow-admin-status').textContent = '已結案';
+        document.getElementById('flow-admin-status').style.cssText = 'font-size:10px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:1px 8px;';
+      }
+    }
+    // 顯示審核者資訊
+    document.getElementById('reviewCommentWrap').style.display = 'none';
+    var dispEl = document.getElementById('reviewerDisplay');
+    document.getElementById('reviewerDisplayName').textContent = user;
+    document.getElementById('reviewerDisplayTime').textContent = ts + ' ✅';
+    dispEl.style.display = '';
+
     showToastGlobal('✅ 審核完成，狀態已更新', 'ok');
-    // 審核後重新載入（給 GAS 寫入時間）
     setTimeout(function(){ if(typeof loadMainData==='function') loadMainData(); if(typeof loadMyRecords==='function') loadMyRecords(); }, 2000);
+    setTimeout(function(){ closeReviewModal(); }, 3000);
   })
   .catch(function(){
-    btn.disabled = false;
-    btn.style.opacity = '';
-    btn.textContent = action==='approve' ? '✓ 核准' : '✕ 退件';
+    approveBtn.disabled = false; approveBtn.style.opacity = '';
+    rejectBtn.disabled = false;  rejectBtn.style.opacity = '';
+    approveBtn.textContent = '✓ 核准';
     showToastGlobal('❌ 審核失敗，請重試', 'err');
   });
 }
@@ -3831,6 +4012,72 @@ function showToastGlobal(msg, type) {
   ct.appendChild(t);
   setTimeout(function(){ t.style.transform='translateX(0)'; }, 20);
   setTimeout(function(){ t.style.transform='translateX(120%)'; setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },350); }, 3500);
+}
+
+function openFlowModal(app) {
+  var s  = app.status || '';
+  var r1 = app.reviewer || '';
+  var r1t= app.reviewerTime || '';
+  var r2 = app.verifier || '';
+  var r2t= app.verifierTime || '';
+  var isDone   = s.indexOf('完成') > -1;
+  var isReject = s.indexOf('退件') > -1;
+
+  document.getElementById('flowModalInfo').innerHTML =
+    '申請編號：<strong>' + (app.id||'') + '</strong><br>' +
+    '申請人：<strong>' + (app.name||'') + '</strong><br>' +
+    '類型：' + (app.type||'') + '　假別：' + (app.subtype||'') + '<br>' +
+    '起訖：' + fmtDRange(app.startDate, app.endDate);
+
+  var mgrIcon  = document.getElementById('flow-mgr-icon');
+  var mgrLabel = document.getElementById('flow-mgr-label');
+  var line2    = document.getElementById('flow-line2');
+  var adminIcon  = document.getElementById('flow-admin-icon');
+  var adminLabel = document.getElementById('flow-admin-label');
+
+  if (r1) {
+    mgrIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
+    mgrIcon.textContent = '✓';
+    mgrLabel.style.color = '#2e7d32';
+    mgrLabel.innerHTML = r1 + '<br>' + r1t;
+    line2.style.background = 'linear-gradient(90deg,#a5d6a7,#ccc)';
+  } else if (isReject) {
+    mgrIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#c62828;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
+    mgrIcon.textContent = '✕';
+    mgrLabel.style.color = '#c62828';
+    mgrLabel.textContent = '退件';
+    line2.style.background = '#e0e0e0';
+  } else {
+    mgrIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
+    mgrIcon.textContent = '⏳';
+    mgrLabel.style.color = '#e65100';
+    mgrLabel.textContent = '審核中';
+    line2.style.background = '#e0e0e0';
+  }
+
+  if (r2) {
+    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
+    adminIcon.textContent = '✓';
+    adminLabel.style.color = '#2e7d32';
+    adminLabel.innerHTML = r2 + '<br>' + r2t + '<br>已結案';
+  } else if (isReject) {
+    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
+    adminIcon.textContent = '—';
+    adminLabel.style.color = '#9a9482';
+    adminLabel.textContent = '—';
+  } else if (r1) {
+    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
+    adminIcon.textContent = '⏳';
+    adminLabel.style.color = '#e65100';
+    adminLabel.textContent = '審核中';
+  } else {
+    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
+    adminIcon.textContent = '⏳';
+    adminLabel.style.color = '#9a9482';
+    adminLabel.textContent = '等待中';
+  }
+
+  document.getElementById('flowModal').classList.add('open');
 }
 
 
