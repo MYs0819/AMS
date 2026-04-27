@@ -692,7 +692,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzFv7k9CClByI7cDYEVouPZ2Qwkf2R1uzoMiV2wFErG-3WyKRDfpo1T4sEVnpLUb6_ynw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyh2PPjBJiqogtlqE7jZymd0b47HrinycXZM0sqQeM5wOWq2vbwHku9fWf8sdoP14lWRg/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -711,11 +711,14 @@ function nowStr() {
   return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
 }
 function genId(type) {
+  // 前端先生成暫時 ID（後端 generateAppId 也會產生正確流水號）
+  // 格式：YYYYMMDD_A01 or YYYYMMDD_B01，若後端接收到 id 則使用後端邏輯
   var d = new Date();
   var p = function(n){ return String(n).padStart(2,'0'); };
   var base = d.getFullYear()+''+p(d.getMonth()+1)+''+p(d.getDate());
-  var seq = String(Math.floor(Math.random()*90+1)).padStart(2,'0');
   var prefix = (type === 'retain') ? 'B' : 'A';
+  // 暫時流水：用毫秒最後兩位避免碰撞，後端會以 Sheets 查詢覆寫
+  var seq = String((d.getSeconds() % 90) + 1).padStart(2,'0');
   return base + '_' + prefix + seq;
 }
 function showSt(id, msg, type) {
