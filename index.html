@@ -1109,15 +1109,6 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div class="stat-tooltip-item"><span class="stat-tooltip-dot kitchen"></span>請假申請 — 美秀集團</div>
             </div>
           </div>
-          <div class="stat-card bg-reject-grp clickable">
-            <span class="stat-card-label">補件總數</span>
-            <div class="stat-card-value-row"><span class="stat-card-value alert" data-stat="supp" id="stat-supp">—</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待補件</span>
-            <div class="stat-tooltip">
-              <div class="stat-tooltip-title">補件中</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot field"></span>請假申請 — Fun4</div>
-            </div>
-          </div>
           <div class="stat-card bg-payroll">
             <span class="stat-card-label">薪資單未派發</span>
             <div class="stat-card-value-row"><span class="stat-card-value purple">2</span><span class="stat-card-unit">件</span></div>
@@ -1559,21 +1550,21 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div onclick="filterMyLeaveType('事假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
             <div class="stat-card-label">事假</div>
             <div class="stat-card-value-row"><span class="stat-card-value red" id="lc-事假">0</span></div>
-            <div class="stat-card-sub">日</div>
+            <div class="stat-card-sub">次</div>
           </div>
           <div onclick="filterMyLeaveType('病假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
             <div class="stat-card-label">病假</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="lc-病假">0</span></div>
-            <div class="stat-card-sub">日</div>
+            <div class="stat-card-sub">次</div>
           </div>
           <div onclick="filterMyLeaveType('生理假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
             <div class="stat-card-label">生理假</div>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="lc-生理假">0</span></div>
-            <div class="stat-card-sub">日</div>
+            <div class="stat-card-sub">次</div>
           </div>
-          <div onclick="filterMyLeaveType('國假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+          <div onclick="filterMyLeaveType('國假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;justify-content:space-between;" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
             <div class="stat-card-label">國假</div>
-            <div class="stat-card-value-row" id="gj-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span></div>
+            <div id="gj-value-row" style="display:flex;align-items:center;justify-content:center;min-height:36px;"><span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span></div>
             <div class="stat-card-sub" id="gj-sub">日</div>
           </div>
           <div onclick="filterMyLeaveType('特休',this)" style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
@@ -1584,7 +1575,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div onclick="filterMyLeaveType('其他',this)" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
             <div class="stat-card-label">其他</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="lc-其他">0</span></div>
-            <div class="stat-card-sub">日</div>
+            <div class="stat-card-sub">次</div>
           </div>
         </div>
 
@@ -1660,12 +1651,45 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <!-- ════ 本月紀錄 ════ -->
       <div class="page-section" id="page-monthly">
+        <!-- 假別統計（本月）-->
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;" id="mon-leave-grid">
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">事假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value red" id="mon-lc-事假">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">病假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mon-lc-病假">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">生理假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="mon-lc-生理假">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">國假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="mon-lc-國假">0</span></div>
+            <div class="stat-card-sub">日</div>
+          </div>
+          <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">特休</div>
+            <div class="stat-card-value-row"><span class="stat-card-value purple" id="mon-lc-特休">0</span></div>
+            <div class="stat-card-sub">日</div>
+          </div>
+          <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">其他</div>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mon-lc-其他">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+        </div>
         <!-- 統計卡片 -->
         <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
           <div class="stat-card bg-total">
-            <span class="stat-card-label">本月總申請</span>
+            <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="mon-total">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">本月</span>
+            <span class="stat-card-sub" id="mon-month-label">本月</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">審核中</span>
@@ -1675,12 +1699,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="stat-card bg-progress">
             <span class="stat-card-label">已完成</span>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mon-done">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">本月</span>
+            <span class="stat-card-sub">已結案</span>
           </div>
           <div class="stat-card bg-reject-grp">
             <span class="stat-card-label">退件</span>
             <div class="stat-card-value-row"><span class="stat-card-value red" id="mon-reject">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">本月</span>
+            <span class="stat-card-sub">需補件</span>
           </div>
         </div>
         <!-- Tab -->
@@ -1696,9 +1720,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <span class="search-icon">🔍</span>
               <input class="search-input" id="mon-search" placeholder="搜尋姓名…" oninput="renderMonTable()"/>
             </div>
-            <div class="toolbar-right">
-              <span class="toolbar-info">共 <span id="mon-row-count">0</span> 筆</span>
-            </div>
+            <!-- 月份選單 -->
+            <select class="filter-select" id="mon-month-sel" style="width:100px;" onchange="onMonthChange()">
+              <option value="">全部月份</option>
+            </select>
+            <div style="flex:1;"></div>
+            <span class="toolbar-info">共 <span id="mon-row-count">0</span> 筆</span>
           </div>
           <table class="data-table">
             <colgroup>
@@ -1955,9 +1982,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--color-text-secondary);line-height:1.8;"></div>
 
     <!-- 審核意見 -->
-    <div style="display:flex;flex-direction:column;gap:6px;" id="reviewCommentWrap">
+    <div style="display:flex;flex-direction:column;gap:4px;" id="reviewCommentWrap">
       <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">審核意見（選填）</label>
-      <textarea id="reviewComment" rows="2" style="border:1.5px solid var(--color-border-card);border-radius:7px;padding:8px 12px;font-family:var(--font-body);font-size:13px;resize:none;outline:none;" placeholder="可填寫審核備註…"></textarea>
+      <textarea id="reviewComment" rows="1" style="border:1.5px solid var(--color-border-card);border-radius:7px;padding:6px 12px;font-family:var(--font-body);font-size:13px;resize:none;outline:none;height:36px;overflow:hidden;" placeholder="可填寫審核備註…"></textarea>
     </div>
 
     <!-- 已審核人員顯示 -->
@@ -2394,7 +2421,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzFv7k9CClByI7cDYEVouPZ2Qwkf2R1uzoMiV2wFErG-3WyKRDfpo1T4sEVnpLUb6_ynw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyh2PPjBJiqogtlqE7jZymd0b47HrinycXZM0sqQeM5wOWq2vbwHku9fWf8sdoP14lWRg/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3320,20 +3347,26 @@ function filterMyLeaveType(type, el) {
 
 function updateLeaveStats() {
   var year = myAllYear ? 'all' : ((document.getElementById('my-year-filter') || {}).value || '2026');
-  var ld   = { '事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0 };
+  // 次數統計（事假/病假/生理假/其他）
+  var lc = { '事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0 };
   myRecordsData.forEach(function(a){
-    if (!a.startDate) return;
-    var ay = a.startDate.slice(0,4);
+    if (!a.applyDate) return;
+    var ay = (a.applyDate||'').slice(0,4);
     if (year !== 'all' && ay !== year) return;
     if (a.type !== '請假申請') return;
-    var base = (a.subtype || '').split(' ')[0].split('(')[0];
-    var d    = parseFloat(a.days || 0);
-    if (ld.hasOwnProperty(base)) ld[base] += d;
-    else ld['其他'] += d;
+    var base = (a.subtype || '').split(' ')[0].split('(')[0].trim();
+    if (base === '特休') {
+      // 特休用天數
+      lc['特休'] += parseFloat(a.days || 1);
+    } else if (lc.hasOwnProperty(base)) {
+      lc[base] += 1; // 其餘用次數
+    } else {
+      lc['其他'] += 1;
+    }
   });
-  Object.keys(ld).forEach(function(k){
+  Object.keys(lc).forEach(function(k){
     var el = document.getElementById('lc-' + k);
-    if (el) el.textContent = ld[k] || 0;
+    if (el) el.textContent = lc[k] || 0;
   });
 }
 
@@ -3350,15 +3383,22 @@ function loadMyRecords() {
         tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
         return;
       }
-      // 只顯示登入者自己的申請（用名字比對；若帳號有 mail 也可比對）
-      var myName = CURRENT_USER ? CURRENT_USER.name : '';
-      var myMail = CURRENT_USER ? (CURRENT_USER.mail||'') : '';
+      // 只顯示登入者自己的申請
+      var myName = CURRENT_USER ? (CURRENT_USER.name||'').trim() : '';
+      var myMail = CURRENT_USER ? (CURRENT_USER.mail||'').trim().toLowerCase() : '';
       var allApps = data.applications;
-      myRecordsData = myName
-        ? allApps.filter(function(a){
-            return (a.name||'')=== myName || (myMail && (a.mail||'')=== myMail);
-          })
-        : allApps;
+
+      // employee 只看自己；manager/admin 看全部
+      var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
+      if (userRole === 'employee' && myName) {
+        myRecordsData = allApps.filter(function(a){
+          var an = (a.name||'').trim();
+          var am = (a.mail||'').trim().toLowerCase();
+          return an === myName || (myMail && am === myMail);
+        });
+      } else {
+        myRecordsData = allApps;
+      }
       var total=myRecordsData.length, pending=0, done=0, reject=0;
       var typeSet = {};
       myRecordsData.forEach(function(a){
@@ -4137,6 +4177,7 @@ function submitReview(action) {
   approveBtn.disabled = true; approveBtn.style.opacity = '0.5';
   rejectBtn.disabled = true;  rejectBtn.style.opacity = '0.5';
   approveBtn.textContent = '⏳ 處理中…';
+  showToastGlobal('⏳ 審核送出中，請稍候…', 'info');
 
   fetch(GAS_URL, {
     method:'POST', mode:'no-cors',
@@ -4274,6 +4315,7 @@ function openFlowModal(app) {
 }
 
 /* ══ 本月紀錄 ══ */
+var MONTHLY_ALL_DATA = [];
 var MONTHLY_DATA = [];
 var monCurrentTab = 'all';
 
@@ -4284,11 +4326,67 @@ function switchMonTab(el, tab) {
   renderMonTable();
 }
 
+function onMonthChange() {
+  var sel = document.getElementById('mon-month-sel');
+  var ym  = sel ? sel.value : '';
+  var ml  = document.getElementById('mon-month-label');
+  if (ml) ml.textContent = ym ? ym.replace('/',' / ') : '全部';
+  var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
+  var myName   = CURRENT_USER ? (CURRENT_USER.name||'').trim() : '';
+  MONTHLY_DATA = MONTHLY_ALL_DATA.filter(function(a){
+    if (ym && (a.applyDate||'').slice(0,7) !== ym) return false;
+    if (userRole === 'employee' && myName && (a.name||'').trim() !== myName) return false;
+    return true;
+  });
+  updateMonStats();
+  updateMonLeaveStats();
+  renderMonTable();
+}
+
+function updateMonStats() {
+  var total=MONTHLY_DATA.length, pending=0, done=0, reject=0;
+  MONTHLY_DATA.forEach(function(a){
+    var s=a.status||'';
+    if(s.indexOf('完成')>-1) done++;
+    else if(s.indexOf('退件')>-1) reject++;
+    else pending++;
+  });
+  var g=function(id){return document.getElementById(id);};
+  if(g('mon-total'))      g('mon-total').textContent=total;
+  if(g('mon-pending'))    g('mon-pending').textContent=pending;
+  if(g('mon-done'))       g('mon-done').textContent=done;
+  if(g('mon-reject'))     g('mon-reject').textContent=reject;
+  if(g('montab-all'))     g('montab-all').textContent=total;
+  if(g('montab-pending')) g('montab-pending').textContent=pending;
+  if(g('montab-done'))    g('montab-done').textContent=done;
+  if(g('montab-reject'))  g('montab-reject').textContent=reject;
+}
+
+function updateMonLeaveStats() {
+  var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
+  MONTHLY_DATA.forEach(function(a){
+    if (a.type !== '請假申請') return;
+    var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
+    if (base === '特休') {
+      lc['特休'] += parseFloat(a.days||1);
+    } else if (base === '國假') {
+      lc['國假'] += parseFloat(a.days||1);
+    } else if (lc.hasOwnProperty(base)) {
+      lc[base] += 1;
+    } else {
+      lc['其他'] += 1;
+    }
+  });
+  Object.keys(lc).forEach(function(k){
+    var el = document.getElementById('mon-lc-' + k);
+    if (el) el.textContent = lc[k] || 0;
+  });
+}
+
 function loadMonthlyData() {
   var tbody = document.getElementById('mon-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
-
+  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中\u2026</td></tr>';
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
@@ -4297,57 +4395,45 @@ function loadMonthlyData() {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--color-text-muted);">目前尚無資料</td></tr>';
         return;
       }
-      // 本月過濾
-      var now = new Date();
-      var ym  = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0');
-      var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
-      var myName   = CURRENT_USER ? CURRENT_USER.name : '';
-
-      var all = data.applications.filter(function(a){
-        var d = (a.applyDate||'').slice(0,7); // yyyy/mm
-        if (d !== ym) return false;
-        // employee 只看自己；manager/admin 看全部
-        if (userRole === 'employee' && myName && a.name !== myName) return false;
-        return true;
+      MONTHLY_ALL_DATA = data.applications;
+      // 建立月份選單
+      var ymSet = {};
+      MONTHLY_ALL_DATA.forEach(function(a){
+        var ym = (a.applyDate||'').slice(0,7);
+        if (ym && ym.length === 7) ymSet[ym] = true;
       });
-      MONTHLY_DATA = all;
-      // 統計
-      var total=all.length, pending=0, done=0, reject=0;
-      all.forEach(function(a){
-        var s=a.status||'';
-        if(s.indexOf('完成')>-1) done++;
-        else if(s.indexOf('退件')>-1) reject++;
-        else pending++;
-      });
-      var g=function(id){return document.getElementById(id);};
-      if(g('mon-total'))   g('mon-total').textContent=total;
-      if(g('mon-pending')) g('mon-pending').textContent=pending;
-      if(g('mon-done'))    g('mon-done').textContent=done;
-      if(g('mon-reject'))  g('mon-reject').textContent=reject;
-      if(g('montab-all'))     g('montab-all').textContent=total;
-      if(g('montab-pending')) g('montab-pending').textContent=pending;
-      if(g('montab-done'))    g('montab-done').textContent=done;
-      if(g('montab-reject'))  g('montab-reject').textContent=reject;
-      // 也同步更新 main page 統計（儀表板本月）
-      updateMainStats(all);
-      renderMonTable();
+      var ymList = Object.keys(ymSet).sort().reverse();
+      var sel = document.getElementById('mon-month-sel');
+      if (sel) {
+        var prevVal = sel.value;
+        sel.innerHTML = '<option value="">全部月份</option>';
+        ymList.forEach(function(ym){
+          var opt = document.createElement('option');
+          opt.value = ym; opt.textContent = ym.replace('/',' / ');
+          sel.appendChild(opt);
+        });
+        var now = new Date();
+        var curYm = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0');
+        sel.value = prevVal || (ymList.indexOf(curYm)>-1 ? curYm : (ymList[0]||''));
+      }
+      onMonthChange();
     })
     .catch(function(){
       if(document.getElementById('mon-tbody'))
-        document.getElementById('mon-tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:28px;color:#f44336;">載入失敗</td></tr>';
+        document.getElementById('mon-tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:28px;color:#f44336;">載入失敗，請重試</td></tr>';
     });
 }
 
 function renderMonTable() {
   var tbody = document.getElementById('mon-tbody');
   if (!tbody) return;
-  var search = (document.getElementById('mon-search')||{value:''}).value.toLowerCase();
+  var search = ((document.getElementById('mon-search')||{}).value||'').toLowerCase();
   var filtered = MONTHLY_DATA.filter(function(a){
     var s = a.status||'';
     if (monCurrentTab==='pending' && (s.indexOf('完成')>-1||s.indexOf('退件')>-1)) return false;
     if (monCurrentTab==='done'    && s.indexOf('完成')===-1) return false;
     if (monCurrentTab==='reject'  && s.indexOf('退件')===-1) return false;
-    if (search && (a.name||'').toLowerCase().indexOf(search)<0) return false;
+    if (search && (a.name||'').toLowerCase().indexOf(search)<0 && (a.id||'').toLowerCase().indexOf(search)<0) return false;
     return true;
   });
   var rc = document.getElementById('mon-row-count');
@@ -4376,7 +4462,6 @@ function renderMonTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.reviewer||'—')+(a.reviewerTime?'<br><span style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':'')+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.verifier||'—')+(a.verifierTime?'<br><span style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':'')+'</td>'+
       '<td style="text-align:center;"></td>';
-    // 進度/審核按鈕
     var lastTd = tr.lastElementChild;
     if (userRole==='manager' && !a.reviewer && !isDone && !isReject) {
       var btn=document.createElement('button'); btn.className='review-btn approve';
@@ -4393,11 +4478,11 @@ function renderMonTable() {
       btn2.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'verifier',false);};
       lastTd.appendChild(btn2);
     } else {
-      var viewBtn3=document.createElement('button'); viewBtn3.className='btn-action';
-      viewBtn3.style.cssText='font-size:10px;width:auto;padding:0 8px;height:24px;';
-      viewBtn3.textContent='查看';
-      (function(app3){viewBtn3.onclick=function(){openFlowModal(app3);};})(a);
-      lastTd.appendChild(viewBtn3);
+      var vBtn=document.createElement('button'); vBtn.className='btn-action';
+      vBtn.style.cssText='font-size:10px;width:auto;padding:0 8px;height:24px;';
+      vBtn.textContent='查看';
+      (function(a2){vBtn.onclick=function(){openFlowModal(a2);};})(a);
+      lastTd.appendChild(vBtn);
     }
     tbody.appendChild(tr);
   });
@@ -4410,15 +4495,13 @@ function initGjCard() {
   var sub    = document.getElementById('gj-sub');
   if (!valRow || !sub) return;
   if (isPartTime) {
-    valRow.innerHTML = '<span class="stat-card-value" style="font-size:18px;color:#43a047;">無</span>';
+    valRow.innerHTML = '<span style="font-size:20px;font-weight:700;color:#43a047;line-height:1;">無</span>';
     sub.innerHTML    = '當日上班加倍';
-    sub.style.fontSize = '10px';
-    sub.style.color    = '#5a5646';
+    sub.style.cssText = 'font-size:10px;color:#5a5646;margin-top:4px;';
   } else {
     valRow.innerHTML = '<span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span>';
     sub.textContent  = '日';
-    sub.style.fontSize = '';
-    sub.style.color    = '';
+    sub.style.cssText = '';
   }
 }
 
