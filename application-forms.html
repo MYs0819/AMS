@@ -37,14 +37,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 /* ── 選擇卡片 ── */
 .selector-wrap{width:100%;max-width:760px;}
 .selector-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:20px;text-align:center;}
-.selector-grid{display:flex;flex-direction:column;gap:12px;}
-.sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:18px 24px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;}
-.sel-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transform-origin:top;transition:.2s;}
+.selector-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:20px 18px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:flex-start;gap:8px;position:relative;overflow:hidden;}
+.sel-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:.2s;}
 .sel-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,168,76,.15);}
-.sel-card:hover::after{transform:scaleY(1);}
-.sel-icon{font-size:28px;flex-shrink:0;}
-.sel-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--dark);}
-.sel-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px;}
+.sel-card:hover::after{transform:scaleX(1);}
+.sel-icon{font-size:26px;flex-shrink:0;}
+.sel-title{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--dark);}
+.sel-desc{font-size:11px;color:var(--muted);line-height:1.5;margin-top:1px;}
 
 /* ── Footer ── */
 .app-footer{
@@ -174,17 +174,22 @@ input[type="time"] { color-scheme: dark; }
         <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">請假申請單</div>
-          <div class="sel-desc">各類假別事前及當日申請（事假、病假、特休、婚假…等）</div>
+          <div class="sel-desc">各類假別事前及當日申請</div>
         </div>
-        <span style="margin-left:auto;color:var(--muted);font-size:20px;">›</span>
+      </div>
+      <div class="sel-card" onclick="openModal('lvSupModal')">
+        <span class="sel-icon">📋</span>
+        <div>
+          <div class="sel-title">請假補件申請單</div>
+          <div class="sel-desc">各類假別補件申請</div>
+        </div>
       </div>
       <div class="sel-card" onclick="openModal('rtModal')">
         <span class="sel-icon">📋</span>
         <div>
           <div class="sel-title">留復職申請單</div>
-          <div class="sel-desc">留職停薪、復職、展延申請</div>
+          <div class="sel-desc">留職、復職、展延申請</div>
         </div>
-        <span style="margin-left:auto;color:var(--muted);font-size:20px;">›</span>
       </div>
     </div>
   </div>
@@ -215,7 +220,7 @@ input[type="time"] { color-scheme: dark; }
         <!-- 第一行：單位 | 申請日期（靠右） -->
         <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
           <div class="f-g" style="flex:1;"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
-          <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:right;display:block;">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:right;"/></div>
+          <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:left;"/></div>
         </div>
         <!-- 第二行：(請假人)職稱 | (請假人)姓名親簽 | (代理人)職稱 | (代理人)姓名 -->
         <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr 1fr;gap:10px;align-items:end;">
@@ -687,7 +692,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbz1m990Ys5R_aRfxeIb_CSGAw32SxW053vNWPlR1eNn6AsxZ223zIrgaziJNLLUfMZpZA/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzFv7k9CClByI7cDYEVouPZ2Qwkf2R1uzoMiV2wFErG-3WyKRDfpo1T4sEVnpLUb6_ynw/exec';
 
 /* ── 工具 ── */
 function today() {
