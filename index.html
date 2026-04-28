@@ -309,7 +309,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 #page-doccenter.active,#page-analytics.active,.page-section{display:none;flex-direction:column;gap:var(--space-4);overflow-x:hidden;}
 .page-section.active{display:flex;flex-direction:column;}
 #page-doccenter.active{display:flex;flex:1;min-height:0;flex-direction:column;}
-#page-workhour.active,#page-labor.active,#page-analytics.active{display:flex;flex:1;min-height:0;flex-direction:column;}
+#page-workhour.active,#page-labor.active,#page-analytics.active,#page-monthly-all.active{display:flex;flex:1;min-height:0;flex-direction:column;}
 
 /* ============================================================
    統計卡片
@@ -1034,7 +1034,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-label">功能</p>
         <p class="sidebar-section-sub">營運限定</p>
         <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('main',this)"><span class="sidebar-icon">📁</span>所有申請</a>
-        <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('monthly',this)"><span class="sidebar-icon">📅</span>本月查詢</a>
+        <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('monthly-all',this)"><span class="sidebar-icon">📅</span>本月查詢</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1632,13 +1632,23 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <table class="data-table">
             <colgroup>
               <col style="width:120px;"/><col style="width:112px;"/><col style="width:82px;"/>
-              <col style="width:140px;"/><col style="width:100px;"/><col style="width:180px;"/><col style="width:72px;"/><col style="width:66px;"/>
+              <col style="width:106px;"/><col style="width:62px;"/><col style="width:80px;"/><col style="width:62px;"/>
+              <col style="width:120px;"/><col style="width:140px;"/><col style="width:58px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:58px;"/>
             </colgroup>
             <thead><tr>
-              <th>申請日期</th><th>假別</th><th>起訖期間</th><th>狀態</th><th>進度</th>
+              <th style="text-align:center;">申請編號</th>
+              <th style="text-align:center;">團隊型態</th>
+              <th style="text-align:center;">申請類型</th>
+              <th style="text-align:center;">假別</th>
+              <th style="text-align:center;">申請日期</th>
+              <th style="text-align:center;">起訖期間</th>
+              <th style="text-align:center;">狀態</th>
+              <th style="text-align:center;">審核人</th>
+              <th style="text-align:center;">覆核人</th>
+              <th style="text-align:center;">操作</th>
             </tr></thead>
             <tbody id="my-tbody">
-              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+              <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
             </tbody>
           </table>
           <div class="table-footer"><div class="pagination" id="my-pagination"></div></div>
@@ -1726,19 +1736,130 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:140px;"/><col style="width:70px;"/><col style="width:100px;"/><col style="width:180px;"/><col style="width:64px;"/><col style="width:66px;"/>
+              <col style="width:106px;"/><col style="width:62px;"/><col style="width:80px;"/><col style="width:62px;"/>
+              <col style="width:120px;"/><col style="width:140px;"/><col style="width:58px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:58px;"/>
             </colgroup>
             <thead><tr>
-              <th>申請日期</th><th id="mon-th-name">申請人</th><th>假別</th><th>起訖期間</th><th>狀態</th><th>進度</th>
+              <th style="text-align:center;">申請編號</th>
+              <th style="text-align:center;">團隊型態</th>
+              <th style="text-align:center;">申請類型</th>
+              <th style="text-align:center;">假別</th>
+              <th style="text-align:center;">申請日期</th>
+              <th style="text-align:center;">起訖期間</th>
+              <th style="text-align:center;">狀態</th>
+              <th style="text-align:center;">審核人</th>
+              <th style="text-align:center;">覆核人</th>
+              <th style="text-align:center;">操作</th>
             </tr></thead>
             <tbody id="mon-tbody">
-              <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+              <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
             </tbody>
           </table>
           <div class="table-footer"><div class="pagination" id="mon-pagination"></div></div>
         </div>
       </div>
 
+      <div class="page-section" id="page-monthly-all">
+        <!-- 假別統計（全員本月）-->
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">事假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value red" id="mall-lc-事假">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">病假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mall-lc-病假">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">生理假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="mall-lc-生理假">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">國假</div>
+            <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="mall-lc-國假">0</span></div>
+            <div class="stat-card-sub">日</div>
+          </div>
+          <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">特休</div>
+            <div class="stat-card-value-row"><span class="stat-card-value purple" id="mall-lc-特休">0</span></div>
+            <div class="stat-card-sub">日</div>
+          </div>
+          <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="stat-card-label">其他</div>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mall-lc-其他">0</span></div>
+            <div class="stat-card-sub">次</div>
+          </div>
+        </div>
+        <!-- 統計卡 -->
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+          <div class="stat-card bg-total">
+            <span class="stat-card-label">總申請</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" id="mall-total">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub" id="mall-month-label">本月</span>
+          </div>
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">審核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value gold" id="mall-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待處理</span>
+          </div>
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">已完成</span>
+            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mall-done">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">已結案</span>
+          </div>
+          <div class="stat-card bg-reject-grp">
+            <span class="stat-card-label">退件</span>
+            <div class="stat-card-value-row"><span class="stat-card-value red" id="mall-reject">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">需補件</span>
+          </div>
+        </div>
+        <!-- Tab -->
+        <div class="tab-bar">
+          <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'pending')">審核中 <span class="tab-count" id="malltab-pending">0</span></div>
+          <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
+          <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">退件 <span class="tab-count" id="malltab-reject">0</span></div>
+        </div>
+        <div class="table-section">
+          <div class="toolbar">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input class="search-input" id="mall-search" placeholder="搜尋姓名…" oninput="renderMallTable()"/>
+            </div>
+            <select class="filter-select" id="mall-month-sel" style="width:100px;" onchange="onMallMonthChange()">
+              <option value="">全部月份</option>
+            </select>
+            <div style="flex:1;"></div>
+            <span class="toolbar-info">共 <span id="mall-row-count">0</span> 筆</span>
+          </div>
+          <table class="data-table">
+            <colgroup>
+              <col style="width:106px;"/><col style="width:70px;"/><col style="width:62px;"/><col style="width:80px;"/><col style="width:62px;"/>
+              <col style="width:110px;"/><col style="width:130px;"/><col style="width:58px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:58px;"/>
+            </colgroup>
+            <thead><tr>
+              <th style="text-align:center;">申請編號</th>
+              <th style="text-align:center;">員工姓名</th>
+              <th style="text-align:center;">團隊型態</th>
+              <th style="text-align:center;">申請類型</th>
+              <th style="text-align:center;">假別</th>
+              <th style="text-align:center;">申請日期</th>
+              <th style="text-align:center;">起訖期間</th>
+              <th style="text-align:center;">狀態</th>
+              <th style="text-align:center;">審核人</th>
+              <th style="text-align:center;">覆核人</th>
+              <th style="text-align:center;">操作</th>
+            </tr></thead>
+            <tbody id="mall-tbody">
+              <tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+            </tbody>
+          </table>
+          <div class="table-footer"><div class="pagination" id="mall-pagination"></div></div>
+        </div>
+      </div>
       <div class="page-section" id="page-workhour">
         <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;overflow-y:auto;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;"><p class="inner-page-title" style="color:#e8e4d8;font-family:var(--font-display);">🕐 每日工時登記</p></div>
@@ -2187,6 +2308,7 @@ function showPage(pageId, el) {
   if (pageId === 'myrecords') loadMyRecords();
   if (pageId === 'main') { if(typeof loadMainData==='function') loadMainData(); }
   if (pageId === 'monthly') { if(typeof loadMonthlyData==='function') loadMonthlyData(); }
+  if (pageId === 'monthly-all') { if(typeof loadMallData==='function') loadMallData(); }
   if (pageId === 'myrecords') loadMyRecords();
   if (pageId === 'analytics') updateAnalytics();
   return false;
@@ -3361,24 +3483,23 @@ function updateLeaveStats() {
 function loadMyRecords() {
   var tbody = document.getElementById('my-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
         return;
       }
-      // 只顯示登入者自己的申請
+      // 所有角色都只看自己的申請（申請紀錄/本月紀錄只顯示個人）
       var myName = CURRENT_USER ? (CURRENT_USER.name||'').trim() : '';
       var myMail = CURRENT_USER ? (CURRENT_USER.mail||'').trim().toLowerCase() : '';
       var allApps = data.applications;
 
-      // employee 只看自己；manager/admin 看全部
-      var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
-      if (userRole === 'employee' && myName) {
+      // 不分角色，都只篩選自己的
+      if (myName) {
         myRecordsData = allApps.filter(function(a){
           var an = (a.name||'').trim();
           var am = (a.mail||'').trim().toLowerCase();
@@ -3424,7 +3545,7 @@ function loadMyRecords() {
     })
     .catch(function(){
       if (document.getElementById('my-tbody'))
-        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
+        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
     });
 }
 
@@ -3454,30 +3575,41 @@ function renderMyTable() {
   tbody.innerHTML = '';
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
     return;
   }
 
   filtered.forEach(function(a, i){
-    var s      = a.status || '';
+    var s        = a.status || '';
     var isDone   = s.indexOf('完成') > -1;
     var isReject = s.indexOf('退件') > -1;
     var sLabel = isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg    = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    var dateStr = fmtDT(a.applyDate || '');
-    var tr  = document.createElement('tr');
+    // 審核人/覆核人顯示：名字 + 時間
+    var r1Cell = a.reviewer
+      ? '<span style="font-weight:600;">'+ a.reviewer +'</span>'+(a.reviewerTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':'')
+      : '<span style="color:#ccc;">—</span>';
+    var r2Cell = a.verifier
+      ? '<span style="font-weight:600;">'+ a.verifier +'</span>'+(a.verifierTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':'')
+      : (a.reviewer ? '<span style="color:#d4a017;font-size:10px;">待覆核</span>' : '<span style="color:#ccc;">—</span>');
+    var tr = document.createElement('tr');
     if (i % 2) tr.style.background = 'var(--color-bg-table-alt)';
     tr.innerHTML =
-      '<td class="td-mono" style="font-size:11px;">' + dateStr + '</td>' +
-      '<td style="text-align:center;font-size:12px;">' + (a.subtype || a.type || '—') + '</td>' +
-      '<td class="td-mono" style="font-size:11px;">' + fmtDRange(a.startDate, a.endDate) + '</td>' +
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>';
+      '<td class="td-mono" style="text-align:center;font-size:11px;">'+(a.id||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.team||'—')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.subtype||'—')+'</td>'+
+      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
+      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+r1Cell+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+r2Cell+'</td>';
     var lastTd = document.createElement('td');
     lastTd.style.textAlign = 'center';
     var viewBtn = document.createElement('button');
     viewBtn.className = 'btn-action';
-    viewBtn.style.cssText = 'font-size:10px;width:auto;padding:0 8px;';
+    viewBtn.style.cssText = 'font-size:10px;width:auto;padding:0 8px;height:24px;';
     viewBtn.textContent = '查看';
     (function(app){ viewBtn.onclick = function(){ openFlowModal(app); }; })(a);
     lastTd.appendChild(viewBtn);
@@ -3522,17 +3654,17 @@ var ROLE_BADGE = {
 var ROLE_PAGES = {
   guest:    [],
   employee: ['doccenter','leave','myrecords','monthly'],
-  manager:  ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics'],
-  admin:    ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','salary','account','settings'],
+  manager:  ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','monthly-all'],
+  admin:    ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','salary','account','settings','monthly-all'],
 };
 
 /* 各角色可見的側邊欄 onclick showPage 頁面 */
 var ROLE_SIDEBAR_MAP = {
   guest:    [],
   employee: ['doccenter','leave','myrecords','monthly'],
-  manager:  ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics'],
+  manager:  ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','monthly-all'],
   admin:    ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics',
-             'salary','account','settings','analytics'],
+             'salary','account','settings','analytics','monthly-all'],
 };
 
 /* ══ 初始化：檢查 localStorage ══ */
@@ -4425,6 +4557,13 @@ function loadMonthlyData() {
         return;
       }
       MONTHLY_ALL_DATA = data.applications;
+      // 所有角色的本月紀錄都只顯示個人資料
+      var myNameM   = CURRENT_USER ? (CURRENT_USER.name||'').trim() : '';
+      if (myNameM) {
+        MONTHLY_ALL_DATA = data.applications.filter(function(a){
+          return (a.name||'').trim() === myNameM;
+        });
+      }
       // 建立月份選單
       var ymSet = {};
       MONTHLY_ALL_DATA.forEach(function(a){
@@ -4469,29 +4608,30 @@ function renderMonTable() {
   if(rc) rc.textContent = filtered.length;
   tbody.innerHTML = '';
   if(!filtered.length){
-    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
     return;
   }
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
-  // employee 隱藏申請人欄
-  var thName = document.getElementById('mon-th-name');
-  if (thName) thName.style.display = (userRole === 'employee') ? 'none' : '';
   filtered.forEach(function(a,i){
     var s=a.status||'';
     var isDone=s.indexOf('完成')>-1, isReject=s.indexOf('退件')>-1;
     var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    var nameCol = userRole === 'employee' ? '' :
-      '<td style="text-align:center;font-size:12px;font-weight:500;">'+(a.name||'—')+'</td>';
+    var r1m = a.reviewer ? '<span style="font-weight:600;">'+a.reviewer+'</span>'+(a.reviewerTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':'') : '<span style="color:#ccc;">—</span>';
+    var r2m = a.verifier ? '<span style="font-weight:600;">'+a.verifier+'</span>'+(a.verifierTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':'') : (a.reviewer?'<span style="color:#d4a017;font-size:10px;">待覆核</span>':'<span style="color:#ccc;">—</span>');
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML=
-      '<td class="td-mono" style="font-size:11px;">'+fmtDT(a.applyDate||'')+'</td>'+
-      nameCol+
-      '<td style="text-align:center;font-size:12px;">'+(a.subtype||a.type||'—')+'</td>'+
-      '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td class="td-mono" style="text-align:center;font-size:11px;">'+(a.id||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.team||'—')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.subtype||'—')+'</td>'+
+      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
+      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+r1m+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+r2m+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd = tr.lastElementChild;
     if (userRole==='manager' && !a.reviewer && !isDone && !isReject) {
@@ -4502,6 +4642,176 @@ function renderMonTable() {
       btn.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'reviewer',false);};
       lastTd.appendChild(btn);
     } else if (userRole==='admin' && a.reviewer && !a.verifier && !isDone && !isReject) {
+      var btn2=document.createElement('button'); btn2.className='review-btn approve';
+      btn2.style.cssText='font-size:10px;height:24px;padding:0 8px;';
+      btn2.textContent='→ 覆核';
+      btn2.setAttribute('data-id',a.id||''); btn2.setAttribute('data-name',a.name||'');
+      btn2.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'verifier',false);};
+      lastTd.appendChild(btn2);
+    } else {
+      var vBtn=document.createElement('button'); vBtn.className='btn-action';
+      vBtn.style.cssText='font-size:10px;width:auto;padding:0 8px;height:24px;';
+      vBtn.textContent='查看';
+      (function(a2){vBtn.onclick=function(){openFlowModal(a2);};})(a);
+      lastTd.appendChild(vBtn);
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+/* ══ 本月查詢（功能區，全員版）══ */
+var MALL_ALL_DATA = [];
+var MALL_DATA = [];
+var mallCurrentTab = 'all';
+
+function switchMallTab(el, tab) {
+  document.querySelectorAll('#page-monthly-all .tab-item').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  mallCurrentTab = tab;
+  renderMallTable();
+}
+
+function onMallMonthChange() {
+  var sel = document.getElementById('mall-month-sel');
+  var ym  = sel ? sel.value : '';
+  var ml  = document.getElementById('mall-month-label');
+  if (ml) ml.textContent = ym ? (ym.slice(5,7) + '月') : '全部';
+  MALL_DATA = MALL_ALL_DATA.filter(function(a){
+    if (ym && (a.applyDate||'').slice(0,7) !== ym) return false;
+    return true;
+  });
+  updateMallStats();
+  updateMallLeaveStats();
+  renderMallTable();
+}
+
+function updateMallStats() {
+  var total=MALL_DATA.length, pending=0, done=0, reject=0;
+  MALL_DATA.forEach(function(a){
+    var s=a.status||'';
+    if(s.indexOf('完成')>-1) done++;
+    else if(s.indexOf('退件')>-1) reject++;
+    else pending++;
+  });
+  var g=function(id){return document.getElementById(id);};
+  if(g('mall-total'))      g('mall-total').textContent=total;
+  if(g('mall-pending'))    g('mall-pending').textContent=pending;
+  if(g('mall-done'))       g('mall-done').textContent=done;
+  if(g('mall-reject'))     g('mall-reject').textContent=reject;
+  if(g('malltab-all'))     g('malltab-all').textContent=total;
+  if(g('malltab-pending')) g('malltab-pending').textContent=pending;
+  if(g('malltab-done'))    g('malltab-done').textContent=done;
+  if(g('malltab-reject'))  g('malltab-reject').textContent=reject;
+}
+
+function updateMallLeaveStats() {
+  var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
+  MALL_DATA.forEach(function(a){
+    if (a.type !== '請假申請') return;
+    var base=(a.subtype||'').split(' ')[0].split('(')[0].trim();
+    if(base==='特休') lc['特休']+=parseFloat(a.days||1);
+    else if(base==='國假') lc['國假']+=parseFloat(a.days||1);
+    else if(lc.hasOwnProperty(base)) lc[base]+=1;
+    else lc['其他']+=1;
+  });
+  Object.keys(lc).forEach(function(k){
+    var el=document.getElementById('mall-lc-'+k);
+    if(el) el.textContent=lc[k]||0;
+  });
+}
+
+function loadMallData() {
+  var tbody = document.getElementById('mall-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!data.success || !data.applications) {
+        tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">目前尚無資料</td></tr>';
+        return;
+      }
+      MALL_ALL_DATA = data.applications;
+      // 建月份選單
+      var ymSet={};
+      MALL_ALL_DATA.forEach(function(a){
+        var ym=(a.applyDate||'').slice(0,7);
+        if(ym&&ym.length===7) ymSet[ym]=true;
+      });
+      var ymList=Object.keys(ymSet).sort().reverse();
+      var sel=document.getElementById('mall-month-sel');
+      if(sel){
+        var prev=sel.value;
+        sel.innerHTML='<option value="">全部月份</option>';
+        ymList.forEach(function(ym){
+          var opt=document.createElement('option');
+          opt.value=ym; opt.textContent=ym.slice(5,7)+'月';
+          sel.appendChild(opt);
+        });
+        var now=new Date();
+        var curYm=now.getFullYear()+'/'+String(now.getMonth()+1).padStart(2,'0');
+        sel.value=prev||(ymList.indexOf(curYm)>-1?curYm:(ymList[0]||''));
+      }
+      onMallMonthChange();
+    })
+    .catch(function(){
+      if(document.getElementById('mall-tbody'))
+        document.getElementById('mall-tbody').innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:#f44336;">載入失敗</td></tr>';
+    });
+}
+
+function renderMallTable() {
+  var tbody=document.getElementById('mall-tbody');
+  if(!tbody) return;
+  var search=((document.getElementById('mall-search')||{}).value||'').toLowerCase();
+  var filtered=MALL_DATA.filter(function(a){
+    var s=a.status||'';
+    if(mallCurrentTab==='pending'&&(s.indexOf('完成')>-1||s.indexOf('退件')>-1)) return false;
+    if(mallCurrentTab==='done'&&s.indexOf('完成')===-1) return false;
+    if(mallCurrentTab==='reject'&&s.indexOf('退件')===-1) return false;
+    if(search&&(a.name||'').toLowerCase().indexOf(search)<0&&(a.id||'').toLowerCase().indexOf(search)<0) return false;
+    return true;
+  });
+  var rc=document.getElementById('mall-row-count');
+  if(rc) rc.textContent=filtered.length;
+  tbody.innerHTML='';
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
+    return;
+  }
+  var userRole=CURRENT_USER?CURRENT_USER.role:'guest';
+  filtered.forEach(function(a,i){
+    var s=a.status||'';
+    var isDone=s.indexOf('完成')>-1, isReject=s.indexOf('退件')>-1;
+    var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
+    var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
+    var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
+    var r1=a.reviewer?'<span style="font-weight:600;">'+a.reviewer+'</span>'+(a.reviewerTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':''):'<span style="color:#ccc;">—</span>';
+    var r2=a.verifier?'<span style="font-weight:600;">'+a.verifier+'</span>'+(a.verifierTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':''):(a.reviewer?'<span style="color:#d4a017;font-size:10px;">待覆核</span>':'<span style="color:#ccc;">—</span>');
+    var tr=document.createElement('tr');
+    if(i%2) tr.style.background='var(--color-bg-table-alt)';
+    tr.innerHTML=
+      '<td class="td-mono" style="text-align:center;font-size:11px;">'+(a.id||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-weight:500;">'+(a.name||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.team||'—')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.subtype||'—')+'</td>'+
+      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
+      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+r1+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
+      '<td style="text-align:center;"></td>';
+    var lastTd=tr.lastElementChild;
+    if(userRole==='manager'&&!a.reviewer&&!isDone&&!isReject){
+      var btn=document.createElement('button'); btn.className='review-btn approve';
+      btn.style.cssText='font-size:10px;height:24px;padding:0 8px;';
+      btn.textContent='→ 審核';
+      btn.setAttribute('data-id',a.id||''); btn.setAttribute('data-name',a.name||'');
+      btn.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'reviewer',false);};
+      lastTd.appendChild(btn);
+    } else if(userRole==='admin'&&a.reviewer&&!a.verifier&&!isDone&&!isReject){
       var btn2=document.createElement('button'); btn2.className='review-btn approve';
       btn2.style.cssText='font-size:10px;height:24px;padding:0 8px;';
       btn2.textContent='→ 覆核';
