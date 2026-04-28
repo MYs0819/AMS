@@ -37,7 +37,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 /* ── 選擇卡片 ── */
 .selector-wrap{width:100%;max-width:760px;}
 .selector-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:20px;text-align:center;}
-.selector-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.selector-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 .sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:20px 18px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:flex-start;gap:8px;position:relative;overflow:hidden;}
 .sel-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:.2s;}
 .sel-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,168,76,.15);}
@@ -184,6 +184,13 @@ input[type="time"] { color-scheme: dark; }
           <div class="sel-desc">各類假別補件申請</div>
         </div>
       </div>
+      <div class="sel-card" onclick="openModal('holModal')">
+        <span class="sel-icon">🏖️</span>
+        <div>
+          <div class="sel-title">國假及特休申請單</div>
+          <div class="sel-desc">國定假日、特別休假申請</div>
+        </div>
+      </div>
       <div class="sel-card" onclick="openModal('rtModal')">
         <span class="sel-icon">📋</span>
         <div>
@@ -250,14 +257,17 @@ input[type="time"] { color-scheme: dark; }
         <div class="f-sec">假別*</div>
         <div class="lt-grid">
           <button class="lt-btn" onclick="pickLv(this,'公假')">公假</button>
-          <button class="lt-btn" onclick="pickLv(this,'休假')">休假</button>
           <button class="lt-btn" onclick="pickLv(this,'事假')">事假</button>
-          <button class="lt-btn" onclick="pickLv(this,'病假')">病假</button>
+          <button class="lt-btn" onclick="pickLv(this,'生理假')">生理假</button>
+          <button class="lt-btn" onclick="pickLv(this,'普通傷病假')">普通傷病假</button>
           <button class="lt-btn" onclick="pickLv(this,'喪假')">喪假</button>
           <button class="lt-btn" onclick="pickLv(this,'婚假')">婚假</button>
-          <button class="lt-btn" onclick="pickLv(this,'陪產假')">陪產假</button>
-          <button class="lt-btn" onclick="pickLv(this,'生理假')">生理假</button>
-          <button class="lt-btn" onclick="pickLv(this,'補休')">補休</button>
+          <button class="lt-btn" onclick="pickLv(this,'公傷病假')">公傷病假</button>
+          <button class="lt-btn" onclick="pickLv(this,'婚假')">婚假</button>
+          <button class="lt-btn" onclick="pickLv(this,'喪假')">喪假</button>
+          <button class="lt-btn" onclick="pickLv(this,'(陪)產(檢)假'">(陪)產(檢)假</button>
+          <button class="lt-btn" onclick="pickLv(this,'家庭照顧假')">家庭照顧假</button>
+          <button class="lt-btn" onclick="pickLv(this,'安胎休養假')">安胎休養假</button>
           <button class="lt-btn" onclick="pickLv(this,'其他')">其他</button>
         </div>
         <input type="hidden" id="lv-type"/>
@@ -268,7 +278,7 @@ input[type="time"] { color-scheme: dark; }
 
       <!-- 請假日數 -->
       <div>
-        <div class="f-sec">請假日數*</div>
+        <div class="f-sec">實施日期*</div>
         <div style="display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;">
           <!-- 左欄：自 / 至 兩行 -->
           <div style="display:flex;flex-direction:column;gap:6px;">
@@ -312,35 +322,13 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
 
-      <!-- 事由 -->
-      <div>
-        <div class="f-sec">事由*</div>
-        <textarea class="f-ta" id="lv-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
-      </div>
-
-      <!-- 附件上傳（事由與備註說明之間）-->
-      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            選擇檔案（PDF/圖片）
-            <input type="file" id="lv-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lv-attachment','lv-attach-name')"/>
-          </label>
-          <span id="lv-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        </div>
-      </div>
-
-      <!-- 備註說明（申請人已知悉簽名在備註下方）-->
+      <!-- 備註說明 -->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
-          <li><span class="n-num">1.</span><span class="n-txt">請假時間為24小時制，填寫須特別注意。</span></li>
-          <li><span class="n-num">2.</span><span class="n-txt">請假規定依公告系統內之「請假規範及流程」辦理。</span></li>
-          <li><span class="n-num">3.</span><span class="n-txt">部分工時同仁請假無須填寫代理人資訊。</span></li>
-          <li><span class="n-num">4.</span><span class="n-txt">辦理手續須提供有關證明文件並檢附在此申請單後。</span></li>
-          <li><span class="n-num">5.</span><span class="n-txt">如遇有急病或緊急事故，可委託他人代辦請假手續。</span></li>
-          <li><span class="n-num">6.</span><span class="n-txt">遇有急病或緊急事故，於當日請假起五天內將請假程序完成。</span></li>
-          <li><span class="n-num">7.</span><span class="n-txt">員工請假規定及薪資核定辦法依勞動基準法規定。</span></li>
+          <li><span class="n-num">1.</span><span class="n-txt">經勞資會議採用四週變形工時，中央主管機關規定共有16日國定假日應為放假之日。</span></li>
+          <li><span class="n-num">2.</span><span class="n-txt">權利義務之其他依據：雙方原約定之勞動條件，除前述事項外，其餘仍依原約定之勞動條件為之。</span></li>
+          <li><span class="n-num">3.</span><span class="n-txt">誠信協商原則：以上約定事項如有未盡事宜，雙方同意本誠信原則另行協商。</span></li>
         </ul>
         <!-- 申請人已知悉親簽 -->
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
@@ -411,14 +399,17 @@ input[type="time"] { color-scheme: dark; }
         <div class="f-sec">假別*</div>
         <div class="lt-grid">
           <button class="lt-btn" onclick="pickLvs(this,'公假')">公假</button>
-          <button class="lt-btn" onclick="pickLvs(this,'休假')">休假</button>
           <button class="lt-btn" onclick="pickLvs(this,'事假')">事假</button>
-          <button class="lt-btn" onclick="pickLvs(this,'病假')">病假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'生理假')">生理假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'普通傷病假')">普通傷病假</button>
           <button class="lt-btn" onclick="pickLvs(this,'喪假')">喪假</button>
           <button class="lt-btn" onclick="pickLvs(this,'婚假')">婚假</button>
-          <button class="lt-btn" onclick="pickLvs(this,'陪產假')">陪產假</button>
-          <button class="lt-btn" onclick="pickLvs(this,'生理假')">生理假</button>
-          <button class="lt-btn" onclick="pickLvs(this,'補休')">補休</button>
+          <button class="lt-btn" onclick="pickLvs(this,'公傷病假')">公傷病假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'婚假')">婚假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'喪假')">喪假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'(陪)產(檢)假'">(陪)產(檢)假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'家庭照顧假')">家庭照顧假</button>
+          <button class="lt-btn" onclick="pickLvs(this,'安胎休養假')">安胎休養假</button>
           <button class="lt-btn" onclick="pickLvs(this,'其他')">其他</button>
         </div>
         <input type="hidden" id="lvs-type"/>
@@ -429,7 +420,7 @@ input[type="time"] { color-scheme: dark; }
 
       <!-- 請假日數 -->
       <div>
-        <div class="f-sec">請假日數*</div>
+        <div class="f-sec">實施日期*</div>
         <div style="display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;">
           <!-- 左欄：自 / 至 兩行 -->
           <div style="display:flex;flex-direction:column;gap:6px;">
@@ -473,36 +464,13 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
 
-      <!-- 事由 -->
-      <div>
-        <div class="f-sec">事由*</div>
-        <textarea class="f-ta" id="lvs-reason" rows="2" placeholder="請輸入請假事由…"></textarea>
-      </div>
-
-      <!-- 附件上傳（事由與備註說明之間）-->
-      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            選擇檔案（PDF/圖片）
-            <input type="file" id="lv-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lv-attachment','lv-attach-name')"/>
-          </label>
-          <span id="lv-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        </div>
-      </div>
-
-      <!-- 備註說明（申請人已知悉簽名在備註下方）-->
-
+      <!-- 備註說明 -->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
-          <li><span class="n-num">1.</span><span class="n-txt">請假時間為24小時制，填寫須特別注意。</span></li>
-          <li><span class="n-num">2.</span><span class="n-txt">請假規定依公告系統內之「請假規範及流程」辦理。</span></li>
-          <li><span class="n-num">3.</span><span class="n-txt">部分工時同仁請假無須填寫代理人資訊。</span></li>
-          <li><span class="n-num">4.</span><span class="n-txt">辦理手續須提供有關證明文件並檢附在此申請單後。</span></li>
-          <li><span class="n-num">5.</span><span class="n-txt">如遇有急病或緊急事故，可委託他人代辦請假手續。</span></li>
-          <li><span class="n-num">6.</span><span class="n-txt">遇有急病或緊急事故，於當日請假起五天內將請假程序完成。</span></li>
-          <li><span class="n-num">7.</span><span class="n-txt">員工請假規定及薪資核定辦法依勞動基準法規定。</span></li>
+          <li><span class="n-num">1.</span><span class="n-txt">經勞資會議採用四週變形工時，中央主管機關規定共有16日國定假日應為放假之日。</span></li>
+          <li><span class="n-num">2.</span><span class="n-txt">權利義務之其他依據：雙方原約定之勞動條件，除前述事項外，其餘仍依原約定之勞動條件為之。</span></li>
+          <li><span class="n-num">3.</span><span class="n-txt">誠信協商原則：以上約定事項如有未盡事宜，雙方同意本誠信原則另行協商。</span></li>
         </ul>
         <!-- 申請人已知悉親簽 -->
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
@@ -519,6 +487,133 @@ input[type="time"] { color-scheme: dark; }
       <button class="btn-c" onclick="closeModal('lvSupModal')" style="width:100%;justify-content:center;">取消</button>
       <button class="btn-c" id="lvs-supp-btn" onclick="openLvSupEdit('lvs')" style="width:100%;justify-content:center;border-color:#ccc;color:#ccc;cursor:not-allowed;" disabled title="請先送出申請後才能補件">✏️ 編輯補件</button>
       <button class="btn-s" id="lvs-btn" onclick="submitLvSup()" style="width:100%;justify-content:center;">📤 送出申請</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════
+     國假及特休申請單 Modal
+════════════════════════════ -->
+<div class="modal-overlay" id="holModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div style="width:28px;"></div>
+      <span class="modal-title">🏖️ 國假及特休申請單</span>
+      <button class="modal-close" onclick="closeModal('holModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="hol-st" class="st hidden"></div>
+
+      <!-- 基本資料 -->
+      <div>
+        <div class="f-sec">基本資料</div>
+        <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
+          <div class="f-g" style="flex:1;"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="hol-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+          <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="hol-date" readonly style="text-align:left;"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr 1fr;gap:10px;align-items:end;">
+          <div class="f-g"><label class="f-lbl">（請假人）職稱</label><select class="f-sel" id="hol-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+          <div class="f-g">
+            <label class="f-lbl">（請假人）姓名*（親簽）</label>
+            <div id="hol-sig1-preview" onclick="openSigModal('hol-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
+            <canvas id="hol-sig1" width="1" height="1" style="display:none;"></canvas>
+            <input id="hol-name" type="hidden" value="（簽名）"/>
+          </div>
+          <div class="f-g"><label class="f-lbl">（代理人）職稱</label><select class="f-sel" id="hol-ptitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+          <div class="f-g"><label class="f-lbl">（代理人）姓名</label><input class="f-inp" id="hol-pname" placeholder="姓名（選填）"/></div>
+        </div>
+      </div>
+
+      <!-- 假別（國假/特休）-->
+      <div>
+        <div class="f-sec">假別*</div>
+        <input type="hidden" id="hol-type"/>
+        <div class="lt-wrap">
+          <button class="lt-btn" onclick="pickHol(this,'元旦')">元旦</button>
+          <button class="lt-btn" onclick="pickHol(this,'小年夜')">小年夜</button>
+          <button class="lt-btn" onclick="pickHol(this,'除夕')">除夕</button>
+          <button class="lt-btn" onclick="pickHol(this,'初一')">初一</button>
+          <button class="lt-btn" onclick="pickHol(this,'初二')">初二</button>
+          <button class="lt-btn" onclick="pickHol(this,'初三')">初三</button>
+          <button class="lt-btn" onclick="pickHol(this,'二二八')">二二八</button>
+          <button class="lt-btn" onclick="pickHol(this,'兒童節')">兒童節</button>
+          <button class="lt-btn" onclick="pickHol(this,'清明節')">清明節</button>
+          <button class="lt-btn" onclick="pickHol(this,'勞動節')">勞動節</button>
+          <button class="lt-btn" onclick="pickHol(this,'端午節')">端午節</button>
+          <button class="lt-btn" onclick="pickHol(this,'中秋節')">中秋節</button>
+          <button class="lt-btn" onclick="pickHol(this,'教師節')">教師節</button>
+          <button class="lt-btn" onclick="pickHol(this,'國慶日')">國慶日</button>
+          <button class="lt-btn" onclick="pickHol(this,'光復節')">光復節</button>
+          <button class="lt-btn" onclick="pickHol(this,'行憲紀念日')">行憲紀念日</button>
+          <button class="lt-btn" onclick="pickHol(this,'特別休假')">特別休假</button>
+        </div>
+      </div>
+
+      <!-- 實施日期 -->
+      <div>
+        <div class="f-sec">實施日期*</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="date-line">
+              <span class="dl-lbl">自</span>
+              <input class="f-inp" id="hol-fd" type="date" onchange="calcHol()" style="text-align:center;max-width:138px;"/>
+              <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
+              <select id="hol-fth" onchange="calcHol()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">時</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+              </select>
+              <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
+              <select id="hol-ftm" onchange="calcHol()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">分</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+              </select>
+              </div>
+            </div>
+            <div class="date-line">
+              <span class="dl-lbl">至</span>
+              <input class="f-inp" id="hol-td" type="date" onchange="calcHol()" style="text-align:center;max-width:138px;"/>
+              <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
+              <select id="hol-tth" onchange="calcHol()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">時</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+              </select>
+              <span style="color:var(--muted);font-size:14px;font-weight:700;">:</span>
+              <select id="hol-ttm" onchange="calcHol()" style="border:1.5px solid var(--border);border-radius:7px;padding:7px 4px;font-size:13px;color:var(--text);background:#fff;outline:none;width:58px;text-align:center;cursor:pointer;">
+                <option value="">分</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+              </select>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;background:#fdfcf9;border:1px solid var(--border);border-radius:8px;padding:8px 14px;min-width:100px;">
+            <div style="font-size:11px;color:var(--muted);">共</div>
+            <div style="display:flex;align-items:baseline;gap:3px;">
+              <input class="f-inp" id="hol-days" placeholder="0" readonly style="width:44px;text-align:center;padding:4px 6px;font-size:16px;font-weight:600;border-radius:5px;"/>
+              <span style="font-size:12px;color:var(--sub);">日</span>
+              <input class="f-inp" id="hol-hrs" placeholder="0" readonly style="width:44px;text-align:center;padding:4px 6px;font-size:16px;font-weight:600;border-radius:5px;"/>
+              <span style="font-size:12px;color:var(--sub);">時</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 備註說明 -->
+      <div class="notes-box">
+        <div class="notes-title">備 註 說 明</div>
+        <ul class="notes-list">
+          <li><span class="n-num">1.</span><span class="n-txt">經勞資會議採用四週變形工時，中央主管機關規定共有16日國定假日應為放假之日。</span></li>
+          <li><span class="n-num">2.</span><span class="n-txt">權利義務之其他依據：雙方原約定之勞動條件，除前述事項外，其餘仍依原約定之勞動條件為之。</span></li>
+          <li><span class="n-num">3.</span><span class="n-txt">誠信協商原則：以上約定事項如有未盡事宜，雙方同意本誠信原則另行協商。</span></li>
+        </ul>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid #e8dbb0;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:600;color:var(--dark);">申請人已知悉上述規定<span class="req">*</span></span>
+            <div id="hol-sig2-preview" onclick="openSigModal('hol-sig2','申請人已知悉上述規定（親簽）')" style="border:1.5px solid var(--border);border-radius:7px;min-width:100px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:4px;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
+          </div>
+          <canvas id="hol-sig2" width="1" height="1" style="display:none;"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 24px 18px;">
+      <button class="btn-c" onclick="closeModal('holModal')" style="width:100%;justify-content:center;">取消</button>
+      <button class="btn-s" id="hol-btn" onclick="submitHol()" style="width:100%;justify-content:center;">📤 送出申請</button>
     </div>
   </div>
 </div>
@@ -681,6 +776,7 @@ function showToast(msg, type, duration) {
 
 /* ══ 送出後鎖定狀態 ══ */
 var _lvSubmitted = false;
+var _holSubmitted = false;
 var _rtSubmitted = false;
 
 
@@ -739,15 +835,83 @@ function openModal(id) {
     document.getElementById('lvs-date').value = today();
     _lvsSubmitted = false;
   }
+  if (id === 'holModal') {
+    document.getElementById('hol-date').value = today();
+    _holSubmitted = false;
+  }
   if (id === 'rtModal') {
     document.getElementById('rt-date').value = today();
-    // rt-sig1 用 modal 模式，不需 initSig
   }
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(function(m){
   m.addEventListener('click', function(e){ if(e.target === m) closeModal(m.id); });
 });
+
+/* ── 國假及特休假別單選 ── */
+function pickHol(btn, type) {
+  document.querySelectorAll('#holModal .lt-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('hol-type').value = type;
+}
+
+function calcHol() {
+  var fd=document.getElementById('hol-fd').value;
+  var td=document.getElementById('hol-td').value;
+  if(!fd||!td) return;
+  var fth=document.getElementById('hol-fth').value||'00';
+  var ftm=document.getElementById('hol-ftm').value||'00';
+  var tth=document.getElementById('hol-tth').value||'00';
+  var ttm=document.getElementById('hol-ttm').value||'00';
+  var s=new Date(fd+'T'+fth+':'+ftm);
+  var e=new Date(td+'T'+tth+':'+ttm);
+  var diff=e-s;
+  if(diff<0){ document.getElementById('hol-days').value=''; document.getElementById('hol-hrs').value=''; return; }
+  document.getElementById('hol-days').value=Math.floor(diff/86400000);
+  document.getElementById('hol-hrs').value=Math.floor((diff%86400000)/3600000);
+}
+
+function submitHol() {
+  if (_holSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
+  var unit = document.getElementById('hol-unit').value.trim();
+  var type = document.getElementById('hol-type').value;
+  var fd   = document.getElementById('hol-fd').value;
+  if (!unit) { showToast('請填寫單位','err'); return; }
+  if (!type) { showToast('請選擇假別','err'); return; }
+  if (!fd)   { showToast('請填寫起始日期','err'); return; }
+  if (sigEmpty('hol-sig1')) { showToast('請完成請假人姓名簽名','err'); return; }
+  if (sigEmpty('hol-sig2')) { showToast('請完成申請人已知悉上述規定簽名','err'); return; }
+  var btn = document.getElementById('hol-btn');
+  btn.disabled = true; btn.textContent = '⏳ 送出中…';
+  showToast('正在送出申請，請稍候…','info');
+  var name = getLoginName();
+  var fmtD2 = function(d){ if(!d) return ''; var p=d.split('-'); return p[0]+'/'+p[1]+'/'+p[2]; };
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    body: JSON.stringify({
+      action:'addApplication',
+      id: genId('leave'),
+      name: name,
+      sig1: (function(){ var cv=document.getElementById('hol-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+      sig2: (function(){ var cv=document.getElementById('hol-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+      team: unit,
+      applyTitle: document.getElementById('hol-title').value.trim(),
+      type: '國假及特休申請',
+      subtype: type,
+      startDate: fmtD2(fd)+' '+(document.getElementById('hol-fth').value||'00')+':'+(document.getElementById('hol-ftm').value||'00'),
+      endDate: fmtD2(document.getElementById('hol-td').value)+' '+(document.getElementById('hol-tth').value||'00')+':'+(document.getElementById('hol-ttm').value||'00'),
+      days: document.getElementById('hol-days').value,
+      hours: document.getElementById('hol-hrs').value,
+      proxyName: document.getElementById('hol-pname').value.trim(),
+    })
+  })
+  .then(function(){
+    _holSubmitted = true;
+    showToast('✅ 申請已送出！','ok');
+    setTimeout(function(){ alert('✅ 申請已送出！\n申請人：'+name+'\n假別：'+type+'\n期間：'+fmtD2(fd)+' ~ '+fmtD2(document.getElementById('hol-td').value)); closeModal('holModal'); }, 1000);
+  })
+  .catch(function(e){ btn.disabled=false; btn.textContent='📤 送出申請'; showToast('❌ 送出失敗：'+e.message,'err'); });
+}
 
 /* ── 假別單選 ── */
 function pickLv(btn, type) {
