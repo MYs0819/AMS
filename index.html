@@ -314,7 +314,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 /* ============================================================
    統計卡片
    ============================================================ */
-.stats-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--space-3);}
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-3);}
 .stat-card{border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;box-shadow:var(--shadow-card);transition:box-shadow var(--transition-normal);position:relative;cursor:default;}
 .stat-card:hover{box-shadow:var(--shadow-card-hover);}
 .stat-card.clickable{cursor:pointer;}
@@ -1014,7 +1014,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-sub">全體同仁</p>
         <a href="application-forms.html" target="_blank" class="sidebar-nav-item external"><span class="sidebar-icon">📝</span>請假申請</a>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('myrecords',this)"><span class="sidebar-icon">📂</span>申請紀錄</a>
-        <a href="#" class="sidebar-nav-item" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
+        <a href="#" class="sidebar-nav-item" data-page="monthly-emp" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1034,7 +1034,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-label">功能</p>
         <p class="sidebar-section-sub">營運限定</p>
         <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('main',this)"><span class="sidebar-icon">📁</span>所有申請</a>
-        <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
+        <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('monthly',this)"><span class="sidebar-icon">📅</span>本月查詢</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1632,16 +1632,13 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <table class="data-table">
             <colgroup>
               <col style="width:120px;"/><col style="width:112px;"/><col style="width:82px;"/>
-              <col style="width:70px;"/><col style="width:158px;"/>
-              <col style="width:82px;"/><col style="width:64px;"/>
-              <col style="width:82px;"/><col style="width:64px;"/>
+              <col style="width:140px;"/><col style="width:100px;"/><col style="width:180px;"/><col style="width:72px;"/><col style="width:66px;"/>
             </colgroup>
             <thead><tr>
-              <th>申請編號</th><th>申請日期</th><th>申請類型</th><th>假別</th>
-              <th>起訖期間</th><th>審核人</th><th>狀態</th><th>覆核人</th><th>狀態</th><th>進度</th>
+              <th>申請日期</th><th>假別</th><th>起訖期間</th><th>狀態</th><th>進度</th>
             </tr></thead>
             <tbody id="my-tbody">
-              <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
             </tbody>
           </table>
           <div class="table-footer"><div class="pagination" id="my-pagination"></div></div>
@@ -1729,15 +1726,13 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:118px;"/><col style="width:82px;"/><col style="width:100px;"/><col style="width:68px;"/>
-              <col style="width:160px;"/><col style="width:58px;"/><col style="width:82px;"/><col style="width:58px;"/><col style="width:66px;"/>
+              <col style="width:140px;"/><col style="width:70px;"/><col style="width:100px;"/><col style="width:180px;"/><col style="width:64px;"/><col style="width:66px;"/>
             </colgroup>
             <thead><tr>
-              <th>申請編號</th><th>申請人</th><th>申請類型</th><th>假別</th>
-              <th>起訖期間</th><th>狀態</th><th>審核人</th><th>覆核人</th><th>進度</th>
+              <th>申請日期</th><th id="mon-th-name">申請人</th><th>假別</th><th>起訖期間</th><th>狀態</th><th>進度</th>
             </tr></thead>
             <tbody id="mon-tbody">
-              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+              <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
             </tbody>
           </table>
           <div class="table-footer"><div class="pagination" id="mon-pagination"></div></div>
@@ -1953,51 +1948,41 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     
 <!-- 審核 Modal -->
 <div class="review-modal-overlay" id="reviewModal">
-  <div class="review-modal" style="max-width:500px;width:100%;">
-    <!-- 標題 -->
+  <div class="review-modal" style="max-width:480px;width:100%;gap:12px;">
     <div class="review-modal-title" id="reviewModalTitle" style="text-align:center;">審核申請</div>
-
     <!-- 流程狀態條 -->
-    <div id="reviewFlowBar" style="display:flex;align-items:center;justify-content:center;gap:0;margin:8px 0 4px;font-family:var(--font-body);">
-      <!-- 已遞出 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px;">
-        <div style="font-size:12px;font-weight:600;color:#2e7d32;" id="flow-emp-name">員工</div>
-        <div style="font-size:10px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:1px 8px;">已遞出</div>
+    <div id="reviewFlowBar" style="display:flex;align-items:center;justify-content:center;gap:0;font-family:var(--font-body);">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;max-width:80px;">
+        <div style="font-size:11px;font-weight:700;color:#2e7d32;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:78px;" id="flow-emp-name">員工</div>
+        <div style="font-size:9px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:6px;padding:1px 6px;white-space:nowrap;">已遞出</div>
       </div>
-      <div style="flex:1;height:2px;background:linear-gradient(90deg,#a5d6a7,#ccc);min-width:24px;"></div>
-      <!-- 主管審核 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px;">
-        <div style="font-size:12px;font-weight:600;color:var(--color-text-primary);text-align:center;">主管審核</div>
-        <div id="flow-manager-status" style="font-size:10px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:8px;padding:1px 8px;">審核中</div>
+      <div style="flex:1;height:2px;background:linear-gradient(90deg,#a5d6a7,#ccc);min-width:16px;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
+        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">主管審核</div>
+        <div id="flow-manager-status" style="font-size:9px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:6px;padding:1px 6px;white-space:nowrap;">審核中</div>
       </div>
-      <div style="flex:1;height:2px;background:#e0e0e0;min-width:24px;" id="flow-line-2"></div>
-      <!-- 人資審核 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px;">
-        <div style="font-size:12px;font-weight:600;color:var(--color-text-primary);text-align:center;">人資審核</div>
-        <div id="flow-admin-status" style="font-size:10px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:8px;padding:1px 8px;">等待中</div>
+      <div style="flex:1;height:2px;background:#e0e0e0;min-width:16px;" id="flow-line-2"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
+        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">人資審核</div>
+        <div id="flow-admin-status" style="font-size:9px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:6px;padding:1px 6px;white-space:nowrap;">等待中</div>
       </div>
     </div>
-
     <!-- 申請資訊 -->
-    <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--color-text-secondary);line-height:1.8;"></div>
-
-    <!-- 審核意見 -->
-    <div style="display:flex;flex-direction:column;gap:4px;" id="reviewCommentWrap">
-      <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">審核意見（選填）</label>
-      <textarea id="reviewComment" rows="1" style="border:1.5px solid var(--color-border-card);border-radius:7px;padding:6px 12px;font-family:var(--font-body);font-size:13px;resize:none;outline:none;height:36px;overflow:hidden;" placeholder="可填寫審核備註…"></textarea>
+    <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-text-secondary);line-height:2;font-family:var(--font-mono);"></div>
+    <!-- 審核意見（橫向等高）-->
+    <div id="reviewCommentWrap" style="display:flex;align-items:center;gap:10px;">
+      <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);white-space:nowrap;flex-shrink:0;">審核意見（選填）</label>
+      <input id="reviewComment" type="text" style="flex:1;border:1.5px solid var(--color-border-card);border-radius:7px;padding:0 10px;font-family:var(--font-body);font-size:13px;height:34px;outline:none;" placeholder="可填寫審核備註…"/>
     </div>
-
     <!-- 已審核人員顯示 -->
-    <div id="reviewerDisplay" style="display:none;text-align:center;padding:10px;background:#f5f5f5;border-radius:8px;">
-      <div id="reviewerDisplayName" style="font-size:15px;font-weight:600;color:var(--color-text-primary);"></div>
-      <div id="reviewerDisplayTime" style="font-size:11px;color:var(--color-text-muted);font-family:var(--font-mono);margin-top:2px;"></div>
-      <div style="font-size:13px;margin-top:4px;">✅</div>
+    <div id="reviewerDisplay" style="display:none;text-align:center;padding:8px 10px;background:#f0f9f1;border:1px solid #a5d6a7;border-radius:8px;">
+      <div id="reviewerDisplayName" style="font-size:14px;font-weight:700;color:#2e7d32;"></div>
+      <div id="reviewerDisplayTime" style="font-size:11px;color:#5a8060;font-family:var(--font-mono);margin-top:2px;"></div>
     </div>
-
     <div class="review-modal-footer" style="justify-content:center;gap:10px;">
-      <button onclick="closeReviewModal()" style="height:34px;padding:0;width:90px;border-radius:7px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">取消</button>
-      <button class="review-btn reject" id="reviewRejectBtn" onclick="submitReview('reject')" style="width:90px;height:34px;padding:0;">✕ 退件</button>
-      <button class="review-btn approve" id="reviewApproveBtn" onclick="submitReview('approve')" style="width:90px;height:34px;padding:0;">✓ 核准</button>
+      <button onclick="closeReviewModal()" style="height:34px;padding:0;width:80px;border-radius:7px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">取消</button>
+      <button class="review-btn reject" id="reviewRejectBtn" onclick="submitReview('reject')" style="width:80px;height:34px;padding:0;">✕ 退件</button>
+      <button class="review-btn approve" id="reviewApproveBtn" onclick="submitReview('approve')" style="width:80px;height:34px;padding:0;">✓ 核准</button>
     </div>
   </div>
 </div>
@@ -2146,34 +2131,37 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
 <!-- ══ 流程查看 Modal（員工用）══ -->
 <div class="modal-overlay" id="flowModal" onclick="if(event.target===this)document.getElementById('flowModal').classList.remove('open')">
-  <div style="background:#fff;border-radius:14px;padding:28px 32px;width:100%;max-width:460px;box-shadow:0 16px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:16px;">
+  <div style="background:#fff;border-radius:14px;padding:24px 28px;width:100%;max-width:440px;box-shadow:0 16px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:14px;">
     <div style="font-family:var(--font-display);font-size:16px;font-weight:700;text-align:center;color:var(--color-text-primary);">📋 申請進度</div>
-    <div id="flowModalInfo" style="font-size:13px;color:var(--color-text-secondary);background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;line-height:1.9;"></div>
-    <!-- 流程條 -->
-    <div style="display:flex;align-items:flex-start;gap:0;">
-      <!-- 已遞出 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
-        <div style="width:32px;height:32px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;">✓</div>
-        <div style="font-size:12px;font-weight:600;color:#2e7d32;">已遞出</div>
-        <div style="font-size:10px;color:#2e7d32;text-align:center;" id="flow-submitted-label">已遞出</div>
+    <div id="flowModalInfo" style="font-size:12.5px;color:var(--color-text-secondary);background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;line-height:2;font-family:var(--font-mono);"></div>
+    <!-- 三步驟流程條 -->
+    <div style="display:flex;align-items:flex-start;gap:0;margin-top:4px;">
+      <!-- 員工(已遞出) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0;">
+        <div style="width:30px;height:30px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;">✓</div>
+        <div style="font-size:11px;font-weight:700;color:#2e7d32;text-align:center;" id="flow-emp-name2">員工</div>
+        <div style="font-size:10px;color:#2e7d32;text-align:center;background:#e8f5e9;border-radius:6px;padding:1px 7px;white-space:nowrap;">已遞出</div>
+        <div style="font-size:9px;color:#5a8060;text-align:center;line-height:1.4;word-break:break-all;" id="flow-submit-time2"></div>
       </div>
-      <div style="flex:1;height:2px;margin-top:15px;background:linear-gradient(90deg,#a5d6a7,#ccc);" id="flow-line1"></div>
+      <div style="flex:1;height:2px;margin-top:14px;min-width:12px;" id="flow-line1-2"></div>
       <!-- 主管審核 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
-        <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;" id="flow-mgr-icon" style="background:#ccc;color:#fff;">⏳</div>
-        <div style="font-size:12px;font-weight:600;text-align:center;color:var(--color-text-primary);">主管審核</div>
-        <div style="font-size:10px;text-align:center;" id="flow-mgr-label" style="color:#9a9482;">等待中</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0;">
+        <div style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;" id="flow-mgr-icon2">⏳</div>
+        <div style="font-size:11px;font-weight:700;text-align:center;color:var(--color-text-primary);">主管審核</div>
+        <div style="font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;" id="flow-mgr-badge2"></div>
+        <div style="font-size:9px;text-align:center;line-height:1.4;word-break:break-all;" id="flow-mgr-time2"></div>
       </div>
-      <div style="flex:1;height:2px;margin-top:15px;background:#e0e0e0;" id="flow-line2"></div>
+      <div style="flex:1;height:2px;margin-top:14px;min-width:12px;" id="flow-line2-2"></div>
       <!-- 人資審核 -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
-        <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;" id="flow-admin-icon" style="background:#ccc;color:#fff;">⏳</div>
-        <div style="font-size:12px;font-weight:600;text-align:center;color:var(--color-text-primary);">人資審核</div>
-        <div style="font-size:10px;text-align:center;" id="flow-admin-label" style="color:#9a9482;">等待中</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0;">
+        <div style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;" id="flow-admin-icon2">⏳</div>
+        <div style="font-size:11px;font-weight:700;text-align:center;color:var(--color-text-primary);">人資審核</div>
+        <div style="font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;" id="flow-admin-badge2"></div>
+        <div style="font-size:9px;text-align:center;line-height:1.4;word-break:break-all;" id="flow-admin-time2"></div>
       </div>
     </div>
-    <div style="display:flex;justify-content:center;">
-      <button onclick="document.getElementById('flowModal').classList.remove('open')" style="height:36px;padding:0 24px;border-radius:8px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">關閉</button>
+    <div style="display:flex;justify-content:center;margin-top:4px;">
+      <button onclick="document.getElementById('flowModal').classList.remove('open')" style="height:34px;padding:0 24px;border-radius:8px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">關閉</button>
     </div>
   </div>
 </div>
@@ -3154,10 +3142,10 @@ function renderMainTable(apps) {
 
     // 審核人/覆核人欄顯示
     var reviewerCell = a.reviewer ?
-      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.reviewer+'</span>'+(a.reviewerTime?'<span class="reviewer-time">'+fmtDT(a.reviewerTime)+'</span>':'')+'<span class="reviewer-badge">✅ 已審核</span></div>' :
+      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.reviewer+'</span>'+(a.reviewerTime?'<span class="reviewer-time">'+fmtDT(a.reviewerTime)+'</span>':'')+'</div>' :
       '<span style="color:var(--color-text-muted);font-size:11px;">待審核</span>';
     var verifierCell = a.verifier ?
-      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.verifier+'</span>'+(a.verifierTime?'<span class="reviewer-time">'+fmtDT(a.verifierTime)+'</span>':'')+'<span class="reviewer-badge verifier">✅ 已覆核</span></div>' :
+      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.verifier+'</span>'+(a.verifierTime?'<span class="reviewer-time">'+fmtDT(a.verifierTime)+'</span>':'')+'</div>' :
       (a.reviewer ? '<span style="color:var(--color-text-muted);font-size:11px;">待覆核</span>' : '<span style="color:#ccc;font-size:11px;">—</span>');
 
     tr.innerHTML =
@@ -3373,14 +3361,14 @@ function updateLeaveStats() {
 function loadMyRecords() {
   var tbody = document.getElementById('my-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
         return;
       }
       // 只顯示登入者自己的申請
@@ -3436,7 +3424,7 @@ function loadMyRecords() {
     })
     .catch(function(){
       if (document.getElementById('my-tbody'))
-        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
+        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
     });
 }
 
@@ -3466,42 +3454,33 @@ function renderMyTable() {
   tbody.innerHTML = '';
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
     return;
   }
 
   filtered.forEach(function(a, i){
     var s   = a.status || '';
-    var r1  = a.reviewer || '';
-    var r1t = a.reviewerTime || '';
-    var r2  = a.verifier || '';
-    var r2t = a.verifierTime || '';
-    // 審核人欄：有名字顯示名字+時間+✅，沒有顯示待審核
-    var r1Cell = r1 ? r1+'<br><span style="font-size:10px;color:var(--color-text-muted);">'+r1t+'</span>' : '—';
-    var r1StatusBadge = r1 ? '<span class="badge badge-done" style="font-size:10px;">已審核</span>' : '<span class="badge badge-pending" style="font-size:10px;">待審核</span>';
-    var r2Cell = r2 ? r2+'<br><span style="font-size:10px;color:var(--color-text-muted);">'+r2t+'</span>' : (r1 ? '待覆核' : '—');
-    var r2StatusBadge = r2 ? '<span class="badge badge-done" style="font-size:10px;">已覆核</span>' : '<span class="badge badge-pending" style="font-size:10px;">'+(r1?'待覆核':'等待中')+'</span>';
-    var sc  = s.indexOf('完成') > -1 ? 'badge-done' : s.indexOf('退件') > -1 ? 'badge-reject' : 'badge-pending';
-    var sLabel = s.indexOf('完成')>-1?'已完成':s.indexOf('退件')>-1?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
+  filtered.forEach(function(a, i){
+    var s      = a.status || '';
+    var isDone   = s.indexOf('完成') > -1;
+    var isReject = s.indexOf('退件') > -1;
+    var sLabel = isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
+    var sBg    = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
+    var sColor = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
+    var dateStr = fmtDT(a.applyDate || '');
     var tr  = document.createElement('tr');
     if (i % 2) tr.style.background = 'var(--color-bg-table-alt)';
     tr.innerHTML =
-      '<td class="td-mono">'   + (a.id        || '—') + '</td>' +
-      '<td class="td-datetime" style="text-align:right;">'+ (a.applyDate || '—') + '</td>' +
-      '<td style="text-align:center;"><span class="badge badge-leave" style="font-size:10px;">' + (a.type || '—') + '</span></td>' +
-      '<td style="text-align:center;font-size:12px;">' + (a.subtype || '—') + '</td>' +
-      '<td class="td-mono">'   + fmtDRange(a.startDate, a.endDate) + '</td>' +
-      '<td style="text-align:center;font-size:12px;">' + r1Cell + '</td>' +
-      '<td style="text-align:center;">' + r1StatusBadge + '</td>' +
-      '<td style="text-align:center;font-size:12px;">' + r2Cell + '</td>' +
-      '<td style="text-align:center;">' + r2StatusBadge + '</td>';
-    // 操作欄：點擊顯示流程
+      '<td class="td-mono" style="font-size:11px;">' + dateStr + '</td>' +
+      '<td style="text-align:center;font-size:12px;">' + (a.subtype || a.type || '—') + '</td>' +
+      '<td class="td-mono" style="font-size:11px;">' + fmtDRange(a.startDate, a.endDate) + '</td>' +
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>';
     var lastTd = document.createElement('td');
     lastTd.style.textAlign = 'center';
     var viewBtn = document.createElement('button');
     viewBtn.className = 'btn-action';
     viewBtn.style.cssText = 'font-size:10px;width:auto;padding:0 8px;';
-    viewBtn.textContent = '查看流程';
+    viewBtn.textContent = '查看';
     (function(app){ viewBtn.onclick = function(){ openFlowModal(app); }; })(a);
     lastTd.appendChild(viewBtn);
     tr.appendChild(lastTd);
@@ -3693,6 +3672,13 @@ function applyPermissions(role) {
     }
     // data-perm 優先，沒有則從 onclick 取
     var perm = item.getAttribute('data-perm') || '';
+    // data-page="monthly-emp" 只給 employee 看
+    var pageMark = item.getAttribute('data-page') || '';
+    if (pageMark === 'monthly-emp') {
+      item.style.display = (role === 'employee') ? '' : 'none';
+      item.style.opacity = ''; item.style.pointerEvents = ''; item.style.cursor = '';
+      return;
+    }
     if (!perm) {
       var onc = item.getAttribute('onclick') || '';
       var m   = onc.match(/showPage\('([^']+)'/);
@@ -4080,10 +4066,10 @@ function openReview(id, name, type, readOnly) {
   // 申請資訊
   document.getElementById('reviewModalInfo').innerHTML =
     '申請編號：<strong>' + id + '</strong><br>' +
-    '申請人：<strong>' + name + '</strong>' +
-    (app ? '<br>類型：' + (app.type||'') +
-           '<br>假別：' + (app.subtype||'') +
-           '<br>起訖：' + fmtDRange(app.startDate, app.endDate) : '');
+    '申請同仁：<strong>' + name + '</strong>' +
+    (app ? '<br>類　　型：' + (app.type||'') +
+           '<br>假　　別：' + (app.subtype||'') +
+           '<br>起　　訖：' + fmtDRange(app.startDate, app.endDate) : '');
 
   // 流程狀態條
   var managerStatus = document.getElementById('flow-manager-status');
@@ -4249,66 +4235,98 @@ function showToastGlobal(msg, type) {
 }
 
 function openFlowModal(app) {
-  var s  = app.status || '';
-  var r1 = app.reviewer || '';
-  var r1t= app.reviewerTime || '';
-  var r2 = app.verifier || '';
-  var r2t= app.verifierTime || '';
+  var s   = app.status || '';
+  var r1  = app.reviewer || '';
+  var r1t = fmtDT(app.reviewerTime || '');
+  var r2  = app.verifier || '';
+  var r2t = fmtDT(app.verifierTime || '');
+  var applyT = fmtDT(app.applyDate || '');
   var isDone   = s.indexOf('完成') > -1;
   var isReject = s.indexOf('退件') > -1;
 
+  // 申請資訊（對齊格式）
   document.getElementById('flowModalInfo').innerHTML =
-    '申請編號：<strong>' + (app.id||'') + '</strong><br>' +
-    '申請人：<strong>' + (app.name||'') + '</strong><br>' +
-    '類型：' + (app.type||'') + '　假別：' + (app.subtype||'') + '<br>' +
-    '起訖：' + fmtDRange(app.startDate, app.endDate);
+    '申請編號：' + (app.id||'') + '<br>' +
+    '申請同仁：' + (app.name||'') + '<br>' +
+    '類　　型：' + (app.type||'') + '<br>' +
+    '假　　別：' + (app.subtype||'') + '<br>' +
+    '起　　訖：' + fmtDRange(app.startDate, app.endDate);
 
-  var mgrIcon  = document.getElementById('flow-mgr-icon');
-  var mgrLabel = document.getElementById('flow-mgr-label');
-  var line2    = document.getElementById('flow-line2');
-  var adminIcon  = document.getElementById('flow-admin-icon');
-  var adminLabel = document.getElementById('flow-admin-label');
+  // 員工名字 & 送出時間
+  var empName = document.getElementById('flow-emp-name2');
+  var empTime = document.getElementById('flow-submit-time2');
+  if (empName) empName.textContent = app.name || '員工';
+  if (empTime) empTime.textContent = applyT;
 
+  // 連線1
+  var line1 = document.getElementById('flow-line1-2');
+  var line2 = document.getElementById('flow-line2-2');
+
+  // 主管審核
+  var mgrIcon  = document.getElementById('flow-mgr-icon2');
+  var mgrBadge = document.getElementById('flow-mgr-badge2');
+  var mgrTime  = document.getElementById('flow-mgr-time2');
   if (r1) {
-    mgrIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
-    mgrIcon.textContent = '✓';
-    mgrLabel.style.color = '#2e7d32';
-    mgrLabel.innerHTML = r1 + '<br>' + r1t;
-    line2.style.background = 'linear-gradient(90deg,#a5d6a7,#ccc)';
+    mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    mgrIcon.textContent    = '✓';
+    mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#e8f5e9;color:#2e7d32;';
+    mgrBadge.textContent   = r1 + ' 已通過';
+    mgrTime.style.color    = '#5a8060';
+    mgrTime.textContent    = r1t;
+    if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#90caf9)';
   } else if (isReject) {
-    mgrIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#c62828;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
-    mgrIcon.textContent = '✕';
-    mgrLabel.style.color = '#c62828';
-    mgrLabel.textContent = '退件';
-    line2.style.background = '#e0e0e0';
+    mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#c62828;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    mgrIcon.textContent    = '✕';
+    mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fce4e4;color:#c62828;';
+    mgrBadge.textContent   = '已退件';
+    mgrTime.style.color    = '#c62828';
+    mgrTime.textContent    = r1t;
+    if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#ef9a9a)';
   } else {
-    mgrIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
-    mgrIcon.textContent = '⏳';
-    mgrLabel.style.color = '#e65100';
-    mgrLabel.textContent = '審核中';
-    line2.style.background = '#e0e0e0';
+    mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    mgrIcon.textContent    = '⏳';
+    mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fff8e1;color:#e65100;';
+    mgrBadge.textContent   = '待審核';
+    mgrTime.style.color    = '#9a9482';
+    mgrTime.textContent    = '';
+    if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#ccc)';
   }
 
+  // 人資審核
+  var adminIcon  = document.getElementById('flow-admin-icon2');
+  var adminBadge = document.getElementById('flow-admin-badge2');
+  var adminTime  = document.getElementById('flow-admin-time2');
   if (r2) {
-    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
-    adminIcon.textContent = '✓';
-    adminLabel.style.color = '#2e7d32';
-    adminLabel.innerHTML = r2 + '<br>' + r2t + '<br>已結案';
-  } else if (isReject) {
-    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
-    adminIcon.textContent = '—';
-    adminLabel.style.color = '#9a9482';
-    adminLabel.textContent = '—';
+    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    adminIcon.textContent     = '✓';
+    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#e8f5e9;color:#2e7d32;';
+    adminBadge.textContent    = r2 + ' 已結案';
+    adminTime.style.color     = '#5a8060';
+    adminTime.textContent     = r2t;
+    if (line2) line2.style.background = 'linear-gradient(90deg,#90caf9,#a5d6a7)';
+  } else if (isReject && !r1) {
+    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    adminIcon.textContent     = '—';
+    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;background:#f0f0f0;color:#9a9482;';
+    adminBadge.textContent    = '—';
+    adminTime.textContent     = '';
+    if (line2) line2.style.background = '#e0e0e0';
   } else if (r1) {
-    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
-    adminIcon.textContent = '⏳';
-    adminLabel.style.color = '#e65100';
-    adminLabel.textContent = '審核中';
+    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    adminIcon.textContent     = '⏳';
+    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fff8e1;color:#e65100;';
+    adminBadge.textContent    = '待審核';
+    adminTime.style.color     = '#9a9482';
+    adminTime.textContent     = '';
+    if (line2) line2.style.background = 'linear-gradient(90deg,#90caf9,#ccc)';
   } else {
-    adminIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;';
-    adminIcon.textContent = '⏳';
-    adminLabel.style.color = '#9a9482';
-    adminLabel.textContent = '等待中';
+    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    adminIcon.textContent     = '⏳';
+    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;background:#f0f0f0;color:#9a9482;';
+    adminBadge.textContent    = '等待中';
+    adminTime.style.color     = '#9a9482';
+    adminTime.textContent     = '';
+    if (line2) line2.style.background = '#e0e0e0';
   }
 
   document.getElementById('flowModal').classList.add('open');
@@ -4330,7 +4348,7 @@ function onMonthChange() {
   var sel = document.getElementById('mon-month-sel');
   var ym  = sel ? sel.value : '';
   var ml  = document.getElementById('mon-month-label');
-  if (ml) ml.textContent = ym ? ym.replace('/',' / ') : '全部';
+  if (ml) ml.textContent = ym ? (ym.slice(5,7) + '月') : '全部';
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
   var myName   = CURRENT_USER ? (CURRENT_USER.name||'').trim() : '';
   MONTHLY_DATA = MONTHLY_ALL_DATA.filter(function(a){
@@ -4409,7 +4427,7 @@ function loadMonthlyData() {
         sel.innerHTML = '<option value="">全部月份</option>';
         ymList.forEach(function(ym){
           var opt = document.createElement('option');
-          opt.value = ym; opt.textContent = ym.replace('/',' / ');
+          opt.value = ym; opt.textContent = ym.slice(5,7) + '月';
           sel.appendChild(opt);
         });
         var now = new Date();
@@ -4440,27 +4458,29 @@ function renderMonTable() {
   if(rc) rc.textContent = filtered.length;
   tbody.innerHTML = '';
   if(!filtered.length){
-    tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
     return;
   }
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
+  // employee 隱藏申請人欄
+  var thName = document.getElementById('mon-th-name');
+  if (thName) thName.style.display = (userRole === 'employee') ? 'none' : '';
   filtered.forEach(function(a,i){
     var s=a.status||'';
     var isDone=s.indexOf('完成')>-1, isReject=s.indexOf('退件')>-1;
     var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
+    var nameCol = userRole === 'employee' ? '' :
+      '<td style="text-align:center;font-size:12px;font-weight:500;">'+(a.name||'—')+'</td>';
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML=
-      '<td class="td-mono" style="font-size:11px;">'+(a.id||'—')+'</td>'+
-      '<td style="font-weight:500;text-align:center;">'+(a.name||'—')+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
-      '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
+      '<td class="td-mono" style="font-size:11px;">'+fmtDT(a.applyDate||'')+'</td>'+
+      nameCol+
+      '<td style="text-align:center;font-size:12px;">'+(a.subtype||a.type||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
-      '<td style="text-align:center;font-size:12px;">'+(a.reviewer||'—')+(a.reviewerTime?'<br><span style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':'')+'</td>'+
-      '<td style="text-align:center;font-size:12px;">'+(a.verifier||'—')+(a.verifierTime?'<br><span style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':'')+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd = tr.lastElementChild;
     if (userRole==='manager' && !a.reviewer && !isDone && !isReject) {
