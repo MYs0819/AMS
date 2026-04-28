@@ -925,7 +925,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   <!-- ══ Header ══ -->
     
 <!-- ════ 登入畫面 ════ -->
-<div class="login-overlay" id="loginOverlay" onclick="if(event.target===this)this.style.display='none'">
+<div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <div class="login-logo-row">
       <img class="login-logo" src="https://mys0819.github.io/AMS/assets/00.個人專業圖像.png" alt="MYs" onerror="this.src='https://mys0819.github.io/AMS/assets/MYs_logo_去背.png'" style="width:52px;height:52px;object-fit:cover;border-radius:50%;"/>
@@ -1042,8 +1042,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-section">
         <p class="sidebar-section-label">管理</p>
         <p class="sidebar-section-sub">營運限定</p>
-        <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="return showPage('main',this)"><span class="sidebar-icon">💰</span>薪資單</a>
-        <a href="#" class="sidebar-nav-item" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
+        <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
+        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1051,7 +1051,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-section">
         <p class="sidebar-section-label">設定</p>
         <p class="sidebar-section-sub">後台限定</p>
-        <a href="#" class="sidebar-nav-item" data-perm="settings" onclick="showToastGlobal('系統設定開發中…','info');return false;" style="opacity:0.5;cursor:default;"><span class="sidebar-icon">⚙️</span>系統設定</a>
+        <a href="#" class="sidebar-nav-item" data-perm="settings" onclick="showToastGlobal('系統設定開發中…','info');return false;"><span class="sidebar-icon">⚙️</span>系統設定</a>
         <a href="#" class="sidebar-nav-item" data-perm="account" onclick="return showPage('account',this)"><span class="sidebar-icon bright">🧑‍💼</span>帳號管理</a>
       </div>
 
@@ -3533,22 +3533,27 @@ var ROLE_SIDEBAR_MAP = {
   guest:    [],
   employee: ['doccenter','leave','myrecords','monthly'],
   manager:  ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics'],
-  admin:    ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','salary','account','settings'],
+  admin:    ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics',
+             'salary','account','settings','analytics'],
 };
 
 /* ══ 初始化：檢查 localStorage ══ */
 function initAuth() {
-  var saved = localStorage.getItem('mys_user');
+  var saved = localStorage.getItem('mys_user') || sessionStorage.getItem('mys_user');
   if (saved) {
     try {
       CURRENT_USER = JSON.parse(saved);
       onLoginSuccess(CURRENT_USER, true);
       return;
-    } catch(e) {}
+    } catch(e) {
+      localStorage.removeItem('mys_user');
+      sessionStorage.removeItem('mys_user');
+    }
   }
-  // 未登入 → 只套用訪客限制 + 模糊
+  // 未登入 → 套用訪客限制 + 模糊 + 顯示登入框
   applyPermissions('guest');
   applyBlur(true);
+  openLoginModal();
 }
 
 /* ══ 執行登入 ══ */
@@ -3679,6 +3684,7 @@ function applyPermissions(role) {
       item.style.opacity = ''; item.style.pointerEvents = ''; item.style.cursor = '';
       return;
     }
+    // 若沒有 data-perm，從 onclick 的 showPage 取出 pageId
     if (!perm) {
       var onc = item.getAttribute('onclick') || '';
       var m   = onc.match(/showPage\('([^']+)'/);
@@ -3691,6 +3697,8 @@ function applyPermissions(role) {
       item.style.pointerEvents = 'none';
       item.style.cursor        = 'default';
     } else {
+      // perm 可能是 pageId (main/monthly/...) 或 permKey (salary/account/settings)
+      // 兩者都查 allowed 陣列
       var ok = !perm || allowed.indexOf(perm) > -1;
       item.style.display       = ok ? '' : 'none';
       item.style.opacity       = '';
@@ -3760,10 +3768,14 @@ function togglePassView() {
 }
 
 function applyBlur(on) {
-  var main = document.querySelector('.app-main');
-  if (!main) return;
-  if (on) main.classList.add('app-main-blur');
-  else     main.classList.remove('app-main-blur');
+  // 模糊整個應用（側邊欄 + 主內容），排除 topbar
+  var sidebar = document.querySelector('.app-sidebar');
+  var main    = document.querySelector('.app-main');
+  [sidebar, main].forEach(function(el){
+    if (!el) return;
+    if (on) el.classList.add('app-main-blur');
+    else    el.classList.remove('app-main-blur');
+  });
 }
 
 function openLoginModal() {
@@ -3798,7 +3810,8 @@ function doLogout() {
   applyPermissions('guest');
   // 立即模糊化
   applyBlur(true);
-  // 不自動顯示登入畫面
+  // 顯示登入框
+  setTimeout(function(){ openLoginModal(); }, 150);
 }
 
 /* ══ User Menu 開關 ══ */
