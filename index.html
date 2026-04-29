@@ -1015,6 +1015,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <a href="application-forms.html" target="_blank" class="sidebar-nav-item external"><span class="sidebar-icon">📝</span>請假申請</a>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('myrecords',this)"><span class="sidebar-icon">📂</span>申請紀錄</a>
         <a href="#" class="sidebar-nav-item" data-page="monthly-emp" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
+        <a href="#" class="sidebar-nav-item" data-perm="main" data-page="monthly-mgr" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1633,7 +1634,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <colgroup>
               <col style="width:120px;"/><col style="width:112px;"/><col style="width:82px;"/>
               <col style="width:106px;"/><col style="width:62px;"/><col style="width:80px;"/><col style="width:62px;"/>
-              <col style="width:120px;"/><col style="width:140px;"/><col style="width:58px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:58px;"/>
+              <col style="width:110px;"/><col style="width:130px;"/><col style="width:52px;"/><col style="width:68px;"/><col style="width:52px;"/><col style="width:68px;"/><col style="width:52px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">申請編號</th>
@@ -1644,11 +1645,13 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <th style="text-align:center;">起訖期間</th>
               <th style="text-align:center;">狀態</th>
               <th style="text-align:center;">審核人</th>
+              <th style="text-align:center;">審核</th>
               <th style="text-align:center;">覆核人</th>
+              <th style="text-align:center;">覆核</th>
               <th style="text-align:center;">操作</th>
             </tr></thead>
             <tbody id="my-tbody">
-              <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+              <tr><td colspan="12" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
             </tbody>
           </table>
           <div class="table-footer"><div class="pagination" id="my-pagination"></div></div>
@@ -1675,10 +1678,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="mon-lc-生理假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;justify-content:space-between;">
             <div class="stat-card-label">國假</div>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="mon-lc-國假">0</span></div>
-            <div class="stat-card-sub">日</div>
+            <div id="mon-gj-value-row" style="display:flex;align-items:center;justify-content:center;min-height:36px;"><span class="stat-card-value gold" style="color:#43a047;" id="mon-lc-國假">0</span></div>
+            <div class="stat-card-sub" id="mon-gj-sub">日</div>
           </div>
           <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
             <div class="stat-card-label">特休</div>
@@ -1748,11 +1751,13 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <th style="text-align:center;">起訖期間</th>
               <th style="text-align:center;">狀態</th>
               <th style="text-align:center;">審核人</th>
+              <th style="text-align:center;">審核</th>
               <th style="text-align:center;">覆核人</th>
+              <th style="text-align:center;">覆核</th>
               <th style="text-align:center;">操作</th>
             </tr></thead>
             <tbody id="mon-tbody">
-              <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
+              <tr><td colspan="12" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
             </tbody>
           </table>
           <div class="table-footer"><div class="pagination" id="mon-pagination"></div></div>
@@ -2303,14 +2308,13 @@ function showPage(pageId, el) {
     var fi = document.querySelector('.sidebar-nav-item[onclick*="doccenter"]');
     if (fi) fi.classList.add('active');
   }
-  if (pageId === 'doccenter') dcLoadFiles();
-  if (pageId === 'account') loadAccounts();
-  if (pageId === 'myrecords') loadMyRecords();
-  if (pageId === 'main') { if(typeof loadMainData==='function') loadMainData(); }
-  if (pageId === 'monthly') { if(typeof loadMonthlyData==='function') loadMonthlyData(); }
+  if (pageId === 'doccenter')   dcLoadFiles();
+  if (pageId === 'account')     loadAccounts();
+  if (pageId === 'myrecords')   loadMyRecords();
+  if (pageId === 'monthly')     { if(typeof loadMonthlyData==='function') loadMonthlyData(); }
+  if (pageId === 'main')        { if(typeof loadMainData==='function') loadMainData(); }
   if (pageId === 'monthly-all') { if(typeof loadMallData==='function') loadMallData(); }
-  if (pageId === 'myrecords') loadMyRecords();
-  if (pageId === 'analytics') updateAnalytics();
+  if (pageId === 'analytics')   updateAnalytics();
   return false;
 }
 
@@ -3276,7 +3280,7 @@ function renderMainTable(apps) {
       '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
-      '<td class="td-mono" style="font-size:11px;text-align:right;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
+      '<td class="td-mono" style="font-size:11px;text-align:center;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span></td>'+
       '<td style="text-align:center;">'+reviewerCell+'</td>'+
@@ -3483,14 +3487,14 @@ function updateLeaveStats() {
 function loadMyRecords() {
   var tbody = document.getElementById('my-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--color-text-muted);">目前尚無申請紀錄</td></tr>';
         return;
       }
       // 所有角色都只看自己的申請（申請紀錄/本月紀錄只顯示個人）
@@ -3508,6 +3512,10 @@ function loadMyRecords() {
       } else {
         myRecordsData = allApps;
       }
+      // 同步給本月紀錄使用
+      MONTHLY_ALL_DATA = myRecordsData;
+      // 更新假別統計卡
+      if (typeof updateLeaveStats === 'function') updateLeaveStats();
       var total=myRecordsData.length, pending=0, done=0, reject=0;
       var typeSet = {};
       myRecordsData.forEach(function(a){
@@ -3545,7 +3553,7 @@ function loadMyRecords() {
     })
     .catch(function(){
       if (document.getElementById('my-tbody'))
-        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
+        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="12" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
     });
 }
 
@@ -3575,7 +3583,7 @@ function renderMyTable() {
   tbody.innerHTML = '';
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
     return;
   }
 
@@ -3586,13 +3594,11 @@ function renderMyTable() {
     var sLabel = isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg    = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    // 審核人/覆核人顯示：名字 + 時間
-    var r1Cell = a.reviewer
-      ? '<span style="font-weight:600;">'+ a.reviewer +'</span>'+(a.reviewerTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':'')
-      : '<span style="color:#ccc;">—</span>';
-    var r2Cell = a.verifier
-      ? '<span style="font-weight:600;">'+ a.verifier +'</span>'+(a.verifierTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':'')
-      : (a.reviewer ? '<span style="color:#d4a017;font-size:10px;">待覆核</span>' : '<span style="color:#ccc;">—</span>');
+    // 審核狀態
+    var r1Name   = a.reviewer || '—';
+    var r1Status = a.reviewer ? '<span style="font-size:10px;color:#2e7d32;font-weight:600;">已通過</span>' : '<span style="font-size:10px;color:#ccc;">—</span>';
+    var r2Name   = a.verifier || (a.reviewer ? '—' : '—');
+    var r2Status = a.verifier ? '<span style="font-size:10px;color:#2e7d32;font-weight:600;">已通過</span>' : (a.reviewer ? '<span style="font-size:10px;color:#d4a017;">待覆核</span>' : '<span style="font-size:10px;color:#ccc;">—</span>');
     var tr = document.createElement('tr');
     if (i % 2) tr.style.background = 'var(--color-bg-table-alt)';
     tr.innerHTML =
@@ -3603,8 +3609,10 @@ function renderMyTable() {
       '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+r1Cell+'</td>'+
-      '<td style="text-align:center;font-size:11px;">'+r2Cell+'</td>';
+      '<td style="text-align:center;font-size:11px;">'+(a.reviewer||'—')+'</td>'+
+      '<td style="text-align:center;">'+r1Status+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.verifier||(a.reviewer?'—':'—'))+'</td>'+
+      '<td style="text-align:center;">'+r2Status+'</td>';
     var lastTd = document.createElement('td');
     lastTd.style.textAlign = 'center';
     var viewBtn = document.createElement('button');
@@ -3808,9 +3816,15 @@ function applyPermissions(role) {
     // data-perm 優先，沒有則從 onclick 取
     var perm = item.getAttribute('data-perm') || '';
     // data-page="monthly-emp" 只給 employee 看
+    // data-page="monthly-mgr" 只給 manager/admin 看
     var pageMark = item.getAttribute('data-page') || '';
     if (pageMark === 'monthly-emp') {
       item.style.display = (role === 'employee') ? '' : 'none';
+      item.style.opacity = ''; item.style.pointerEvents = ''; item.style.cursor = '';
+      return;
+    }
+    if (pageMark === 'monthly-mgr') {
+      item.style.display = (role === 'manager' || role === 'admin') ? '' : 'none';
       item.style.opacity = ''; item.style.pointerEvents = ''; item.style.cursor = '';
       return;
     }
@@ -4547,28 +4561,34 @@ function updateMonLeaveStats() {
 function loadMonthlyData() {
   var tbody = document.getElementById('mon-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中\u2026</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--color-text-muted);">目前尚無資料</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--color-text-muted);">目前尚無資料</td></tr>';
         return;
       }
-      MONTHLY_ALL_DATA = data.applications;
       // 所有角色的本月紀錄都只顯示個人資料
-      var myNameM   = CURRENT_USER ? (CURRENT_USER.name||'').trim() : '';
-      if (myNameM) {
-        MONTHLY_ALL_DATA = data.applications.filter(function(a){
-          return (a.name||'').trim() === myNameM;
-        });
+      var myNameM = CURRENT_USER ? (CURRENT_USER.name||'').trim() : '';
+      MONTHLY_ALL_DATA = myNameM
+        ? data.applications.filter(function(a){ return (a.name||'').trim() === myNameM; })
+        : data.applications;
+
+      // 同步更新申請紀錄（共用同一份個人資料）
+      if (myNameM && !myRecordsData.length) {
+        myRecordsData = MONTHLY_ALL_DATA;
+        if (typeof updateLeaveStats === 'function') updateLeaveStats();
       }
+
       // 建立月份選單
       var ymSet = {};
       MONTHLY_ALL_DATA.forEach(function(a){
-        var ym = (a.applyDate||'').slice(0,7);
-        if (ym && ym.length === 7) ymSet[ym] = true;
+        // applyDate 格式：yyyy/mm/dd HH:MM:SS 或 yyyy/mm/dd
+        var raw = (a.applyDate||'').trim();
+        var ym = raw.slice(0,7); // yyyy/mm
+        if (ym && /^\d{4}\/\d{2}$/.test(ym)) ymSet[ym] = true;
       });
       var ymList = Object.keys(ymSet).sort().reverse();
       var sel = document.getElementById('mon-month-sel');
@@ -4577,7 +4597,8 @@ function loadMonthlyData() {
         sel.innerHTML = '<option value="">全部月份</option>';
         ymList.forEach(function(ym){
           var opt = document.createElement('option');
-          opt.value = ym; opt.textContent = ym.slice(5,7) + '月';
+          opt.value = ym;
+          opt.textContent = ym.slice(5,7) + '月';
           sel.appendChild(opt);
         });
         var now = new Date();
@@ -4587,8 +4608,8 @@ function loadMonthlyData() {
       onMonthChange();
     })
     .catch(function(){
-      if(document.getElementById('mon-tbody'))
-        document.getElementById('mon-tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:28px;color:#f44336;">載入失敗，請重試</td></tr>';
+      var t = document.getElementById('mon-tbody');
+      if(t) t.innerHTML='<tr><td colspan="10" style="text-align:center;padding:28px;color:#f44336;">載入失敗，請重試</td></tr>';
     });
 }
 
@@ -4608,7 +4629,7 @@ function renderMonTable() {
   if(rc) rc.textContent = filtered.length;
   tbody.innerHTML = '';
   if(!filtered.length){
-    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
+    tbody.innerHTML='<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
     return;
   }
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
@@ -4618,8 +4639,8 @@ function renderMonTable() {
     var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    var r1m = a.reviewer ? '<span style="font-weight:600;">'+a.reviewer+'</span>'+(a.reviewerTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':'') : '<span style="color:#ccc;">—</span>';
-    var r2m = a.verifier ? '<span style="font-weight:600;">'+a.verifier+'</span>'+(a.verifierTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':'') : (a.reviewer?'<span style="color:#d4a017;font-size:10px;">待覆核</span>':'<span style="color:#ccc;">—</span>');
+    var r1Status=a.reviewer?'<span style="font-size:10px;color:#2e7d32;font-weight:600;">已通過</span>':'<span style="font-size:10px;color:#ccc;">—</span>';
+    var r2Status=a.verifier?'<span style="font-size:10px;color:#2e7d32;font-weight:600;">已通過</span>':(a.reviewer?'<span style="font-size:10px;color:#d4a017;">待覆核</span>':'<span style="font-size:10px;color:#ccc;">—</span>');
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML=
@@ -4630,8 +4651,10 @@ function renderMonTable() {
       '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+r1m+'</td>'+
-      '<td style="text-align:center;font-size:11px;">'+r2m+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.reviewer||'—')+'</td>'+
+      '<td style="text-align:center;">'+r1Status+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(a.verifier||'—')+'</td>'+
+      '<td style="text-align:center;">'+r2Status+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd = tr.lastElementChild;
     if (userRole==='manager' && !a.reviewer && !isDone && !isReject) {
@@ -4832,17 +4855,35 @@ function renderMallTable() {
 /* ── 國假兼職判斷：初始化時根據 CURRENT_USER.title 設定顯示 ── */
 function initGjCard() {
   var isPartTime = CURRENT_USER && (CURRENT_USER.title||'').indexOf('兼職') > -1;
+
+  // myrecords 頁的國假卡
   var valRow = document.getElementById('gj-value-row');
   var sub    = document.getElementById('gj-sub');
-  if (!valRow || !sub) return;
-  if (isPartTime) {
-    valRow.innerHTML = '<span style="font-size:20px;font-weight:700;color:#43a047;line-height:1;">無</span>';
-    sub.innerHTML    = '當日上班加倍';
-    sub.style.cssText = 'font-size:10px;color:#5a5646;margin-top:4px;';
-  } else {
-    valRow.innerHTML = '<span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span>';
-    sub.textContent  = '日';
-    sub.style.cssText = '';
+  if (valRow && sub) {
+    if (isPartTime) {
+      valRow.innerHTML = '<span style="font-size:20px;font-weight:700;color:#43a047;line-height:1;">無</span>';
+      sub.innerHTML    = '當日上班加倍';
+      sub.style.cssText = 'font-size:10px;color:#5a5646;margin-top:4px;';
+    } else {
+      valRow.innerHTML = '<span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span>';
+      sub.textContent  = '日';
+      sub.style.cssText = '';
+    }
+  }
+
+  // 本月紀錄頁的國假卡
+  var monValRow = document.getElementById('mon-gj-value-row');
+  var monSub   = document.getElementById('mon-gj-sub');
+  if (monValRow && monSub) {
+    if (isPartTime) {
+      monValRow.innerHTML = '<span style="font-size:20px;font-weight:700;color:#43a047;line-height:1;">無</span>';
+      monSub.innerHTML    = '當日上班加倍';
+      monSub.style.cssText = 'font-size:10px;color:#5a5646;margin-top:4px;';
+    } else {
+      monValRow.innerHTML = '<span class="stat-card-value gold" style="color:#43a047;" id="mon-lc-國假">0</span>';
+      monSub.textContent  = '日';
+      monSub.style.cssText = '';
+    }
   }
 }
 
