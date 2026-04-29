@@ -171,14 +171,14 @@ input[type="time"] { color-scheme: dark; }
     <div class="selector-title" style="margin-bottom:20px;">請選擇申請類型</div>
     <div class="selector-grid">
       <div class="sel-card" onclick="openModal('lvModal')">
-        <span class="sel-icon">📋</span>
+        <span class="sel-icon">🗓️</span>
         <div>
           <div class="sel-title">請假申請單</div>
           <div class="sel-desc">各類假別事前及當日申請</div>
         </div>
       </div>
       <div class="sel-card" onclick="openModal('lvSupModal')">
-        <span class="sel-icon">📋</span>
+        <span class="sel-icon">📎</span>
         <div>
           <div class="sel-title">請假補件申請單</div>
           <div class="sel-desc">各類假別補件申請</div>
@@ -192,7 +192,7 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
       <div class="sel-card" onclick="openModal('rtModal')">
-        <span class="sel-icon">📋</span>
+        <span class="sel-icon">📝</span>
         <div>
           <div class="sel-title">留復職申請單</div>
           <div class="sel-desc">留職、復職、展延申請</div>
@@ -230,7 +230,7 @@ input[type="time"] { color-scheme: dark; }
           <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:left;"/></div>
         </div>
         <!-- 第二行：(請假人)職稱 | (請假人)姓名親簽 | (代理人)職稱 | (代理人)姓名 -->
-        <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr 1fr;gap:10px;align-items:end;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;align-items:end;">
           <div class="f-g">
             <label class="f-lbl">（請假人）職稱</label>
             <select class="f-sel" id="lv-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select>
@@ -260,8 +260,6 @@ input[type="time"] { color-scheme: dark; }
           <button class="lt-btn" onclick="pickLv(this,'事假')">事假</button>
           <button class="lt-btn" onclick="pickLv(this,'生理假')">生理假</button>
           <button class="lt-btn" onclick="pickLv(this,'普通傷病假')">普通傷病假</button>
-          <button class="lt-btn" onclick="pickLv(this,'喪假')">喪假</button>
-          <button class="lt-btn" onclick="pickLv(this,'婚假')">婚假</button>
           <button class="lt-btn" onclick="pickLv(this,'公傷病假')">公傷病假</button>
           <button class="lt-btn" onclick="pickLv(this,'婚假')">婚假</button>
           <button class="lt-btn" onclick="pickLv(this,'喪假')">喪假</button>
@@ -512,7 +510,7 @@ input[type="time"] { color-scheme: dark; }
           <div class="f-g" style="flex:1;"><label class="f-lbl">單位<span class="req">*</span></label><select class="f-sel" id="hol-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
           <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="hol-date" readonly style="text-align:left;"/></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr 1fr;gap:10px;align-items:end;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;align-items:end;">
           <div class="f-g"><label class="f-lbl">（請假人）職稱</label><select class="f-sel" id="hol-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
           <div class="f-g">
             <label class="f-lbl">（請假人）姓名*（親簽）</label>
@@ -529,24 +527,24 @@ input[type="time"] { color-scheme: dark; }
       <div>
         <div class="f-sec">假別*</div>
         <input type="hidden" id="hol-type"/>
-        <div class="lt-wrap">
-          <button class="lt-btn" onclick="pickHol(this,'元旦')">元旦</button>
-          <button class="lt-btn" onclick="pickHol(this,'小年夜')">小年夜</button>
-          <button class="lt-btn" onclick="pickHol(this,'除夕')">除夕</button>
-          <button class="lt-btn" onclick="pickHol(this,'初一')">初一</button>
-          <button class="lt-btn" onclick="pickHol(this,'初二')">初二</button>
-          <button class="lt-btn" onclick="pickHol(this,'初三')">初三</button>
-          <button class="lt-btn" onclick="pickHol(this,'二二八')">二二八</button>
-          <button class="lt-btn" onclick="pickHol(this,'兒童節')">兒童節</button>
-          <button class="lt-btn" onclick="pickHol(this,'清明節')">清明節</button>
-          <button class="lt-btn" onclick="pickHol(this,'勞動節')">勞動節</button>
-          <button class="lt-btn" onclick="pickHol(this,'端午節')">端午節</button>
-          <button class="lt-btn" onclick="pickHol(this,'中秋節')">中秋節</button>
-          <button class="lt-btn" onclick="pickHol(this,'教師節')">教師節</button>
-          <button class="lt-btn" onclick="pickHol(this,'國慶日')">國慶日</button>
-          <button class="lt-btn" onclick="pickHol(this,'光復節')">光復節</button>
-          <button class="lt-btn" onclick="pickHol(this,'行憲紀念日')">行憲紀念日</button>
-          <button class="lt-btn" onclick="pickHol(this,'特別休假')">特別休假</button>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;" id="hol-lt-grid">
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'元旦')">元旦</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'小年夜')">小年夜</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'除夕')">除夕</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'初一')">初一</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'初二')">初二</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'初三')">初三</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'二二八')">二二八</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'兒童節')">兒童節</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'清明節')">清明節</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'勞動節')">勞動節</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'端午節')">端午節</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'中秋節')">中秋節</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'教師節')">教師節</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'國慶日')">國慶日</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'光復節')">光復節</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'行憲紀念日')">行憲紀念日</button>
+          <button class="lt-btn" style="min-width:0;" onclick="pickHol(this,'特別休假')">特別休假</button>
         </div>
       </div>
 
