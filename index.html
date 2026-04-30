@@ -1612,42 +1612,75 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="tab-item"        data-tab="reject"  onclick="switchMyTab(this,'reject')">退件 <span class="tab-count" id="mytab-reject">0</span></div>
         </div>
 
-        <!-- 篩選列（跟所有申請同樣的 toolbar）-->
+        <!-- 篩選列 - 完全複製所有申請格式 -->
         <div class="table-section">
           <div class="toolbar">
-            <select class="filter-select" id="my-type-filter" onchange="renderMyTable()" style="width:120px;">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input class="search-input" type="text" id="my-search" placeholder="搜尋姓名…" oninput="renderMyTable()"/>
+            </div>
+            <select class="filter-select" id="my-type-filter" onchange="renderMyTable()" style="width:var(--toolbar-select-width)">
               <option value="">全部類型</option>
+              <option value="請假申請">請假申請</option>
+              <option value="國假及特休申請">國假及特休申請</option>
+              <option value="留復職申請">留復職申請</option>
             </select>
-            <button id="my-allbtn" onclick="toggleMyAllYear(this)" style="height:30px;padding:0 12px;border-radius:6px;border:1px solid var(--color-border-table);background:transparent;font-family:var(--font-body);font-size:12px;cursor:pointer;color:var(--color-text-secondary);">全年</button>
-            <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()" style="width:72px;">
-              <option value="2026">2026</option>
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
+            <select class="filter-select" id="my-team-filter" onchange="renderMyTable()" style="width:var(--toolbar-select-width)">
+              <option value="">全部團隊</option>
+              <option value="外場">外場</option>
+              <option value="吧台">吧台</option>
+              <option value="內廚">內廚</option>
             </select>
-            <div style="flex:1;"></div>
-            <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出申請紀錄</button>
-            <span class="toolbar-info">共 <span id="my-row-count">0</span> 筆</span>
+            <div class="ym-group">
+              <span class="ym-year-label">年度</span>
+              <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()" style="width:68px">
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+              </select>
+              <button id="my-allbtn" onclick="toggleMyAllYear(this)" class="ym-all-btn">全年</button>
+              <select class="filter-select" id="my-month-filter" onchange="renderMyTable()" style="width:56px">
+                <option value="">全月</option>
+                <option value="01">01</option><option value="02">02</option><option value="03">03</option>
+                <option value="04">04</option><option value="05">05</option><option value="06">06</option>
+                <option value="07">07</option><option value="08">08</option><option value="09">09</option>
+                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+              </select>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出</button>
+              <span class="toolbar-info">共 <span id="my-row-count">0</span> 筆</span>
+            </div>
           </div>
 
-          <!-- 表格（跟所有申請同樣的 data-table 樣式）-->
-          <table class="data-table">
+          <table class="data-table" id="myTable">
             <colgroup>
-              <col style="width:120px;"/><col style="width:112px;"/><col style="width:82px;"/>
-              <col style="width:106px;"/><col style="width:62px;"/><col style="width:80px;"/><col style="width:62px;"/>
-              <col style="width:110px;"/><col style="width:130px;"/><col style="width:52px;"/><col style="width:68px;"/><col style="width:52px;"/><col style="width:68px;"/><col style="width:52px;"/>
+              <col class="col-id"/>
+              <col class="col-name"/>
+              <col class="col-team" style="width:var(--col-w-team)"/>
+              <col class="col-type"/>
+              <col class="col-subtype"/>
+              <col class="col-date"/>
+              <col class="col-period"/>
+              <col class="col-status"/>
+              <col class="col-reviewer"/>
+              <col class="col-verifier" style="width:var(--col-w-verifier)"/>
+              <col class="col-action"/>
             </colgroup>
             <thead><tr>
-              <th style="text-align:center;">申請編號</th>
-              <th style="text-align:center;">申請類型</th>
-              <th style="text-align:center;">假別</th>
-              <th style="text-align:center;">申請日期</th>
-              <th style="text-align:center;">起訖期間</th>
-              <th style="text-align:center;">狀態</th>
-              <th style="text-align:center;">審核人</th>
-              <th style="text-align:center;">審核</th>
-              <th style="text-align:center;">覆核人</th>
-              <th style="text-align:center;">覆核</th>
-              <th style="text-align:center;">操作</th>
+              <th>申請編號</th>
+              <th>員工姓名</th>
+              <th>團隊型態</th>
+              <th>申請類型</th>
+              <th>假別</th>
+              <th>申請日期</th>
+              <th>起訖期間</th>
+              <th>狀態</th>
+              <th>審核人</th>
+              <th>覆核人</th>
+              <th>操作</th>
             </tr></thead>
             <tbody id="my-tbody">
               <tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
@@ -1739,21 +1772,30 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:106px;"/><col style="width:62px;"/><col style="width:80px;"/><col style="width:62px;"/>
-              <col style="width:120px;"/><col style="width:140px;"/><col style="width:58px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:58px;"/>
+              <col class="col-id"/>
+              <col class="col-name"/>
+              <col class="col-team" style="width:var(--col-w-team)"/>
+              <col class="col-type"/>
+              <col class="col-subtype"/>
+              <col class="col-date"/>
+              <col class="col-period"/>
+              <col class="col-status"/>
+              <col class="col-reviewer"/>
+              <col class="col-verifier" style="width:var(--col-w-verifier)"/>
+              <col class="col-action"/>
             </colgroup>
             <thead><tr>
-              <th style="text-align:center;">申請編號</th>
-              <th style="text-align:center;">申請類型</th>
-              <th style="text-align:center;">假別</th>
-              <th style="text-align:center;">申請日期</th>
-              <th style="text-align:center;">起訖期間</th>
-              <th style="text-align:center;">狀態</th>
-              <th style="text-align:center;">審核人</th>
-              <th style="text-align:center;">審核</th>
-              <th style="text-align:center;">覆核人</th>
-              <th style="text-align:center;">覆核</th>
-              <th style="text-align:center;">操作</th>
+              <th>申請編號</th>
+              <th>員工姓名</th>
+              <th>團隊型態</th>
+              <th>申請類型</th>
+              <th>假別</th>
+              <th>申請日期</th>
+              <th>起訖期間</th>
+              <th>狀態</th>
+              <th>審核人</th>
+              <th>覆核人</th>
+              <th>操作</th>
             </tr></thead>
             <tbody id="mon-tbody">
               <tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
@@ -3269,15 +3311,15 @@ function renderMainTable(apps) {
 
     // 審核人/覆核人欄顯示
     var reviewerCell = a.reviewer ?
-      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.reviewer+'</span>'+(a.reviewerTime?'<span class="reviewer-time">'+fmtDT(a.reviewerTime)+'</span>':'')+'</div>' :
-      '<span style="color:var(--color-text-muted);font-size:11px;">待審核</span>';
+      '<div style="font-weight:500;font-size:12px;">'+a.reviewer+'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':'') :
+      '<span style="color:var(--color-text-muted);font-size:12px;">待審核</span>';
     var verifierCell = a.verifier ?
-      '<div class="reviewer-wrap"><span class="reviewer-name">'+a.verifier+'</span>'+(a.verifierTime?'<span class="reviewer-time">'+fmtDT(a.verifierTime)+'</span>':'')+'</div>' :
-      (a.reviewer ? '<span style="color:var(--color-text-muted);font-size:11px;">待覆核</span>' : '<span style="color:#ccc;font-size:11px;">—</span>');
+      '<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':'') :
+      (a.reviewer ? '<span style="color:var(--color-text-muted);font-size:11px;">待覆核</span>' : '<span style="color:#ccc;font-size:12px;">—</span>');
 
     tr.innerHTML =
       '<td class="td-mono" style="font-size:11px;">'+(a.id||'—')+'</td>'+
-      '<td style="font-weight:500;">'+(a.name||'—')+'</td>'+
+      '<td style="font-weight:500;font-size:13px;text-align:center;">'+(a.name||'—')+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
@@ -3561,8 +3603,11 @@ function loadMyRecords() {
 function renderMyTable() {
   var tbody = document.getElementById('my-tbody');
   if (!tbody) return;
-  var yearVal = myAllYear ? 'all' : ((document.getElementById('my-year-filter') || {}).value || String(new Date().getFullYear()));
-  var typeVal = (document.getElementById('my-type-filter') || {}).value || '';
+  var yearVal  = myAllYear ? 'all' : ((document.getElementById('my-year-filter') || {}).value || String(new Date().getFullYear()));
+  var typeVal  = (document.getElementById('my-type-filter') || {}).value || '';
+  var teamVal  = (document.getElementById('my-team-filter') || {}).value || '';
+  var monthVal = (document.getElementById('my-month-filter') || {}).value || '';
+  var searchVal= ((document.getElementById('my-search') || {}).value || '').toLowerCase();
 
   var filtered = myRecordsData.filter(function(a){
     var s    = a.status || '';
@@ -3571,7 +3616,10 @@ function renderMyTable() {
     if (tab === 'done'    && s.indexOf('完成') === -1) return false;
     if (tab === 'reject'  && s.indexOf('退件') === -1) return false;
     if (typeVal && (a.type !== typeVal && a.subtype !== typeVal)) return false;
+    if (teamVal && (a.team||'') !== teamVal) return false;
     if (yearVal !== 'all' && a.applyDate && a.applyDate.slice(0,4) !== yearVal) return false;
+    if (monthVal && a.applyDate && a.applyDate.slice(5,7) !== monthVal) return false;
+    if (searchVal && (a.name||'').toLowerCase().indexOf(searchVal) < 0) return false;
     if (myLeaveFilter) {
       var sub = a.subtype || '';
       if (sub.indexOf(myLeaveFilter) === -1) return false;
@@ -3581,40 +3629,40 @@ function renderMyTable() {
 
   var rc = document.getElementById('my-row-count');
   if (rc) rc.textContent = filtered.length;
+
+  var noData = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
+  if (!filtered.length) { tbody.innerHTML = noData; return; }
+
+  var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
+
   tbody.innerHTML = '';
-
-  if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
-    return;
-  }
-
   filtered.forEach(function(a, i){
     var s        = a.status || '';
     var isDone   = s.indexOf('完成') > -1;
     var isReject = s.indexOf('退件') > -1;
-    var sLabel = isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
-    var sBg    = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
-    var sColor = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    // 審核/覆核 狀態 + 時間
-    var r1Status = a.reviewer
-      ? '<span style="font-size:10px;color:#2e7d32;font-weight:600;display:block;">已通過</span>'+(a.reviewerTime?'<span style="font-size:9px;color:#5a8060;font-family:var(--font-mono);">'+fmtDT(a.reviewerTime)+'</span>':'')
-      : '<span style="font-size:10px;color:#ccc;">—</span>';
-    var r2Status = a.verifier
-      ? '<span style="font-size:10px;color:#2e7d32;font-weight:600;display:block;">已通過</span>'+(a.verifierTime?'<span style="font-size:9px;color:#5a8060;font-family:var(--font-mono);">'+fmtDT(a.verifierTime)+'</span>':'')
-      : (a.reviewer ? '<span style="font-size:10px;color:#d4a017;">待覆核</span>' : '<span style="font-size:10px;color:#ccc;">—</span>');
+    var sLabel   = isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
+    var sBg      = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
+    var sColor   = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
+    // 審核人/覆核人 — 僅顯示名字（同 所有申請 格式）
+    var r1Cell = a.reviewer
+      ? '<div style="font-weight:500;font-size:12px;">'+ a.reviewer +'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':'')
+      : '<span style="color:#ccc;font-size:12px;">—</span>';
+    var r2Cell = a.verifier
+      ? '<div style="font-weight:500;font-size:12px;">'+ a.verifier +'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':'')
+      : (a.reviewer ? '<span style="color:#d4a017;font-size:11px;">待覆核</span>' : '<span style="color:#ccc;font-size:12px;">—</span>');
     var tr = document.createElement('tr');
     if (i % 2) tr.style.background = 'var(--color-bg-table-alt)';
     tr.innerHTML =
       '<td class="td-mono" style="text-align:center;font-size:11px;">'+(a.id||'—')+'</td>'+
+      '<td style="text-align:center;font-size:13px;font-weight:500;">'+(a.name||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.subtype||'—')+'</td>'+
-      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.reviewer||'—')+'</td>'+
-      '<td style="text-align:center;line-height:1.4;">'+r1Status+'</td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.verifier||(a.reviewer?'—':'—'))+'</td>'+
-      '<td style="text-align:center;line-height:1.4;">'+r2Status+'</td>';
+      '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;">'+r1Cell+'</td>'+
+      '<td style="text-align:center;">'+r2Cell+'</td>';
     var lastTd = document.createElement('td');
     lastTd.style.textAlign = 'center';
     var viewBtn = document.createElement('button');
@@ -4641,21 +4689,21 @@ function renderMonTable() {
     var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    var r1Status=a.reviewer?'<span style="font-size:10px;color:#2e7d32;font-weight:600;display:block;">已通過</span>'+(a.reviewerTime?'<span style="font-size:9px;color:#5a8060;font-family:var(--font-mono);">'+fmtDT(a.reviewerTime)+'</span>':''):'<span style="font-size:10px;color:#ccc;">—</span>';
-    var r2Status=a.verifier?'<span style="font-size:10px;color:#2e7d32;font-weight:600;display:block;">已通過</span>'+(a.verifierTime?'<span style="font-size:9px;color:#5a8060;font-family:var(--font-mono);">'+fmtDT(a.verifierTime)+'</span>':''):(a.reviewer?'<span style="font-size:10px;color:#d4a017;">待覆核</span>':'<span style="font-size:10px;color:#ccc;">—</span>');
+    var r1Cell=a.reviewer?'<div style="font-weight:500;font-size:12px;">'+a.reviewer+'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':''):'<span style="color:#ccc;font-size:12px;">—</span>';
+    var r2Cell=a.verifier?'<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':''):(a.reviewer?'<span style="color:#d4a017;font-size:11px;">待覆核</span>':'<span style="color:#ccc;font-size:12px;">—</span>');
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML=
       '<td class="td-mono" style="text-align:center;font-size:11px;">'+(a.id||'—')+'</td>'+
+      '<td style="text-align:center;font-size:13px;font-weight:500;">'+(a.name||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.subtype||'—')+'</td>'+
-      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.reviewer||'—')+'</td>'+
-      '<td style="text-align:center;line-height:1.4;">'+r1Status+'</td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.verifier||'—')+'</td>'+
-      '<td style="text-align:center;line-height:1.4;">'+r2Status+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;">'+r1Cell+'</td>'+
+      '<td style="text-align:center;">'+r2Cell+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd = tr.lastElementChild;
     if (userRole==='manager' && !a.reviewer && !isDone && !isReject) {
@@ -4811,20 +4859,20 @@ function renderMallTable() {
     var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    var r1=a.reviewer?'<span style="font-weight:600;">'+a.reviewer+'</span>'+(a.reviewerTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</span>':''):'<span style="color:#ccc;">—</span>';
-    var r2=a.verifier?'<span style="font-weight:600;">'+a.verifier+'</span>'+(a.verifierTime?'<br><span style="font-size:9px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</span>':''):(a.reviewer?'<span style="color:#d4a017;font-size:10px;">待覆核</span>':'<span style="color:#ccc;">—</span>');
+    var r1=a.reviewer?'<div style="font-weight:500;font-size:12px;">'+a.reviewer+'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':''):'<span style="color:#ccc;font-size:12px;">—</span>';
+    var r2=a.verifier?'<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':''):(a.reviewer?'<span style="color:#d4a017;font-size:11px;">待覆核</span>':'<span style="color:#ccc;font-size:12px;">—</span>');
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML=
       '<td class="td-mono" style="text-align:center;font-size:11px;">'+(a.id||'—')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-weight:500;">'+(a.name||'—')+'</td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.team||'—')+'</td>'+
+      '<td style="text-align:center;font-size:13px;font-weight:500;">'+(a.name||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+(a.subtype||'—')+'</td>'+
-      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td class="td-mono" style="text-align:center;font-size:10px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;">'+r1+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;">'+r1+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
