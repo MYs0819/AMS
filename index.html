@@ -1749,17 +1749,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <span class="stat-card-sub">需補件</span>
           </div>
         </div>
-        <!-- Tab + 月份選單 -->
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="tab-bar" style="flex:1;">
-            <div class="tab-item active" data-tab="all"    onclick="switchMonTab(this,'all')">全部 <span class="tab-count" id="montab-all">0</span></div>
-            <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'pending')">審核中 <span class="tab-count" id="montab-pending">0</span></div>
-            <div class="tab-item"        data-tab="done"   onclick="switchMonTab(this,'done')">已完成 <span class="tab-count" id="montab-done">0</span></div>
-            <div class="tab-item"        data-tab="reject" onclick="switchMonTab(this,'reject')">退件 <span class="tab-count" id="montab-reject">0</span></div>
-          </div>
-          <select class="filter-select" id="mon-month-sel" style="width:88px;height:30px;font-size:12px;" onchange="onMonthChange()">
-            <option value="">全部月份</option>
-          </select>
+        <!-- Tab + 月份選單（月份選單在 toolbar 內，tab-bar 獨立全寬）-->
+        <div class="tab-bar">
+          <div class="tab-item active" data-tab="all"    onclick="switchMonTab(this,'all')">全部 <span class="tab-count" id="montab-all">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'pending')">審核中 <span class="tab-count" id="montab-pending">0</span></div>
+          <div class="tab-item"        data-tab="done"   onclick="switchMonTab(this,'done')">已完成 <span class="tab-count" id="montab-done">0</span></div>
+          <div class="tab-item"        data-tab="reject" onclick="switchMonTab(this,'reject')">退件 <span class="tab-count" id="montab-reject">0</span></div>
         </div>
         <div class="table-section">
           <div class="toolbar">
@@ -1767,6 +1762,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <span class="search-icon">🔍</span>
               <input class="search-input" id="mon-search" placeholder="搜尋姓名…" oninput="renderMonTable()"/>
             </div>
+            <select class="filter-select" id="mon-month-sel" style="width:88px;" onchange="onMonthChange()">
+              <option value="">全部月份</option>
+            </select>
             <div style="flex:1;"></div>
             <span class="toolbar-info">共 <span id="mon-row-count">0</span> 筆</span>
           </div>
@@ -1862,17 +1860,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <span class="stat-card-sub">需補件</span>
           </div>
         </div>
-        <!-- Tab + 月份選單 -->
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="tab-bar" style="flex:1;">
-            <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
-            <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'pending')">審核中 <span class="tab-count" id="malltab-pending">0</span></div>
-            <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
-            <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">退件 <span class="tab-count" id="malltab-reject">0</span></div>
-          </div>
-          <select class="filter-select" id="mall-month-sel" style="width:88px;height:30px;font-size:12px;" onchange="onMallMonthChange()">
-            <option value="">全部月份</option>
-          </select>
+        <!-- Tab bar 獨立全寬 -->
+        <div class="tab-bar">
+          <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'pending')">審核中 <span class="tab-count" id="malltab-pending">0</span></div>
+          <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
+          <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">退件 <span class="tab-count" id="malltab-reject">0</span></div>
         </div>
         <div class="table-section">
           <div class="toolbar">
@@ -1880,6 +1873,21 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <span class="search-icon">🔍</span>
               <input class="search-input" id="mall-search" placeholder="搜尋姓名…" oninput="renderMallTable()"/>
             </div>
+            <select class="filter-select" id="mall-type-filter" onchange="renderMallTable()" style="width:var(--toolbar-select-width)">
+              <option value="">全部類型</option>
+              <option value="請假申請">請假申請</option>
+              <option value="國假及特休申請">國假及特休申請</option>
+              <option value="留復職申請">留復職申請</option>
+            </select>
+            <select class="filter-select" id="mall-team-filter" onchange="renderMallTable()" style="width:var(--toolbar-select-width)">
+              <option value="">全部團隊</option>
+              <option value="外場">外場</option>
+              <option value="吧台">吧台</option>
+              <option value="內廚">內廚</option>
+            </select>
+            <select class="filter-select" id="mall-month-sel" style="width:88px;" onchange="onMallMonthChange()">
+              <option value="">全部月份</option>
+            </select>
             <div style="flex:1;"></div>
             <span class="toolbar-info">共 <span id="mall-row-count">0</span> 筆</span>
           </div>
@@ -2132,7 +2140,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       </div>
       <div style="flex:1;height:2px;background:#e0e0e0;min-width:16px;" id="flow-line-2"></div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
-        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">人資審核</div>
+        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">人資覆核</div>
         <div id="flow-admin-status" style="font-size:9px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:6px;padding:1px 6px;white-space:nowrap;">等待中</div>
       </div>
     </div>
@@ -2324,7 +2332,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <!-- 人資審核 -->
       <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0;">
         <div style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;" id="flow-admin-icon2">⏳</div>
-        <div style="font-size:11px;font-weight:700;text-align:center;color:var(--color-text-primary);">人資審核</div>
+        <div style="font-size:11px;font-weight:700;text-align:center;color:var(--color-text-primary);">人資覆核</div>
         <div style="font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;" id="flow-admin-badge2"></div>
         <div style="font-size:9px;text-align:center;line-height:1.4;word-break:break-all;" id="flow-admin-time2"></div>
       </div>
@@ -2337,7 +2345,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
 <script>
 var ROWS_PER_PAGE = 10;
-var allMonthMode  = false;
+var allMonthMode  = true;  // 預設全年顯示
 
 /* ══ 右側介面跳轉 ══ */
 function showPage(pageId, el) {
@@ -2534,19 +2542,22 @@ function onYearChange() {
 }
 
 /* ══ 全年切換 ══ */
-function toggleAllMonths() {
-  allMonthMode = !allMonthMode;
+function initAllMonthBtn() {
   var btn = document.getElementById('allMonthBtn');
   var monthSel = document.getElementById('ymMonth');
+  if (!btn) return;
   if (allMonthMode) {
     btn.classList.add('active');
-    monthSel.disabled = true;
-    monthSel.style.opacity = '0.4';
+    if (monthSel) { monthSel.disabled = true; monthSel.style.opacity = '0.4'; }
   } else {
     btn.classList.remove('active');
-    monthSel.disabled = false;
-    monthSel.style.opacity = '1';
+    if (monthSel) { monthSel.disabled = false; monthSel.style.opacity = '1'; }
   }
+}
+
+function toggleAllMonths() {
+  allMonthMode = !allMonthMode;
+  initAllMonthBtn();
   currentPage = 1;
   filterTable();
 }
@@ -3414,7 +3425,6 @@ function filterTable() {
       // Tab filter
       if (currentTab === 'active'     && !(s.indexOf('審核') > -1 || s.indexOf('待') > -1 || s.indexOf('進行') > -1)) return false;
       if (currentTab === 'pending'    && s.indexOf('待審核') === -1 && s.indexOf('待') === -1) {
-        // pending = 待審核 (主管尚未審核)
         if (!(s.indexOf('主管') > -1 && s.indexOf('待') > -1)) return false;
       }
       if (currentTab === 'done'       && s.indexOf('完成') === -1) return false;
@@ -3422,7 +3432,12 @@ function filterTable() {
       if (currentTab === 'supplement' && s.indexOf('補件') === -1) return false;
       if (typeVal && (a.type||'') !== typeVal) return false;
       if (teamVal && (a.team||'') !== teamVal) return false;
-      if (year    && (a.applyDate||'').slice(0,4) !== year) return false;
+      // 年月篩選：只在非全年模式下才生效
+      if (!allMonthMode) {
+        if (year && (a.applyDate||'').slice(0,4) !== year) return false;
+        var mon = document.getElementById('ymMonth') ? document.getElementById('ymMonth').value : '';
+        if (mon && (a.applyDate||'').slice(5,7) !== mon) return false;
+      }
       if (search  && (a.name||'').toLowerCase().indexOf(search)<0 && (a.id||'').toLowerCase().indexOf(search)<0) return false;
       return true;
     });
@@ -3469,7 +3484,7 @@ function filterTable() {
 var myRecordsData = [];
 var myCurrentTab  = 'all';
 var myLeaveFilter = '';
-var myAllYear     = false;
+var myAllYear     = true;  // 預設顯示所有年份
 
 function switchMyTab(el, tab) {
   document.querySelectorAll('#page-myrecords .tab-item').forEach(function(t){t.classList.remove('active');});
@@ -3478,20 +3493,37 @@ function switchMyTab(el, tab) {
   renderMyTable();
 }
 
+function initMyAllYearBtn() {
+  var btn = document.getElementById('my-allbtn');
+  if (!btn) return;
+  if (myAllYear) {
+    btn.style.background  = 'var(--color-gold-bg)';
+    btn.style.color       = 'var(--color-gold)';
+    btn.style.borderColor = 'var(--color-gold)';
+    var ys = document.getElementById('my-year-filter');
+    if (ys) ys.disabled = true;
+    var ms = document.getElementById('my-month-filter');
+    if (ms) ms.disabled = true;
+  }
+}
 function toggleMyAllYear(btn) {
   myAllYear = !myAllYear;
   if (myAllYear) {
-    btn.style.background = 'var(--color-gold-bg)';
-    btn.style.color      = 'var(--color-gold)';
-    btn.style.borderColor= 'var(--color-gold)';
+    btn.style.background  = 'var(--color-gold-bg)';
+    btn.style.color       = 'var(--color-gold)';
+    btn.style.borderColor = 'var(--color-gold)';
     var ys = document.getElementById('my-year-filter');
     if (ys) ys.disabled = true;
+    var ms = document.getElementById('my-month-filter');
+    if (ms) ms.disabled = true;
   } else {
-    btn.style.background = 'transparent';
-    btn.style.color      = 'var(--color-text-secondary)';
-    btn.style.borderColor= '#ccc';
+    btn.style.background  = 'transparent';
+    btn.style.color       = 'var(--color-text-secondary)';
+    btn.style.borderColor = '#ccc';
     var ys = document.getElementById('my-year-filter');
     if (ys) ys.disabled = false;
+    var ms = document.getElementById('my-month-filter');
+    if (ms) ms.disabled = false;
   }
   updateLeaveStats();
   renderMyTable();
@@ -3559,6 +3591,8 @@ function loadMyRecords() {
       MONTHLY_ALL_DATA = myRecordsData;
       // 更新假別統計卡
       if (typeof updateLeaveStats === 'function') updateLeaveStats();
+      // 確保全年按鈕樣式正確
+      if (typeof initMyAllYearBtn === 'function') initMyAllYearBtn();
       var total=myRecordsData.length, pending=0, done=0, reject=0;
       var typeSet = {};
       myRecordsData.forEach(function(a){
@@ -3617,8 +3651,11 @@ function renderMyTable() {
     if (tab === 'reject'  && s.indexOf('退件') === -1) return false;
     if (typeVal && (a.type !== typeVal && a.subtype !== typeVal)) return false;
     if (teamVal && (a.team||'') !== teamVal) return false;
-    if (yearVal !== 'all' && a.applyDate && a.applyDate.slice(0,4) !== yearVal) return false;
-    if (monthVal && a.applyDate && a.applyDate.slice(5,7) !== monthVal) return false;
+    // 年月篩選：全年模式下都顯示
+    if (!myAllYear) {
+      if (yearVal !== 'all' && a.applyDate && a.applyDate.slice(0,4) !== yearVal) return false;
+      if (monthVal && a.applyDate && a.applyDate.slice(5,7) !== monthVal) return false;
+    }
     if (searchVal && (a.name||'').toLowerCase().indexOf(searchVal) < 0) return false;
     if (myLeaveFilter) {
       var sub = a.subtype || '';
@@ -3829,7 +3866,12 @@ function onLoginSuccess(user, silent) {
   document.getElementById('um-role').textContent = '角色：' + (ROLE_LABEL[user.role]||user.role);
 
   // 套用權限
-  setTimeout(function(){ applyPermissions(user.role); initGjCard(); }, 50);
+  setTimeout(function(){
+    applyPermissions(user.role);
+    initGjCard();
+    initAllMonthBtn();
+    initMyAllYearBtn();
+  }, 50);
 
   // 載入文件中心
   if (typeof dcLoadFiles === 'function') dcLoadFiles();
@@ -4837,11 +4879,15 @@ function renderMallTable() {
   var tbody=document.getElementById('mall-tbody');
   if(!tbody) return;
   var search=((document.getElementById('mall-search')||{}).value||'').toLowerCase();
+  var typeVal=((document.getElementById('mall-type-filter')||{}).value||'');
+  var teamVal=((document.getElementById('mall-team-filter')||{}).value||'');
   var filtered=MALL_DATA.filter(function(a){
     var s=a.status||'';
     if(mallCurrentTab==='pending'&&(s.indexOf('完成')>-1||s.indexOf('退件')>-1)) return false;
     if(mallCurrentTab==='done'&&s.indexOf('完成')===-1) return false;
     if(mallCurrentTab==='reject'&&s.indexOf('退件')===-1) return false;
+    if(typeVal&&(a.type||'')!==typeVal) return false;
+    if(teamVal&&(a.team||'')!==teamVal) return false;
     if(search&&(a.name||'').toLowerCase().indexOf(search)<0&&(a.id||'').toLowerCase().indexOf(search)<0) return false;
     return true;
   });
