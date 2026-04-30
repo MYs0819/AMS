@@ -865,7 +865,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .app-sidebar::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.08);}
 
 /* ════ 登入系統 ════ */
-.login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.45);z-index:9000;display:none;align-items:center;justify-content:center;}
+.login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.45);z-index:9000;display:flex;align-items:center;justify-content:center;}
 .login-box{background:#fff;border-radius:16px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:20px;}
 .login-logo-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .login-logo{width:48px;height:48px;object-fit:contain;}
@@ -1014,8 +1014,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-sub">全體同仁</p>
         <a href="application-forms.html" target="_blank" class="sidebar-nav-item external"><span class="sidebar-icon">📝</span>請假申請</a>
         <a href="#" class="sidebar-nav-item" onclick="return showPage('myrecords',this)"><span class="sidebar-icon">📂</span>申請紀錄</a>
-        <a href="#" class="sidebar-nav-item" data-page="monthly-emp" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
-        <a href="#" class="sidebar-nav-item" data-perm="main" data-page="monthly-mgr" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
+        <a href="#" class="sidebar-nav-item" onclick="return showPage('monthly',this)"><span class="sidebar-icon">🚨</span>本月紀錄</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1073,62 +1072,66 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="page-section" id="page-main">
 
         <!-- 統計卡片 -->
-        <div class="stats-grid">
-          <div class="stat-card bg-total clickable">
-            <span class="stat-card-label">申請總數</span>
-            <div class="stat-card-value-row"><span class="stat-card-value" data-stat="total" id="stat-total">—</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">本月累計</span>
-            <div class="stat-tooltip">
-              <div class="stat-tooltip-title">本月所有申請</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot field"></span>請假申請 — MeiYang</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot bar"></span>留職申請 — 五月天</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot kitchen"></span>離職申請 — 黃霄雲</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot field"></span>復職申請 — 滅火器</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot bar"></span>留職申請 — 周杰倫</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot kitchen"></span>留職停薪 — 等阮返來</div>
+                  <!-- 假別統計（所有申請）-->
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+              <div class="stat-card-label">事假</div>
+              <div class="stat-card-value-row"><span class="stat-card-value red" id="main-lc-事假">0</span></div>
+              <div class="stat-card-sub">次</div>
+            </div>
+            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+              <div class="stat-card-label">病假</div>
+              <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="main-lc-病假">0</span></div>
+              <div class="stat-card-sub">次</div>
+            </div>
+            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+              <div class="stat-card-label">生理假</div>
+              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="main-lc-生理假">0</span></div>
+              <div class="stat-card-sub">次</div>
+            </div>
+            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+              <div class="stat-card-label">國假</div>
+              <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="main-lc-國假">0</span></div>
+              <div class="stat-card-sub">日</div>
+            </div>
+            <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+              <div class="stat-card-label">特休</div>
+              <div class="stat-card-value-row"><span class="stat-card-value purple" id="main-lc-特休">0</span></div>
+              <div class="stat-card-sub">日</div>
+            </div>
+            <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+              <div class="stat-card-label">其他</div>
+              <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="main-lc-其他">0</span></div>
+              <div class="stat-card-sub">次</div>
             </div>
           </div>
-          <div class="stat-card bg-progress clickable">
-            <span class="stat-card-label">進行中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">處理中</span>
-            <div class="stat-tooltip">
-              <div class="stat-tooltip-title">進行中</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot field"></span>請假申請 — MeiYang</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot bar"></span>請假申請 — 男子漢</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot kitchen"></span>展延申請 — 怕胖團</div>
+          <!-- 4 卡統計（跟本月查詢相同，保留 tooltip 動態更新）-->
+          <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+            <div class="stat-card bg-total clickable">
+              <span class="stat-card-label">總申請</span>
+              <div class="stat-card-value-row"><span class="stat-card-value" data-stat="total" id="stat-total">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-sub">累計</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
+            </div>
+            <div class="stat-card bg-progress clickable">
+              <span class="stat-card-label">審核中</span>
+              <div class="stat-card-value-row"><span class="stat-card-value gold" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-sub">待處理</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">審核中</div></div>
+            </div>
+            <div class="stat-card bg-progress clickable">
+              <span class="stat-card-label">已完成</span>
+              <div class="stat-card-value-row"><span class="stat-card-value deep-blue" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-sub">已結案</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">已完成</div></div>
+            </div>
+            <div class="stat-card bg-reject-grp clickable">
+              <span class="stat-card-label">退件</span>
+              <div class="stat-card-value-row"><span class="stat-card-value red" data-stat="reject" id="stat-reject">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-sub">需補件</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">退件案件</div></div>
             </div>
           </div>
-          <div class="stat-card bg-progress clickable">
-            <span class="stat-card-label">待審核</span>
-            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待處理</span>
-            <div class="stat-tooltip">
-              <div class="stat-tooltip-title">待審核</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot bar"></span>留職申請 — 五月天</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot bar"></span>留職申請 — 周杰倫</div>
-            </div>
-          </div>
-          <div class="stat-card bg-reject-grp clickable">
-            <span class="stat-card-label">退件總數</span>
-            <div class="stat-card-value-row"><span class="stat-card-value red" data-stat="reject" id="stat-reject">—</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">本月累計</span>
-            <div class="stat-tooltip">
-              <div class="stat-tooltip-title">退件案件</div>
-              <div class="stat-tooltip-item"><span class="stat-tooltip-dot kitchen"></span>請假申請 — 美秀集團</div>
-            </div>
-          </div>
-          <div class="stat-card bg-payroll">
-            <span class="stat-card-label">薪資單未派發</span>
-            <div class="stat-card-value-row"><span class="stat-card-value purple">2</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">本月待處理</span>
-          </div>
-          <div class="stat-card bg-payroll">
-            <span class="stat-card-label">薪資單回簽</span>
-            <div class="stat-card-value-row"><span class="stat-card-value purple">12</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">本月已簽收</span>
-          </div>
-        </div>
 
         <!-- Tab -->
         <div class="tab-bar">
@@ -1144,7 +1147,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="toolbar">
             <div class="search-box">
               <span class="search-icon">🔍</span>
-              <input class="search-input" type="text" id="searchInput" placeholder="搜尋姓名…" oninput="filterTable()" />
+              <input class="search-input" type="text" id="searchInput" placeholder="搜尋姓名/編號…" oninput="filterTable()" />
             </div>
             <select class="filter-select" id="typeFilter" onchange="filterTable()" style="width:var(--toolbar-select-width)">
               <option value="">全部類型</option>
@@ -1285,7 +1288,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <!-- ════ 申請趨勢分析 ════ -->
       <div class="page-section" id="page-analytics">
-        <div style="background-color:#2a2a2a;border:none;border-radius:0;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;">
+        <div style="background-color:#2a2a2a;border:none;border-radius:var(--article-radius);overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;">
 
           <!-- 標題列（跟文件中心同高）-->
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#2a2a2a;">
@@ -1625,7 +1628,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="toolbar">
             <div class="search-box">
               <span class="search-icon">🔍</span>
-              <input class="search-input" type="text" id="my-search" placeholder="搜尋姓名…" oninput="renderMyTable()"/>
+              <input class="search-input" type="text" id="my-search" placeholder="搜尋姓名/編號…" oninput="renderMyTable()"/>
             </div>
             <select class="filter-select" id="my-type-filter" onchange="renderMyTable()" style="width:var(--toolbar-select-width)">
               <option value="">全部類型</option>
@@ -1635,13 +1638,13 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </select>
             <div class="ym-group">
               <span class="ym-year-label">年度</span>
-              <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()" style="width:56px">
+              <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()" style="width:68px">
                 <option value="2026" selected>2026</option>
                 <option value="2027">2027</option>
                 <option value="2028">2028</option>
               </select>
               <button id="my-allbtn" onclick="toggleMyAllYear(this)" class="ym-all-btn">全年</button>
-              <select class="filter-select" id="my-month-filter" onchange="renderMyTable()" style="width:56px">
+              <select class="filter-select" id="my-month-filter" onchange="renderMyTable()" style="width:68px">
                 <option value="">全月</option>
                 <option value="01">01</option><option value="02">02</option><option value="03">03</option>
                 <option value="04">04</option><option value="05">05</option><option value="06">06</option>
@@ -1760,7 +1763,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="toolbar">
             <div class="search-box">
               <span class="search-icon">🔍</span>
-              <input class="search-input" id="mon-search" placeholder="搜尋姓名…" oninput="renderMonTable()"/>
+              <input class="search-input" id="mon-search" placeholder="搜尋姓名/編號…" oninput="renderMonTable()"/>
             </div>
             <select class="filter-select" id="mon-type-filter" onchange="renderMonTable()" style="width:var(--toolbar-select-width)">
               <option value="">全部類型</option>
@@ -1874,7 +1877,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="toolbar">
             <div class="search-box">
               <span class="search-icon">🔍</span>
-              <input class="search-input" id="mall-search" placeholder="搜尋姓名…" oninput="renderMallTable()"/>
+              <input class="search-input" id="mall-search" placeholder="搜尋姓名/編號…" oninput="renderMallTable()"/>
             </div>
             <select class="filter-select" id="mall-type-filter" onchange="renderMallTable()" style="width:var(--toolbar-select-width)">
               <option value="">全部類型</option>
@@ -3271,6 +3274,7 @@ function loadMainData() {
 function updateMainStats(apps) {
   var total=apps.length, active=0, pending=0, done=0, reject=0, supp=0;
   var activeList=[], pendingList=[], rejectList=[];
+  var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
   apps.forEach(function(a){
     var s = a.status||'';
     if (s.indexOf('完成')>-1) done++;
@@ -3281,21 +3285,34 @@ function updateMainStats(apps) {
       activeList.push(a);
       if (s.indexOf('主管')>-1 && s.indexOf('待')>-1) pendingList.push(a);
     }
+    // 假別統計
+    if (a.type === '請假申請' || a.type === '國假及特休申請') {
+      var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
+      if (base==='特休') lc['特休']+=parseFloat(a.days||1);
+      else if (base==='國假') lc['國假']+=parseFloat(a.days||1);
+      else if (lc.hasOwnProperty(base)) lc[base]+=1;
+      else lc['其他']+=1;
+    }
   });
   var g = function(id){ return document.getElementById(id); };
   if (g('stat-total'))   g('stat-total').textContent   = total;
   if (g('stat-active'))  g('stat-active').textContent  = active;
-  if (g('stat-pending')) g('stat-pending').textContent = pending;
+  if (g('stat-pending')) g('stat-pending').textContent = done;
   if (g('stat-reject'))  g('stat-reject').textContent  = reject;
   if (g('stat-supp'))    g('stat-supp').textContent    = supp;
 
+  // 假別卡
+  Object.keys(lc).forEach(function(k){
+    var el = g('main-lc-'+k); if(el) el.textContent = lc[k]||0;
+  });
+
   // 動態更新 Tooltip 內容
-  function buildTooltipItems(list, titleEl, prefix) {
-    var tip = titleEl ? titleEl.closest('.stat-tooltip') : null;
-    if (!tip) return;
-    // 移除舊的 item（保留 title）
-    var oldItems = tip.querySelectorAll('.stat-tooltip-item');
+  function buildTooltipItems(list, card) {
+    if (!card) return;
+    var oldItems = card.querySelectorAll('.stat-tooltip-item');
     oldItems.forEach(function(i){ i.remove(); });
+    var tip = card.querySelector('.stat-tooltip');
+    if (!tip) return;
     var dots = ['field','bar','kitchen'];
     list.slice(0,6).forEach(function(a, idx){
       var div = document.createElement('div');
@@ -3312,18 +3329,11 @@ function updateMainStats(apps) {
       tip.appendChild(div);
     }
   }
-  // 申請總數 Tooltip
-  var totalCard = g('stat-total') ? g('stat-total').closest('.stat-card') : null;
-  if (totalCard) buildTooltipItems(apps, totalCard.querySelector('.stat-tooltip-title'), '');
-  // 進行中
-  var activeCard = g('stat-active') ? g('stat-active').closest('.stat-card') : null;
-  if (activeCard) buildTooltipItems(activeList, activeCard.querySelector('.stat-tooltip-title'), '');
-  // 待審核
-  var pendingCard = g('stat-pending') ? g('stat-pending').closest('.stat-card') : null;
-  if (pendingCard) buildTooltipItems(pendingList.length ? pendingList : activeList, pendingCard.querySelector('.stat-tooltip-title'), '');
-  // 退件
-  var rejectCard = g('stat-reject') ? g('stat-reject').closest('.stat-card') : null;
-  if (rejectCard) buildTooltipItems(rejectList, rejectCard.querySelector('.stat-tooltip-title'), '');
+  buildTooltipItems(apps,        g('stat-total')   ? g('stat-total').closest('.stat-card')   : null);
+  buildTooltipItems(activeList,  g('stat-active')  ? g('stat-active').closest('.stat-card')  : null);
+  buildTooltipItems(pendingList.length ? pendingList : activeList,
+                                 g('stat-pending') ? g('stat-pending').closest('.stat-card') : null);
+  buildTooltipItems(rejectList,  g('stat-reject')  ? g('stat-reject').closest('.stat-card')  : null);
 }
 
 function renderMainTable(apps) {
@@ -5031,6 +5041,7 @@ function initGjCard() {
 
 filterTable();
 dcLoadFiles();
+applyBlur(true); // 預設模糊，initAuth 登入成功後解除
 initAuth(); // 進入文件中心時立即從 GAS 載入
 </script>
 </body>
