@@ -309,7 +309,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 #page-doccenter.active,#page-analytics.active,.page-section{display:none;flex-direction:column;gap:var(--space-4);overflow-x:hidden;}
 .page-section.active{display:flex;flex-direction:column;}
 #page-doccenter.active{display:flex;flex:1;min-height:0;flex-direction:column;}
-#page-workhour.active,#page-labor.active,#page-analytics.active,#page-monthly-all.active{display:flex;flex:1;min-height:0;flex-direction:column;}
+#page-workhour.active,#page-labor.active,#page-analytics.active,#page-monthly-all.active,#page-extraops.active{display:flex;flex:1;min-height:0;flex-direction:column;}
 
 /* ============================================================
    統計卡片
@@ -1021,6 +1021,14 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-divider"></div>
 
       <div class="sidebar-section">
+        <p class="sidebar-section-label">其他事項</p>
+        <p class="sidebar-section-sub">正職同仁</p>
+        <a href="#" class="sidebar-nav-item" data-perm="extraops" onclick="return showPage('extraops',this)"><span class="sidebar-icon">📋</span>其他事項操作</a>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section">
         <p class="sidebar-section-label">系統</p>
         <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="workhour" onclick="return showPage('workhour',this)"><span class="sidebar-icon">🕐</span>每日工時登記</a>
@@ -1279,9 +1287,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="page-section" id="page-analytics">
         <div style="background-color:#2a2a2a;border:none;border-radius:0;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;">
 
-          <!-- 標題列 -->
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 12px;border-bottom:2px solid #c9a84c;flex-shrink:0;">
-            <p id="analytics-main-title" style="font-family:var(--font-display);font-size:17px;font-weight:700;color:#e8e4d8;">📊 2026年 04月 數據分析</p>
+          <!-- 標題列（跟文件中心同高）-->
+          <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#2a2a2a;">
+            <p id="analytics-main-title" class="inner-page-title" style="color:#e8e4d8;">📊 2026年 04月 數據分析</p>
             <div style="display:flex;align-items:center;gap:8px;">
               <span style="color:#9a9680;font-size:11px;">年度</span>
               <select id="anaYear" onchange="updateAnalytics()" style="height:26px;padding:0 6px;border-radius:5px;border:1px solid #555;background:#3a3a3a;color:#e8e4d8;font-size:11px;width:62px;">
@@ -1583,7 +1591,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- 統計卡片（跟所有申請同樣的 stat-card）-->
         <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
           <div class="stat-card bg-total">
-            <span class="stat-card-label">送出總數</span>
+            <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="my-total">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">累計</span>
           </div>
@@ -1625,20 +1633,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <option value="國假及特休申請">國假及特休申請</option>
               <option value="留復職申請">留復職申請</option>
             </select>
-            <select class="filter-select" id="my-team-filter" onchange="renderMyTable()" style="width:var(--toolbar-select-width)">
-              <option value="">全部團隊</option>
-              <option value="外場">外場</option>
-              <option value="吧台">吧台</option>
-              <option value="內廚">內廚</option>
-            </select>
             <div class="ym-group">
               <span class="ym-year-label">年度</span>
-              <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()" style="width:68px">
+              <select class="filter-select" id="my-year-filter" onchange="updateLeaveStats();renderMyTable()" style="width:56px">
                 <option value="2026" selected>2026</option>
                 <option value="2027">2027</option>
                 <option value="2028">2028</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
               </select>
               <button id="my-allbtn" onclick="toggleMyAllYear(this)" class="ym-all-btn">全年</button>
               <select class="filter-select" id="my-month-filter" onchange="renderMyTable()" style="width:56px">
@@ -1731,7 +1731,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="stat-card bg-total">
             <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="mon-total">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub" id="mon-month-label">本月</span>
+            <span class="stat-card-sub" id="mon-month-label">累計</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">審核中</span>
@@ -1762,8 +1762,11 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <span class="search-icon">🔍</span>
               <input class="search-input" id="mon-search" placeholder="搜尋姓名…" oninput="renderMonTable()"/>
             </div>
-            <select class="filter-select" id="mon-month-sel" style="width:88px;" onchange="onMonthChange()">
-              <option value="">全部月份</option>
+            <select class="filter-select" id="mon-type-filter" onchange="renderMonTable()" style="width:var(--toolbar-select-width)">
+              <option value="">全部類型</option>
+              <option value="請假申請">請假申請</option>
+              <option value="國假及特休申請">國假及特休申請</option>
+              <option value="留復職申請">留復職申請</option>
             </select>
             <div style="flex:1;"></div>
             <span class="toolbar-info">共 <span id="mon-row-count">0</span> 筆</span>
@@ -1885,9 +1888,6 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <option value="吧台">吧台</option>
               <option value="內廚">內廚</option>
             </select>
-            <select class="filter-select" id="mall-month-sel" style="width:88px;" onchange="onMallMonthChange()">
-              <option value="">全部月份</option>
-            </select>
             <div style="flex:1;"></div>
             <span class="toolbar-info">共 <span id="mall-row-count">0</span> 筆</span>
           </div>
@@ -1951,6 +1951,32 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
       </div>
 
+      <!-- ════ 其他事項操作 ════ -->
+      <div class="page-section" id="page-extraops">
+        <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;">
+          <div class="inner-page-header" style="border-bottom-color:#c9a84c;"><p class="inner-page-title" style="color:#e8e4d8;font-family:var(--font-display);">📋 其他事項操作</p></div>
+          <div class="article-section">
+            <p class="article-section-title">© 其他事項操作</p>
+            <p class="article-body">
+              請使用下方連結進行線上建檔作業，<br>
+              建檔前請確認資料正確，送出後不可更改。<br>
+              如有疑問請聯絡系統管理員。
+            </p>
+            <div class="article-btn-group">
+              <a class="article-link-btn" href="https://mys0819.github.io/LRS1/" target="_blank">☛ 點擊執行建檔</a>
+            </div>
+          </div>
+          <div class="article-section">
+            <p class="article-section-title">© 注意事項</p>
+            <p class="article-body">
+              每月建檔截止日期為當月 25 日，<br>
+              逾期未建檔將影響當月薪資計算，<br>
+              請務必準時完成。
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- ════ 勞報稅務建檔 ════ -->
       <div class="page-section" id="page-labor">
         <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;">
@@ -2008,9 +2034,11 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </div>
             <select class="filter-select" id="acc-role-filter" onchange="renderAccTable()">
               <option value="">全部角色</option>
-              <option value="admin">管理員</option>
+              <option value="admin">管理者</option>
               <option value="manager">主管</option>
-              <option value="employee">員工</option>
+              <option value="fulltime">正職</option>
+              <option value="employee">員工（舊）</option>
+              <option value="parttime">兼職</option>
             </select>
             <select class="filter-select" id="acc-status-filter" onchange="renderAccTable()">
               <option value="">全部狀態</option>
@@ -2085,9 +2113,11 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div style="display:flex;flex-direction:column;gap:5px;">
                 <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">角色<span style="color:#e53935;margin-left:2px;">*</span></label>
                 <select class="filter-select" id="acc-role" style="height:36px;">
-                  <option value="employee">員工</option>
+                  <option value="parttime">兼職</option>
+                  <option value="fulltime">正職</option>
+                  <option value="employee">員工（舊）</option>
                   <option value="manager">主管</option>
-                  <option value="admin">管理員（Admin）</option>
+                  <option value="admin">管理者（Admin）</option>
                 </select>
               </div>
             </div>
@@ -2366,6 +2396,7 @@ function showPage(pageId, el) {
   if (pageId === 'main')        { if(typeof loadMainData==='function') loadMainData(); }
   if (pageId === 'monthly-all') { if(typeof loadMallData==='function') loadMallData(); }
   if (pageId === 'analytics')   updateAnalytics();
+  if (pageId === 'extraops')    {} // static page, no data load needed
   return false;
 }
 
@@ -3484,7 +3515,7 @@ function filterTable() {
 var myRecordsData = [];
 var myCurrentTab  = 'all';
 var myLeaveFilter = '';
-var myAllYear     = true;  // 預設顯示所有年份
+var myAllYear = true; // true = 顯示全部年份（預設全年）
 
 function switchMyTab(el, tab) {
   document.querySelectorAll('#page-myrecords .tab-item').forEach(function(t){t.classList.remove('active');});
@@ -3496,14 +3527,20 @@ function switchMyTab(el, tab) {
 function initMyAllYearBtn() {
   var btn = document.getElementById('my-allbtn');
   if (!btn) return;
+  var ys = document.getElementById('my-year-filter');
+  var ms = document.getElementById('my-month-filter');
   if (myAllYear) {
     btn.style.background  = 'var(--color-gold-bg)';
     btn.style.color       = 'var(--color-gold)';
     btn.style.borderColor = 'var(--color-gold)';
-    var ys = document.getElementById('my-year-filter');
-    if (ys) ys.disabled = true;
-    var ms = document.getElementById('my-month-filter');
-    if (ms) ms.disabled = true;
+    if (ys) { ys.disabled = true;  ys.style.opacity = '0.5'; }
+    if (ms) { ms.disabled = true;  ms.style.opacity = '0.5'; }
+  } else {
+    btn.style.background  = 'transparent';
+    btn.style.color       = 'var(--color-text-secondary)';
+    btn.style.borderColor = '#ccc';
+    if (ys) { ys.disabled = false; ys.style.opacity = ''; }
+    if (ms) { ms.disabled = false; ms.style.opacity = ''; }
   }
 }
 function toggleMyAllYear(btn) {
@@ -3748,18 +3785,20 @@ var ROLE_BADGE = {
 /* ── 各角色可見的側邊欄 item（data-role 屬性）── */
 var ROLE_PAGES = {
   guest:    [],
-  employee: ['doccenter','leave','myrecords','monthly'],
-  manager:  ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','monthly-all'],
-  admin:    ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','salary','account','settings','monthly-all'],
+  parttime: ['doccenter','leave','myrecords','monthly'],                                          // 兼職
+  employee: ['doccenter','leave','myrecords','monthly'],                                          // 正職（向下相容）
+  fulltime: ['doccenter','leave','myrecords','monthly','extraops'],                               // 正職（新）
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','monthly-all'],
+  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','salary','account','settings','monthly-all'],
 };
 
-/* 各角色可見的側邊欄 onclick showPage 頁面 */
 var ROLE_SIDEBAR_MAP = {
   guest:    [],
+  parttime: ['doccenter','leave','myrecords','monthly'],
   employee: ['doccenter','leave','myrecords','monthly'],
-  manager:  ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics','monthly-all'],
-  admin:    ['doccenter','leave','myrecords','monthly','workhour','labor','main','analytics',
-             'salary','account','settings','analytics','monthly-all'],
+  fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','monthly-all'],
+  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','salary','account','settings','monthly-all'],
 };
 
 /* ══ 初始化：檢查 localStorage ══ */
@@ -3905,8 +3944,13 @@ function applyPermissions(role) {
       item.style.pointerEvents = '';
       return;
     }
-    // data-perm 優先，沒有則從 onclick 取
-    var perm = item.getAttribute('data-perm') || '';
+    // data-perm="extraops" → fulltime/manager/admin 才能看
+    if (perm === 'extraops') {
+      var canSeeExtra = (role === 'fulltime' || role === 'manager' || role === 'admin');
+      item.style.display = canSeeExtra ? '' : 'none';
+      item.style.opacity = ''; item.style.pointerEvents = ''; item.style.cursor = '';
+      return;
+    }
     // data-page="monthly-emp" 只給 employee 看
     // data-page="monthly-mgr" 只給 manager/admin 看
     var pageMark = item.getAttribute('data-page') || '';
@@ -4709,11 +4753,13 @@ function renderMonTable() {
   var tbody = document.getElementById('mon-tbody');
   if (!tbody) return;
   var search = ((document.getElementById('mon-search')||{}).value||'').toLowerCase();
+  var typeVal = ((document.getElementById('mon-type-filter')||{}).value||'');
   var filtered = MONTHLY_DATA.filter(function(a){
     var s = a.status||'';
     if (monCurrentTab==='pending' && (s.indexOf('完成')>-1||s.indexOf('退件')>-1)) return false;
     if (monCurrentTab==='done'    && s.indexOf('完成')===-1) return false;
     if (monCurrentTab==='reject'  && s.indexOf('退件')===-1) return false;
+    if (typeVal && (a.type||'')!==typeVal) return false;
     if (search && (a.name||'').toLowerCase().indexOf(search)<0 && (a.id||'').toLowerCase().indexOf(search)<0) return false;
     return true;
   });
