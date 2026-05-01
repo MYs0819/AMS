@@ -926,7 +926,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     
 <!-- ════ 登入畫面 ════ -->
 <div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
+  <div class="login-box" style="position:relative;">
+    <!-- X 按鈕（訪客關閉，回到遮罩狀態）-->
+    <button id="loginCloseBtn" onclick="closeLoginOverlay()" style="display:none;position:absolute;top:10px;right:12px;width:28px;height:28px;border:none;background:transparent;cursor:pointer;font-size:16px;color:#9a9482;line-height:1;border-radius:50%;transition:.15s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">✕</button>
     <div class="login-logo-row">
       <img class="login-logo" src="https://mys0819.github.io/AMS/assets/00.個人專業圖像.png" alt="MYs" onerror="this.src='https://mys0819.github.io/AMS/assets/MYs_logo_去背.png'" style="width:52px;height:52px;object-fit:cover;border-radius:50%;"/>
       <span class="login-title">人資行政管理系統</span>
@@ -1618,7 +1620,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab（跟所有申請同樣的 tab-bar）-->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"     onclick="switchMyTab(this,'all')">全部 <span class="tab-count" id="mytab-all">0</span></div>
-          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'pending')">審核中 <span class="tab-count" id="mytab-pending">0</span></div>
+          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">審核中 <span class="tab-count" id="mytab-active">0</span></div>
+          <div class="tab-item"        data-tab="pending" onclick="switchMyTab(this,'pending')">待審核 <span class="tab-count" id="mytab-pending">0</span></div>
           <div class="tab-item"        data-tab="done"    onclick="switchMyTab(this,'done')">已完成 <span class="tab-count" id="mytab-done">0</span></div>
           <div class="tab-item"        data-tab="reject"  onclick="switchMyTab(this,'reject')">退件 <span class="tab-count" id="mytab-reject">0</span></div>
         </div>
@@ -1644,7 +1647,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
                 <option value="2028">2028</option>
               </select>
               <button id="my-allbtn" onclick="toggleMyAllYear(this)" class="ym-all-btn">全年</button>
-              <select class="filter-select" id="my-month-filter" onchange="renderMyTable()" style="width:68px">
+              <select class="filter-select" id="my-month-filter" onchange="renderMyTable()" style="width:56px">
                 <option value="">全月</option>
                 <option value="01">01</option><option value="02">02</option><option value="03">03</option>
                 <option value="04">04</option><option value="05">05</option><option value="06">06</option>
@@ -1752,10 +1755,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <span class="stat-card-sub">需補件</span>
           </div>
         </div>
-        <!-- Tab + 月份選單（月份選單在 toolbar 內，tab-bar 獨立全寬）-->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMonTab(this,'all')">全部 <span class="tab-count" id="montab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'pending')">審核中 <span class="tab-count" id="montab-pending">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">審核中 <span class="tab-count" id="montab-active">0</span></div>
+          <div class="tab-item"        data-tab="pending" onclick="switchMonTab(this,'pending')">待審核 <span class="tab-count" id="montab-pending">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMonTab(this,'done')">已完成 <span class="tab-count" id="montab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMonTab(this,'reject')">退件 <span class="tab-count" id="montab-reject">0</span></div>
         </div>
@@ -1869,7 +1872,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab bar 獨立全寬 -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'pending')">審核中 <span class="tab-count" id="malltab-pending">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">審核中 <span class="tab-count" id="malltab-active">0</span></div>
+          <div class="tab-item"        data-tab="pending" onclick="switchMallTab(this,'pending')">待審核 <span class="tab-count" id="malltab-pending">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">退件 <span class="tab-count" id="malltab-reject">0</span></div>
         </div>
@@ -3194,8 +3198,8 @@ function toggleAnaAll() {
 }
 
 function updateAnalytics() {
-  var year  = (document.getElementById('anaYear')  || {}).value || '2026';
-  var month = (document.getElementById('anaMonth') || {}).value || '04';
+  var year  = (document.getElementById('anaYear')  || {}).value || String(new Date().getFullYear());
+  var month = (document.getElementById('anaMonth') || {}).value || String(new Date().getMonth()+1).padStart(2,'0');
   var title = document.getElementById('analytics-main-title');
   var trendTitle = document.getElementById('ana-trend-title');
   if (title) {
@@ -3204,6 +3208,24 @@ function updateAnalytics() {
   if (trendTitle) {
     trendTitle.textContent = anaAllMode ? '全年度每月申請趨勢' : month + '月 每週申請趨勢';
   }
+  // 用 ALL_APPS_DATA 過濾當前年月
+  var source = ALL_APPS_DATA.length ? ALL_APPS_DATA : [];
+  var filtered = source.filter(function(a){
+    var d = (a.applyDate||'').slice(0,7); // yyyy/mm
+    if (!anaAllMode) {
+      return d === (year + '/' + month);
+    } else {
+      return (a.applyDate||'').slice(0,4) === year;
+    }
+  });
+  // 更新分析區數字
+  var g = function(id){ return document.getElementById(id); };
+  if (g('ana-total'))   g('ana-total').textContent   = filtered.length;
+  if (g('ana-leave'))   g('ana-leave').textContent   = filtered.filter(function(a){ return a.type==='請假申請'; }).length;
+  if (g('ana-retain'))  g('ana-retain').textContent  = filtered.filter(function(a){ return a.type==='留復職申請'; }).length;
+  if (g('ana-done'))    g('ana-done').textContent    = filtered.filter(function(a){ return (a.status||'').indexOf('完成')>-1; }).length;
+  if (g('ana-reject'))  g('ana-reject').textContent  = filtered.filter(function(a){ return (a.status||'').indexOf('退件')>-1; }).length;
+  if (g('ana-pending')) g('ana-pending').textContent = filtered.filter(function(a){ var s=a.status||''; return s.indexOf('完成')===-1&&s.indexOf('退件')===-1; }).length;
 }
 
 /* ══ 篩選 + 分頁 ══ */
@@ -3265,6 +3287,7 @@ function loadMainData() {
       ALL_APPS_DATA = data.applications;
       renderMainTable(ALL_APPS_DATA);
       updateMainStats(ALL_APPS_DATA);
+      if (typeof updateAnalytics === 'function') updateAnalytics();
     })
     .catch(function(){
       tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:28px;color:#f44336;">載入失敗，請重試</td></tr>';
@@ -3275,6 +3298,7 @@ function updateMainStats(apps) {
   var total=apps.length, active=0, pending=0, done=0, reject=0, supp=0;
   var activeList=[], pendingList=[], rejectList=[];
   var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
+  var lcDetails={'事假':[],'病假':[],'生理假':[],'國假':[],'特休':[],'其他':[]};
   apps.forEach(function(a){
     var s = a.status||'';
     if (s.indexOf('完成')>-1) done++;
@@ -3288,10 +3312,10 @@ function updateMainStats(apps) {
     // 假別統計
     if (a.type === '請假申請' || a.type === '國假及特休申請') {
       var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
-      if (base==='特休') lc['特休']+=parseFloat(a.days||1);
-      else if (base==='國假') lc['國假']+=parseFloat(a.days||1);
-      else if (lc.hasOwnProperty(base)) lc[base]+=1;
-      else lc['其他']+=1;
+      if (base==='特休') { lc['特休']+=parseFloat(a.days||1); lcDetails['特休'].push(a); }
+      else if (base==='國假') { lc['國假']+=parseFloat(a.days||1); lcDetails['國假'].push(a); }
+      else if (lc.hasOwnProperty(base)) { lc[base]+=1; lcDetails[base].push(a); }
+      else { lc['其他']+=1; lcDetails['其他'].push(a); }
     }
   });
   var g = function(id){ return document.getElementById(id); };
@@ -3301,27 +3325,31 @@ function updateMainStats(apps) {
   if (g('stat-reject'))  g('stat-reject').textContent  = reject;
   if (g('stat-supp'))    g('stat-supp').textContent    = supp;
 
-  // 假別卡
+  // 假別卡數字
   Object.keys(lc).forEach(function(k){
     var el = g('main-lc-'+k); if(el) el.textContent = lc[k]||0;
   });
 
-  // 動態更新 Tooltip 內容
-  function buildTooltipItems(list, card) {
+  // Tooltip builder
+  function buildTip(list, card) {
     if (!card) return;
     var oldItems = card.querySelectorAll('.stat-tooltip-item');
     oldItems.forEach(function(i){ i.remove(); });
     var tip = card.querySelector('.stat-tooltip');
     if (!tip) return;
     var dots = ['field','bar','kitchen'];
-    list.slice(0,6).forEach(function(a, idx){
+    // 計算各人次數
+    var nameCount = {};
+    list.forEach(function(a){ var n=a.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
+    var entries = Object.keys(nameCount).map(function(n){ return {name:n, count:nameCount[n]}; });
+    entries.sort(function(a,b){ return b.count-a.count; });
+    entries.slice(0,6).forEach(function(e,idx){
       var div = document.createElement('div');
       div.className = 'stat-tooltip-item';
-      div.innerHTML = '<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>' +
-        (a.type||'申請') + ' — ' + (a.name||'—');
+      div.innerHTML = '<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>' + e.name + ' × ' + e.count + ' 次';
       tip.appendChild(div);
     });
-    if (!list.length) {
+    if (!entries.length) {
       var div = document.createElement('div');
       div.className = 'stat-tooltip-item';
       div.style.color = '#999';
@@ -3329,11 +3357,53 @@ function updateMainStats(apps) {
       tip.appendChild(div);
     }
   }
-  buildTooltipItems(apps,        g('stat-total')   ? g('stat-total').closest('.stat-card')   : null);
-  buildTooltipItems(activeList,  g('stat-active')  ? g('stat-active').closest('.stat-card')  : null);
-  buildTooltipItems(pendingList.length ? pendingList : activeList,
-                                 g('stat-pending') ? g('stat-pending').closest('.stat-card') : null);
-  buildTooltipItems(rejectList,  g('stat-reject')  ? g('stat-reject').closest('.stat-card')  : null);
+
+  // 假別卡 tooltip
+  Object.keys(lcDetails).forEach(function(k){
+    var el = g('main-lc-'+k);
+    if (!el) return;
+    var card = el.closest('[style*="background"]');
+    if (!card) return;
+    var tip = card.querySelector('.stat-tooltip');
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.className = 'stat-tooltip';
+      tip.innerHTML = '<div class="stat-tooltip-title">'+k+'</div>';
+      card.style.position = 'relative';
+      card.style.cursor = 'default';
+      card.classList.add('clickable');
+      card.appendChild(tip);
+      card.addEventListener('mouseenter', function(){ tip.style.display='block'; });
+      card.addEventListener('mouseleave', function(){ tip.style.display='none'; });
+    }
+    var oldItems = tip.querySelectorAll('.stat-tooltip-item');
+    oldItems.forEach(function(i){ i.remove(); });
+    var dots = ['field','bar','kitchen'];
+    var nameCount = {};
+    lcDetails[k].forEach(function(a){ var n=a.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
+    var entries = Object.keys(nameCount).map(function(n){ return {name:n, count:nameCount[n]}; });
+    entries.sort(function(a,b){ return b.count-a.count; });
+    entries.slice(0,6).forEach(function(e,idx){
+      var div = document.createElement('div');
+      div.className = 'stat-tooltip-item';
+      div.innerHTML = '<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>' + e.name + ' × ' + e.count;
+      tip.appendChild(div);
+    });
+    if (!entries.length) {
+      var div = document.createElement('div');
+      div.className = 'stat-tooltip-item';
+      div.style.color = '#999';
+      div.textContent = '暫無資料';
+      tip.appendChild(div);
+    }
+  });
+
+  // 大卡 tooltip（總申請/審核中/已完成/退件）
+  buildTip(apps,       g('stat-total')   ? g('stat-total').closest('.stat-card')   : null);
+  buildTip(activeList, g('stat-active')  ? g('stat-active').closest('.stat-card')  : null);
+  buildTip(pendingList.length ? pendingList : activeList,
+                       g('stat-pending') ? g('stat-pending').closest('.stat-card') : null);
+  buildTip(rejectList, g('stat-reject')  ? g('stat-reject').closest('.stat-card')  : null);
 }
 
 function renderMainTable(apps) {
@@ -3640,13 +3710,14 @@ function loadMyRecords() {
       if (typeof updateLeaveStats === 'function') updateLeaveStats();
       // 確保全年按鈕樣式正確
       if (typeof initMyAllYearBtn === 'function') initMyAllYearBtn();
-      var total=myRecordsData.length, pending=0, done=0, reject=0;
+      var total=myRecordsData.length, active=0, pending=0, done=0, reject=0;
       var typeSet = {};
       myRecordsData.forEach(function(a){
         var s = a.status || '';
-        if (s.indexOf('完成') > -1)     done++;
-        else if (s.indexOf('退件') > -1) reject++;
-        else                              pending++;
+        if (s.indexOf('完成') > -1)      done++;
+        else if (s.indexOf('退件') > -1)  reject++;
+        else if (s.indexOf('覆核') > -1)  active++;  // 待覆核 = 審核中
+        else                               pending++; // 待審核
         // 收集申請類型（用 subtype 細分）
         var key = a.subtype || a.type || '';
         if (key) typeSet[key] = true;
@@ -3664,11 +3735,12 @@ function loadMyRecords() {
         });
       }
       document.getElementById('my-total').textContent   = total;
-      document.getElementById('my-pending').textContent = pending;
+      document.getElementById('my-pending').textContent = active + pending; // 合計審核中
       document.getElementById('my-done').textContent    = done;
       document.getElementById('my-reject').textContent  = reject;
       document.getElementById('my-row-count').textContent = total;
       if (document.getElementById('mytab-all'))     document.getElementById('mytab-all').textContent     = total;
+      if (document.getElementById('mytab-active'))  document.getElementById('mytab-active').textContent  = active;
       if (document.getElementById('mytab-pending')) document.getElementById('mytab-pending').textContent = pending;
       if (document.getElementById('mytab-done'))    document.getElementById('mytab-done').textContent    = done;
       if (document.getElementById('mytab-reject'))  document.getElementById('mytab-reject').textContent  = reject;
@@ -3693,9 +3765,14 @@ function renderMyTable() {
   var filtered = myRecordsData.filter(function(a){
     var s    = a.status || '';
     var tab  = myCurrentTab;
-    if (tab === 'pending' && (s.indexOf('完成') > -1 || s.indexOf('退件') > -1)) return false;
-    if (tab === 'done'    && s.indexOf('完成') === -1) return false;
-    if (tab === 'reject'  && s.indexOf('退件') === -1) return false;
+    var isDone   = s.indexOf('完成') > -1;
+    var isReject = s.indexOf('退件') > -1;
+    var isPending = !isDone && !isReject && s.indexOf('覆核') === -1 && (s.indexOf('待') > -1 || s === '待審核' || s === '');
+    var isActive  = !isDone && !isReject && !isPending; // 待覆核
+    if (tab === 'active'  && !isActive)  return false;
+    if (tab === 'pending' && !isPending) return false;
+    if (tab === 'done'    && !isDone)    return false;
+    if (tab === 'reject'  && !isReject)  return false;
     if (typeVal && (a.type !== typeVal && a.subtype !== typeVal)) return false;
     if (teamVal && (a.team||'') !== teamVal) return false;
     // 年月篩選：全年模式下都顯示
@@ -3813,6 +3890,10 @@ var ROLE_SIDEBAR_MAP = {
 
 /* ══ 初始化：檢查 localStorage ══ */
 function initAuth() {
+  // 立即顯示遮罩（確保未登入狀態不可操作）
+  applyBlur(true);
+  document.getElementById('loginOverlay').style.display = 'flex';
+
   var saved = localStorage.getItem('mys_user') || sessionStorage.getItem('mys_user');
   if (saved) {
     try {
@@ -4072,7 +4153,15 @@ function openLoginModal() {
   document.getElementById('loginOverlay').style.display = 'flex';
   var lb = document.getElementById('loginNavBtn');
   if (lb) lb.style.display = '';
+  // X 按鈕：只有訪客模式（非強制登入）才顯示
+  var closeBtn = document.getElementById('loginCloseBtn');
+  if (closeBtn) closeBtn.style.display = 'none'; // 預設不顯示
   document.getElementById('login-mail').focus();
+}
+
+function closeLoginOverlay() {
+  // 訪客可關閉 overlay（保持遮罩但隱藏登入框）
+  document.getElementById('loginOverlay').style.display = 'none';
 }
 
 function doLogout() {
@@ -4665,22 +4754,24 @@ function onMonthChange() {
 }
 
 function updateMonStats() {
-  var total=MONTHLY_DATA.length, pending=0, done=0, reject=0;
+  var total=MONTHLY_DATA.length, active=0, pending=0, done=0, reject=0;
   MONTHLY_DATA.forEach(function(a){
     var s=a.status||'';
     if(s.indexOf('完成')>-1) done++;
     else if(s.indexOf('退件')>-1) reject++;
+    else if(s.indexOf('覆核')>-1) active++;
     else pending++;
   });
   var g=function(id){return document.getElementById(id);};
-  if(g('mon-total'))      g('mon-total').textContent=total;
-  if(g('mon-pending'))    g('mon-pending').textContent=pending;
-  if(g('mon-done'))       g('mon-done').textContent=done;
-  if(g('mon-reject'))     g('mon-reject').textContent=reject;
-  if(g('montab-all'))     g('montab-all').textContent=total;
-  if(g('montab-pending')) g('montab-pending').textContent=pending;
-  if(g('montab-done'))    g('montab-done').textContent=done;
-  if(g('montab-reject'))  g('montab-reject').textContent=reject;
+  if(g('mon-total'))       g('mon-total').textContent=total;
+  if(g('mon-pending'))     g('mon-pending').textContent=active+pending;
+  if(g('mon-done'))        g('mon-done').textContent=done;
+  if(g('mon-reject'))      g('mon-reject').textContent=reject;
+  if(g('montab-all'))      g('montab-all').textContent=total;
+  if(g('montab-active'))   g('montab-active').textContent=active;
+  if(g('montab-pending'))  g('montab-pending').textContent=pending;
+  if(g('montab-done'))     g('montab-done').textContent=done;
+  if(g('montab-reject'))   g('montab-reject').textContent=reject;
 }
 
 function updateMonLeaveStats() {
@@ -4766,9 +4857,13 @@ function renderMonTable() {
   var typeVal = ((document.getElementById('mon-type-filter')||{}).value||'');
   var filtered = MONTHLY_DATA.filter(function(a){
     var s = a.status||'';
-    if (monCurrentTab==='pending' && (s.indexOf('完成')>-1||s.indexOf('退件')>-1)) return false;
-    if (monCurrentTab==='done'    && s.indexOf('完成')===-1) return false;
-    if (monCurrentTab==='reject'  && s.indexOf('退件')===-1) return false;
+    var isDoneM = s.indexOf('完成')>-1, isRejectM = s.indexOf('退件')>-1;
+    var isActiveM = !isDoneM && !isRejectM && s.indexOf('覆核')>-1;
+    var isPendingM = !isDoneM && !isRejectM && !isActiveM;
+    if (monCurrentTab==='active'  && !isActiveM)  return false;
+    if (monCurrentTab==='pending' && !isPendingM) return false;
+    if (monCurrentTab==='done'    && !isDoneM)    return false;
+    if (monCurrentTab==='reject'  && !isRejectM)  return false;
     if (typeVal && (a.type||'')!==typeVal) return false;
     if (search && (a.name||'').toLowerCase().indexOf(search)<0 && (a.id||'').toLowerCase().indexOf(search)<0) return false;
     return true;
@@ -4856,19 +4951,21 @@ function onMallMonthChange() {
 }
 
 function updateMallStats() {
-  var total=MALL_DATA.length, pending=0, done=0, reject=0;
+  var total=MALL_DATA.length, active=0, pending=0, done=0, reject=0;
   MALL_DATA.forEach(function(a){
     var s=a.status||'';
     if(s.indexOf('完成')>-1) done++;
     else if(s.indexOf('退件')>-1) reject++;
+    else if(s.indexOf('覆核')>-1) active++;
     else pending++;
   });
   var g=function(id){return document.getElementById(id);};
   if(g('mall-total'))      g('mall-total').textContent=total;
-  if(g('mall-pending'))    g('mall-pending').textContent=pending;
+  if(g('mall-pending'))    g('mall-pending').textContent=active+pending;
   if(g('mall-done'))       g('mall-done').textContent=done;
   if(g('mall-reject'))     g('mall-reject').textContent=reject;
   if(g('malltab-all'))     g('malltab-all').textContent=total;
+  if(g('malltab-active'))  g('malltab-active').textContent=active;
   if(g('malltab-pending')) g('malltab-pending').textContent=pending;
   if(g('malltab-done'))    g('malltab-done').textContent=done;
   if(g('malltab-reject'))  g('malltab-reject').textContent=reject;
@@ -4876,17 +4973,50 @@ function updateMallStats() {
 
 function updateMallLeaveStats() {
   var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
+  var lcDet={'事假':[],'病假':[],'生理假':[],'國假':[],'特休':[],'其他':[]};
   MALL_DATA.forEach(function(a){
-    if (a.type !== '請假申請') return;
+    if (a.type !== '請假申請' && a.type !== '國假及特休申請') return;
     var base=(a.subtype||'').split(' ')[0].split('(')[0].trim();
-    if(base==='特休') lc['特休']+=parseFloat(a.days||1);
-    else if(base==='國假') lc['國假']+=parseFloat(a.days||1);
-    else if(lc.hasOwnProperty(base)) lc[base]+=1;
-    else lc['其他']+=1;
+    if(base==='特休') { lc['特休']+=parseFloat(a.days||1); lcDet['特休'].push(a); }
+    else if(base==='國假') { lc['國假']+=parseFloat(a.days||1); lcDet['國假'].push(a); }
+    else if(lc.hasOwnProperty(base)) { lc[base]+=1; lcDet[base].push(a); }
+    else { lc['其他']+=1; lcDet['其他'].push(a); }
   });
   Object.keys(lc).forEach(function(k){
     var el=document.getElementById('mall-lc-'+k);
-    if(el) el.textContent=lc[k]||0;
+    if(el) {
+      el.textContent=lc[k]||0;
+      // 建立 tooltip
+      var card = el.closest('[style*="background"]');
+      if (!card) return;
+      var tip = card.querySelector('.stat-tooltip');
+      if (!tip) {
+        tip = document.createElement('div');
+        tip.className = 'stat-tooltip';
+        tip.innerHTML = '<div class="stat-tooltip-title">'+k+'</div>';
+        card.style.position = 'relative';
+        card.style.cursor = 'default';
+        card.appendChild(tip);
+        card.addEventListener('mouseenter', function(){ tip.style.display='block'; });
+        card.addEventListener('mouseleave', function(){ tip.style.display='none'; });
+      }
+      var oldItems = tip.querySelectorAll('.stat-tooltip-item');
+      oldItems.forEach(function(i){ i.remove(); });
+      var dots = ['field','bar','kitchen'];
+      var nameCount = {};
+      lcDet[k].forEach(function(a2){ var n=a2.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
+      var entries = Object.keys(nameCount).map(function(n){ return {name:n,count:nameCount[n]}; });
+      entries.sort(function(a2,b){ return b.count-a2.count; });
+      entries.slice(0,6).forEach(function(e,idx){
+        var div=document.createElement('div'); div.className='stat-tooltip-item';
+        div.innerHTML='<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>'+e.name+' × '+e.count;
+        tip.appendChild(div);
+      });
+      if(!entries.length){
+        var div=document.createElement('div'); div.className='stat-tooltip-item';
+        div.style.color='#999'; div.textContent='暫無資料'; tip.appendChild(div);
+      }
+    }
   });
 }
 
@@ -4939,9 +5069,13 @@ function renderMallTable() {
   var teamVal=((document.getElementById('mall-team-filter')||{}).value||'');
   var filtered=MALL_DATA.filter(function(a){
     var s=a.status||'';
-    if(mallCurrentTab==='pending'&&(s.indexOf('完成')>-1||s.indexOf('退件')>-1)) return false;
-    if(mallCurrentTab==='done'&&s.indexOf('完成')===-1) return false;
-    if(mallCurrentTab==='reject'&&s.indexOf('退件')===-1) return false;
+    var isDoneL = s.indexOf('完成')>-1, isRejectL = s.indexOf('退件')>-1;
+    var isActiveL = !isDoneL && !isRejectL && s.indexOf('覆核')>-1;
+    var isPendingL = !isDoneL && !isRejectL && !isActiveL;
+    if(mallCurrentTab==='active'  && !isActiveL)  return false;
+    if(mallCurrentTab==='pending' && !isPendingL) return false;
+    if(mallCurrentTab==='done'    && !isDoneL)    return false;
+    if(mallCurrentTab==='reject'  && !isRejectL)  return false;
     if(typeVal&&(a.type||'')!==typeVal) return false;
     if(teamVal&&(a.team||'')!==teamVal) return false;
     if(search&&(a.name||'').toLowerCase().indexOf(search)<0&&(a.id||'').toLowerCase().indexOf(search)<0) return false;
