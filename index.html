@@ -1042,7 +1042,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <div class="sidebar-section">
         <p class="sidebar-section-label">功能</p>
-        <p class="sidebar-section-sub">營運限定</p>
+        <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('main',this)"><span class="sidebar-icon">📁</span>所有申請</a>
         <a href="#" class="sidebar-nav-item" data-perm="main" onclick="return showPage('monthly-all',this)"><span class="sidebar-icon">📅</span>本月查詢</a>
       </div>
@@ -1051,9 +1051,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       <div class="sidebar-section">
         <p class="sidebar-section-label">管理</p>
-        <p class="sidebar-section-sub">營運限定</p>
-        <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
+        <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
+        <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1095,12 +1095,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="main-lc-國假">0</span></div>
               <div class="stat-card-sub">日</div>
             </div>
-            <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
               <div class="stat-card-label">特休</div>
               <div class="stat-card-value-row"><span class="stat-card-value purple" id="main-lc-特休">0</span></div>
               <div class="stat-card-sub">日</div>
             </div>
-            <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
               <div class="stat-card-label">其他</div>
               <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="main-lc-其他">0</span></div>
               <div class="stat-card-sub">次</div>
@@ -1579,12 +1579,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div id="gj-value-row" style="display:flex;align-items:center;justify-content:center;min-height:36px;"><span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span></div>
             <div class="stat-card-sub" id="gj-sub">日</div>
           </div>
-          <div onclick="filterMyLeaveType('特休',this)" style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+          <div onclick="filterMyLeaveType('特休',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
             <div class="stat-card-label">特休</div>
             <div class="stat-card-value-row"><span class="stat-card-value purple" id="lc-特休">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
-          <div onclick="filterMyLeaveType('其他',this)" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
+          <div onclick="filterMyLeaveType('其他',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
             <div class="stat-card-label">其他</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="lc-其他">0</span></div>
             <div class="stat-card-sub">次</div>
@@ -1718,12 +1718,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div id="mon-gj-value-row" style="display:flex;align-items:center;justify-content:center;min-height:36px;"><span class="stat-card-value gold" style="color:#43a047;" id="mon-lc-國假">0</span></div>
             <div class="stat-card-sub" id="mon-gj-sub">日</div>
           </div>
-          <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
             <div class="stat-card-label">特休</div>
             <div class="stat-card-value-row"><span class="stat-card-value purple" id="mon-lc-特休">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
-          <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
             <div class="stat-card-label">其他</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mon-lc-其他">0</span></div>
             <div class="stat-card-sub">次</div>
@@ -1831,12 +1831,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="mall-lc-國假">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
-          <div style="background:#f3e5f5;border:1px solid #ce93d8;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
             <div class="stat-card-label">特休</div>
             <div class="stat-card-value-row"><span class="stat-card-value purple" id="mall-lc-特休">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
-          <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
             <div class="stat-card-label">其他</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mall-lc-其他">0</span></div>
             <div class="stat-card-sub">次</div>
@@ -1899,21 +1899,30 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:106px;"/><col style="width:70px;"/><col style="width:62px;"/><col style="width:80px;"/><col style="width:62px;"/>
-              <col style="width:110px;"/><col style="width:130px;"/><col style="width:58px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:58px;"/>
+              <col class="col-id"/>
+              <col class="col-name"/>
+              <col class="col-team" style="width:var(--col-w-team)"/>
+              <col class="col-type"/>
+              <col class="col-subtype"/>
+              <col class="col-date"/>
+              <col class="col-period"/>
+              <col class="col-status"/>
+              <col class="col-reviewer"/>
+              <col class="col-verifier" style="width:var(--col-w-verifier)"/>
+              <col class="col-action"/>
             </colgroup>
             <thead><tr>
-              <th style="text-align:center;">申請編號</th>
-              <th style="text-align:center;">員工姓名</th>
-              <th style="text-align:center;">團隊型態</th>
-              <th style="text-align:center;">申請類型</th>
-              <th style="text-align:center;">假別</th>
-              <th style="text-align:center;">申請日期</th>
-              <th style="text-align:center;">起訖期間</th>
-              <th style="text-align:center;">狀態</th>
-              <th style="text-align:center;">審核人</th>
-              <th style="text-align:center;">覆核人</th>
-              <th style="text-align:center;">操作</th>
+              <th>申請編號</th>
+              <th>員工姓名</th>
+              <th>團隊型態</th>
+              <th>申請類型</th>
+              <th>假別</th>
+              <th>申請日期</th>
+              <th>起訖期間</th>
+              <th>狀態</th>
+              <th>審核人</th>
+              <th>覆核人</th>
+              <th>操作</th>
             </tr></thead>
             <tbody id="mall-tbody">
               <tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
@@ -3921,11 +3930,16 @@ var ROLE_BADGE = {
 /* ── 各角色可見的側邊欄 item（data-role 屬性）── */
 var ROLE_PAGES = {
   guest:    [],
-  parttime: ['doccenter','leave','myrecords','monthly'],                                          // 兼職
-  employee: ['doccenter','leave','myrecords','monthly'],                                          // 正職（向下相容）
-  fulltime: ['doccenter','leave','myrecords','monthly','extraops'],                               // 正職（新）
-  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','monthly-all'],
-  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','salary','account','settings','monthly-all'],
+  // 兼職：文件中心 + 申請相關
+  parttime: ['doccenter','leave','myrecords','monthly'],
+  // 正職（向下相容）
+  employee: ['doccenter','leave','myrecords','monthly'],
+  // 正職：+ 線上表單申請
+  fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
+  // 主管：正職 + 系統 + 功能(所有申請/本月查詢) + 管理(數據分析)
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
+  // 管理者：全權限
+  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account'],
 };
 
 var ROLE_SIDEBAR_MAP = {
@@ -3933,8 +3947,8 @@ var ROLE_SIDEBAR_MAP = {
   parttime: ['doccenter','leave','myrecords','monthly'],
   employee: ['doccenter','leave','myrecords','monthly'],
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
-  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','monthly-all'],
-  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','analytics','salary','account','settings','monthly-all'],
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
+  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account'],
 };
 
 /* ══ 初始化：檢查 localStorage ══ */
@@ -4067,32 +4081,22 @@ function applyPermissions(role) {
   var isGuest = (role === 'guest');
   var allowed = ROLE_SIDEBAR_MAP[role] || [];
 
-  // 側邊欄項目：逐一檢查 onclick 裡的 showPage id
   document.querySelectorAll('.sidebar-nav-item').forEach(function(item){
+    // 外部連結
     if (item.classList.contains('external')) {
-      // 外部連結：先判斷是否有 data-perm 限制
       var extPerm = item.getAttribute('data-perm') || '';
       if (isGuest) {
         item.style.display = 'none';
       } else if (extPerm) {
-        var extOk = allowed.indexOf(extPerm) > -1;
-        item.style.display = extOk ? '' : 'none';
+        item.style.display = (allowed.indexOf(extPerm) > -1) ? '' : 'none';
       } else {
         item.style.display = '';
       }
-      item.style.opacity    = '';
-      item.style.pointerEvents = '';
+      item.style.opacity = ''; item.style.pointerEvents = '';
       return;
     }
-    // data-perm="extraops" → fulltime/manager/admin 才能看
-    if (perm === 'extraops') {
-      var canSeeExtra = (role === 'fulltime' || role === 'manager' || role === 'admin');
-      item.style.display = canSeeExtra ? '' : 'none';
-      item.style.opacity = ''; item.style.pointerEvents = ''; item.style.cursor = '';
-      return;
-    }
-    // data-page="monthly-emp" 只給 employee 看
-    // data-page="monthly-mgr" 只給 manager/admin 看
+
+    // data-page 特殊標記
     var pageMark = item.getAttribute('data-page') || '';
     if (pageMark === 'monthly-emp') {
       item.style.display = (role === 'employee') ? '' : 'none';
@@ -4104,7 +4108,9 @@ function applyPermissions(role) {
       item.style.opacity = ''; item.style.pointerEvents = ''; item.style.cursor = '';
       return;
     }
-    // 若沒有 data-perm，從 onclick 的 showPage 取出 pageId
+
+    // 取 data-perm（優先）或從 onclick 的 showPage 取 pageId
+    var perm = item.getAttribute('data-perm') || '';
     if (!perm) {
       var onc = item.getAttribute('onclick') || '';
       var m   = onc.match(/showPage\('([^']+)'/);
@@ -4112,43 +4118,38 @@ function applyPermissions(role) {
     }
 
     if (isGuest) {
-      item.style.display       = '';
-      item.style.opacity       = '0.4';
-      item.style.pointerEvents = 'none';
-      item.style.cursor        = 'default';
-    } else {
-      // perm 可能是 pageId (main/monthly/...) 或 permKey (salary/account/settings)
-      // 兩者都查 allowed 陣列
-      var ok = !perm || allowed.indexOf(perm) > -1;
-      item.style.display       = ok ? '' : 'none';
+      item.style.display       = 'none';
       item.style.opacity       = '';
       item.style.pointerEvents = '';
       item.style.cursor        = '';
+      return;
+    }
+
+    var ok = allowed.indexOf(perm) > -1 || perm === '' || perm === 'leave';
+    item.style.display       = ok ? '' : 'none';
+    item.style.opacity       = '';
+    item.style.pointerEvents = '';
+    item.style.cursor        = '';
+  });
+
+  // sidebar section 標題：若整個 section 的項目都隱藏，則隱藏標題
+  document.querySelectorAll('.sidebar-section').forEach(function(sec){
+    var items = sec.querySelectorAll('.sidebar-nav-item');
+    var anyVisible = false;
+    items.forEach(function(i){ if(i.style.display !== 'none') anyVisible = true; });
+    sec.style.display = anyVisible ? '' : 'none';
+  });
+  // sidebar divider：跟隨 section
+  document.querySelectorAll('.sidebar-divider').forEach(function(div, idx){
+    // simple approach: hide divider if next sibling section is hidden
+    var next = div.nextElementSibling;
+    if (next && next.classList.contains('sidebar-section') && next.style.display === 'none') {
+      div.style.display = 'none';
+    } else {
+      div.style.display = '';
     }
   });
-
-  // 側邊欄 section：若全部 item 都隱藏則隱藏整個 section
-  document.querySelectorAll('.sidebar-section').forEach(function(sec){
-    if (isGuest) { sec.style.display = ''; return; }
-    var visible = Array.from(sec.querySelectorAll('.sidebar-nav-item')).some(function(i){
-      return i.style.display !== 'none';
-    });
-    sec.style.display = visible ? '' : 'none';
-  });
-
-  // divider 跟著 section 顯示/隱藏
-  document.querySelectorAll('.sidebar-divider').forEach(function(div){
-    if (isGuest) { div.style.display = ''; return; }
-    var prev = div.previousElementSibling;
-    var next = div.nextElementSibling;
-    div.style.display = (prev && prev.style.display!=='none' && next && next.style.display!=='none') ? '' : 'none';
-  });
 }
-
-/* ══ 登出 ══ */
-
-/* ── 信箱自動建議 ── */
-var MAIL_DOMAINS = ['gmail.com','yahoo.com.tw','outlook.com','hotmail.com','icloud.com'];
 function updateMailSuggestions() {
   var val  = document.getElementById('login-mail').value;
   var list = document.getElementById('mail-suggestions');
