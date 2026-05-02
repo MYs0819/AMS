@@ -1052,8 +1052,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-section">
         <p class="sidebar-section-label">管理</p>
         <p class="sidebar-section-sub">主管查閱</p>
-        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
         <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
+        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1307,6 +1307,40 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </div>
           </div>
 
+          <!-- 統計摘要列 -->
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:10px 18px 0;flex-shrink:0;">
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">總申請</div>
+              <div style="font-size:18px;font-weight:700;color:#e8e4d8;" id="ana-total">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">請假申請</div>
+              <div style="font-size:18px;font-weight:700;color:#4caf50;" id="ana-leave">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">留復職申請</div>
+              <div style="font-size:18px;font-weight:700;color:#2196f3;" id="ana-retain">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">審核中</div>
+              <div style="font-size:18px;font-weight:700;color:#c9a84c;" id="ana-pending">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">已完成</div>
+              <div style="font-size:18px;font-weight:700;color:#4caf50;" id="ana-done">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">已退件</div>
+              <div style="font-size:18px;font-weight:700;color:#f44336;" id="ana-reject">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+          </div>
+
           <!-- 上半：4欄圖表 -->
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 18px 0;flex-shrink:0;">
 
@@ -1314,7 +1348,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">申請類型分布</p>
               <div style="width:100%;display:flex;justify-content:center;">
-                <svg viewBox="-40 -20 280 240" style="width:100%;max-width:240px;overflow:visible;">
+                <svg id="ana-type-chart" viewBox="-40 -20 280 240" style="width:100%;max-width:240px;overflow:visible;">
                   <!-- 環狀扇形 r=70, cx=100,cy=100, 周長=439.82 -->
                   <!-- 請假35%=153.94, 留職25%=109.95, 離職20%=87.96, 展延12%=52.78, 復職8%=35.18 -->
                   <circle cx="100" cy="100" r="70" fill="none" stroke="#4caf50" stroke-width="30"
@@ -1403,7 +1437,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <!-- C3: 假別量 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">假別申請量</p>
-              <div style="display:flex;flex-direction:column;gap:10px;">
+              <div id="ana-leave-bars" style="display:flex;flex-direction:column;gap:10px;">
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🔴 事假</span><span style="color:#ff5722;font-weight:600;">6件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:60%;height:100%;background:linear-gradient(90deg,#ff5722,#ff8a65);border-radius:999px;"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🔵 病假</span><span style="color:#03a9f4;font-weight:600;">3件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:30%;height:100%;background:linear-gradient(90deg,#03a9f4,#4fc3f7);border-radius:999px;"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🟢 特休</span><span style="color:#8bc34a;font-weight:600;">3件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:30%;height:100%;background:linear-gradient(90deg,#8bc34a,#aed581);border-radius:999px;"></div></div></div>
@@ -1416,7 +1450,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <!-- C4: 申請狀態 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">申請狀態分布</p>
-              <div style="display:flex;flex-direction:column;gap:11px;">
+              <div id="ana-status-bars" style="display:flex;flex-direction:column;gap:11px;">
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>⏳ 進行中</span><span style="color:#c9a84c;font-weight:600;">6件，40%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:40%;height:100%;background:linear-gradient(90deg,#c9a84c,#d4b96a);border-radius:999px;"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>👁 待審核</span><span style="color:#2962ff;font-weight:600;">4件，27%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:27%;height:100%;background:linear-gradient(90deg,#1a3a6b,#2962ff);border-radius:999px;"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>🔄 補件中</span><span style="color:#ff9800;font-weight:600;">2件，13%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:13%;height:100%;background:linear-gradient(90deg,#ff9800,#ffcc02);border-radius:999px;"></div></div></div>
@@ -1433,7 +1467,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">全年度每月申請趨勢</p>
               <div style="flex:1;min-height:0;display:flex;align-items:stretch;">
-                <svg viewBox="0 0 500 150" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
+                <svg id="ana-trend-svg" viewBox="0 0 500 150" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
                   <defs>
                     <linearGradient id="tg3" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/>
@@ -1496,7 +1530,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <!-- 各部門申請明細 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">各部門申請明細</p>
-              <div style="display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:0;">
+              <div id="ana-dept-list" style="display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:0;">
 
                 <!-- 外場 -->
                 <div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
@@ -2455,8 +2489,9 @@ function showPage(pageId, el) {
   if (pageId === 'monthly-all') { if(typeof loadMallData==='function') loadMallData(); }
   if (pageId === 'analytics')   updateAnalytics();
   if (pageId === 'extraops') {
-    // 控制正職以上才能看的區塊
-    var isFullPlus = CURRENT_USER && (CURRENT_USER.role === 'fulltime' || CURRENT_USER.role === 'manager' || CURRENT_USER.role === 'admin');
+    var r = CURRENT_USER ? CURRENT_USER.role : 'guest';
+    var isFullPlus = (r === 'fulltime' || r === 'manager' || r === 'admin');
+    // fulltime+ 全部可見；parttime 只能看收銀交接表和庫存盤點表
     document.querySelectorAll('[data-perm-block="fulltime"]').forEach(function(el){
       el.style.display = isFullPlus ? '' : 'none';
     });
@@ -3259,30 +3294,192 @@ function updateAnalytics() {
   var month = (document.getElementById('anaMonth') || {}).value || String(new Date().getMonth()+1).padStart(2,'0');
   var title = document.getElementById('analytics-main-title');
   var trendTitle = document.getElementById('ana-trend-title');
-  if (title) {
-    title.textContent = '📊 ' + year + '年 ' + (anaAllMode ? '全年度' : month + '月') + ' 數據分析';
-  }
-  if (trendTitle) {
-    trendTitle.textContent = anaAllMode ? '全年度每月申請趨勢' : month + '月 每週申請趨勢';
-  }
-  // 用 ALL_APPS_DATA 過濾當前年月
+  if (title) title.textContent = '📊 ' + year + '年 ' + (anaAllMode ? '全年度' : month + '月') + ' 數據分析';
+  if (trendTitle) trendTitle.textContent = anaAllMode ? '全年度每月申請趨勢' : month + '月 每週申請趨勢';
+
   var source = ALL_APPS_DATA.length ? ALL_APPS_DATA : [];
   var filtered = source.filter(function(a){
-    var d = (a.applyDate||'').slice(0,7); // yyyy/mm
-    if (!anaAllMode) {
-      return d === (year + '/' + month);
-    } else {
-      return (a.applyDate||'').slice(0,4) === year;
-    }
+    if (!anaAllMode) return (a.applyDate||'').slice(0,7) === (year + '/' + month);
+    return (a.applyDate||'').slice(0,4) === year;
   });
-  // 更新分析區數字
+
+  var total = filtered.length;
   var g = function(id){ return document.getElementById(id); };
-  if (g('ana-total'))   g('ana-total').textContent   = filtered.length;
+  if (g('ana-total'))   g('ana-total').textContent   = total;
   if (g('ana-leave'))   g('ana-leave').textContent   = filtered.filter(function(a){ return a.type==='請假申請'; }).length;
   if (g('ana-retain'))  g('ana-retain').textContent  = filtered.filter(function(a){ return a.type==='留復職申請'; }).length;
   if (g('ana-done'))    g('ana-done').textContent    = filtered.filter(function(a){ return (a.status||'').indexOf('完成')>-1; }).length;
   if (g('ana-reject'))  g('ana-reject').textContent  = filtered.filter(function(a){ return (a.status||'').indexOf('退件')>-1; }).length;
   if (g('ana-pending')) g('ana-pending').textContent = filtered.filter(function(a){ var s=a.status||''; return s.indexOf('完成')===-1&&s.indexOf('退件')===-1; }).length;
+
+  // ── 申請類型環狀圖 ──
+  var typeCount = {};
+  filtered.forEach(function(a){ var t=a.type||'其他'; typeCount[t]=(typeCount[t]||0)+1; });
+  var totalT = total || 1;
+  var typeColors = {'請假申請':'#4caf50','國假及特休申請':'#c9a84c','留復職申請':'#2196f3','其他':'#9e9e9e'};
+  var typeChart = g('ana-type-chart');
+  if (typeChart) {
+    var svgContent = '';
+    var offset = 0;
+    var circumference = 439.82;
+    var entries = Object.entries ? Object.entries(typeCount) : Object.keys(typeCount).map(function(k){ return [k, typeCount[k]]; });
+    entries.forEach(function(e){
+      var pct = e[1] / totalT;
+      var arc = pct * circumference;
+      var color = typeColors[e[0]] || '#9e9e9e';
+      svgContent += '<circle cx="100" cy="100" r="70" fill="none" stroke="'+color+'" stroke-width="30" stroke-dasharray="'+arc.toFixed(2)+' '+(circumference-arc).toFixed(2)+'" stroke-dashoffset="-'+offset.toFixed(2)+'" transform="rotate(-90 100 100)"/>';
+      offset += arc;
+    });
+    svgContent += '<circle cx="100" cy="100" r="55" fill="#333"/>';
+    svgContent += '<text x="100" y="94" text-anchor="middle" font-size="26" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">'+total+'</text>';
+    svgContent += '<text x="100" y="112" text-anchor="middle" font-size="12" fill="#9a9680" font-family="sans-serif">件</text>';
+    // Labels
+    var labelOffset = 0;
+    var labelPositions = [
+      {lx:148,ly:5,lx2:180,ly2:5,tx:184,ty:9,anchor:'start'},
+      {lx:190,ly:60,lx2:220,ly2:60,tx:224,ty:64,anchor:'start'},
+      {lx:180,ly:175,lx2:220,ly2:175,tx:224,ty:179,anchor:'start'},
+      {lx:40,ly:185,lx2:-20,ly2:185,tx:-24,ty:189,anchor:'end'},
+    ];
+    entries.forEach(function(e, idx){
+      var pct = e[1] / totalT;
+      var color = typeColors[e[0]] || '#9e9e9e';
+      if (idx < labelPositions.length) {
+        var lp = labelPositions[idx];
+        var midAngle = (labelOffset + pct/2) * 360 - 90;
+        var rad = midAngle * Math.PI / 180;
+        var lx1 = Math.round(100 + 85 * Math.cos(rad));
+        var ly1 = Math.round(100 + 85 * Math.sin(rad));
+        svgContent += '<line x1="'+lx1+'" y1="'+ly1+'" x2="'+lp.lx+'" y2="'+lp.ly+'" stroke="'+color+'" stroke-width="1.2"/>';
+        svgContent += '<line x1="'+lp.lx+'" y1="'+lp.ly+'" x2="'+lp.lx2+'" y2="'+lp.ly2+'" stroke="'+color+'" stroke-width="1.2"/>';
+        svgContent += '<text x="'+lp.tx+'" y="'+lp.ty+'" font-size="11" fill="'+color+'" font-family="sans-serif" font-weight="600" text-anchor="'+lp.anchor+'">'+e[0]+' '+(pct*100).toFixed(0)+'%</text>';
+      }
+      labelOffset += pct;
+    });
+    typeChart.innerHTML = svgContent;
+  }
+
+  // ── 假別橫條圖 ──
+  var leaveTypes = ['事假','病假','特休','公假','婚假','喪假','生理假','普通傷病假','其他'];
+  var leaveColors = {'事假':'#ff5722','病假':'#03a9f4','特休':'#8bc34a','公假':'#ffc107','婚假':'#e91e63','喪假':'#795548','生理假':'#ab47bc','普通傷病假':'#26c6da','其他':'#9e9e9e'};
+  var leaveCount = {};
+  filtered.forEach(function(a){
+    if (a.type!=='請假申請' && a.type!=='國假及特休申請') return;
+    var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
+    var key = leaveCount.hasOwnProperty(base) ? base : (leaveColors.hasOwnProperty(base) ? base : '其他');
+    leaveCount[key] = (leaveCount[key]||0) + 1;
+  });
+  var maxLeave = Math.max.apply(null, leaveTypes.map(function(t){ return leaveCount[t]||0; }).concat([1]));
+  var leaveBarEl = g('ana-leave-bars');
+  if (leaveBarEl) {
+    leaveBarEl.innerHTML = leaveTypes.filter(function(t){ return leaveCount[t]>0; }).map(function(t){
+      var cnt = leaveCount[t]||0;
+      var pct = (cnt/maxLeave*100).toFixed(1);
+      var color = leaveColors[t]||'#9e9e9e';
+      var emo = {'事假':'🔴','病假':'🔵','特休':'🟢','公假':'🟡','婚假':'💗','喪假':'🖤','生理假':'🌸','普通傷病假':'🩺','其他':'⚪'}[t]||'●';
+      return '<div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>'+emo+' '+t+'</span><span style="color:'+color+';font-weight:600;">'+cnt+'件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,'+color+','+color+'aa);border-radius:999px;transition:width .5s;"></div></div></div>';
+    }).join('');
+    if (!Object.keys(leaveCount).length) leaveBarEl.innerHTML = '<p style="color:#9a9680;font-size:11px;text-align:center;">本期無假別申請</p>';
+  }
+
+  // ── 申請狀態橫條圖 ──
+  var statusDefs = [
+    {key:'active', label:'審核中', color:'#c9a84c', emo:'⏳'},
+    {key:'done',   label:'已完成', color:'#4caf50', emo:'✅'},
+    {key:'reject', label:'已退件', color:'#f44336', emo:'❌'},
+  ];
+  var statusCount = {active:0, done:0, reject:0};
+  filtered.forEach(function(a){
+    var s=a.status||'';
+    if(s.indexOf('完成')>-1) statusCount.done++;
+    else if(s.indexOf('退件')>-1) statusCount.reject++;
+    else statusCount.active++;
+  });
+  var maxSt = Math.max.apply(null, statusDefs.map(function(d){ return statusCount[d.key]; }).concat([1]));
+  var statusBarEl = g('ana-status-bars');
+  if (statusBarEl) {
+    statusBarEl.innerHTML = statusDefs.map(function(d){
+      var cnt = statusCount[d.key];
+      var pct = (cnt/maxSt*100).toFixed(1);
+      var pctLabel = total ? (cnt/total*100).toFixed(0)+'%' : '0%';
+      return '<div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>'+d.emo+' '+d.label+'</span><span style="color:'+d.color+';font-weight:600;">'+cnt+'件，'+pctLabel+'</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,'+d.color+','+d.color+'aa);border-radius:999px;transition:width .5s;"></div></div></div>';
+    }).join('');
+  }
+
+  // ── 趨勢折線圖（月度申請量）──
+  var trendSvgEl = g('ana-trend-svg');
+  if (trendSvgEl) {
+    if (anaAllMode) {
+      // 全年每月申請量
+      var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+      var monthLabels = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+      var monthCounts = months.map(function(m){
+        return source.filter(function(a){ return (a.applyDate||'').slice(0,7)===(year+'/'+m); }).length;
+      });
+      var maxM = Math.max.apply(null, monthCounts.concat([1]));
+      var svgW=455, svgH=110, padL=40, padR=5, padT=10, padB=20;
+      var w = svgW-padL-padR, h = svgH-padT-padB;
+      var pts = months.map(function(m,i){ return {x:padL+i*w/11, y:padT+h-(monthCounts[i]/maxM)*h}; });
+      var pathD = pts.map(function(p,i){ return (i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1); }).join(' ');
+      var fillD = pathD + ' L'+pts[pts.length-1].x.toFixed(1)+','+(padT+h)+' L'+pts[0].x.toFixed(1)+','+(padT+h)+' Z';
+      var svgInner = '<defs><linearGradient id="tg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0.03"/></linearGradient></defs>';
+      svgInner += '<line x1="'+padL+'" y1="'+padT+'" x2="'+padL+'" y2="'+(padT+h)+'" stroke="#555" stroke-width="1"/>';
+      svgInner += '<line x1="'+padL+'" y1="'+(padT+h)+'" x2="'+(padL+w+padR)+'" y2="'+(padT+h)+'" stroke="#555" stroke-width="1"/>';
+      for(var gi=1;gi<=3;gi++){ var gy=padT+h*gi/4; svgInner+='<line x1="'+padL+'" y1="'+gy.toFixed(1)+'" x2="'+(padL+w+padR)+'" y2="'+gy.toFixed(1)+'" stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>'; }
+      svgInner += '<text x="'+(padL-6)+'" y="'+(padT+4)+'" text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">'+maxM+'</text>';
+      svgInner += '<text x="'+(padL-6)+'" y="'+(padT+h/2+4)+'" text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">'+(maxM/2).toFixed(0)+'</text>';
+      months.forEach(function(m,i){ svgInner+='<text x="'+pts[i].x.toFixed(1)+'" y="'+(padT+h+14)+'" text-anchor="middle" font-size="9" fill="#777" font-family="sans-serif">'+monthLabels[i]+'</text>'; });
+      svgInner += '<path d="'+fillD+'" fill="url(#tg3)"/>';
+      svgInner += '<polyline points="'+pts.map(function(p){ return p.x.toFixed(1)+','+p.y.toFixed(1); }).join(' ')+'" fill="none" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+      pts.forEach(function(p,i){
+        if (monthCounts[i]>0) {
+          svgInner += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3.5" fill="#c9a84c" stroke="#2a2a2a" stroke-width="1.5"/>';
+          svgInner += '<text x="'+p.x.toFixed(1)+'" y="'+(p.y-7).toFixed(1)+'" text-anchor="middle" font-size="9" fill="#c9a84c" font-family="sans-serif">'+monthCounts[i]+'</text>';
+        }
+      });
+      trendSvgEl.innerHTML = svgInner;
+    }
+  }
+
+  // 部門×假別 雙環更新
+  var teamOrder = ['外場','吧台','吧檯','內廚'];
+  var teamColors = {'外場':'#c9a84c','吧台':'#4caf50','吧檯':'#4caf50','內廚':'#2196f3'};
+  var teamCount = {};
+  filtered.forEach(function(a){ var t=a.team||'其他'; teamCount[t]=(teamCount[t]||0)+1; });
+  // ── 部門申請明細（堆疊橫條）──
+  var teamOrder2 = ['外場','吧台','吧檯','內廚'];
+  var teamNames  = {'外場':'🚶 外場','吧台':'🍹 吧台','吧檯':'🍹 吧台','內廚':'👨‍🍳 內廚'};
+  var leaveTypeShort = {'事假':'事','病假':'病','特休':'休','公假':'公','婚假':'婚','喪假':'喪','生理假':'理','普通傷病假':'傷','其他':'他'};
+  var teamLeaveDefs = [
+    {key:'事假', color:'#ff5722'}, {key:'病假', color:'#03a9f4'}, {key:'特休', color:'#8bc34a'},
+    {key:'公假', color:'#ffc107'}, {key:'其他', color:'#757575'},
+  ];
+  var teamLeaveCount = {};
+  filtered.forEach(function(a){
+    if (a.type!=='請假申請' && a.type!=='國假及特休申請') return;
+    var tm = a.team||'其他';
+    var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
+    var lk = teamLeaveDefs.some(function(d){ return d.key===base; }) ? base : '其他';
+    if (!teamLeaveCount[tm]) teamLeaveCount[tm] = {};
+    teamLeaveCount[tm][lk] = (teamLeaveCount[tm][lk]||0) + 1;
+  });
+  var deptEl = g('ana-dept-list');
+  if (deptEl) {
+    var html = '';
+    teamOrder2.filter(function(t){ return teamLeaveCount[t]; }).forEach(function(tm){
+      var lc2 = teamLeaveCount[tm] || {};
+      var tmTotal = Object.keys(lc2).reduce(function(s,k){ return s+lc2[k]; }, 0) || 1;
+      var label = teamNames[tm] || tm;
+      var bars = teamLeaveDefs.filter(function(d){ return lc2[d.key]>0; }).map(function(d){
+        var pct = (lc2[d.key]/tmTotal*100).toFixed(1);
+        var short = leaveTypeShort[d.key]||d.key[0];
+        return '<div style="width:'+pct+'%;background:'+d.color+';display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;gap:2px;min-width:18px;">'+short+'<span style="font-size:9px;opacity:.85;">×'+lc2[d.key]+'</span></div>';
+      }).join('');
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;"><span style="font-size:11px;color:#c8c4b4;width:68px;flex-shrink:0;">'+label+'</span><div style="flex:1;height:28px;background:#222;border-radius:6px;overflow:hidden;display:flex;">'+bars+'</div></div>';
+    });
+    if (!html) html = '<p style="color:#9a9680;font-size:11px;text-align:center;">本期無資料</p>';
+    deptEl.innerHTML = html;
+  }
 }
 
 /* ══ 篩選 + 分頁 ══ */
@@ -3930,21 +4127,16 @@ var ROLE_BADGE = {
 /* ── 各角色可見的側邊欄 item（data-role 屬性）── */
 var ROLE_PAGES = {
   guest:    [],
-  // 兼職：文件中心 + 申請相關
-  parttime: ['doccenter','leave','myrecords','monthly'],
-  // 正職（向下相容）
+  parttime: ['doccenter','leave','myrecords','monthly','extraops'],
   employee: ['doccenter','leave','myrecords','monthly'],
-  // 正職：+ 線上表單申請
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
-  // 主管：正職 + 系統 + 功能(所有申請/本月查詢) + 管理(數據分析)
   manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
-  // 管理者：全權限
   admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account'],
 };
 
 var ROLE_SIDEBAR_MAP = {
   guest:    [],
-  parttime: ['doccenter','leave','myrecords','monthly'],
+  parttime: ['doccenter','leave','myrecords','monthly','extraops'],
   employee: ['doccenter','leave','myrecords','monthly'],
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
   manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
@@ -4268,45 +4460,45 @@ function loadAccounts() {
 
   var url = GAS_URL + '?action=getAccounts&v=' + Date.now() + '_' + Math.random();
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
-    .then(function(r){ return r.json(); })
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function(data){
-      if (!data.success) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#f44336;padding:24px;">載入失敗</td></tr>'; return; }
+      if (!data.success) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#f44336;padding:24px;">載入失敗：' + (data.error||'') + '</td></tr>';
+        return;
+      }
       ACCOUNTS_DATA = data.accounts || [];
       updateAccStats();
       renderAccTable();
     })
-    .catch(function(){
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#f44336;padding:24px;">連線失敗</td></tr>';
+    .catch(function(err){
+      // no-cors mode returns opaque response → try re-fetch in no-cors mode as fallback
+      console.warn('getAccounts cors failed, trying no-cors approach:', err.message);
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#f44336;padding:24px;">連線失敗：請確認 GAS 已部署並設定為允許所有人存取。<br><small style="color:#999;">'+err.message+'</small></td></tr>';
     });
 }
 
 /* ── 統計 ── */
 function updateAccStats() {
-  var total=ACCOUNTS_DATA.length, emp=0, mgr=0, ops=0, dis=0;
+  var total=ACCOUNTS_DATA.length, pt=0, ft=0, mgr=0, ops=0, dis=0;
   ACCOUNTS_DATA.forEach(function(a){
     if(a.status==='停用') dis++;
     else if(a.role==='admin')    ops++;
     else if(a.role==='manager')  mgr++;
-    else if(a.role==='fulltime') { var ftEl=document.getElementById('acc-ft'); if(ftEl) ftEl.textContent=parseInt(ftEl.textContent||0)+1; }
-    else if(a.role==='parttime') { var ptEl=document.getElementById('acc-pt'); if(ptEl) ptEl.textContent=parseInt(ptEl.textContent||0)+1; }
-    else emp++;
+    else if(a.role==='fulltime') ft++;
+    else if(a.role==='parttime') pt++;
+    // employee 舊帳號 → 計入 ft
+    else if(a.role==='employee') ft++;
   });
-  document.getElementById('acc-total').textContent = total;
-  // reset parttime/fulltime before recount
-  var ptEl = document.getElementById('acc-pt'); if(ptEl) ptEl.textContent = 0;
-  var ftEl2 = document.getElementById('acc-ft'); if(ftEl2) ftEl2.textContent = 0;
-  var pt=0, ft=0;
-  ACCOUNTS_DATA.forEach(function(a){
-    if(a.status==='停用') return;
-    if(a.role==='parttime') pt++;
-    if(a.role==='fulltime') ft++;
-  });
-  if(ptEl) ptEl.textContent = pt;
-  if(ftEl2) ftEl2.textContent = ft;
-  document.getElementById('acc-emp').textContent   = emp;
-  document.getElementById('acc-mgr').textContent   = mgr;
-  var opsEl = document.getElementById('acc-ops'); if(opsEl) opsEl.textContent = ops;
-  document.getElementById('acc-dis').textContent   = dis;
+  var g = function(id){ return document.getElementById(id); };
+  if(g('acc-total')) g('acc-total').textContent = total;
+  if(g('acc-pt'))    g('acc-pt').textContent    = pt;
+  if(g('acc-ft'))    g('acc-ft').textContent    = ft;
+  if(g('acc-mgr'))   g('acc-mgr').textContent   = mgr;
+  if(g('acc-ops'))   g('acc-ops').textContent   = ops;
+  if(g('acc-dis'))   g('acc-dis').textContent   = dis;
 }
 
 /* ── 渲染表格 ── */
