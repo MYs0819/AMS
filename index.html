@@ -1022,8 +1022,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="sidebar-divider"></div>
 
       <div class="sidebar-section">
-        <p class="sidebar-section-label">其他事項</p>
-        <p class="sidebar-section-sub">正職同仁</p>
+        <p class="sidebar-section-label">表單</p>
+        <p class="sidebar-section-sub">部分同仁</p>
         <a href="#" class="sidebar-nav-item" data-perm="extraops" onclick="return showPage('extraops',this)"><span class="sidebar-icon">📋</span>線上表單申請</a>
       </div>
 
@@ -1054,6 +1054,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
         <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
+        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('feedback-mgr',this)"><span class="sidebar-icon">💬</span>意見回饋</a>
+        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('report-mgr',this)"><span class="sidebar-icon">🚨</span>問題回報</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1965,6 +1967,63 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div class="table-footer"><div class="pagination" id="mall-pagination"></div></div>
         </div>
       </div>
+
+      <!-- ════ 意見回饋管理 ════ -->
+      <div class="page-section" id="page-feedback-mgr" style="gap:var(--space-4);">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div class="stat-card bg-total"><span class="stat-card-label">總計</span><div class="stat-card-value-row"><span class="stat-card-value" id="fb-total">0</span><span class="stat-card-unit">筆</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">待處理</span><div class="stat-card-value-row"><span class="stat-card-value gold" id="fb-pending">0</span><span class="stat-card-unit">筆</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">已處理</span><div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="fb-done">0</span><span class="stat-card-unit">筆</span></div></div>
+        </div>
+        <div class="table-section">
+          <div class="toolbar">
+            <div class="search-box"><span class="search-icon">🔍</span><input class="search-input" id="fb-search" placeholder="搜尋…" oninput="renderFbTable()"/></div>
+            <select class="filter-select" id="fb-status-filter" onchange="renderFbTable()" style="width:100px;"><option value="">全部狀態</option><option value="待處理">待處理</option><option value="已處理">已處理</option></select>
+            <div style="flex:1;"></div><span class="toolbar-info">共 <span id="fb-count">0</span> 筆</span>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>提交時間</th><th>提交者</th><th>內容摘要</th><th>狀態</th><th>操作</th></tr></thead>
+            <tbody id="fb-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════ 問題回報管理 ════ -->
+      <div class="page-section" id="page-report-mgr" style="gap:var(--space-4);">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div class="stat-card bg-total"><span class="stat-card-label">總計</span><div class="stat-card-value-row"><span class="stat-card-value" id="rp-total">0</span><span class="stat-card-unit">筆</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">待處理</span><div class="stat-card-value-row"><span class="stat-card-value gold" id="rp-pending">0</span><span class="stat-card-unit">筆</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">已處理</span><div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="rp-done">0</span><span class="stat-card-unit">筆</span></div></div>
+        </div>
+        <div class="table-section">
+          <div class="toolbar">
+            <div class="search-box"><span class="search-icon">🔍</span><input class="search-input" id="rp-search" placeholder="搜尋…" oninput="renderRpTable()"/></div>
+            <select class="filter-select" id="rp-status-filter" onchange="renderRpTable()" style="width:100px;"><option value="">全部狀態</option><option value="待處理">待處理</option><option value="已處理">已處理</option></select>
+            <div style="flex:1;"></div><span class="toolbar-info">共 <span id="rp-count">0</span> 筆</span>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>提交時間</th><th>提交者</th><th>內容摘要</th><th>狀態</th><th>操作</th></tr></thead>
+            <tbody id="rp-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 詳細查看 Modal（意見/問題共用）-->
+      <div class="modal-overlay" id="fbrpDetailModal" onclick="if(event.target===this)closeModal('fbrpDetailModal')">
+        <div style="background:#fff;border-radius:14px;padding:28px 32px;width:100%;max-width:500px;box-shadow:0 16px 48px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-size:16px;font-weight:700;color:var(--color-text-primary);" id="fbrp-detail-title">詳細內容</div>
+            <button onclick="closeModal('fbrpDetailModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--color-text-muted);">✕</button>
+          </div>
+          <div style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:12px 16px;font-size:12.5px;line-height:1.8;font-family:var(--font-mono);" id="fbrp-detail-info"></div>
+          <div style="white-space:pre-wrap;font-size:13px;color:var(--color-text-primary);background:#f9f9f9;border-radius:8px;padding:12px 16px;line-height:1.7;max-height:200px;overflow-y:auto;" id="fbrp-detail-body"></div>
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button id="fbrp-mark-btn" onclick="markFbrpDone()" style="height:34px;padding:0 24px;border-radius:8px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;">✅ 標記已處理</button>
+            <button onclick="closeModal('fbrpDetailModal')" style="height:34px;padding:0 24px;border-radius:8px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">關閉</button>
+          </div>
+        </div>
+      </div>
+
       <div class="page-section" id="page-workhour">
         <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;overflow-y:auto;">
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;padding:16px 28px;"><p class="inner-page-title" style="color:#e8e4d8;">🕐 每日工時登記</p></div>
@@ -2159,8 +2218,11 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="modal-overlay" id="accModal" onclick="if(event.target===this)closeModal('accModal')">
         <div style="background:#fff;border-radius:16px;padding:32px 36px;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:18px;">
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text-primary);" id="accModalTitle">新增帳號</div>
-            <button onclick="closeModal('accModal')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--color-text-muted);line-height:1;">✕</button>
+            <div style="flex:1;"></div>
+            <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text-primary);text-align:center;" id="accModalTitle">新增帳號</div>
+            <div style="flex:1;display:flex;justify-content:flex-end;">
+              <button onclick="closeModal('accModal')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--color-text-muted);line-height:1;">✕</button>
+            </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:14px;">
             <div id="acc-form-err" style="display:none;color:#c62828;font-size:12px;background:#fce4e4;padding:8px 12px;border-radius:7px;"></div>
@@ -2169,8 +2231,86 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div style="display:flex;flex-direction:column;gap:5px;">
               <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">電子信箱<span style="color:#e53935;margin-left:2px;">*</span></label>
               <div style="position:relative;">
-                <input style="border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;box-sizing:border-box;" id="acc-mail-input" type="email" placeholder="example@gmail.com" autocomplete="email" oninput="updateAccMailSuggestions()" list="acc-mail-suggestions"/>
-                <datalist id="acc-mail-suggestions"></datalist>
+                <input style="border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;box-sizing:border-box;" id="acc-mail-input" type="text" placeholder="example@gmail.com" autocomplete="off" oninput="updateAccMailSuggestions(this)"/>
+                <div id="acc-mail-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--color-border-card);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;max-height:160px;overflow-y:auto;margin-top:3px;"></div>
+              </div>
+            </div>
+
+            <!-- 姓名 + 權限 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">姓名<span style="color:#e53935;margin-left:2px;">*</span></label>
+                <input class="form-input" id="acc-name" placeholder="真實姓名"/>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">權限<span style="color:#e53935;margin-left:2px;">*</span></label>
+                <select class="filter-select" id="acc-role" style="height:36px;">
+                  <option value="admin">admin（營運）</option>
+                  <option value="manager">manager（主管）</option>
+                  <option value="fulltime">fulltime（正職）</option>
+                  <option value="parttime">parttime（兼職）</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 團隊 + 職稱 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">團隊</label>
+                <select class="filter-select" id="acc-team" style="height:36px;">
+                  <option value="">請選擇</option>
+                  <option value="營運">營運</option>
+                  <option value="外場">外場</option>
+                  <option value="吧檯">吧檯</option>
+                  <option value="內廚">內廚</option>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">職稱</label>
+                <select class="filter-select" id="acc-title" style="height:36px;">
+                  <option value="">請選擇</option>
+                  <option value="正職">正職</option>
+                  <option value="兼職">兼職</option>
+                  <option value="臨時工">臨時工</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 密碼 -->
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">密碼<span style="color:#e53935;margin-left:2px;">*</span><span id="acc-pass-hint" style="font-size:11px;color:var(--color-text-muted);margin-left:6px;">（留空則保持不變）</span></label>
+              <input class="form-input" id="acc-pass" type="password" placeholder="設定密碼"/>
+            </div>
+
+            <!-- 狀態開關 -->
+            <div style="display:flex;align-items:center;gap:12px;">
+              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">帳號狀態</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+                <span style="position:relative;display:inline-block;width:44px;height:24px;">
+                  <input type="checkbox" id="acc-active" checked style="display:none;" onchange="document.getElementById('acc-active-label').textContent=this.checked?'啟用':'停用';document.getElementById('acc-toggle-track').style.background=this.checked?'var(--color-gold)':'#ccc';document.getElementById('acc-toggle-knob').style.transform=this.checked?'translateX(20px)':'translateX(0)'"/>
+                  <span id="acc-toggle-track" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;inset:0;border-radius:24px;background:var(--color-gold);cursor:pointer;transition:.2s;"></span>
+                  <span id="acc-toggle-knob" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s;transform:translateX(20px);cursor:pointer;"></span>
+                </span>
+                <span style="font-size:13px;font-weight:500;" id="acc-active-label">啟用</span>
+              </label>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:12px;margin-top:4px;">
+            <button onclick="closeModal('accModal')" style="height:40px;padding:0 24px;border-radius:10px;border:1.5px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:14px;cursor:pointer;transition:.15s;" onmouseover="this.style.background='#e8e3d6'" onmouseout="this.style.background='#f5f5f5'">取消</button>
+            <button id="acc-save-btn" onclick="saveAccount()" style="height:40px;padding:0 32px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold-light)'" onmouseout="this.style.background='var(--color-gold)'">💾 儲存</button>
+          </div>
+          <input type="hidden" id="acc-edit-id"/>
+        </div>
+      </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div id="acc-form-err" style="display:none;color:#c62828;font-size:12px;background:#fce4e4;padding:8px 12px;border-radius:7px;"></div>
+
+            <!-- 信箱 -->
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">電子信箱<span style="color:#e53935;margin-left:2px;">*</span></label>
+              <div style="position:relative;">
+                <input style="border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;box-sizing:border-box;" id="acc-mail-input" type="text" placeholder="example@gmail.com" autocomplete="off" oninput="updateAccMailSuggestions(this)"/>
+                <div id="acc-mail-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--color-border-card);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;max-height:160px;overflow-y:auto;margin-top:3px;"></div>
               </div>
             </div>
 
@@ -2488,10 +2628,11 @@ function showPage(pageId, el) {
   if (pageId === 'main')        { if(typeof loadMainData==='function') loadMainData(); }
   if (pageId === 'monthly-all') { if(typeof loadMallData==='function') loadMallData(); }
   if (pageId === 'analytics')   updateAnalytics();
+  if (pageId === 'feedback-mgr') loadFeedbackMgr();
+  if (pageId === 'report-mgr')   loadReportMgr();
   if (pageId === 'extraops') {
     var r = CURRENT_USER ? CURRENT_USER.role : 'guest';
     var isFullPlus = (r === 'fulltime' || r === 'manager' || r === 'admin');
-    // fulltime+ 全部可見；parttime 只能看收銀交接表和庫存盤點表
     document.querySelectorAll('[data-perm-block="fulltime"]').forEach(function(el){
       el.style.display = isFullPlus ? '' : 'none';
     });
@@ -3297,7 +3438,22 @@ function updateAnalytics() {
   if (title) title.textContent = '📊 ' + year + '年 ' + (anaAllMode ? '全年度' : month + '月') + ' 數據分析';
   if (trendTitle) trendTitle.textContent = anaAllMode ? '全年度每月申請趨勢' : month + '月 每週申請趨勢';
 
-  var source = ALL_APPS_DATA.length ? ALL_APPS_DATA : [];
+  // 若 ALL_APPS_DATA 是空的（未進入過所有申請頁），先抓取
+  if (!ALL_APPS_DATA.length) {
+    var url = GAS_URL + '?action=getApplications&_=' + Date.now();
+    fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.success && data.applications) {
+          ALL_APPS_DATA = data.applications;
+          updateAnalytics(); // re-call with data
+        }
+      })
+      .catch(function(){});
+    return; // wait for fetch
+  }
+
+  var source = ALL_APPS_DATA;
   var filtered = source.filter(function(a){
     if (!anaAllMode) return (a.applyDate||'').slice(0,7) === (year + '/' + month);
     return (a.applyDate||'').slice(0,4) === year;
@@ -4130,8 +4286,8 @@ var ROLE_PAGES = {
   parttime: ['doccenter','leave','myrecords','monthly','extraops'],
   employee: ['doccenter','leave','myrecords','monthly'],
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
-  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
-  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account'],
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','feedback-mgr','report-mgr'],
+  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
 };
 
 var ROLE_SIDEBAR_MAP = {
@@ -4139,11 +4295,171 @@ var ROLE_SIDEBAR_MAP = {
   parttime: ['doccenter','leave','myrecords','monthly','extraops'],
   employee: ['doccenter','leave','myrecords','monthly'],
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
-  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
-  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account'],
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','feedback-mgr','report-mgr'],
+  admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
 };
 
-/* ══ 初始化：檢查 localStorage ══ */
+/* ══ 意見回饋 & 問題回報 管理 ══ */
+var FB_DATA = [];
+var RP_DATA = [];
+var FBRP_CURRENT = null; // 目前開啟的詳細記錄
+var FBRP_TYPE = '';      // 'feedback' or 'report'
+
+function loadFeedbackMgr() {
+  var tbody = document.getElementById('fb-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  var url = GAS_URL + '?action=getFeedbacks&_=' + Date.now();
+  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      FB_DATA = data.feedbacks || data.data || [];
+      updateFbStats();
+      renderFbTable();
+    })
+    .catch(function(){
+      if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:#f44336;">連線失敗</td></tr>';
+    });
+}
+
+function loadReportMgr() {
+  var tbody = document.getElementById('rp-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  var url = GAS_URL + '?action=getReports&_=' + Date.now();
+  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      RP_DATA = data.reports || data.data || [];
+      updateRpStats();
+      renderRpTable();
+    })
+    .catch(function(){
+      if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:#f44336;">連線失敗</td></tr>';
+    });
+}
+
+function updateFbStats() {
+  var total=FB_DATA.length, pending=0, done=0;
+  FB_DATA.forEach(function(r){ if((r.status||'').indexOf('已處理')>-1) done++; else pending++; });
+  var g=function(id){return document.getElementById(id);};
+  if(g('fb-total'))   g('fb-total').textContent=total;
+  if(g('fb-pending')) g('fb-pending').textContent=pending;
+  if(g('fb-done'))    g('fb-done').textContent=done;
+}
+
+function updateRpStats() {
+  var total=RP_DATA.length, pending=0, done=0;
+  RP_DATA.forEach(function(r){ if((r.status||'').indexOf('已處理')>-1) done++; else pending++; });
+  var g=function(id){return document.getElementById(id);};
+  if(g('rp-total'))   g('rp-total').textContent=total;
+  if(g('rp-pending')) g('rp-pending').textContent=pending;
+  if(g('rp-done'))    g('rp-done').textContent=done;
+}
+
+function renderFbTable() {
+  var tbody=document.getElementById('fb-tbody'); if(!tbody) return;
+  var search=((document.getElementById('fb-search')||{}).value||'').toLowerCase();
+  var sf=((document.getElementById('fb-status-filter')||{}).value||'');
+  var filtered=FB_DATA.filter(function(r){
+    if(sf && (r.status||'待處理')!==sf) return false;
+    if(search && (r.name||'').toLowerCase().indexOf(search)<0 && (r.content||'').toLowerCase().indexOf(search)<0) return false;
+    return true;
+  });
+  var c=document.getElementById('fb-count'); if(c) c.textContent=filtered.length;
+  tbody.innerHTML='';
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
+  filtered.forEach(function(r,i){
+    var isDone=(r.status||'').indexOf('已處理')>-1;
+    var sBg=isDone?'#e8f5e9':'#fff8e1'; var sColor=isDone?'#2e7d32':'#d4a017';
+    var tr=document.createElement('tr');
+    if(i%2) tr.style.background='var(--color-bg-table-alt)';
+    tr.innerHTML=
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+(r.submittedAt||r.createdAt||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
+      '<td style="font-size:12px;">'+(r.content||'').slice(0,40)+(r.content&&r.content.length>40?'…':'')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
+      '<td style="text-align:center;"></td>';
+    var lastTd=tr.lastElementChild;
+    var vBtn=document.createElement('button'); vBtn.className='btn-action';
+    vBtn.style.cssText='font-size:10px;width:auto;padding:0 8px;height:24px;';
+    vBtn.textContent='查看';
+    (function(rec){ vBtn.onclick=function(){ openFbrpDetail(rec,'feedback'); }; })(r);
+    lastTd.appendChild(vBtn);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderRpTable() {
+  var tbody=document.getElementById('rp-tbody'); if(!tbody) return;
+  var search=((document.getElementById('rp-search')||{}).value||'').toLowerCase();
+  var sf=((document.getElementById('rp-status-filter')||{}).value||'');
+  var filtered=RP_DATA.filter(function(r){
+    if(sf && (r.status||'待處理')!==sf) return false;
+    if(search && (r.name||'').toLowerCase().indexOf(search)<0 && (r.content||'').toLowerCase().indexOf(search)<0) return false;
+    return true;
+  });
+  var c=document.getElementById('rp-count'); if(c) c.textContent=filtered.length;
+  tbody.innerHTML='';
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
+  filtered.forEach(function(r,i){
+    var isDone=(r.status||'').indexOf('已處理')>-1;
+    var sBg=isDone?'#e8f5e9':'#fff8e1'; var sColor=isDone?'#2e7d32':'#d4a017';
+    var tr=document.createElement('tr');
+    if(i%2) tr.style.background='var(--color-bg-table-alt)';
+    tr.innerHTML=
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+(r.submittedAt||r.createdAt||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
+      '<td style="font-size:12px;">'+(r.content||'').slice(0,40)+(r.content&&r.content.length>40?'…':'')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
+      '<td style="text-align:center;"></td>';
+    var lastTd=tr.lastElementChild;
+    var vBtn=document.createElement('button'); vBtn.className='btn-action';
+    vBtn.style.cssText='font-size:10px;width:auto;padding:0 8px;height:24px;';
+    vBtn.textContent='查看';
+    (function(rec){ vBtn.onclick=function(){ openFbrpDetail(rec,'report'); }; })(r);
+    lastTd.appendChild(vBtn);
+    tbody.appendChild(tr);
+  });
+}
+
+function openFbrpDetail(rec, type) {
+  FBRP_CURRENT = rec;
+  FBRP_TYPE = type;
+  var titleEl=document.getElementById('fbrp-detail-title');
+  var infoEl=document.getElementById('fbrp-detail-info');
+  var bodyEl=document.getElementById('fbrp-detail-body');
+  var markBtn=document.getElementById('fbrp-mark-btn');
+  if(titleEl) titleEl.textContent = type==='feedback' ? '💬 意見回饋詳細' : '🚨 問題回報詳細';
+  if(infoEl) infoEl.innerHTML = '提交時間：'+(rec.submittedAt||rec.createdAt||'—')+'<br>提交者：'+(rec.name||rec.user||'—')+'<br>狀態：'+(rec.status||'待處理');
+  if(bodyEl) bodyEl.textContent = rec.content||'（無內容）';
+  if(markBtn) {
+    var isDone=(rec.status||'').indexOf('已處理')>-1;
+    markBtn.style.display=isDone?'none':'';
+  }
+  document.getElementById('fbrpDetailModal').classList.add('open');
+}
+
+function markFbrpDone() {
+  if (!FBRP_CURRENT) return;
+  var action = FBRP_TYPE==='feedback' ? 'updateFeedback' : 'updateReport';
+  var markBtn=document.getElementById('fbrp-mark-btn');
+  if(markBtn) { markBtn.disabled=true; markBtn.textContent='⏳ 更新中…'; }
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    body: JSON.stringify({ action:action, id:FBRP_CURRENT.id||FBRP_CURRENT.rowId, status:'已處理' })
+  })
+  .then(function(){
+    FBRP_CURRENT.status = '已處理';
+    showToastGlobal('✅ 已標記為已處理','ok');
+    closeModal('fbrpDetailModal');
+    if(FBRP_TYPE==='feedback') { updateFbStats(); renderFbTable(); }
+    else { updateRpStats(); renderRpTable(); }
+  })
+  .catch(function(e){ if(markBtn){markBtn.disabled=false;markBtn.textContent='✅ 標記已處理';} showToastGlobal('❌ 更新失敗：'+e.message,'err'); });
+}
+
+
 function initAuth() {
   // 立即顯示遮罩（確保未登入狀態不可操作）
   applyBlur(true);
@@ -4533,7 +4849,7 @@ function renderAccTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.title||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;'+roleStyle+'">'+(ROLE_LABEL[a.role]||a.role)+'</span></td>'+
       '<td style="text-align:center;font-size:12px;font-weight:600;'+stColor+'">'+(a.status||'—')+'</td>'+
-      '<td style="font-size:11px;color:var(--color-text-muted);text-align:center;">'+(a.createdAt||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--color-text-muted);text-align:center;font-family:var(--font-mono);">' + formatAccDate(a.createdAt) + '</td>'+
       '<td style="text-align:center;">' +
         '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:3px;">編輯</button>' +
         '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;margin-right:3px;">重設密碼</button>' +
@@ -4546,19 +4862,58 @@ function renderAccTable() {
 /* ── 開啟帳號 Modal ── */
 
 /* ── 帳號 Modal 信箱建議 ── */
-function updateAccMailSuggestions() {
-  var val  = (document.getElementById('acc-mail-input')||{value:''}).value;
-  var list = document.getElementById('acc-mail-suggestions');
-  if (!list) return;
-  list.innerHTML = '';
-  var domains = ['gmail.com','yahoo.com.tw','outlook.com','hotmail.com','icloud.com'];
+function updateAccMailSuggestions(inputEl) {
+  var val  = (inputEl || document.getElementById('acc-mail-input') || {value:''}).value;
+  var dropdown = document.getElementById('acc-mail-dropdown');
+  if (!dropdown) return;
+  var domains = ['gmail.com','yahoo.com.tw','outlook.com','hotmail.com','icloud.com','msn.com'];
+  if (!val) { dropdown.style.display = 'none'; return; }
   var atIdx = val.indexOf('@');
+  var suggestions = [];
   if (atIdx < 0) {
-    domains.forEach(function(d){ var o=document.createElement('option'); o.value=val+'@'+d; list.appendChild(o); });
+    suggestions = domains.map(function(d){ return val + '@' + d; });
   } else {
-    var u=val.slice(0,atIdx), dom=val.slice(atIdx+1).toLowerCase();
-    domains.filter(function(d){return d.startsWith(dom);}).forEach(function(d){ var o=document.createElement('option'); o.value=u+'@'+d; list.appendChild(o); });
+    var u = val.slice(0, atIdx);
+    var dom = val.slice(atIdx + 1).toLowerCase();
+    if (!dom) { suggestions = domains.map(function(d){ return u + '@' + d; }); }
+    else { suggestions = domains.filter(function(d){ return d.startsWith(dom); }).map(function(d){ return u + '@' + d; }); }
   }
+  if (!suggestions.length || (suggestions.length === 1 && suggestions[0] === val)) {
+    dropdown.style.display = 'none'; return;
+  }
+  dropdown.innerHTML = suggestions.map(function(s){
+    return '<div onclick="selectAccMail(\''+s+'\')" style="padding:9px 14px;cursor:pointer;font-size:13px;color:var(--color-text-primary);border-bottom:1px solid var(--color-border-card);transition:.1s;" onmouseover="this.style.background=\'#fdf8ee\'" onmouseout="this.style.background=\'\'">'+s+'</div>';
+  }).join('');
+  dropdown.style.display = 'block';
+}
+
+function selectAccMail(mail) {
+  var input = document.getElementById('acc-mail-input');
+  if (input) input.value = mail;
+  var dropdown = document.getElementById('acc-mail-dropdown');
+  if (dropdown) dropdown.style.display = 'none';
+}
+
+// 點擊外部關閉 dropdown
+document.addEventListener('click', function(e){
+  var dd = document.getElementById('acc-mail-dropdown');
+  var inp = document.getElementById('acc-mail-input');
+  if (dd && inp && !inp.contains(e.target) && !dd.contains(e.target)) {
+    dd.style.display = 'none';
+  }
+});
+
+
+function formatAccDate(d) {
+  if (!d) return '—';
+  // Input: yyyy/mm/dd HH:MM:SS or any date string
+  var clean = String(d).replace(/[\/\-]/g, function(c,i){ return i<8?'':c; });
+  // Try to parse and reformat to YYYYMMDD HH:MM:SS
+  var m = String(d).match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})[\s]?(\d{2}):(\d{2})(?::(\d{2}))?/);
+  if (m) return m[1]+m[2]+m[3]+' '+m[4]+':'+m[5]+':'+(m[6]||'00');
+  var m2 = String(d).match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+  if (m2) return m2[1]+m2[2]+m2[3];
+  return d;
 }
 
 /* ── 停用帳號 ── */
