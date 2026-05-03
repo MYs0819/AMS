@@ -1982,8 +1982,18 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div style="flex:1;"></div><span class="toolbar-info">共 <span id="fb-count">0</span> 筆</span>
           </div>
           <table class="data-table">
-            <thead><tr><th>提交時間</th><th>提交者</th><th>內容摘要</th><th>狀態</th><th>操作</th></tr></thead>
-            <tbody id="fb-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
+            <colgroup>
+              <col style="width:130px;"/><col style="width:80px;"/><col style="width:80px;"/><col/><col style="width:60px;"/><col style="width:52px;"/>
+            </colgroup>
+            <thead><tr>
+              <th style="text-align:center;">送出時間</th>
+              <th style="text-align:center;">姓名</th>
+              <th style="text-align:center;">意見類型</th>
+              <th>內容</th>
+              <th style="text-align:center;">狀態</th>
+              <th style="text-align:center;">操作</th>
+            </tr></thead>
+            <tbody id="fb-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -2002,8 +2012,18 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div style="flex:1;"></div><span class="toolbar-info">共 <span id="rp-count">0</span> 筆</span>
           </div>
           <table class="data-table">
-            <thead><tr><th>提交時間</th><th>提交者</th><th>內容摘要</th><th>狀態</th><th>操作</th></tr></thead>
-            <tbody id="rp-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
+            <colgroup>
+              <col style="width:130px;"/><col style="width:80px;"/><col style="width:80px;"/><col/><col style="width:60px;"/><col style="width:52px;"/>
+            </colgroup>
+            <thead><tr>
+              <th style="text-align:center;">回報時間</th>
+              <th style="text-align:center;">姓名</th>
+              <th style="text-align:center;">問題類型</th>
+              <th>問題描述</th>
+              <th style="text-align:center;">狀態</th>
+              <th style="text-align:center;">操作</th>
+            </tr></thead>
+            <tbody id="rp-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -2301,88 +2321,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <input type="hidden" id="acc-edit-id"/>
         </div>
-      </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div id="acc-form-err" style="display:none;color:#c62828;font-size:12px;background:#fce4e4;padding:8px 12px;border-radius:7px;"></div>
+     
 
-            <!-- 信箱 -->
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">電子信箱<span style="color:#e53935;margin-left:2px;">*</span></label>
-              <div style="position:relative;">
-                <input style="border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;box-sizing:border-box;" id="acc-mail-input" type="text" placeholder="example@gmail.com" autocomplete="off" oninput="updateAccMailSuggestions(this)"/>
-                <div id="acc-mail-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--color-border-card);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;max-height:160px;overflow-y:auto;margin-top:3px;"></div>
-              </div>
-            </div>
-
-            <!-- 姓名 + 團隊 -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">姓名<span style="color:#e53935;margin-left:2px;">*</span></label>
-                <input class="form-input" id="acc-name" placeholder="真實姓名"/>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">團隊</label>
-                <select class="filter-select" id="acc-team" style="height:36px;">
-                  <option value="">請選擇</option>
-                  <option value="外場">外場</option>
-                  <option value="吧台">吧台</option>
-                  <option value="內廚">內廚</option>
-                  <option value="管理">管理</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- 職稱 + 角色 -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">職稱</label>
-                <select class="filter-select" id="acc-title" style="height:36px;">
-                  <option value="">請選擇</option>
-                  <option value="正職">正職</option>
-                  <option value="兼職">兼職</option>
-                  <option value="臨時工">臨時工</option>
-                </select>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">角色<span style="color:#e53935;margin-left:2px;">*</span></label>
-                <select class="filter-select" id="acc-role" style="height:36px;">
-                  <option value="parttime">兼職</option>
-                  <option value="fulltime">正職</option>
-                  <option value="manager">主管</option>
-                  <option value="admin">營運（Admin）</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- 密碼 -->
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">密碼<span style="color:#e53935;margin-left:2px;">*</span><span id="acc-pass-hint" style="font-size:11px;color:var(--color-text-muted);margin-left:6px;">（留空則保持不變）</span></label>
-              <input class="form-input" id="acc-pass" type="password" placeholder="設定密碼"/>
-            </div>
-
-            <!-- 狀態開關 -->
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">帳號狀態</label>
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
-                <!-- Toggle Switch -->
-                <span style="position:relative;display:inline-block;width:44px;height:24px;">
-                  <input type="checkbox" id="acc-active" checked style="display:none;" onchange="document.getElementById('acc-active-label').textContent=this.checked?'啟用':'停用';document.getElementById('acc-toggle-track').style.background=this.checked?'var(--color-gold)':'#ccc';document.getElementById('acc-toggle-knob').style.transform=this.checked?'translateX(20px)':'translateX(0)'"/>
-                  <span id="acc-toggle-track" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;inset:0;border-radius:24px;background:var(--color-gold);cursor:pointer;transition:.2s;"></span>
-                  <span id="acc-toggle-knob" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s;transform:translateX(20px);cursor:pointer;"></span>
-                </span>
-                <span style="font-size:13px;font-weight:500;" id="acc-active-label">啟用</span>
-              </label>
-            </div>
-
-
-          </div>
-          <div style="display:flex;justify-content:center;gap:12px;margin-top:4px;">
-            <button onclick="closeModal('accModal')" style="height:40px;padding:0 24px;border-radius:10px;border:1.5px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:14px;cursor:pointer;transition:.15s;" onmouseover="this.style.background='#e8e3d6'" onmouseout="this.style.background='#f5f5f5'">取消</button>
-            <button id="acc-save-btn" onclick="saveAccount()" style="height:40px;padding:0 32px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold-light)'" onmouseout="this.style.background='var(--color-gold)'">💾 儲存</button>
-          </div>
-          <input type="hidden" id="acc-edit-id"/>
-        </div>
-      </div>
 
     
 <!-- 審核 Modal -->
@@ -4368,17 +4308,19 @@ function renderFbTable() {
   });
   var c=document.getElementById('fb-count'); if(c) c.textContent=filtered.length;
   tbody.innerHTML='';
-  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
   filtered.forEach(function(r,i){
     var isDone=(r.status||'').indexOf('已處理')>-1;
     var sBg=isDone?'#e8f5e9':'#fff8e1'; var sColor=isDone?'#2e7d32':'#d4a017';
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
+    var timeStr = fmtDT(r.submittedAt||r.createdAt||'');
     tr.innerHTML=
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+(r.submittedAt||r.createdAt||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
-      '<td style="font-size:12px;">'+(r.content||'').slice(0,40)+(r.content&&r.content.length>40?'…':'')+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||'—')+'</td>'+
+      '<td style="font-size:12px;">'+(r.content||'').slice(0,80)+(r.content&&r.content.length>80?'…':'')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
     var vBtn=document.createElement('button'); vBtn.className='btn-action';
@@ -4401,17 +4343,19 @@ function renderRpTable() {
   });
   var c=document.getElementById('rp-count'); if(c) c.textContent=filtered.length;
   tbody.innerHTML='';
-  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
   filtered.forEach(function(r,i){
     var isDone=(r.status||'').indexOf('已處理')>-1;
     var sBg=isDone?'#e8f5e9':'#fff8e1'; var sColor=isDone?'#2e7d32':'#d4a017';
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
+    var timeStr = fmtDT(r.submittedAt||r.createdAt||r.reportedAt||'');
     tr.innerHTML=
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+(r.submittedAt||r.createdAt||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
-      '<td style="font-size:12px;">'+(r.content||'').slice(0,40)+(r.content&&r.content.length>40?'…':'')+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||r.issueType||'—')+'</td>'+
+      '<td style="font-size:12px;">'+(r.content||r.description||'').slice(0,80)+((r.content||r.description||'').length>80?'…':'')+'</td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
     var vBtn=document.createElement('button'); vBtn.className='btn-action';
@@ -4431,11 +4375,22 @@ function openFbrpDetail(rec, type) {
   var bodyEl=document.getElementById('fbrp-detail-body');
   var markBtn=document.getElementById('fbrp-mark-btn');
   if(titleEl) titleEl.textContent = type==='feedback' ? '💬 意見回饋詳細' : '🚨 問題回報詳細';
-  if(infoEl) infoEl.innerHTML = '提交時間：'+(rec.submittedAt||rec.createdAt||'—')+'<br>提交者：'+(rec.name||rec.user||'—')+'<br>狀態：'+(rec.status||'待處理');
-  if(bodyEl) bodyEl.textContent = rec.content||'（無內容）';
+  var timeRaw = rec.submittedAt||rec.createdAt||rec.reportedAt||'';
+  var timeStr = fmtDT(timeRaw);
+  var typeLine = type==='feedback'
+    ? '意見類型：'+(rec.type||rec.category||'—')
+    : '問題類型：'+(rec.type||rec.category||rec.issueType||'—');
+  if(infoEl) infoEl.innerHTML =
+    (type==='feedback'?'送出時間：':'回報時間：')+timeStr+'<br>'+
+    '姓　　名：'+(rec.name||rec.user||'—')+'<br>'+
+    typeLine+'<br>'+
+    '狀　　態：'+(rec.status||'待處理');
+  var bodyContent = type==='feedback' ? (rec.content||'（無內容）') : (rec.content||rec.description||'（無描述）');
+  if(bodyEl) bodyEl.textContent = bodyContent;
   if(markBtn) {
     var isDone=(rec.status||'').indexOf('已處理')>-1;
     markBtn.style.display=isDone?'none':'';
+    markBtn.disabled=false; markBtn.textContent='✅ 標記已處理';
   }
   document.getElementById('fbrpDetailModal').classList.add('open');
 }
