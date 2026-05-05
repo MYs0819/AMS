@@ -1983,7 +1983,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:130px;"/><col style="width:80px;"/><col style="width:80px;"/><col/><col style="width:60px;"/><col style="width:52px;"/>
+              <col class="col-id"/>
+              <col class="col-name"/>
+              <col class="col-team"/>
+              <col/>
+              <col class="col-status"/>
+              <col class="col-action"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">送出時間</th>
@@ -2013,7 +2018,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:130px;"/><col style="width:80px;"/><col style="width:80px;"/><col/><col style="width:60px;"/><col style="width:52px;"/>
+              <col class="col-id"/>
+              <col class="col-name"/>
+              <col class="col-team"/>
+              <col/>
+              <col class="col-status"/>
+              <col class="col-action"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">回報時間</th>
@@ -3378,19 +3388,23 @@ function updateAnalytics() {
   if (title) title.textContent = '📊 ' + year + '年 ' + (anaAllMode ? '全年度' : month + '月') + ' 數據分析';
   if (trendTitle) trendTitle.textContent = anaAllMode ? '全年度每月申請趨勢' : month + '月 每週申請趨勢';
 
-  // 若 ALL_APPS_DATA 是空的（未進入過所有申請頁），先抓取
+  // 若 ALL_APPS_DATA 是空的，先抓取
   if (!ALL_APPS_DATA.length) {
+    var g2 = function(id){return document.getElementById(id);};
+    ['ana-total','ana-leave','ana-retain','ana-pending','ana-done','ana-reject'].forEach(function(id){
+      var el=g2(id); if(el) el.textContent='…';
+    });
     var url = GAS_URL + '?action=getApplications&_=' + Date.now();
     fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
       .then(function(r){ return r.json(); })
       .then(function(data){
         if (data.success && data.applications) {
           ALL_APPS_DATA = data.applications;
-          updateAnalytics(); // re-call with data
+          updateAnalytics();
         }
       })
       .catch(function(){});
-    return; // wait for fetch
+    return;
   }
 
   var source = ALL_APPS_DATA;
@@ -4389,7 +4403,9 @@ function openFbrpDetail(rec, type) {
   if(bodyEl) bodyEl.textContent = bodyContent;
   if(markBtn) {
     var isDone=(rec.status||'').indexOf('已處理')>-1;
-    markBtn.style.display=isDone?'none':'';
+    var isAdmin = CURRENT_USER && CURRENT_USER.role === 'admin';
+    // manager 只能查閱，不可更動；只有 admin 可標記已處理
+    markBtn.style.display = (isDone || !isAdmin) ? 'none' : '';
     markBtn.disabled=false; markBtn.textContent='✅ 標記已處理';
   }
   document.getElementById('fbrpDetailModal').classList.add('open');
@@ -5382,18 +5398,16 @@ function loadMonthlyData() {
         if (typeof updateLeaveStats === 'function') updateLeaveStats();
       }
 
-      // 建立月份選單
+      // 建立月份選單（只收集有資料的月份）
       var ymSet = {};
       MONTHLY_ALL_DATA.forEach(function(a){
-        // applyDate 格式：yyyy/mm/dd HH:MM:SS 或 yyyy/mm/dd
         var raw = (a.applyDate||'').trim();
-        var ym = raw.slice(0,7); // yyyy/mm
+        var ym = raw.slice(0,7);
         if (ym && /^\d{4}\/\d{2}$/.test(ym)) ymSet[ym] = true;
       });
       var ymList = Object.keys(ymSet).sort().reverse();
       var sel = document.getElementById('mon-month-sel');
       if (sel) {
-        var prevVal = sel.value;
         sel.innerHTML = '<option value="">全部月份</option>';
         ymList.forEach(function(ym){
           var opt = document.createElement('option');
@@ -5401,9 +5415,10 @@ function loadMonthlyData() {
           opt.textContent = ym.slice(5,7) + '月';
           sel.appendChild(opt);
         });
+        // 預設選當月
         var now = new Date();
         var curYm = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0');
-        sel.value = prevVal || (ymList.indexOf(curYm)>-1 ? curYm : (ymList[0]||''));
+        sel.value = (ymList.indexOf(curYm)>-1) ? curYm : '';
       }
       onMonthChange();
     })
