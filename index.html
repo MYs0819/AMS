@@ -2694,6 +2694,7 @@ function submitFeedback() {
   var ts  = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())
            +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
 
+  var name    = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? (CURRENT_USER.name||'') : '';
   fetch(GAS_URL, {
     method: 'POST',
     mode:   'no-cors',
@@ -2734,10 +2735,11 @@ function submitBug() {
   var ts  = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())
            +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
 
+  var bugName = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? (CURRENT_USER.name||'') : '';
   fetch(GAS_URL, {
     method: 'POST',
     mode:   'no-cors',
-    body: JSON.stringify({ action:'addBugReport', time:ts, bugType:bugType, desc:desc })
+    body: JSON.stringify({ action:'addBugReport', time:ts, name:bugName, bugType:bugType, desc:desc })
   }).then(function(){
     if (submitBtn) { submitBtn.textContent = '📤 送出回報'; submitBtn.disabled = false; }
     alert('✅ 問題已回報！我們將盡快處理，感謝您的回報。');
@@ -2810,7 +2812,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyh2PPjBJiqogtlqE7jZymd0b47HrinycXZM0sqQeM5wOWq2vbwHku9fWf8sdoP14lWRg/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwSQfRYtPyTqWRev7cjpkkwpeQybz_QlhNf4TK4xnFY64ialDpsWrg3pHeFvIbLLb-5-g/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3603,17 +3605,21 @@ var ALL_APPS_DATA = [];
 function fmtDT(v) {
   if (!v) return '—';
   var s = String(v).trim();
-  // 已是 yyyy/mm/dd... 格式：確保去掉秒數以上
-  var m = s.match(/(\d{4})\/(\d{2})\/(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+  // 去掉 GMT+0800 之類的後綴
+  s = s.replace(/\s*GMT[+\-]\d{4}.*$/i,'').replace(/\s*\(.*\)$/,'').trim();
+  // 已是 yyyy/mm/dd HH:MM:SS 格式
+  var m = s.match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})[\s]?(\d{2}):(\d{2})(?::(\d{2}))?/);
   if (m) {
-    var base = m[1]+'/'+m[2]+'/'+m[3];
-    return m[4] ? base+' '+m[4]+':'+m[5] : base;
+    return m[1]+m[2]+m[3]+' '+m[4]+':'+m[5]+':'+(m[6]||'00');
   }
-  // 嘗試用 Date 解析（去掉 GMT 字樣）
+  // 只有日期
+  var m2 = s.match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+  if (m2) return m2[1]+m2[2]+m2[3];
+  // 嘗試用 Date 解析
   var d = new Date(s);
   if (isNaN(d.getTime())) return s;
   var p = function(n){ return String(n).padStart(2,'0'); };
-  return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+  return d.getFullYear()+''+p(d.getMonth()+1)+''+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
 }
 /* ── 起訖格式：yyyy/mm/dd HH:MM ~ yyyy/mm/dd HH:MM ── */
 function fmtDRange(s, e) {
@@ -4262,34 +4268,54 @@ var FBRP_TYPE = '';      // 'feedback' or 'report'
 function loadFeedbackMgr() {
   var tbody = document.getElementById('fb-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getFeedbacks&_=' + Date.now();
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
-      FB_DATA = data.feedbacks || data.data || [];
+      FB_DATA = (data.feedbacks || data.data || data.items || []).map(function(r){
+        return {
+          id:          r.id || r.rowId || '',
+          rowId:       r.rowId || r.id || '',
+          submittedAt: r.submittedAt || r.time || r.timestamp || r.createdAt || '',
+          name:        r.name || r.user || r.submitter || '',
+          type:        r.type || r.category || r.feedbackType || '',
+          content:     r.content || r.message || r.body || '',
+          status:      r.status || '待處理',
+        };
+      });
       updateFbStats();
       renderFbTable();
     })
     .catch(function(){
-      if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:#f44336;">連線失敗</td></tr>';
+      if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">連線失敗，請確認 GAS 已實作 getFeedbacks action</td></tr>';
     });
 }
 
 function loadReportMgr() {
   var tbody = document.getElementById('rp-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getReports&_=' + Date.now();
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
-      RP_DATA = data.reports || data.data || [];
+      RP_DATA = (data.reports || data.data || data.items || []).map(function(r){
+        return {
+          id:          r.id || r.rowId || '',
+          rowId:       r.rowId || r.id || '',
+          submittedAt: r.submittedAt || r.time || r.reportedAt || r.timestamp || r.createdAt || '',
+          name:        r.name || r.user || r.submitter || '',
+          type:        r.type || r.category || r.issueType || r.bugType || '',
+          content:     r.content || r.description || r.desc || r.message || '',
+          status:      r.status || '待處理',
+        };
+      });
       updateRpStats();
       renderRpTable();
     })
     .catch(function(){
-      if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:#f44336;">連線失敗</td></tr>';
+      if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">連線失敗，請確認 GAS 已實作 getReports action</td></tr>';
     });
 }
 
@@ -4824,7 +4850,8 @@ function renderAccTable() {
       '<td style="text-align:center;">' +
         '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:3px;">編輯</button>' +
         '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;margin-right:3px;">重設密碼</button>' +
-        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;">停用</button>') +
+        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">停用</button>') +
+        '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer;">🗑</button>' +
       '</td>';
     tbody.appendChild(tr);
   });
@@ -4876,15 +4903,7 @@ document.addEventListener('click', function(e){
 
 
 function formatAccDate(d) {
-  if (!d) return '—';
-  // Input: yyyy/mm/dd HH:MM:SS or any date string
-  var clean = String(d).replace(/[\/\-]/g, function(c,i){ return i<8?'':c; });
-  // Try to parse and reformat to YYYYMMDD HH:MM:SS
-  var m = String(d).match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})[\s]?(\d{2}):(\d{2})(?::(\d{2}))?/);
-  if (m) return m[1]+m[2]+m[3]+' '+m[4]+':'+m[5]+':'+(m[6]||'00');
-  var m2 = String(d).match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
-  if (m2) return m2[1]+m2[2]+m2[3];
-  return d;
+  return fmtDT(d);
 }
 
 /* ── 停用帳號 ── */
@@ -4893,6 +4912,19 @@ function disableAccount(mail) {
   fetch(GAS_URL, { method:'POST', mode:'no-cors',
     body: JSON.stringify({ action:'updateAccount', mail:mail, status:'停用' })
   }).then(function(){ showToastGlobal('帳號已停用','ok'); setTimeout(loadAccounts,1200); });
+}
+
+/* ── 刪除帳號 ── */
+function deleteAccount(mail, name) {
+  if (!confirm('⚠️ 確定要永久刪除 ' + (name||mail) + ' 的帳號？\n此操作不可復原，後台資料也會一併刪除。')) return;
+  fetch(GAS_URL, { method:'POST', mode:'no-cors',
+    body: JSON.stringify({ action:'deleteAccount', mail:mail })
+  }).then(function(){
+    showToastGlobal('帳號已刪除','ok');
+    setTimeout(loadAccounts, 1200);
+  }).catch(function(e){
+    showToastGlobal('刪除失敗：'+e.message,'err');
+  });
 }
 
 /* ── 啟用帳號 ── */
