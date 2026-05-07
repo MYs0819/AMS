@@ -1054,8 +1054,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
         <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
-        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('feedback-mgr',this)"><span class="sidebar-icon">💬</span>意見回饋</a>
-        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('report-mgr',this)"><span class="sidebar-icon">🚨</span>問題回報</a>
+        <a href="#" class="sidebar-nav-item" data-perm="account" onclick="return showPage('feedback-mgr',this)"><span class="sidebar-icon">💬</span>意見回饋</a>
+        <a href="#" class="sidebar-nav-item" data-perm="account" onclick="return showPage('report-mgr',this)"><span class="sidebar-icon">🚨</span>問題回報</a>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -2230,11 +2230,18 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:200px;"/><col style="width:80px;"/><col style="width:80px;"/><col style="width:80px;"/>
-              <col style="width:90px;"/><col style="width:70px;"/><col style="width:110px;"/><col style="width:100px;"/>
+              <col style="width:190px;"/><col style="width:75px;"/><col style="width:72px;"/><col style="width:72px;"/>
+              <col style="width:82px;"/><col style="width:60px;"/><col style="width:130px;"/><col style="width:auto;"/>
             </colgroup>
             <thead><tr>
-              <th>電子信箱</th><th>姓名</th><th>團隊</th><th>職稱</th><th>角色</th><th>狀態</th><th>建立日期</th><th>操作</th>
+              <th style="text-align:left;padding-left:10px;">電子信箱</th>
+              <th style="text-align:left;">姓名</th>
+              <th style="text-align:left;">團隊</th>
+              <th style="text-align:left;">職稱</th>
+              <th style="text-align:left;">角色</th>
+              <th style="text-align:left;">狀態</th>
+              <th style="text-align:left;">建立日期</th>
+              <th style="text-align:left;">操作</th>
             </tr></thead>
             <tbody id="acc-tbody">
               <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
@@ -2812,7 +2819,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwSQfRYtPyTqWRev7cjpkkwpeQybz_QlhNf4TK4xnFY64ialDpsWrg3pHeFvIbLLb-5-g/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzD36VKqEi8WYx7lzXqp1sYKGSyyT3GRHjNLmNP6j7_0sKKmoDROQf2cESkBE43tbV4dw/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -4246,7 +4253,7 @@ var ROLE_PAGES = {
   parttime: ['doccenter','leave','myrecords','monthly','extraops'],
   employee: ['doccenter','leave','myrecords','monthly'],
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
-  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','feedback-mgr','report-mgr'],
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
   admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
 };
 
@@ -4255,7 +4262,7 @@ var ROLE_SIDEBAR_MAP = {
   parttime: ['doccenter','leave','myrecords','monthly','extraops'],
   employee: ['doccenter','leave','myrecords','monthly'],
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
-  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','feedback-mgr','report-mgr'],
+  manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
   admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
 };
 
@@ -4271,8 +4278,15 @@ function loadFeedbackMgr() {
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getFeedbacks&_=' + Date.now();
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
-    .then(function(r){ return r.json(); })
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function(data){
+      if (!data.success) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">GAS 回傳失敗：'+(data.error||'請確認 getFeedbacks action 已實作')+'</td></tr>';
+        return;
+      }
       FB_DATA = (data.feedbacks || data.data || data.items || []).map(function(r){
         return {
           id:          r.id || r.rowId || '',
@@ -4287,8 +4301,8 @@ function loadFeedbackMgr() {
       updateFbStats();
       renderFbTable();
     })
-    .catch(function(){
-      if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">連線失敗，請確認 GAS 已實作 getFeedbacks action</td></tr>';
+    .catch(function(err){
+      if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">連線失敗：'+(err.message||'')+'<br><small style="color:#999;">請確認 GAS 已部署並在 doGet 加入 getFeedbacks 路由</small></td></tr>';
     });
 }
 
@@ -4298,8 +4312,15 @@ function loadReportMgr() {
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getReports&_=' + Date.now();
   fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
-    .then(function(r){ return r.json(); })
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function(data){
+      if (!data.success) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">GAS 回傳失敗：'+(data.error||'請確認 getReports action 已實作')+'</td></tr>';
+        return;
+      }
       RP_DATA = (data.reports || data.data || data.items || []).map(function(r){
         return {
           id:          r.id || r.rowId || '',
@@ -4314,8 +4335,8 @@ function loadReportMgr() {
       updateRpStats();
       renderRpTable();
     })
-    .catch(function(){
-      if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">連線失敗，請確認 GAS 已實作 getReports action</td></tr>';
+    .catch(function(err){
+      if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f44336;">連線失敗：'+(err.message||'')+'<br><small style="color:#999;">請確認 GAS 已部署並在 doGet 加入 getReports 路由</small></td></tr>';
     });
 }
 
@@ -4903,7 +4924,18 @@ document.addEventListener('click', function(e){
 
 
 function formatAccDate(d) {
-  return fmtDT(d);
+  if (!d) return '—';
+  var s = String(d).trim().replace(/\s*GMT[+\-]\d{4}.*$/i,'').replace(/\s*\(.*\)$/,'').trim();
+  // 解析 yyyy/mm/dd HH:MM:SS 或 yyyymmdd HH:MM:SS
+  var m = s.match(/(\d{4})[\/\-]?(\d{2})[\/\-]?(\d{2})[\s]?(\d{2}):(\d{2})(?::(\d{2}))?/);
+  if (m) return m[1]+'-'+m[2]+'-'+m[3]+' '+m[4]+':'+m[5]+':'+(m[6]||'00');
+  var m2 = s.match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+  if (m2) return m2[1]+'-'+m2[2]+'-'+m2[3];
+  // 嘗試 Date 解析
+  var dd = new Date(s);
+  if (isNaN(dd.getTime())) return s;
+  var p = function(n){ return String(n).padStart(2,'0'); };
+  return dd.getFullYear()+'-'+p(dd.getMonth()+1)+'-'+p(dd.getDate())+' '+p(dd.getHours())+':'+p(dd.getMinutes())+':'+p(dd.getSeconds());
 }
 
 /* ── 停用帳號 ── */
