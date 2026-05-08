@@ -2230,18 +2230,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:190px;"/><col style="width:75px;"/><col style="width:72px;"/><col style="width:72px;"/>
-              <col style="width:82px;"/><col style="width:60px;"/><col style="width:130px;"/><col style="width:auto;"/>
+              <col style="width:185px;"/><col style="width:70px;"/><col style="width:68px;"/><col style="width:68px;"/>
+              <col style="width:72px;"/><col style="width:56px;"/><col style="width:148px;"/><col/>
             </colgroup>
             <thead><tr>
-              <th style="text-align:left;padding-left:10px;">電子信箱</th>
-              <th style="text-align:left;">姓名</th>
-              <th style="text-align:left;">團隊</th>
-              <th style="text-align:left;">職稱</th>
-              <th style="text-align:left;">角色</th>
-              <th style="text-align:left;">狀態</th>
-              <th style="text-align:left;">建立日期</th>
-              <th style="text-align:left;">操作</th>
+              <th>電子信箱</th><th>姓名</th><th>團隊</th><th>職稱</th>
+              <th>角色</th><th>狀態</th><th>建立日期</th><th>操作</th>
             </tr></thead>
             <tbody id="acc-tbody">
               <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
@@ -2819,7 +2813,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzD36VKqEi8WYx7lzXqp1sYKGSyyT3GRHjNLmNP6j7_0sKKmoDROQf2cESkBE43tbV4dw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyJUa7-ZHxYg00XNwkhLr5JxSIqWhg_yJHuYbIaZonhuUt5C8YQVbGR1qlV6D-St27XhA/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3612,36 +3606,30 @@ var ALL_APPS_DATA = [];
 function fmtDT(v) {
   if (!v) return '—';
   var s = String(v).trim();
-  // 去掉 GMT+0800 之類的後綴
   s = s.replace(/\s*GMT[+\-]\d{4}.*$/i,'').replace(/\s*\(.*\)$/,'').trim();
-  // 已是 yyyy/mm/dd HH:MM:SS 格式
   var m = s.match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})[\s]?(\d{2}):(\d{2})(?::(\d{2}))?/);
-  if (m) {
-    return m[1]+m[2]+m[3]+' '+m[4]+':'+m[5]+':'+(m[6]||'00');
-  }
-  // 只有日期
+  if (m) return m[1]+'-'+m[2]+'-'+m[3]+' '+m[4]+':'+m[5]+':'+(m[6]||'00');
   var m2 = s.match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
-  if (m2) return m2[1]+m2[2]+m2[3];
-  // 嘗試用 Date 解析
+  if (m2) return m2[1]+'-'+m2[2]+'-'+m2[3];
   var d = new Date(s);
   if (isNaN(d.getTime())) return s;
   var p = function(n){ return String(n).padStart(2,'0'); };
-  return d.getFullYear()+''+p(d.getMonth()+1)+''+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
 }
-/* ── 起訖格式：yyyy/mm/dd HH:MM ~ yyyy/mm/dd HH:MM ── */
+/* ── 起訖格式：YYYY-MM-DD HH:MM ~ YYYY-MM-DD HH:MM ── */
 function fmtDRange(s, e) {
   if (!s && !e) return '—';
   function cvt(v) {
     if (!v) return '—';
-    var str = String(v).trim();
-    // yyyy/mm/dd HH:MM 或 yyyy/mm/dd
-    var m = str.match(/(\d{4})\/(\d{2})\/(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
-    if (m) return m[1]+'/'+m[2]+'/'+m[3]+(m[4]?' '+m[4]+':'+m[5]:'');
-    // yyyy-mm-ddTHH:MM 或 ISO
+    var str = String(v).trim().replace(/\s*GMT[+\-]\d{4}.*$/i,'').replace(/\s*\(.*\)$/,'').trim();
+    var m = str.match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})[\s]?(\d{2}):(\d{2})?/);
+    if (m) return m[1]+'-'+m[2]+'-'+m[3]+(m[4]?' '+m[4]+':'+(m[5]||'00'):'');
+    var m2 = str.match(/(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+    if (m2) return m2[1]+'-'+m2[2]+'-'+m2[3];
     var d = new Date(str);
     if (!isNaN(d.getTime())) {
       var p=function(n){return String(n).padStart(2,'0');};
-      return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+      return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
     }
     return str;
   }
