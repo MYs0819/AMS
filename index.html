@@ -2813,7 +2813,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyJUa7-ZHxYg00XNwkhLr5JxSIqWhg_yJHuYbIaZonhuUt5C8YQVbGR1qlV6D-St27XhA/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxV-gJ_ZqHEonblX7b8RfRARYRDps7FoEQLFNCzaUMicvoxDenNH3j8G4vQDg4dwJ-Nww/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3603,6 +3603,16 @@ var ALL_APPS_DATA = [];
 
 /* ── 日期格式化 ── */
 /* ── 把任何日期字串/Date 轉成 yyyy/mm/dd HH:MM ── */
+function fmtDTLine(v) {
+  // Returns HTML: date<br>time on two lines
+  var s = fmtDT(v);
+  if (s === '—' || !s) return '—';
+  // s is now YYYY-MM-DD HH:MM:SS
+  var parts = s.split(' ');
+  if (parts.length >= 2) return parts[0] + '<br>' + parts[1];
+  return s;
+}
+
 function fmtDT(v) {
   if (!v) return '—';
   var s = String(v).trim();
@@ -5262,10 +5272,10 @@ function showToastGlobal(msg, type) {
 function openFlowModal(app) {
   var s   = app.status || '';
   var r1  = app.reviewer || '';
-  var r1t = fmtDT(app.reviewerTime || '');
+  var r1t = fmtDTLine(app.reviewerTime || '');
   var r2  = app.verifier || '';
-  var r2t = fmtDT(app.verifierTime || '');
-  var applyT = fmtDT(app.applyDate || '');
+  var r2t = fmtDTLine(app.verifierTime || '');
+  var applyT = fmtDTLine(app.applyDate || '');
   var isDone   = s.indexOf('完成') > -1;
   var isReject = s.indexOf('退件') > -1;
 
@@ -5281,7 +5291,7 @@ function openFlowModal(app) {
   var empName = document.getElementById('flow-emp-name2');
   var empTime = document.getElementById('flow-submit-time2');
   if (empName) empName.textContent = app.name || '員工';
-  if (empTime) empTime.textContent = applyT;
+  if (empTime) empTime.innerHTML = applyT;
 
   // 連線1
   var line1 = document.getElementById('flow-line1-2');
@@ -5297,7 +5307,7 @@ function openFlowModal(app) {
     mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#e8f5e9;color:#2e7d32;';
     mgrBadge.textContent   = r1 + ' 已通過';
     mgrTime.style.color    = '#5a8060';
-    mgrTime.textContent    = r1t;
+    mgrTime.innerHTML    = r1t;
     if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#90caf9)';
   } else if (isReject) {
     mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#c62828;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
@@ -5305,7 +5315,7 @@ function openFlowModal(app) {
     mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fce4e4;color:#c62828;';
     mgrBadge.textContent   = '已退件';
     mgrTime.style.color    = '#c62828';
-    mgrTime.textContent    = r1t;
+    mgrTime.innerHTML    = r1t;
     if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#ef9a9a)';
   } else {
     mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
@@ -5313,7 +5323,7 @@ function openFlowModal(app) {
     mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fff8e1;color:#e65100;';
     mgrBadge.textContent   = '待審核';
     mgrTime.style.color    = '#9a9482';
-    mgrTime.textContent    = '';
+    mgrTime.innerHTML    = '';
     if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#ccc)';
   }
 
@@ -5327,7 +5337,7 @@ function openFlowModal(app) {
     adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#e8f5e9;color:#2e7d32;';
     adminBadge.textContent    = r2 + ' 已結案';
     adminTime.style.color     = '#5a8060';
-    adminTime.textContent     = r2t;
+    adminTime.innerHTML     = r2t;
     if (line2) line2.style.background = 'linear-gradient(90deg,#90caf9,#a5d6a7)';
   } else if (isReject && !r1) {
     adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
