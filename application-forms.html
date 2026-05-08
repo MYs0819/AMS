@@ -320,6 +320,11 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
 
+      <!-- 事由 -->
+      <div class="f-g" style="margin-bottom:8px;">
+        <label class="f-lbl">請假事由<span class="req">*</span></label>
+        <textarea class="f-inp" id="lv-reason" rows="2" placeholder="請填寫請假事由" style="resize:vertical;min-height:56px;"></textarea>
+      </div>
       <!-- 備註說明 -->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
@@ -466,6 +471,11 @@ input[type="time"] { color-scheme: dark; }
         </div>
       </div>
 
+      <!-- 事由 -->
+      <div class="f-g" style="margin-bottom:8px;">
+        <label class="f-lbl">請假事由<span class="req">*</span></label>
+        <textarea class="f-inp" id="lvs-reason" rows="2" placeholder="請填寫請假事由" style="resize:vertical;min-height:56px;"></textarea>
+      </div>
       <!-- 備註說明 -->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
@@ -794,7 +804,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzD36VKqEi8WYx7lzXqp1sYKGSyyT3GRHjNLmNP6j7_0sKKmoDROQf2cESkBE43tbV4dw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyJUa7-ZHxYg00XNwkhLr5JxSIqWhg_yJHuYbIaZonhuUt5C8YQVbGR1qlV6D-St27XhA/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -1167,17 +1177,17 @@ function submitAttachOnly(prefix) {
 function submitLv() {
   if (_lvSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
 
-  var unit  = document.getElementById('lv-unit').value.trim();
-  var name  = document.getElementById('lv-name').value.trim();
-  var type  = document.getElementById('lv-type').value;
-  var fd    = document.getElementById('lv-fd').value;
-  var reason= document.getElementById('lv-reason').value.trim();
+  var unit   = document.getElementById('lv-unit').value.trim();
+  var type   = document.getElementById('lv-type').value;
+  var fd     = document.getElementById('lv-fd').value;
+  var reasonEl = document.getElementById('lv-reason');
+  var reason = reasonEl ? reasonEl.value.trim() : '';
+  var name   = getLoginName();
 
-  if (!unit)   { showToast('請填寫單位','err'); return; }
-  var name = getLoginName(); // 從登入者取名
+  if (!unit)   { showToast('請選擇單位','err'); return; }
   if (!type)   { showToast('請選擇假別','err'); return; }
   if (!fd)     { showToast('請填寫起始日期','err'); return; }
-  if (!reason) { showToast('請填寫事由','err'); return; }
+  if (!reason) { showToast('請填寫請假事由','err'); return; }
   if (type === '其他' && !document.getElementById('lv-other').value.trim()) {
     showToast('請填寫其他假別說明','err'); return;
   }
