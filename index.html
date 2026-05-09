@@ -1983,12 +1983,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col class="col-id"/>
-              <col class="col-name"/>
-              <col class="col-team"/>
+              <col style="width:var(--col-w-id)"/>
+              <col style="width:var(--col-w-name)"/>
+              <col style="width:var(--col-w-team)"/>
               <col/>
-              <col class="col-status"/>
-              <col class="col-action"/>
+              <col style="width:var(--col-w-status)"/>
+              <col style="width:var(--col-w-action)"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">送出時間</th>
@@ -2018,12 +2018,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col class="col-id"/>
-              <col class="col-name"/>
-              <col class="col-team"/>
+              <col style="width:var(--col-w-id)"/>
+              <col style="width:var(--col-w-name)"/>
+              <col style="width:var(--col-w-team)"/>
               <col/>
-              <col class="col-status"/>
-              <col class="col-action"/>
+              <col style="width:var(--col-w-status)"/>
+              <col style="width:var(--col-w-action)"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">回報時間</th>
@@ -2230,12 +2230,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:185px;"/><col style="width:70px;"/><col style="width:68px;"/><col style="width:68px;"/>
-              <col style="width:72px;"/><col style="width:56px;"/><col style="width:148px;"/><col/>
+              <col style="width:250px;"/><col style="width:100px;"/><col style="width:100px;"/><col style="width:100px;"/>
+              <col style="width:100px;"/><col style="width:100px;"/><col style="width:180px;"/><col/>
             </colgroup>
             <thead><tr>
-              <th>電子信箱</th><th>姓名</th><th>團隊</th><th>職稱</th>
-              <th>角色</th><th>狀態</th><th>建立日期</th><th>操作</th>
+              <th>電子信箱</th><th style="text-align:center;">姓名</th><th style="text-align:center;">團隊</th><th style="text-align:center;">職稱</th>
+              <th style="text-align:center;">角色</th><th style="text-align:center;">狀態</th><th style="text-align:center;">建立日期</th><th style="text-align:center;">操作</th>
             </tr></thead>
             <tbody id="acc-tbody">
               <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>
@@ -2696,14 +2696,21 @@ function submitFeedback() {
            +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
 
   var name    = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? (CURRENT_USER.name||'') : '';
+  // 前台顯示匿名，後台 GAS 記錄真實姓名（在內容欄附加）
+  var contentWithMeta = content + '\n[匿名提交，提交者：' + (name||'未知') + ']';
   fetch(GAS_URL, {
     method: 'POST',
     mode:   'no-cors',
-    body: JSON.stringify({ action:'addFeedback', time:ts, name:name, type:type, content:content })
+    body: JSON.stringify({ action:'addFeedback', time:ts, name:'匿名', type:type, content:contentWithMeta })
   }).then(function(){
     if (submitBtn) { submitBtn.textContent = '✉ 送出'; submitBtn.disabled = false; }
-    alert('✅ 意見已送出！感謝您的回饋。');
+    showToastGlobal('✅ 意見已送出！感謝您的回饋。', 'ok', 3000);
     closeFeedback();
+    // 清空欄位
+    var typeEl2 = document.getElementById('feedbackType');
+    var contentEl2 = document.getElementById('feedbackText');
+    if (typeEl2) typeEl2.value = '';
+    if (contentEl2) contentEl2.value = '';
   }).catch(function(err){
     if (submitBtn) { submitBtn.textContent = '✉ 送出'; submitBtn.disabled = false; }
     alert('送出失敗：' + err.message);
@@ -2737,14 +2744,21 @@ function submitBug() {
            +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
 
   var bugName = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? (CURRENT_USER.name||'') : '';
+  // 前台顯示匿名，後台 GAS 記錄真實姓名
+  var descWithMeta = desc + '\n[匿名提交，提交者：' + (bugName||'未知') + ']';
   fetch(GAS_URL, {
     method: 'POST',
     mode:   'no-cors',
-    body: JSON.stringify({ action:'addBugReport', time:ts, name:bugName, bugType:bugType, desc:desc })
+    body: JSON.stringify({ action:'addBugReport', time:ts, name:'匿名', bugType:bugType, desc:descWithMeta })
   }).then(function(){
     if (submitBtn) { submitBtn.textContent = '📤 送出回報'; submitBtn.disabled = false; }
-    alert('✅ 問題已回報！我們將盡快處理，感謝您的回報。');
+    showToastGlobal('✅ 問題已回報！我們將盡快處理，感謝您的回報。', 'ok', 3000);
     closeBugReport();
+    // 清空欄位
+    var btEl = document.getElementById('bug-type');
+    var bdEl = document.getElementById('bug-desc');
+    if (btEl) btEl.value = '';
+    if (bdEl) bdEl.value = '';
   }).catch(function(err){
     if (submitBtn) { submitBtn.textContent = '📤 送出回報'; submitBtn.disabled = false; }
     alert('送出失敗：' + err.message);
@@ -3828,53 +3842,67 @@ function renderMainTable(apps) {
       '<td style="text-align:center;"></td>';
     tbody.appendChild(tr);
 
-    // 審核按鈕邏輯：manager/admin 永遠顯示按鈕，但完成/退件後進去是唯讀
+    // 審核按鈕邏輯
     var lastTd = tr.lastElementChild;
-    if (userRole === 'manager') {
-      var rvBtn = document.createElement('button');
-      rvBtn.className = 'review-btn approve';
-      rvBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
-      if (isDone || isReject || a.reviewer) {
-        // 已完成或已審核 → 只能查看，不能操作
-        rvBtn.textContent = '查看';
-        rvBtn.style.background = '#f5f5f5';
-        rvBtn.style.borderColor = '#ccc';
-        rvBtn.style.color = '#999';
-        rvBtn.setAttribute('data-readonly', '1');
-      } else {
-        rvBtn.textContent = '→ 審核';
-      }
-      rvBtn.setAttribute('data-id', a.id||'');
-      rvBtn.setAttribute('data-name', a.name||'');
-      rvBtn.setAttribute('data-type', 'reviewer');
-      rvBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'reviewer', this.getAttribute('data-readonly')==='1'); };
-      lastTd.appendChild(rvBtn);
-    } else if (userRole === 'admin') {
+    if (userRole === 'admin') {
       var vBtn = document.createElement('button');
-      vBtn.className = 'review-btn approve';
       vBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
-      if (isDone || isReject || a.verifier) {
+      if (isDone || isReject) {
+        // 已完成/已退件 → 查看申請進度
+        vBtn.className = 'btn-action';
         vBtn.textContent = '查看';
-        vBtn.style.background = '#f5f5f5';
-        vBtn.style.borderColor = '#ccc';
-        vBtn.style.color = '#999';
-        vBtn.setAttribute('data-readonly', '1');
+        (function(app2){ vBtn.onclick = function(){ openFlowModal(app2); }; })(a);
       } else if (!a.reviewer) {
+        // 主管未審核 → 提示等待
+        vBtn.className = 'review-btn approve';
         vBtn.textContent = '等待主管';
         vBtn.style.background = '#f5f5f5';
         vBtn.style.borderColor = '#ccc';
         vBtn.style.color = '#bbb';
         vBtn.setAttribute('data-readonly', '1');
+        vBtn.setAttribute('data-id', a.id||'');
+        vBtn.setAttribute('data-name', a.name||'');
+        vBtn.setAttribute('data-type', 'verifier');
+        vBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'verifier', true); };
       } else {
+        // 主管已審核，待人資覆核
+        vBtn.className = 'review-btn approve';
         vBtn.textContent = '→ 覆核';
+        vBtn.setAttribute('data-id', a.id||'');
+        vBtn.setAttribute('data-name', a.name||'');
+        vBtn.setAttribute('data-type', 'verifier');
+        vBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'verifier', false); };
       }
-      vBtn.setAttribute('data-id', a.id||'');
-      vBtn.setAttribute('data-name', a.name||'');
-      vBtn.setAttribute('data-type', 'verifier');
-      vBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'verifier', this.getAttribute('data-readonly')==='1'); };
       lastTd.appendChild(vBtn);
-    } else if (userRole === 'employee') {
-      // employee 看查看流程按鈕
+    } else if (userRole === 'manager') {
+      var rvBtn = document.createElement('button');
+      rvBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
+      if (isDone || isReject) {
+        rvBtn.className = 'btn-action';
+        rvBtn.textContent = '查看';
+        (function(app3){ rvBtn.onclick = function(){ openFlowModal(app3); }; })(a);
+      } else if (a.reviewer) {
+        rvBtn.className = 'review-btn approve';
+        rvBtn.textContent = '已審核';
+        rvBtn.style.background = '#f5f5f5';
+        rvBtn.style.borderColor = '#a5d6a7';
+        rvBtn.style.color = '#2e7d32';
+        rvBtn.setAttribute('data-readonly', '1');
+        rvBtn.setAttribute('data-id', a.id||'');
+        rvBtn.setAttribute('data-name', a.name||'');
+        rvBtn.setAttribute('data-type', 'reviewer');
+        rvBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'reviewer', true); };
+      } else {
+        rvBtn.className = 'review-btn approve';
+        rvBtn.textContent = '→ 審核';
+        rvBtn.setAttribute('data-id', a.id||'');
+        rvBtn.setAttribute('data-name', a.name||'');
+        rvBtn.setAttribute('data-type', 'reviewer');
+        rvBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'reviewer', false); };
+      }
+      lastTd.appendChild(rvBtn);
+    } else {
+      // fulltime/parttime/employee → 查看流程
       var viewBtn2 = document.createElement('button');
       viewBtn2.className = 'btn-action';
       viewBtn2.style.cssText = 'font-size:10px;width:auto;padding:0 8px;height:24px;';
