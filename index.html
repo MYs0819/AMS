@@ -1983,18 +1983,18 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:var(--col-w-id)"/>
-              <col style="width:var(--col-w-name)"/>
-              <col style="width:var(--col-w-team)"/>
+              <col style="width:98px;"/>
+              <col style="width:78px;"/>
+              <col style="width:68px;"/>
               <col/>
-              <col style="width:var(--col-w-status)"/>
-              <col style="width:var(--col-w-action)"/>
+              <col style="width:62px;"/>
+              <col style="width:68px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">送出時間</th>
               <th style="text-align:center;">姓名</th>
               <th style="text-align:center;">意見類型</th>
-              <th>內容</th>
+              <th style="text-align:left;padding-left:8px;">內容</th>
               <th style="text-align:center;">狀態</th>
               <th style="text-align:center;">操作</th>
             </tr></thead>
@@ -2018,18 +2018,18 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:var(--col-w-id)"/>
-              <col style="width:var(--col-w-name)"/>
-              <col style="width:var(--col-w-team)"/>
+              <col style="width:98px;"/>
+              <col style="width:78px;"/>
+              <col style="width:68px;"/>
               <col/>
-              <col style="width:var(--col-w-status)"/>
-              <col style="width:var(--col-w-action)"/>
+              <col style="width:62px;"/>
+              <col style="width:68px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">回報時間</th>
               <th style="text-align:center;">姓名</th>
               <th style="text-align:center;">問題類型</th>
-              <th>問題描述</th>
+              <th style="text-align:left;padding-left:8px;">問題描述</th>
               <th style="text-align:center;">狀態</th>
               <th style="text-align:center;">操作</th>
             </tr></thead>
@@ -2230,8 +2230,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:250px;"/><col style="width:100px;"/><col style="width:100px;"/><col style="width:100px;"/>
-              <col style="width:100px;"/><col style="width:100px;"/><col style="width:180px;"/><col/>
+              <col style="width:250px;"/><col style="width:150px;"/><col style="width:150px;"/><col style="width:150px;"/>
+              <col style="width:150px;"/><col style="width:150px;"/><col style="width:250px;"/><col/>
             </colgroup>
             <thead><tr>
               <th>電子信箱</th><th style="text-align:center;">姓名</th><th style="text-align:center;">團隊</th><th style="text-align:center;">職稱</th>
@@ -2677,16 +2677,14 @@ function toggleAnon(c){ var n=document.getElementById('nameInput'); n.disabled=c
 
 function submitFeedback() {
   var isAnon   = document.getElementById('anonCheck').checked;
-  var name     = isAnon ? '匿名' : (document.getElementById('nameInput').value.trim() || '匿名');
+  var nameVal  = document.getElementById('nameInput').value.trim();
   var type     = document.getElementById('feedbackType').value;
   var content  = document.getElementById('feedbackText').value.trim();
-  var isAnon = document.getElementById('anonCheck').checked;
-  var nameVal = document.getElementById('nameInput').value.trim();
+
   if (!isAnon && !nameVal) { alert('請填寫姓名，或勾選匿名'); return; }
   if (!type)    { alert('請選擇意見類型'); return; }
   if (!content) { alert('請填寫意見內容'); return; }
 
-  // 送出中狀態
   var submitBtn = document.querySelector('#feedbackModal .btn-submit');
   if (submitBtn) { submitBtn.textContent = '⏳ 送出中…'; submitBtn.disabled = true; }
 
@@ -2695,22 +2693,29 @@ function submitFeedback() {
   var ts  = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())
            +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
 
-  var name    = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? (CURRENT_USER.name||'') : '';
-  // 前台顯示匿名，後台 GAS 記錄真實姓名（在內容欄附加）
-  var contentWithMeta = content + '\n[匿名提交，提交者：' + (name||'未知') + ']';
+  var realName = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? (CURRENT_USER.name||'') : '';
+  // 匿名時：B欄寫「匿名」，note 欄傳真實姓名供 GAS 在 B 欄插備註
+  // 具名時：B欄寫填寫的姓名，note 為空
+  var displayName = isAnon ? '匿名' : nameVal;
+  var noteForGAS  = isAnon ? (realName || nameVal || '未知') : '';
+
   fetch(GAS_URL, {
     method: 'POST',
     mode:   'no-cors',
-    body: JSON.stringify({ action:'addFeedback', time:ts, name:'匿名', type:type, content:contentWithMeta })
+    body: JSON.stringify({
+      action:  'addFeedback',
+      time:    ts,
+      name:    displayName,
+      note:    noteForGAS,
+      type:    type,
+      content: content
+    })
   }).then(function(){
     if (submitBtn) { submitBtn.textContent = '✉ 送出'; submitBtn.disabled = false; }
     showToastGlobal('✅ 意見已送出！感謝您的回饋。', 'ok', 3000);
     closeFeedback();
-    // 清空欄位
-    var typeEl2 = document.getElementById('feedbackType');
-    var contentEl2 = document.getElementById('feedbackText');
-    if (typeEl2) typeEl2.value = '';
-    if (contentEl2) contentEl2.value = '';
+    document.getElementById('feedbackType').value = '';
+    document.getElementById('feedbackText').value = '';
   }).catch(function(err){
     if (submitBtn) { submitBtn.textContent = '✉ 送出'; submitBtn.disabled = false; }
     alert('送出失敗：' + err.message);
@@ -2744,12 +2749,11 @@ function submitBug() {
            +' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
 
   var bugName = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? (CURRENT_USER.name||'') : '';
-  // 前台顯示匿名，後台 GAS 記錄真實姓名
-  var descWithMeta = desc + '\n[匿名提交，提交者：' + (bugName||'未知') + ']';
+  // 問題回報直接記錄提交者真實姓名
   fetch(GAS_URL, {
     method: 'POST',
     mode:   'no-cors',
-    body: JSON.stringify({ action:'addBugReport', time:ts, name:'匿名', bugType:bugType, desc:descWithMeta })
+    body: JSON.stringify({ action:'addBugReport', time:ts, name:bugName, bugType:bugType, desc:desc })
   }).then(function(){
     if (submitBtn) { submitBtn.textContent = '📤 送出回報'; submitBtn.disabled = false; }
     showToastGlobal('✅ 問題已回報！我們將盡快處理，感謝您的回報。', 'ok', 3000);
@@ -2827,7 +2831,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbxV-gJ_ZqHEonblX7b8RfRARYRDps7FoEQLFNCzaUMicvoxDenNH3j8G4vQDg4dwJ-Nww/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxo1CgKeLst-cDVpHcldDDdOrSZ89i6-G-AIskXx1r3R8HwjztAbeANX9hfvRNTLgs5Rg/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3804,6 +3808,9 @@ function renderMainTable(apps) {
     return;
   }
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
+  // 更新總筆數顯示
+  var rcEl = document.getElementById('rowCount');
+  if (rcEl) rcEl.textContent = apps.length;
   apps.forEach(function(a, i){
     var s   = a.status||'';
     var isDone   = s.indexOf('完成')>-1;
@@ -3846,10 +3853,12 @@ function renderMainTable(apps) {
     var lastTd = tr.lastElementChild;
     if (userRole === 'admin') {
       var vBtn = document.createElement('button');
-      vBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
+      vBtn.style.cssText = 'font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;';
       if (isDone || isReject) {
         // 已完成/已退件 → 查看申請進度
-        vBtn.className = 'btn-action';
+        vBtn.style.borderColor = '#90caf9';
+        vBtn.style.background = '#e3f2fd';
+        vBtn.style.color = '#1565c0';
         vBtn.textContent = '查看';
         (function(app2){ vBtn.onclick = function(){ openFlowModal(app2); }; })(a);
       } else if (!a.reviewer) {
@@ -3876,9 +3885,11 @@ function renderMainTable(apps) {
       lastTd.appendChild(vBtn);
     } else if (userRole === 'manager') {
       var rvBtn = document.createElement('button');
-      rvBtn.style.cssText = 'font-size:10px;height:24px;padding:0 8px;';
+      rvBtn.style.cssText = 'font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;';
       if (isDone || isReject) {
-        rvBtn.className = 'btn-action';
+        rvBtn.style.borderColor = '#90caf9';
+        rvBtn.style.background = '#e3f2fd';
+        rvBtn.style.color = '#1565c0';
         rvBtn.textContent = '查看';
         (function(app3){ rvBtn.onclick = function(){ openFlowModal(app3); }; })(a);
       } else if (a.reviewer) {
@@ -3910,22 +3921,8 @@ function renderMainTable(apps) {
       (function(app2){ viewBtn2.onclick = function(){ openFlowModal(app2); }; })(a);
       lastTd.appendChild(viewBtn2);
     }
-  });
-
-  // 更新 tab count
-  var allApps = ALL_APPS_DATA.length ? ALL_APPS_DATA : apps;
-  document.querySelectorAll('.tab-count').forEach(function(el){
-    var tab = el.closest('.tab-item');
-    if (!tab) return;
-    var dt = tab.getAttribute('data-tab')||'';
-    if (dt==='all')        el.textContent = allApps.length;
-    if (dt==='active')     el.textContent = allApps.filter(function(a){var s=a.status||'';return !s.includes('完成')&&!s.includes('退件')&&!s.includes('補件');}).length;
-    if (dt==='pending')    el.textContent = allApps.filter(function(a){var s=a.status||'';return s.indexOf('主管')>-1&&s.indexOf('待')>-1;}).length;
-    if (dt==='done')       el.textContent = allApps.filter(function(a){return (a.status||'').indexOf('完成')>-1;}).length;
-    if (dt==='reject')     el.textContent = allApps.filter(function(a){return (a.status||'').indexOf('退件')>-1;}).length;
-    if (dt==='supplement') el.textContent = allApps.filter(function(a){return (a.status||'').indexOf('補件')>-1;}).length;
-  });
-}
+  }); // end apps.forEach
+} // end renderMainTable
 
 
 function filterTable() {
@@ -4883,7 +4880,7 @@ function renderAccTable() {
   }
   list.forEach(function(a, i){
     var roleStyle = ROLE_BADGE[a.role] || 'background:#eee;color:#333;';
-    var stColor   = a.status==='停用'?'color:#c62828;':'color:#2e7d32;';
+    var stColor   = a.status==='停用'?'color:#c62828;background:#fce4e4;':'color:#2e7d32;background:#e8f5e9;';
     var tr = document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML =
@@ -4892,13 +4889,13 @@ function renderAccTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.title||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;'+roleStyle+'">'+(ROLE_LABEL[a.role]||a.role)+'</span></td>'+
-      '<td style="text-align:center;font-size:12px;font-weight:600;'+stColor+'">'+(a.status||'—')+'</td>'+
+      '<td style="text-align:center;font-size:12px;font-weight:600;'+stColor+';padding:2px 8px;border-radius:10px;">'+(a.status==='停用'?'已停用':'啟用中')+'</td>'+
       '<td style="font-size:11px;color:var(--color-text-muted);text-align:center;font-family:var(--font-mono);">' + formatAccDate(a.createdAt) + '</td>'+
       '<td style="text-align:center;">' +
         '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:3px;">編輯</button>' +
         '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;margin-right:3px;">重設密碼</button>' +
         (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">停用</button>') +
-        '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer;">🗑</button>' +
+        '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer;">🗑</button>'
       '</td>';
     tbody.appendChild(tr);
   });
