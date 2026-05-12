@@ -2216,6 +2216,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </div>
             <select class="filter-select" id="acc-role-filter" onchange="renderAccTable()">
               <option value="">全部角色</option>
+              <option value="boss">老闆</option>
               <option value="admin">管理者</option>
               <option value="manager">主管</option>
               <option value="fulltime">正職</option>
@@ -2276,6 +2277,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div style="display:flex;flex-direction:column;gap:5px;">
                 <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">權限<span style="color:#e53935;margin-left:2px;">*</span></label>
                 <select class="filter-select" id="acc-role" style="height:36px;">
+                  <option value="boss">boss（老闆）</option>
                   <option value="admin">admin（營運）</option>
                   <option value="manager">manager（主管）</option>
                   <option value="fulltime">fulltime（正職）</option>
@@ -2524,6 +2526,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   <div style="background:#fff;border-radius:14px;padding:24px 28px;width:100%;max-width:440px;box-shadow:0 16px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:14px;">
     <div style="font-family:var(--font-display);font-size:16px;font-weight:700;text-align:center;color:var(--color-text-primary);">📋 申請進度</div>
     <div id="flowModalInfo" style="font-size:12.5px;color:var(--color-text-secondary);background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;line-height:2;font-family:var(--font-mono);"></div>
+    <!-- 附件區 -->
+    <div id="flowModalAttach" style="display:none;background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:10px 14px;font-size:12px;"></div>
     <!-- 三步驟流程條 -->
     <div style="display:flex;align-items:flex-start;gap:0;margin-top:4px;">
       <!-- 員工(已遞出) -->
@@ -4243,7 +4247,7 @@ var ACCOUNTS_DATA = [];  // 所有帳號
 /* ── 角色中文對照 ── */
 var ROLE_LABEL = {
   parttime: '兼職', fulltime: '正職', employee: '員工',
-  manager: '主管', admin: '營運'
+  manager: '主管', admin: '營運', boss: '老闆'
 };
 var ROLE_BADGE = {
   parttime: 'background:#e65100;color:#fff;',
@@ -4251,6 +4255,7 @@ var ROLE_BADGE = {
   employee:  'background:#757575;color:#fff;',
   manager:   'background:#1565c0;color:#fff;',
   admin:     'background:#7b1fa2;color:#fff;',
+  boss:      'background:#b71c1c;color:#fff;',
 };
 
 /* ── 各角色可見的側邊欄 item（data-role 屬性）── */
@@ -4261,6 +4266,7 @@ var ROLE_PAGES = {
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
   manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
   admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
+  boss:     ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
 };
 
 var ROLE_SIDEBAR_MAP = {
@@ -4270,6 +4276,7 @@ var ROLE_SIDEBAR_MAP = {
   fulltime: ['doccenter','leave','myrecords','monthly','extraops'],
   manager:  ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics'],
   admin:    ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
+  boss:     ['doccenter','leave','myrecords','monthly','extraops','workhour','labor','main','monthly-all','analytics','salary','account','feedback-mgr','report-mgr'],
 };
 
 /* ══ 意見回饋 & 問題回報 管理 ══ */
@@ -5095,10 +5102,13 @@ function resetPassword(mail) {
 var _reviewTarget = null; // { id, type, name }
 
 function openReview(id, name, type, readOnly) {
-  // 從 ALL_APPS_DATA 找到這筆申請
+  // 從 ALL_APPS_DATA 或 MALL_ALL_DATA 找到這筆申請
   var app = null;
-  for (var i=0; i<ALL_APPS_DATA.length; i++) {
-    if (ALL_APPS_DATA[i].id === id) { app = ALL_APPS_DATA[i]; break; }
+  var sources = [ALL_APPS_DATA, MALL_ALL_DATA];
+  for (var s=0; s<sources.length && !app; s++) {
+    for (var i=0; i<sources[s].length; i++) {
+      if (sources[s][i].id === id) { app = sources[s][i]; break; }
+    }
   }
   _reviewTarget = { id:id, name:name, type:type, app:app, readOnly:!!readOnly };
 
@@ -5375,6 +5385,71 @@ function openFlowModal(app) {
   }
 
   document.getElementById('flowModal').classList.add('open');
+
+  // 附件區
+  var attachDiv = document.getElementById('flowModalAttach');
+  if (attachDiv) {
+    var proof = app ? (app.proofLink || '') : '';
+    var role  = CURRENT_USER ? CURRENT_USER.role : 'guest';
+    var isSelf = CURRENT_USER && app && CURRENT_USER.name === app.name;
+    var canSupp = isSelf && !proof && !(isDone); // 本人且無附件且未完成
+
+    if (proof || canSupp) {
+      attachDiv.style.display = '';
+      var html = '<div style="font-weight:600;color:var(--color-text-secondary);margin-bottom:6px;">📎 附件證明</div>';
+      if (proof) {
+        html += '<a href="' + proof + '" target="_blank" style="color:#1565c0;font-weight:600;text-decoration:underline;">🔗 查看附件</a>';
+      } else if (canSupp) {
+        html += '<div style="color:#9a9482;margin-bottom:8px;">尚未上傳附件</div>';
+        html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+          '<label style="display:flex;align-items:center;gap:5px;border:1.5px dashed #e8dbb0;border-radius:7px;padding:5px 12px;cursor:pointer;font-size:11px;color:#9a9482;background:#fff;">' +
+          '選擇檔案（PDF/圖片）<input type="file" id="flow-supp-file" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="document.getElementById(\'flow-supp-name\').textContent=this.files[0]?\'📄 \'+this.files[0].name:\'\'"/></label>' +
+          '<span id="flow-supp-name" style="font-size:11px;color:#5a5646;"></span>' +
+          '<button id="flow-supp-btn" onclick="submitFlowSupp(\'' + (app?app.id:'') + '\',\'' + (app?app.name:'') + '\',\'' + (app?app.startDate:'') + '\')" style="font-size:11px;height:26px;padding:0 12px;border-radius:6px;border:1.5px solid var(--color-gold);background:var(--color-gold-bg);color:#7a5000;font-weight:600;cursor:pointer;">📤 補件上傳</button>' +
+          '</div>';
+      }
+      attachDiv.innerHTML = html;
+    } else {
+      attachDiv.style.display = 'none';
+    }
+  }
+}
+
+/* ══ 補件上傳（flowModal 內）══ */
+function submitFlowSupp(appId, appName, startDate) {
+  var fileInput = document.getElementById('flow-supp-file');
+  if (!fileInput || !fileInput.files[0]) { alert('請先選擇要上傳的附件'); return; }
+  var btn = document.getElementById('flow-supp-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ 上傳中…'; }
+  var file = fileInput.files[0];
+  var fr = new FileReader();
+  fr.onload = function(e) {
+    var b64 = e.target.result.split(',')[1];
+    fetch(GAS_URL, {
+      method:'POST', mode:'no-cors',
+      body: JSON.stringify({
+        action:    'uploadAttachment',
+        prefix:    'lv',
+        appId:     appId,
+        name:      appName,
+        startDate: startDate,
+        filename:  file.name,
+        mimeType:  file.type,
+        data:      b64,
+      })
+    })
+    .then(function(){
+      if (btn) { btn.textContent = '✅ 已上傳'; }
+      var nameEl = document.getElementById('flow-supp-name');
+      if (nameEl) nameEl.textContent = '上傳成功，請重新整理查看';
+      setTimeout(function(){ document.getElementById('flowModal').classList.remove('open'); }, 2000);
+    })
+    .catch(function(err){
+      if (btn) { btn.disabled = false; btn.textContent = '📤 補件上傳'; }
+      alert('上傳失敗：' + err.message);
+    });
+  };
+  fr.readAsDataURL(file);
 }
 
 /* ══ 本月紀錄 ══ */
