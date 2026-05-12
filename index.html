@@ -1985,30 +1985,20 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <colgroup>
               <col style="width:98px;"/>
               <col style="width:70px;"/>
-              <col style="width:68px;"/>
-              <col style="width:68px;"/>
-              <col style="width:68px;"/>
-              <col style="width:98px;"/>
-              <col style="width:90px;"/>
+              <col style="width:72px;"/>
+              <col/>
               <col style="width:60px;"/>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
               <col style="width:60px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">送出時間</th>
               <th style="text-align:center;">姓名</th>
               <th style="text-align:center;">意見類型</th>
-              <th style="text-align:center;">申請類型</th>
-              <th style="text-align:center;">假別</th>
-              <th style="text-align:center;">申請日期</th>
-              <th style="text-align:center;">起迄時間</th>
+              <th style="text-align:left;padding-left:10px;">內容</th>
               <th style="text-align:center;">狀態</th>
-              <th style="text-align:center;">審核人</th>
-              <th style="text-align:center;">覆核人</th>
               <th style="text-align:center;">操作</th>
             </tr></thead>
-            <tbody id="fb-tbody"><tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
+            <tbody id="fb-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -2030,30 +2020,20 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <colgroup>
               <col style="width:98px;"/>
               <col style="width:70px;"/>
-              <col style="width:68px;"/>
-              <col style="width:68px;"/>
-              <col style="width:68px;"/>
-              <col style="width:98px;"/>
-              <col style="width:90px;"/>
+              <col style="width:72px;"/>
+              <col/>
               <col style="width:60px;"/>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
               <col style="width:60px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">回報時間</th>
               <th style="text-align:center;">姓名</th>
               <th style="text-align:center;">問題類型</th>
-              <th style="text-align:center;">申請類型</th>
-              <th style="text-align:center;">假別</th>
-              <th style="text-align:center;">申請日期</th>
-              <th style="text-align:center;">起迄時間</th>
+              <th style="text-align:left;padding-left:10px;">問題描述</th>
               <th style="text-align:center;">狀態</th>
-              <th style="text-align:center;">審核人</th>
-              <th style="text-align:center;">覆核人</th>
               <th style="text-align:center;">操作</th>
             </tr></thead>
-            <tbody id="rp-tbody"><tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
+            <tbody id="rp-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -3871,31 +3851,23 @@ function renderMainTable(apps) {
 
     // 審核按鈕邏輯
     var lastTd = tr.lastElementChild;
+    var OPS_BASE = 'font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;';
     if (userRole === 'admin') {
       var vBtn = document.createElement('button');
-      vBtn.style.cssText = 'font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;';
       if (isDone || isReject) {
-        // 已完成/已退件 → 查看申請進度
-        vBtn.style.borderColor = '#90caf9';
-        vBtn.style.background = '#e3f2fd';
-        vBtn.style.color = '#1565c0';
+        vBtn.style.cssText = OPS_BASE + 'border-color:#90caf9;background:#e3f2fd;color:#1565c0;';
         vBtn.textContent = '查看';
         (function(app2){ vBtn.onclick = function(){ openFlowModal(app2); }; })(a);
       } else if (!a.reviewer) {
-        // 主管未審核 → 提示等待
-        vBtn.className = 'review-btn approve';
+        vBtn.style.cssText = OPS_BASE + 'border-color:#ccc;background:#f5f5f5;color:#bbb;';
         vBtn.textContent = '等待主管';
-        vBtn.style.background = '#f5f5f5';
-        vBtn.style.borderColor = '#ccc';
-        vBtn.style.color = '#bbb';
         vBtn.setAttribute('data-readonly', '1');
         vBtn.setAttribute('data-id', a.id||'');
         vBtn.setAttribute('data-name', a.name||'');
         vBtn.setAttribute('data-type', 'verifier');
         vBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'verifier', true); };
       } else {
-        // 主管已審核，待人資覆核
-        vBtn.className = 'review-btn approve';
+        vBtn.style.cssText = OPS_BASE + 'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
         vBtn.textContent = '→ 覆核';
         vBtn.setAttribute('data-id', a.id||'');
         vBtn.setAttribute('data-name', a.name||'');
@@ -3905,26 +3877,20 @@ function renderMainTable(apps) {
       lastTd.appendChild(vBtn);
     } else if (userRole === 'manager') {
       var rvBtn = document.createElement('button');
-      rvBtn.style.cssText = 'font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;';
       if (isDone || isReject) {
-        rvBtn.style.borderColor = '#90caf9';
-        rvBtn.style.background = '#e3f2fd';
-        rvBtn.style.color = '#1565c0';
+        rvBtn.style.cssText = OPS_BASE + 'border-color:#90caf9;background:#e3f2fd;color:#1565c0;';
         rvBtn.textContent = '查看';
         (function(app3){ rvBtn.onclick = function(){ openFlowModal(app3); }; })(a);
       } else if (a.reviewer) {
-        rvBtn.className = 'review-btn approve';
+        rvBtn.style.cssText = OPS_BASE + 'border-color:#a5d6a7;background:#f5f5f5;color:#2e7d32;';
         rvBtn.textContent = '已審核';
-        rvBtn.style.background = '#f5f5f5';
-        rvBtn.style.borderColor = '#a5d6a7';
-        rvBtn.style.color = '#2e7d32';
         rvBtn.setAttribute('data-readonly', '1');
         rvBtn.setAttribute('data-id', a.id||'');
         rvBtn.setAttribute('data-name', a.name||'');
         rvBtn.setAttribute('data-type', 'reviewer');
         rvBtn.onclick = function(){ openReview(this.getAttribute('data-id'), this.getAttribute('data-name'), 'reviewer', true); };
       } else {
-        rvBtn.className = 'review-btn approve';
+        rvBtn.style.cssText = OPS_BASE + 'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
         rvBtn.textContent = '→ 審核';
         rvBtn.setAttribute('data-id', a.id||'');
         rvBtn.setAttribute('data-name', a.name||'');
@@ -3933,10 +3899,8 @@ function renderMainTable(apps) {
       }
       lastTd.appendChild(rvBtn);
     } else {
-      // fulltime/parttime/employee → 查看流程
       var viewBtn2 = document.createElement('button');
-      viewBtn2.className = 'btn-action';
-      viewBtn2.style.cssText = 'font-size:10px;width:auto;padding:0 8px;height:24px;';
+      viewBtn2.style.cssText = OPS_BASE + 'border-color:#90caf9;background:#e3f2fd;color:#1565c0;';
       viewBtn2.textContent = '查看';
       (function(app2){ viewBtn2.onclick = function(){ openFlowModal(app2); }; })(a);
       lastTd.appendChild(viewBtn2);
@@ -4411,28 +4375,24 @@ function renderFbTable() {
   });
   var c=document.getElementById('fb-count'); if(c) c.textContent=filtered.length;
   tbody.innerHTML='';
-  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
   filtered.forEach(function(r,i){
     var isDone=(r.status||'').indexOf('已處理')>-1||(r.status||'').indexOf('已結案')>-1;
     var sBg=isDone?'#e8f5e9':'#fff8e1'; var sColor=isDone?'#2e7d32':'#d4a017';
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     var timeStr = fmtDT(r.submittedAt||r.createdAt||'');
+    var content = (r.content||'');
     tr.innerHTML=
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||'—')+'</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
+      '<td style="font-size:12px;padding-left:10px;">'+content.slice(0,80)+(content.length>80?'…':'')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
     var vBtn=document.createElement('button');
-    vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;background:#e3f2fd;color:#1565c0;';
+    vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;background:#e3f2fd;color:#1565c0;';
     vBtn.textContent='查看';
     (function(rec){ vBtn.onclick=function(){ openFbrpDetail(rec,'feedback'); }; })(r);
     lastTd.appendChild(vBtn);
@@ -4451,28 +4411,24 @@ function renderRpTable() {
   });
   var c=document.getElementById('rp-count'); if(c) c.textContent=filtered.length;
   tbody.innerHTML='';
-  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">無資料</td></tr>'; return; }
   filtered.forEach(function(r,i){
     var isDone=(r.status||'').indexOf('已處理')>-1||(r.status||'').indexOf('已結案')>-1;
     var sBg=isDone?'#e8f5e9':'#fff8e1'; var sColor=isDone?'#2e7d32':'#d4a017';
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     var timeStr = fmtDT(r.submittedAt||r.createdAt||r.reportedAt||'');
+    var desc = (r.content||r.description||'');
     tr.innerHTML=
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||r.issueType||'—')+'</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
+      '<td style="font-size:12px;padding-left:10px;">'+desc.slice(0,80)+(desc.length>80?'…':'')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--color-text-muted);">—</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
     var vBtn=document.createElement('button');
-    vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;background:#e3f2fd;color:#1565c0;';
+    vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;background:#e3f2fd;color:#1565c0;';
     vBtn.textContent='查看';
     (function(rec){ vBtn.onclick=function(){ openFbrpDetail(rec,'report'); }; })(r);
     lastTd.appendChild(vBtn);
@@ -5591,23 +5547,24 @@ function renderMonTable() {
       '<td style="text-align:center;">'+r2Cell+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd = tr.lastElementChild;
+    var OPS_BASE2 = 'font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;';
     if (userRole==='manager' && !a.reviewer && !isDone && !isReject) {
-      var btn=document.createElement('button'); btn.className='review-btn approve';
-      btn.style.cssText='font-size:10px;height:24px;padding:0 8px;';
+      var btn=document.createElement('button');
+      btn.style.cssText=OPS_BASE2+'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
       btn.textContent='→ 審核';
       btn.setAttribute('data-id',a.id||''); btn.setAttribute('data-name',a.name||'');
       btn.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'reviewer',false);};
       lastTd.appendChild(btn);
     } else if (userRole==='admin' && a.reviewer && !a.verifier && !isDone && !isReject) {
-      var btn2=document.createElement('button'); btn2.className='review-btn approve';
-      btn2.style.cssText='font-size:10px;height:24px;padding:0 8px;';
+      var btn2=document.createElement('button');
+      btn2.style.cssText=OPS_BASE2+'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
       btn2.textContent='→ 覆核';
       btn2.setAttribute('data-id',a.id||''); btn2.setAttribute('data-name',a.name||'');
       btn2.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'verifier',false);};
       lastTd.appendChild(btn2);
     } else {
       var vBtn=document.createElement('button');
-      vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;background:#e3f2fd;color:#1565c0;';
+      vBtn.style.cssText=OPS_BASE2+'border-color:#90caf9;background:#e3f2fd;color:#1565c0;';
       vBtn.textContent='查看';
       (function(a2){vBtn.onclick=function(){openFlowModal(a2);};})(a);
       lastTd.appendChild(vBtn);
@@ -5819,23 +5776,24 @@ function renderMallTable() {
       '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
+    var OPS_BASE3='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;';
     if(userRole==='manager'&&!a.reviewer&&!isDone&&!isReject){
-      var btn=document.createElement('button'); btn.className='review-btn approve';
-      btn.style.cssText='font-size:10px;height:24px;padding:0 8px;';
+      var btn=document.createElement('button');
+      btn.style.cssText=OPS_BASE3+'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
       btn.textContent='→ 審核';
       btn.setAttribute('data-id',a.id||''); btn.setAttribute('data-name',a.name||'');
       btn.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'reviewer',false);};
       lastTd.appendChild(btn);
     } else if(userRole==='admin'&&a.reviewer&&!a.verifier&&!isDone&&!isReject){
-      var btn2=document.createElement('button'); btn2.className='review-btn approve';
-      btn2.style.cssText='font-size:10px;height:24px;padding:0 8px;';
+      var btn2=document.createElement('button');
+      btn2.style.cssText=OPS_BASE3+'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
       btn2.textContent='→ 覆核';
       btn2.setAttribute('data-id',a.id||''); btn2.setAttribute('data-name',a.name||'');
       btn2.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'verifier',false);};
       lastTd.appendChild(btn2);
     } else {
       var vBtn=document.createElement('button');
-      vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;background:#e3f2fd;color:#1565c0;';
+      vBtn.style.cssText=OPS_BASE3+'border-color:#90caf9;background:#e3f2fd;color:#1565c0;';
       vBtn.textContent='查看';
       (function(a2){vBtn.onclick=function(){openFlowModal(a2);};})(a);
       lastTd.appendChild(vBtn);
