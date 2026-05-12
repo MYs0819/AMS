@@ -1984,11 +1984,11 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <table class="data-table">
             <colgroup>
               <col style="width:98px;"/>
-              <col style="width:70px;"/>
-              <col style="width:72px;"/>
+              <col style="width:78px;"/>
+              <col style="width:140px;"/>
               <col/>
-              <col style="width:60px;"/>
-              <col style="width:60px;"/>
+              <col style="width:62px;"/>
+              <col style="width:68px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">送出時間</th>
@@ -2019,11 +2019,11 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <table class="data-table">
             <colgroup>
               <col style="width:98px;"/>
-              <col style="width:70px;"/>
-              <col style="width:72px;"/>
+              <col style="width:78px;"/>
+              <col style="width:140px;"/>
               <col/>
-              <col style="width:60px;"/>
-              <col style="width:60px;"/>
+              <col style="width:62px;"/>
+              <col style="width:68px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">回報時間</th>
@@ -5547,28 +5547,11 @@ function renderMonTable() {
       '<td style="text-align:center;">'+r2Cell+'</td>'+
       '<td style="text-align:center;"></td>';
     var lastTd = tr.lastElementChild;
-    var OPS_BASE2 = 'font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;';
-    if (userRole==='manager' && !a.reviewer && !isDone && !isReject) {
-      var btn=document.createElement('button');
-      btn.style.cssText=OPS_BASE2+'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
-      btn.textContent='→ 審核';
-      btn.setAttribute('data-id',a.id||''); btn.setAttribute('data-name',a.name||'');
-      btn.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'reviewer',false);};
-      lastTd.appendChild(btn);
-    } else if (userRole==='admin' && a.reviewer && !a.verifier && !isDone && !isReject) {
-      var btn2=document.createElement('button');
-      btn2.style.cssText=OPS_BASE2+'border-color:#2e7d32;background:#e8f5e9;color:#2e7d32;';
-      btn2.textContent='→ 覆核';
-      btn2.setAttribute('data-id',a.id||''); btn2.setAttribute('data-name',a.name||'');
-      btn2.onclick=function(){openReview(this.getAttribute('data-id'),this.getAttribute('data-name'),'verifier',false);};
-      lastTd.appendChild(btn2);
-    } else {
-      var vBtn=document.createElement('button');
-      vBtn.style.cssText=OPS_BASE2+'border-color:#90caf9;background:#e3f2fd;color:#1565c0;';
-      vBtn.textContent='查看';
-      (function(a2){vBtn.onclick=function(){openFlowModal(a2);};})(a);
-      lastTd.appendChild(vBtn);
-    }
+    var vBtn=document.createElement('button');
+    vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;background:#e3f2fd;color:#1565c0;';
+    vBtn.textContent='查看';
+    (function(a2){vBtn.onclick=function(){openFlowModal(a2);};})(a);
+    lastTd.appendChild(vBtn);
     tbody.appendChild(tr);
   });
 }
