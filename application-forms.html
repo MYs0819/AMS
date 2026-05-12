@@ -325,6 +325,19 @@ input[type="time"] { color-scheme: dark; }
         <label class="f-lbl">請假事由<span class="req">*</span></label>
         <textarea class="f-inp" id="lv-reason" rows="2" placeholder="請填寫請假事由" style="resize:vertical;min-height:56px;"></textarea>
       </div>
+
+      <!-- 附件上傳（事由與備註說明之間）-->
+      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;margin-bottom:8px;">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            選擇檔案（PDF/圖片）
+            <input type="file" id="lv-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lv-attachment','lv-attach-name')"/>
+          </label>
+          <span id="lv-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </div>
+      </div>
+
       <!-- 備註說明 -->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
@@ -476,6 +489,19 @@ input[type="time"] { color-scheme: dark; }
         <label class="f-lbl">請假事由<span class="req">*</span></label>
         <textarea class="f-inp" id="lvs-reason" rows="2" placeholder="請填寫請假事由" style="resize:vertical;min-height:56px;"></textarea>
       </div>
+
+      <!-- 附件上傳（事由與備註說明之間）-->
+      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;margin-bottom:8px;">
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            選擇檔案（PDF/圖片）
+            <input type="file" id="lvs-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('lvs-attachment','lvs-attach-name')"/>
+          </label>
+          <span id="lvs-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </div>
+      </div>
+
       <!-- 備註說明 -->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
@@ -804,7 +830,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyJUa7-ZHxYg00XNwkhLr5JxSIqWhg_yJHuYbIaZonhuUt5C8YQVbGR1qlV6D-St27XhA/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxo1CgKeLst-cDVpHcldDDdOrSZ89i6-G-AIskXx1r3R8HwjztAbeANX9hfvRNTLgs5Rg/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -866,8 +892,8 @@ document.querySelectorAll('.modal-overlay').forEach(function(m){
 
 /* ── 國假及特休假別單選 ── */
 function pickHol(btn, type) {
-  document.querySelectorAll('#holModal .lt-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
+  document.querySelectorAll('#holModal .lt-btn').forEach(function(b){ b.classList.remove('sel'); });
+  btn.classList.add('sel');
   document.getElementById('hol-type').value = type;
 }
 
@@ -1200,52 +1226,64 @@ function submitLv() {
 
   var subtype = type + (type==='其他' ? ' ('+document.getElementById('lv-other').value.trim()+')' : '');
 
-  fetch(GAS_URL, {
-    method:'POST', mode:'no-cors',
-    body: JSON.stringify({
-      action:'addApplication',
-      id:          genId("leave"),
-      name:        name,
-      sig1: (function(){ var cv=document.getElementById('lv-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
-      sig2: (function(){ var cv=document.getElementById('lv-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
-      team:        unit,
-      applyTitle:  document.getElementById('lv-title').value.trim(),
-      type:        '請假申請',
-      subtype:     subtype,
-      startDate:   fmtD(fd) + ' ' + (document.getElementById('lv-fth').value||'00') + ':' + (document.getElementById('lv-ftm').value||'00'),
-      endDate:     fmtD(document.getElementById('lv-td').value) + ' ' + (document.getElementById('lv-tth').value||'00') + ':' + (document.getElementById('lv-ttm').value||'00'),
-      days:        document.getElementById('lv-days').value,
-      hours:       document.getElementById('lv-hrs').value,
-      reason:      reason,
-      proxyName:   document.getElementById('lv-pname').value.trim(),
-      proxyTitle:  document.getElementById('lv-ptitle').value.trim(),
-      applyDate:   nowStr(),
-      status:      '主管待審核',
-    })
-  })
-  .then(function(){
-    _lvSubmitted = true;
-    showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
-    // 啟用補件按鈕
-    var suppB = document.getElementById('lv-supp-btn');
-    if (suppB) { suppB.disabled=false; suppB.style.borderColor='var(--gold)'; suppB.style.color='var(--gold)'; suppB.style.cursor='pointer'; suppB.removeAttribute('title'); }
-    // 鎖定整個 Modal
-    var body = document.querySelector('#lvModal .modal-body');
-    var footer = document.querySelector('#lvModal .modal-footer');
-    if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
-    if (footer) footer.style.display = 'none';
-    // 2秒後關閉跳回主頁
-    setTimeout(function(){
-      closeModal('lvModal');
-      window.location.href = 'index.html';
-    }, 2000);
-  })
-  .catch(function(err){
-    btn.disabled = false; btn.textContent = '📤 送出申請';
-    showToast('送出失敗：' + err.message, 'err');
-  });
-}
+  // 讀取附件（若有）
+  var attachFile = (document.getElementById('lv-attachment') || {}).files;
+  attachFile = attachFile && attachFile[0] ? attachFile[0] : null;
 
+  function doSubmit(attachB64, attachMime, attachName) {
+    fetch(GAS_URL, {
+      method:'POST', mode:'no-cors',
+      body: JSON.stringify({
+        action:'addApplication',
+        id:          genId("leave"),
+        name:        name,
+        sig1: (function(){ var cv=document.getElementById('lv-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+        sig2: (function(){ var cv=document.getElementById('lv-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+        team:        unit,
+        applyTitle:  document.getElementById('lv-title').value.trim(),
+        type:        '請假申請',
+        subtype:     subtype,
+        startDate:   fmtD(fd) + ' ' + (document.getElementById('lv-fth').value||'00') + ':' + (document.getElementById('lv-ftm').value||'00'),
+        endDate:     fmtD(document.getElementById('lv-td').value) + ' ' + (document.getElementById('lv-tth').value||'00') + ':' + (document.getElementById('lv-ttm').value||'00'),
+        days:        document.getElementById('lv-days').value,
+        hours:       document.getElementById('lv-hrs').value,
+        reason:      reason,
+        proxyName:   document.getElementById('lv-pname').value.trim(),
+        proxyTitle:  document.getElementById('lv-ptitle').value.trim(),
+        applyDate:   nowStr(),
+        status:      '主管待審核',
+        attachData:  attachB64  || '',
+        attachMime:  attachMime || '',
+        attachName:  attachName || '',
+      })
+    })
+    .then(function(){
+      _lvSubmitted = true;
+      showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
+      // 啟用補件按鈕
+      var suppB = document.getElementById('lv-supp-btn');
+      if (suppB) { suppB.disabled=false; suppB.style.borderColor='var(--gold)'; suppB.style.color='var(--gold)'; suppB.style.cursor='pointer'; suppB.removeAttribute('title'); }
+      // 鎖定整個 Modal
+      var body = document.querySelector('#lvModal .modal-body');
+      var footer = document.querySelector('#lvModal .modal-footer');
+      if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
+      if (footer) footer.style.display = 'none';
+      setTimeout(function(){ closeModal('lvModal'); window.location.href = 'index.html'; }, 2000);
+    })
+    .catch(function(err){
+      btn.disabled = false; btn.textContent = '📤 送出申請';
+      showToast('送出失敗：' + err.message, 'err');
+    });
+  }
+
+  if (attachFile) {
+    var fr = new FileReader();
+    fr.onload = function(e){ doSubmit(e.target.result.split(',')[1], attachFile.type, attachFile.name); };
+    fr.readAsDataURL(attachFile);
+  } else {
+    doSubmit('','','');
+  }
+}
 
 /* ── 送出留復職 ── */
 function submitRt() {
