@@ -830,7 +830,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbxo1CgKeLst-cDVpHcldDDdOrSZ89i6-G-AIskXx1r3R8HwjztAbeANX9hfvRNTLgs5Rg/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwuMLA-AyIAWFiZWf2-eBLvM2FRwQGAsX4H6rAEc6XQJ9-WzLorVJNO8HWDlwzfDcdt9Q/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -1080,43 +1080,62 @@ function submitLvSup() {
   var ftm = document.getElementById('lvs-ftm').value||'00';
   var tth = document.getElementById('lvs-tth').value||'00';
   var ttm = document.getElementById('lvs-ttm').value||'00';
+  var name = getLoginName();
+  var startDate = fmtD(fd) + ' ' + fth + ':' + ftm;
 
-  fetch(GAS_URL, {
-    method:'POST', mode:'no-cors',
-    body: JSON.stringify({
-      action:    'addApplication',
-      id:        genId("leave"),
-      name:      getLoginName(),
-      team:      document.getElementById('lvs-unit').value,
-      applyTitle:document.getElementById('lvs-title').value,
-      type:      '請假申請',
-      subtype:   subtype,
-      startDate: fmtD(fd) + ' ' + fth + ':' + ftm,
-      endDate:   fmtD(document.getElementById('lvs-td').value) + ' ' + tth + ':' + ttm,
-      days:      document.getElementById('lvs-days').value,
-      hours:     document.getElementById('lvs-hrs').value,
-      reason:    reason + '【補件】補件日期：' + document.getElementById('lvs-date').value,
-      proxyName: document.getElementById('lvs-pname').value.trim(),
-      proxyTitle:document.getElementById('lvs-ptitle').value,
-      applyDate: nowStr(),
-      status:    '補件待審核',
-      sig1: (function(){ var cv=document.getElementById('lvs-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
-      sig2: (function(){ var cv=document.getElementById('lvs-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+  // 讀取附件（若有）
+  var attachFile = (document.getElementById('lvs-attachment') || {}).files;
+  attachFile = attachFile && attachFile[0] ? attachFile[0] : null;
+
+  function doSubmitLvs(attachB64, attachMime, attachName) {
+    fetch(GAS_URL, {
+      method:'POST', mode:'no-cors',
+      body: JSON.stringify({
+        action:    'addApplication',
+        id:        genId("leave"),
+        name:      name,
+        team:      unit,
+        applyTitle:document.getElementById('lvs-title').value,
+        type:      '請假申請',
+        subtype:   subtype,
+        startDate: startDate,
+        endDate:   fmtD(document.getElementById('lvs-td').value) + ' ' + tth + ':' + ttm,
+        days:      document.getElementById('lvs-days').value,
+        hours:     document.getElementById('lvs-hrs').value,
+        reason:    reason + '【補件】補件日期：' + document.getElementById('lvs-date').value,
+        proxyName: document.getElementById('lvs-pname').value.trim(),
+        proxyTitle:document.getElementById('lvs-ptitle').value,
+        applyDate: nowStr(),
+        status:    '補件待審核',
+        sig1: (function(){ var cv=document.getElementById('lvs-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+        sig2: (function(){ var cv=document.getElementById('lvs-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+        attachData: attachB64  || '',
+        attachMime: attachMime || '',
+        attachName: attachName || '',
+      })
     })
-  })
-  .then(function(){
-    _lvsSubmitted = true;
-    showToast('✅ 補件申請已送出！', 'ok', 3000);
-    var body = document.querySelector('#lvSupModal .modal-body');
-    var footer = document.querySelector('#lvSupModal .modal-footer');
-    if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
-    if (footer) footer.style.display='none';
-    setTimeout(function(){ closeModal('lvSupModal'); window.location.href='index.html'; }, 2000);
-  })
-  .catch(function(err){
-    btn.disabled=false; btn.textContent='📤 送出申請';
-    showToast('送出失敗：'+err.message,'err');
-  });
+    .then(function(){
+      _lvsSubmitted = true;
+      showToast('✅ 補件申請已送出！', 'ok', 3000);
+      var body = document.querySelector('#lvSupModal .modal-body');
+      var footer = document.querySelector('#lvSupModal .modal-footer');
+      if (body) { body.style.opacity='0.5'; body.style.pointerEvents='none'; }
+      if (footer) footer.style.display='none';
+      setTimeout(function(){ closeModal('lvSupModal'); window.location.href='index.html'; }, 2000);
+    })
+    .catch(function(err){
+      btn.disabled=false; btn.textContent='📤 送出申請';
+      showToast('送出失敗：'+err.message,'err');
+    });
+  }
+
+  if (attachFile) {
+    var fr = new FileReader();
+    fr.onload = function(e){ doSubmitLvs(e.target.result.split(',')[1], attachFile.type, attachFile.name); };
+    fr.readAsDataURL(attachFile);
+  } else {
+    doSubmitLvs('','','');
+  }
 }
 
 
