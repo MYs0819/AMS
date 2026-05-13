@@ -1691,7 +1691,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </div>
             <div class="toolbar-right">
               <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出</button>
-              <span class="toolbar-info">共 <span id="my-row-count">0</span> 筆</span>
+              <span class="toolbar-info"><span id="my-page-info" style="margin-right:6px;"></span>共 <span id="my-row-count">0</span> 筆</span>
             </div>
           </div>
 
@@ -1809,7 +1809,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </select>
             <div style="flex:1;"></div>
             <button class="btn" onclick="exportMonRecords()" style="font-size:12px;">💾 匯出</button>
-            <span class="toolbar-info">共 <span id="mon-row-count">0</span> 筆</span>
+            <span class="toolbar-info"><span id="mon-page-info" style="margin-right:6px;"></span>共 <span id="mon-row-count">0</span> 筆</span>
           </div>
           <table class="data-table">
             <colgroup>
@@ -1934,7 +1934,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </select>
             <div style="flex:1;"></div>
             <button class="btn" onclick="exportMallRecords()" style="font-size:12px;">💾 匯出</button>
-            <span class="toolbar-info">共 <span id="mall-row-count">0</span> 筆</span>
+            <span class="toolbar-info"><span id="mall-page-info" style="margin-right:6px;"></span>共 <span id="mall-row-count">0</span> 筆</span>
           </div>
           <table class="data-table">
             <colgroup>
@@ -1986,20 +1986,20 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col class="col-id"/>
-              <col class="col-name"/>
-              <col style="width:calc(var(--col-w-team) + var(--col-w-type))"/>
+              <col style="width:70px;"/>
+              <col style="width:70px;"/>
+              <col style="width:70px;"/>
               <col/>
-              <col class="col-status"/>
-              <col class="col-action"/>
+              <col style="width:70px;"/>
+              <col style="width:70px;"/>
             </colgroup>
             <thead><tr>
-              <th style="text-align:right;padding-right:12px;">送出時間</th>
-              <th style="text-align:right;padding-right:12px;">姓名</th>
-              <th style="text-align:right;padding-right:12px;">意見類型</th>
+              <th style="text-align:center;">送出時間</th>
+              <th style="text-align:center;">姓名</th>
+              <th style="text-align:center;">意見類型</th>
               <th style="text-align:center;">內容</th>
-              <th style="text-align:left;padding-left:12px;">狀態</th>
-              <th style="text-align:left;padding-left:8px;">操作</th>
+              <th style="text-align:center;">狀態</th>
+              <th style="text-align:center;">操作</th>
             </tr></thead>
             <tbody id="fb-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
@@ -2021,20 +2021,20 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col class="col-id"/>
-              <col class="col-name"/>
-              <col style="width:calc(var(--col-w-team) + var(--col-w-type))"/>
+              <col style="width:70px;"/>
+              <col style="width:70px;"/>
+              <col style="width:70px;"/>
               <col/>
-              <col class="col-status"/>
-              <col class="col-action"/>
+              <col style="width:70px;"/>
+              <col style="width:70px;"/>
             </colgroup>
             <thead><tr>
-              <th style="text-align:right;padding-right:12px;">回報時間</th>
-              <th style="text-align:right;padding-right:12px;">姓名</th>
-              <th style="text-align:right;padding-right:12px;">問題類型</th>
+              <th style="text-align:center;">回報時間</th>
+              <th style="text-align:center;">姓名</th>
+              <th style="text-align:center;">問題類型</th>
               <th style="text-align:center;">問題描述</th>
-              <th style="text-align:left;padding-left:12px;">狀態</th>
-              <th style="text-align:left;padding-left:8px;">操作</th>
+              <th style="text-align:center;">狀態</th>
+              <th style="text-align:center;">操作</th>
             </tr></thead>
             <tbody id="rp-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
@@ -3973,12 +3973,14 @@ function filterTable() {
 var myRecordsData = [];
 var myCurrentTab  = 'all';
 var myLeaveFilter = '';
-var myAllYear = true; // true = 顯示全部年份（預設全年）
+var myAllYear = true;
+var myCurrentPage = 1;
 
 function switchMyTab(el, tab) {
   document.querySelectorAll('#page-myrecords .tab-item').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
   myCurrentTab = tab;
+  myCurrentPage = 1;
   renderMyTable();
 }
 
@@ -4143,13 +4145,12 @@ function renderMyTable() {
     var tab  = myCurrentTab;
     var isDone   = s.indexOf('完成') > -1;
     var isReject = s.indexOf('退件') > -1;
-    var isActive  = !isDone && !isReject; // 審核中 = 任何非完成非退件
+    var isActive  = !isDone && !isReject;
     if (tab === 'active'  && !isActive)  return false;
     if (tab === 'done'    && !isDone)    return false;
     if (tab === 'reject'  && !isReject)  return false;
     if (typeVal && (a.type !== typeVal && a.subtype !== typeVal)) return false;
     if (teamVal && (a.team||'') !== teamVal) return false;
-    // 年月篩選：全年模式下都顯示
     if (!myAllYear) {
       if (yearVal !== 'all' && a.applyDate && a.applyDate.slice(0,4) !== yearVal) return false;
       if (monthVal && a.applyDate && a.applyDate.slice(5,7) !== monthVal) return false;
@@ -4162,23 +4163,31 @@ function renderMyTable() {
     return true;
   });
 
+  var total = filtered.length;
   var rc = document.getElementById('my-row-count');
-  if (rc) rc.textContent = filtered.length;
+  if (rc) rc.textContent = total;
+
+  var PER_PAGE = 8;
+  var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
+  if (myCurrentPage > totalPage) myCurrentPage = totalPage;
+  var piEl = document.getElementById('my-page-info');
+  if (piEl) piEl.textContent = myCurrentPage + ' / ' + totalPage + '，';
 
   var noData = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
-  if (!filtered.length) { tbody.innerHTML = noData; return; }
+  if (!filtered.length) { tbody.innerHTML = noData; renderMyPagination(1); return; }
+
+  var start = (myCurrentPage - 1) * PER_PAGE;
+  var paged = filtered.slice(start, start + PER_PAGE);
 
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
-
   tbody.innerHTML = '';
-  filtered.forEach(function(a, i){
+  paged.forEach(function(a, i){
     var s        = a.status || '';
     var isDone   = s.indexOf('完成') > -1;
     var isReject = s.indexOf('退件') > -1;
     var sLabel   = isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg      = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor   = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-    // 審核人/覆核人 — 僅顯示名字（同 所有申請 格式）
     var r1Cell = a.reviewer
       ? '<div style="font-weight:500;font-size:12px;">'+ a.reviewer +'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':'')
       : (isDone||isReject?'<span style="color:#ccc;font-size:12px;">—</span>':'<span style="color:#d4a017;font-size:12px;">待審核</span>');
@@ -4208,6 +4217,30 @@ function renderMyTable() {
     tr.appendChild(lastTd);
     tbody.appendChild(tr);
   });
+  renderMyPagination(totalPage);
+}
+
+function renderMyPagination(totalPage) {
+  var bar = document.getElementById('my-pagination');
+  if (!bar) return;
+  bar.innerHTML = '';
+  function makeBtn(label, page, isActive, isDisabled) {
+    var btn = document.createElement('button');
+    btn.className = 'page-btn' + (isActive ? ' active' : '');
+    btn.textContent = label;
+    if (!isDisabled && page !== null) btn.onclick = (function(p){ return function(){ myCurrentPage=p; renderMyTable(); }; })(page);
+    else btn.disabled = true;
+    return btn;
+  }
+  if (totalPage > 1) {
+    bar.appendChild(makeBtn('‹', myCurrentPage-1, false, myCurrentPage===1));
+    var s=Math.max(1,myCurrentPage-1), e=Math.min(totalPage,s+2);
+    if(e-s<2) s=Math.max(1,e-2);
+    if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
+    for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===myCurrentPage,false));
+    if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
+    bar.appendChild(makeBtn('›', myCurrentPage+1, false, myCurrentPage===totalPage));
+  }
 }
 
 function exportMyRecords() {
@@ -4441,12 +4474,12 @@ function renderFbTable() {
     var timeStr = fmtDT(r.submittedAt||r.createdAt||'');
     var content = (r.content||'');
     tr.innerHTML=
-      '<td style="text-align:right;padding-right:12px;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
-      '<td style="text-align:right;padding-right:12px;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
-      '<td style="text-align:right;padding-right:12px;font-size:11px;">'+(r.type||r.category||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||'—')+'</td>'+
       '<td style="font-size:12px;padding-left:10px;">'+content.slice(0,80)+(content.length>80?'…':'')+'</td>'+
-      '<td style="text-align:left;padding-left:12px;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
-      '<td style="text-align:left;padding-left:8px;"></td>';
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
+      '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
     var vBtn=document.createElement('button');
     vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;background:#e3f2fd;color:#1565c0;';
@@ -4477,12 +4510,12 @@ function renderRpTable() {
     var timeStr = fmtDT(r.submittedAt||r.createdAt||r.reportedAt||'');
     var desc = (r.content||r.description||'');
     tr.innerHTML=
-      '<td style="text-align:right;padding-right:12px;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
-      '<td style="text-align:right;padding-right:12px;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
-      '<td style="text-align:right;padding-right:12px;font-size:11px;">'+(r.type||r.category||r.issueType||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
+      '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
+      '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||r.issueType||'—')+'</td>'+
       '<td style="font-size:12px;padding-left:10px;">'+desc.slice(0,80)+(desc.length>80?'…':'')+'</td>'+
-      '<td style="text-align:left;padding-left:12px;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
-      '<td style="text-align:left;padding-left:8px;"></td>';
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
+      '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
     var vBtn=document.createElement('button');
     vBtn.style.cssText='font-size:11px;height:28px;padding:0 12px;border-radius:6px;border:1.5px solid #90caf9;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;background:#e3f2fd;color:#1565c0;';
@@ -5152,12 +5185,13 @@ function resetPassword(mail) {
 var _reviewTarget = null; // { id, type, name }
 
 function openReview(id, name, type, readOnly) {
-  // 從 ALL_APPS_DATA 或 MALL_ALL_DATA 找到這筆申請
+  // 從所有資料源找到這筆申請
   var app = null;
-  var sources = [ALL_APPS_DATA, MALL_ALL_DATA];
-  for (var s=0; s<sources.length && !app; s++) {
-    for (var i=0; i<sources[s].length; i++) {
-      if (sources[s][i].id === id) { app = sources[s][i]; break; }
+  var sources = [ALL_APPS_DATA, MALL_ALL_DATA, MONTHLY_DATA];
+  outer: for (var s=0; s<sources.length; s++) {
+    var src = sources[s] || [];
+    for (var i=0; i<src.length; i++) {
+      if (String(src[i].id).trim() === String(id).trim()) { app = src[i]; break outer; }
     }
   }
   _reviewTarget = { id:id, name:name, type:type, app:app, readOnly:!!readOnly };
@@ -5506,11 +5540,13 @@ function submitFlowSupp(appId, appName, startDate) {
 var MONTHLY_ALL_DATA = [];
 var MONTHLY_DATA = [];
 var monCurrentTab = 'all';
+var monCurrentPage = 1;
 
 function switchMonTab(el, tab) {
   document.querySelectorAll('#page-monthly .tab-item').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
   monCurrentTab = tab;
+  monCurrentPage = 1;
   renderMonTable();
 }
 
@@ -5641,15 +5677,28 @@ function renderMonTable() {
     if (search && (a.name||'').toLowerCase().indexOf(search)<0 && (a.id||'').toLowerCase().indexOf(search)<0) return false;
     return true;
   });
+
+  var total = filtered.length;
   var rc = document.getElementById('mon-row-count');
-  if(rc) rc.textContent = filtered.length;
+  if(rc) rc.textContent = total;
+
+  var PER_PAGE = 8;
+  var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
+  if (monCurrentPage > totalPage) monCurrentPage = totalPage;
+  var piEl = document.getElementById('mon-page-info');
+  if (piEl) piEl.textContent = monCurrentPage + ' / ' + totalPage + '，';
+
   tbody.innerHTML = '';
   if(!filtered.length){
     tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
-    return;
+    renderMonPagination(1); return;
   }
+
+  var start = (monCurrentPage - 1) * PER_PAGE;
+  var paged = filtered.slice(start, start + PER_PAGE);
+
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
-  filtered.forEach(function(a,i){
+  paged.forEach(function(a,i){
     var s=a.status||'';
     var isDone=s.indexOf('完成')>-1, isReject=s.indexOf('退件')>-1;
     var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
@@ -5679,17 +5728,43 @@ function renderMonTable() {
     lastTd.appendChild(vBtn);
     tbody.appendChild(tr);
   });
+  renderMonPagination(totalPage);
+}
+
+function renderMonPagination(totalPage) {
+  var bar = document.getElementById('mon-pagination');
+  if (!bar) return;
+  bar.innerHTML = '';
+  function makeBtn(label, page, isActive, isDisabled) {
+    var btn = document.createElement('button');
+    btn.className = 'page-btn' + (isActive ? ' active' : '');
+    btn.textContent = label;
+    if (!isDisabled && page !== null) btn.onclick = (function(p){ return function(){ monCurrentPage=p; renderMonTable(); }; })(page);
+    else btn.disabled = true;
+    return btn;
+  }
+  if (totalPage > 1) {
+    bar.appendChild(makeBtn('‹', monCurrentPage-1, false, monCurrentPage===1));
+    var s=Math.max(1,monCurrentPage-1), e=Math.min(totalPage,s+2);
+    if(e-s<2) s=Math.max(1,e-2);
+    if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
+    for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===monCurrentPage,false));
+    if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
+    bar.appendChild(makeBtn('›', monCurrentPage+1, false, monCurrentPage===totalPage));
+  }
 }
 
 /* ══ 本月查詢（功能區，全員版）══ */
 var MALL_ALL_DATA = [];
 var MALL_DATA = [];
 var mallCurrentTab = 'all';
+var mallCurrentPage = 1;
 
 function switchMallTab(el, tab) {
   document.querySelectorAll('#page-monthly-all .tab-item').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
   mallCurrentTab = tab;
+  mallCurrentPage = 1;
   renderMallTable();
 }
 
@@ -5853,15 +5928,28 @@ function renderMallTable() {
     if(search&&(a.name||'').toLowerCase().indexOf(search)<0&&(a.id||'').toLowerCase().indexOf(search)<0) return false;
     return true;
   });
+
+  var total = filtered.length;
   var rc=document.getElementById('mall-row-count');
-  if(rc) rc.textContent=filtered.length;
+  if(rc) rc.textContent=total;
+
+  var PER_PAGE = 8;
+  var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
+  if (mallCurrentPage > totalPage) mallCurrentPage = totalPage;
+  var piEl = document.getElementById('mall-page-info');
+  if (piEl) piEl.textContent = mallCurrentPage + ' / ' + totalPage + '，';
+
   tbody.innerHTML='';
   if(!filtered.length){
     tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
-    return;
+    renderMallPagination(1); return;
   }
+
+  var start = (mallCurrentPage - 1) * PER_PAGE;
+  var paged = filtered.slice(start, start + PER_PAGE);
+
   var userRole=CURRENT_USER?CURRENT_USER.role:'guest';
-  filtered.forEach(function(a,i){
+  paged.forEach(function(a,i){
     var s=a.status||'';
     var isDone=s.indexOf('完成')>-1, isReject=s.indexOf('退件')>-1;
     var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
@@ -5906,6 +5994,30 @@ function renderMallTable() {
     }
     tbody.appendChild(tr);
   });
+  renderMallPagination(totalPage);
+}
+
+function renderMallPagination(totalPage) {
+  var bar = document.getElementById('mall-pagination');
+  if (!bar) return;
+  bar.innerHTML = '';
+  function makeBtn(label, page, isActive, isDisabled) {
+    var btn = document.createElement('button');
+    btn.className = 'page-btn' + (isActive ? ' active' : '');
+    btn.textContent = label;
+    if (!isDisabled && page !== null) btn.onclick = (function(p){ return function(){ mallCurrentPage=p; renderMallTable(); }; })(page);
+    else btn.disabled = true;
+    return btn;
+  }
+  if (totalPage > 1) {
+    bar.appendChild(makeBtn('‹', mallCurrentPage-1, false, mallCurrentPage===1));
+    var s=Math.max(1,mallCurrentPage-1), e=Math.min(totalPage,s+2);
+    if(e-s<2) s=Math.max(1,e-2);
+    if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
+    for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===mallCurrentPage,false));
+    if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
+    bar.appendChild(makeBtn('›', mallCurrentPage+1, false, mallCurrentPage===totalPage));
+  }
 }
 
 /* ── 國假兼職判斷：初始化時根據 CURRENT_USER.title 設定顯示 ── */
