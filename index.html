@@ -1691,7 +1691,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </div>
             <div class="toolbar-right">
               <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出</button>
-              <span class="toolbar-info"><span id="my-page-info" style="margin-right:6px;"></span>共 <span id="my-row-count">0</span> 筆</span>
+              <span class="toolbar-info" id="my-toolbar-info"><span id="my-page-info"></span></span>
             </div>
           </div>
 
@@ -1809,7 +1809,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </select>
             <div style="flex:1;"></div>
             <button class="btn" onclick="exportMonRecords()" style="font-size:12px;">💾 匯出</button>
-            <span class="toolbar-info"><span id="mon-page-info" style="margin-right:6px;"></span>共 <span id="mon-row-count">0</span> 筆</span>
+            <span class="toolbar-info" id="mon-toolbar-info"><span id="mon-page-info"></span></span>
           </div>
           <table class="data-table">
             <colgroup>
@@ -1934,7 +1934,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </select>
             <div style="flex:1;"></div>
             <button class="btn" onclick="exportMallRecords()" style="font-size:12px;">💾 匯出</button>
-            <span class="toolbar-info"><span id="mall-page-info" style="margin-right:6px;"></span>共 <span id="mall-row-count">0</span> 筆</span>
+            <span class="toolbar-info" id="mall-toolbar-info"><span id="mall-page-info"></span></span>
           </div>
           <table class="data-table">
             <colgroup>
@@ -1986,12 +1986,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
+              <col style="width:250px;"/>
+              <col style="width:200px;"/>
+              <col style="width:200px;"/>
               <col/>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
+              <col style="width:200px;"/>
+              <col style="width:200px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">送出時間</th>
@@ -2021,12 +2021,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
+              <col style="width:250px;"/>
+              <col style="width:200px;"/>
+              <col style="width:200px;"/>
               <col/>
-              <col style="width:70px;"/>
-              <col style="width:70px;"/>
+              <col style="width:200px;"/>
+              <col style="width:200px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">回報時間</th>
@@ -2813,9 +2813,10 @@ function toggleAllMonths() {
 }
 
 /* ══ 分頁 ══ */
-function renderPagination(totalPage) {
+function renderPagination(totalPage, total) {
   var bar=document.getElementById('paginationBar');
   bar.innerHTML='';
+  if(totalPage<=1 || total<=8) return;
   function makeBtn(label,page,isActive,isDisabled,cls){
     var btn=document.createElement('button');
     btn.className='page-btn'+(isActive?' active':'')+(cls?' '+cls:'');
@@ -2839,7 +2840,7 @@ function renderPagination(totalPage) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwuMLA-AyIAWFiZWf2-eBLvM2FRwQGAsX4H6rAEc6XQJ9-WzLorVJNO8HWDlwzfDcdt9Q/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbx9qltw6lveXQhEiCl22Zc0ViEokEudsiahtt_aY4CpbRyG73rJuQyiu8mlYMM8J_oKdw/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3965,7 +3966,7 @@ function filterTable() {
 
   document.getElementById('pageInfo').textContent  = currentPage+' / '+totalPage;
   document.getElementById('rowCount').textContent  = total;
-  renderPagination(totalPage);
+  renderPagination(totalPage, total);
 }
 
 
@@ -4164,17 +4165,15 @@ function renderMyTable() {
   });
 
   var total = filtered.length;
-  var rc = document.getElementById('my-row-count');
-  if (rc) rc.textContent = total;
 
   var PER_PAGE = 8;
   var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
   if (myCurrentPage > totalPage) myCurrentPage = totalPage;
   var piEl = document.getElementById('my-page-info');
-  if (piEl) piEl.textContent = myCurrentPage + ' / ' + totalPage + '，';
+  if (piEl) piEl.textContent = myCurrentPage + ' / ' + totalPage + '，共 ' + total + ' 筆';
 
   var noData = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
-  if (!filtered.length) { tbody.innerHTML = noData; renderMyPagination(1); return; }
+  if (!filtered.length) { tbody.innerHTML = noData; renderMyPagination(1, 0); return; }
 
   var start = (myCurrentPage - 1) * PER_PAGE;
   var paged = filtered.slice(start, start + PER_PAGE);
@@ -4217,13 +4216,14 @@ function renderMyTable() {
     tr.appendChild(lastTd);
     tbody.appendChild(tr);
   });
-  renderMyPagination(totalPage);
+  renderMyPagination(totalPage, total);
 }
 
-function renderMyPagination(totalPage) {
+function renderMyPagination(totalPage, total) {
   var bar = document.getElementById('my-pagination');
   if (!bar) return;
   bar.innerHTML = '';
+  if (totalPage <= 1 || total <= 8) return;
   function makeBtn(label, page, isActive, isDisabled) {
     var btn = document.createElement('button');
     btn.className = 'page-btn' + (isActive ? ' active' : '');
@@ -4232,15 +4232,13 @@ function renderMyPagination(totalPage) {
     else btn.disabled = true;
     return btn;
   }
-  if (totalPage > 1) {
-    bar.appendChild(makeBtn('‹', myCurrentPage-1, false, myCurrentPage===1));
-    var s=Math.max(1,myCurrentPage-1), e=Math.min(totalPage,s+2);
-    if(e-s<2) s=Math.max(1,e-2);
-    if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
-    for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===myCurrentPage,false));
-    if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
-    bar.appendChild(makeBtn('›', myCurrentPage+1, false, myCurrentPage===totalPage));
-  }
+  bar.appendChild(makeBtn('‹', myCurrentPage-1, false, myCurrentPage===1));
+  var s=Math.max(1,myCurrentPage-1), e=Math.min(totalPage,s+2);
+  if(e-s<2) s=Math.max(1,e-2);
+  if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
+  for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===myCurrentPage,false));
+  if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
+  bar.appendChild(makeBtn('›', myCurrentPage+1, false, myCurrentPage===totalPage));
 }
 
 function exportMyRecords() {
@@ -5308,8 +5306,8 @@ function submitReview(action) {
     method:'POST', mode:'no-cors',
     body: JSON.stringify({
       action:   'updateApplication',
-      id:       _reviewTarget.id,
-      field:    'status',
+      id:       String(_reviewTarget.id || '').trim(),
+      status:   newStatus,
       value:    newStatus,
       reviewer: approver,
       verifier: verifier,
@@ -5514,7 +5512,7 @@ function submitFlowSupp(appId, appName, startDate) {
       body: JSON.stringify({
         action:    'uploadAttachment',
         prefix:    'lv',
-        appId:     appId,
+        appId:     String(appId || '').trim(),
         name:      appName,
         startDate: startDate,
         filename:  file.name,
@@ -5679,19 +5677,17 @@ function renderMonTable() {
   });
 
   var total = filtered.length;
-  var rc = document.getElementById('mon-row-count');
-  if(rc) rc.textContent = total;
 
   var PER_PAGE = 8;
   var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
   if (monCurrentPage > totalPage) monCurrentPage = totalPage;
   var piEl = document.getElementById('mon-page-info');
-  if (piEl) piEl.textContent = monCurrentPage + ' / ' + totalPage + '，';
+  if (piEl) piEl.textContent = monCurrentPage + ' / ' + totalPage + '，共 ' + total + ' 筆';
 
   tbody.innerHTML = '';
   if(!filtered.length){
     tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
-    renderMonPagination(1); return;
+    renderMonPagination(1, 0); return;
   }
 
   var start = (monCurrentPage - 1) * PER_PAGE;
@@ -5728,13 +5724,14 @@ function renderMonTable() {
     lastTd.appendChild(vBtn);
     tbody.appendChild(tr);
   });
-  renderMonPagination(totalPage);
+  renderMonPagination(totalPage, total);
 }
 
-function renderMonPagination(totalPage) {
+function renderMonPagination(totalPage, total) {
   var bar = document.getElementById('mon-pagination');
   if (!bar) return;
   bar.innerHTML = '';
+  if (totalPage <= 1 || total <= 8) return;
   function makeBtn(label, page, isActive, isDisabled) {
     var btn = document.createElement('button');
     btn.className = 'page-btn' + (isActive ? ' active' : '');
@@ -5743,15 +5740,13 @@ function renderMonPagination(totalPage) {
     else btn.disabled = true;
     return btn;
   }
-  if (totalPage > 1) {
-    bar.appendChild(makeBtn('‹', monCurrentPage-1, false, monCurrentPage===1));
-    var s=Math.max(1,monCurrentPage-1), e=Math.min(totalPage,s+2);
-    if(e-s<2) s=Math.max(1,e-2);
-    if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
-    for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===monCurrentPage,false));
-    if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
-    bar.appendChild(makeBtn('›', monCurrentPage+1, false, monCurrentPage===totalPage));
-  }
+  bar.appendChild(makeBtn('‹', monCurrentPage-1, false, monCurrentPage===1));
+  var s=Math.max(1,monCurrentPage-1), e=Math.min(totalPage,s+2);
+  if(e-s<2) s=Math.max(1,e-2);
+  if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
+  for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===monCurrentPage,false));
+  if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
+  bar.appendChild(makeBtn('›', monCurrentPage+1, false, monCurrentPage===totalPage));
 }
 
 /* ══ 本月查詢（功能區，全員版）══ */
@@ -5930,19 +5925,17 @@ function renderMallTable() {
   });
 
   var total = filtered.length;
-  var rc=document.getElementById('mall-row-count');
-  if(rc) rc.textContent=total;
 
   var PER_PAGE = 8;
   var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
   if (mallCurrentPage > totalPage) mallCurrentPage = totalPage;
   var piEl = document.getElementById('mall-page-info');
-  if (piEl) piEl.textContent = mallCurrentPage + ' / ' + totalPage + '，';
+  if (piEl) piEl.textContent = mallCurrentPage + ' / ' + totalPage + '，共 ' + total + ' 筆';
 
   tbody.innerHTML='';
   if(!filtered.length){
     tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
-    renderMallPagination(1); return;
+    renderMallPagination(1, 0); return;
   }
 
   var start = (mallCurrentPage - 1) * PER_PAGE;
@@ -5994,13 +5987,14 @@ function renderMallTable() {
     }
     tbody.appendChild(tr);
   });
-  renderMallPagination(totalPage);
+  renderMallPagination(totalPage, total);
 }
 
-function renderMallPagination(totalPage) {
+function renderMallPagination(totalPage, total) {
   var bar = document.getElementById('mall-pagination');
   if (!bar) return;
   bar.innerHTML = '';
+  if (totalPage <= 1 || total <= 8) return;
   function makeBtn(label, page, isActive, isDisabled) {
     var btn = document.createElement('button');
     btn.className = 'page-btn' + (isActive ? ' active' : '');
@@ -6009,15 +6003,13 @@ function renderMallPagination(totalPage) {
     else btn.disabled = true;
     return btn;
   }
-  if (totalPage > 1) {
-    bar.appendChild(makeBtn('‹', mallCurrentPage-1, false, mallCurrentPage===1));
-    var s=Math.max(1,mallCurrentPage-1), e=Math.min(totalPage,s+2);
-    if(e-s<2) s=Math.max(1,e-2);
-    if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
-    for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===mallCurrentPage,false));
-    if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
-    bar.appendChild(makeBtn('›', mallCurrentPage+1, false, mallCurrentPage===totalPage));
-  }
+  bar.appendChild(makeBtn('‹', mallCurrentPage-1, false, mallCurrentPage===1));
+  var s=Math.max(1,mallCurrentPage-1), e=Math.min(totalPage,s+2);
+  if(e-s<2) s=Math.max(1,e-2);
+  if(s>1) { var ep=document.createElement('button'); ep.className='page-btn'; ep.textContent='…'; ep.disabled=true; bar.appendChild(ep); }
+  for(var p=s;p<=e;p++) bar.appendChild(makeBtn(p,p,p===mallCurrentPage,false));
+  if(e<totalPage) { var ep2=document.createElement('button'); ep2.className='page-btn'; ep2.textContent='…'; ep2.disabled=true; bar.appendChild(ep2); }
+  bar.appendChild(makeBtn('›', mallCurrentPage+1, false, mallCurrentPage===totalPage));
 }
 
 /* ── 國假兼職判斷：初始化時根據 CURRENT_USER.title 設定顯示 ── */
