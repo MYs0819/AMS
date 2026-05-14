@@ -2249,142 +2249,100 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
       </div>
 
-      <!-- 帳號 Modal -->
-      <div class="modal-overlay" id="accModal" onclick="if(event.target===this)closeModal('accModal')">
-        <div style="background:#fff;border-radius:16px;padding:32px 36px;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:18px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div style="flex:1;"></div>
-            <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text-primary);text-align:center;" id="accModalTitle">新增帳號</div>
-            <div style="flex:1;display:flex;justify-content:flex-end;">
-              <button onclick="closeModal('accModal')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--color-text-muted);line-height:1;">✕</button>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div id="acc-form-err" style="display:none;color:#c62828;font-size:12px;background:#fce4e4;padding:8px 12px;border-radius:7px;"></div>
 
-            <!-- 信箱 -->
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">電子信箱<span style="color:#e53935;margin-left:2px;">*</span></label>
-              <div style="position:relative;">
-                <input style="border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;box-sizing:border-box;" id="acc-mail-input" type="text" placeholder="example@gmail.com" autocomplete="off" oninput="updateAccMailSuggestions(this)"/>
-                <div id="acc-mail-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--color-border-card);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;max-height:160px;overflow-y:auto;margin-top:3px;"></div>
-              </div>
-            </div>
-
-            <!-- 姓名 + 權限 -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">姓名<span style="color:#e53935;margin-left:2px;">*</span></label>
-                <input class="form-input" id="acc-name" placeholder="真實姓名"/>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">權限<span style="color:#e53935;margin-left:2px;">*</span></label>
-                <select class="filter-select" id="acc-role" style="height:36px;">
-                  <option value="boss">boss（老闆）</option>
-                  <option value="admin">admin（營運）</option>
-                  <option value="manager">manager（主管）</option>
-                  <option value="fulltime">fulltime（正職）</option>
-                  <option value="parttime">parttime（兼職）</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- 團隊 + 職稱 -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">團隊</label>
-                <select class="filter-select" id="acc-team" style="height:36px;">
-                  <option value="">請選擇</option>
-                  <option value="營運">營運</option>
-                  <option value="外場">外場</option>
-                  <option value="吧檯">吧檯</option>
-                  <option value="內廚">內廚</option>
-                </select>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:5px;">
-                <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">職稱</label>
-                <select class="filter-select" id="acc-title" style="height:36px;">
-                  <option value="">請選擇</option>
-                  <option value="正職">正職</option>
-                  <option value="兼職">兼職</option>
-                  <option value="臨時工">臨時工</option>
-                  <option value="打雜的">打雜的</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- 密碼 -->
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">密碼<span style="color:#e53935;margin-left:2px;">*</span><span id="acc-pass-hint" style="font-size:11px;color:var(--color-text-muted);margin-left:6px;">（留空則保持不變）</span></label>
-              <input class="form-input" id="acc-pass" type="password" placeholder="設定密碼"/>
-            </div>
-
-            <!-- 狀態開關 -->
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">帳號狀態</label>
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
-                <span style="position:relative;display:inline-block;width:44px;height:24px;">
-                  <input type="checkbox" id="acc-active" checked style="display:none;" onchange="document.getElementById('acc-active-label').textContent=this.checked?'啟用':'停用';document.getElementById('acc-toggle-track').style.background=this.checked?'var(--color-gold)':'#ccc';document.getElementById('acc-toggle-knob').style.transform=this.checked?'translateX(20px)':'translateX(0)'"/>
-                  <span id="acc-toggle-track" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;inset:0;border-radius:24px;background:var(--color-gold);cursor:pointer;transition:.2s;"></span>
-                  <span id="acc-toggle-knob" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s;transform:translateX(20px);cursor:pointer;"></span>
-                </span>
-                <span style="font-size:13px;font-weight:500;" id="acc-active-label">啟用</span>
-              </label>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:center;gap:12px;margin-top:4px;">
-            <button onclick="closeModal('accModal')" style="height:40px;padding:0 24px;border-radius:10px;border:1.5px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:14px;cursor:pointer;transition:.15s;" onmouseover="this.style.background='#e8e3d6'" onmouseout="this.style.background='#f5f5f5'">取消</button>
-            <button id="acc-save-btn" onclick="saveAccount()" style="height:40px;padding:0 32px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold-light)'" onmouseout="this.style.background='var(--color-gold)'">💾 儲存</button>
-          </div>
-          <input type="hidden" id="acc-edit-id"/>
-        </div>
-     
-
-
-    
-<!-- 審核 Modal -->
-<div class="review-modal-overlay" id="reviewModal">
-  <div class="review-modal" style="max-width:480px;width:100%;gap:12px;">
-    <div class="review-modal-title" id="reviewModalTitle" style="text-align:center;">審核申請</div>
-    <!-- 流程狀態條 -->
-    <div id="reviewFlowBar" style="display:flex;align-items:center;justify-content:center;gap:0;font-family:var(--font-body);">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;max-width:80px;">
-        <div style="font-size:11px;font-weight:700;color:#2e7d32;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:78px;" id="flow-emp-name">員工</div>
-        <div style="font-size:9px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:6px;padding:1px 6px;white-space:nowrap;">已遞出</div>
-      </div>
-      <div style="flex:1;height:2px;background:linear-gradient(90deg,#a5d6a7,#ccc);min-width:16px;"></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
-        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">主管審核</div>
-        <div id="flow-manager-status" style="font-size:9px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:6px;padding:1px 6px;white-space:nowrap;">審核中</div>
-      </div>
-      <div style="flex:1;height:2px;background:#e0e0e0;min-width:16px;" id="flow-line-2"></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
-        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">人資覆核</div>
-        <div id="flow-admin-status" style="font-size:9px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:6px;padding:1px 6px;white-space:nowrap;">等待中</div>
-      </div>
-    </div>
-    <!-- 申請資訊 -->
-    <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-text-secondary);line-height:2;font-family:var(--font-mono);"></div>
-    <!-- 審核意見（橫向等高）-->
-    <div id="reviewCommentWrap" style="display:flex;align-items:center;gap:10px;">
-      <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);white-space:nowrap;flex-shrink:0;">審核意見（選填）</label>
-      <input id="reviewComment" type="text" style="flex:1;border:1.5px solid var(--color-border-card);border-radius:7px;padding:0 10px;font-family:var(--font-body);font-size:13px;height:34px;outline:none;" placeholder="可填寫審核備註…"/>
-    </div>
-    <!-- 已審核人員顯示 -->
-    <div id="reviewerDisplay" style="display:none;text-align:center;padding:8px 10px;background:#f0f9f1;border:1px solid #a5d6a7;border-radius:8px;">
-      <div id="reviewerDisplayName" style="font-size:14px;font-weight:700;color:#2e7d32;"></div>
-      <div id="reviewerDisplayTime" style="font-size:11px;color:#5a8060;font-family:var(--font-mono);margin-top:2px;"></div>
-    </div>
-    <div class="review-modal-footer" style="justify-content:center;gap:10px;">
-      <button onclick="closeReviewModal()" style="height:34px;padding:0;width:80px;border-radius:7px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">取消</button>
-      <button class="review-btn reject" id="reviewRejectBtn" onclick="submitReview('reject')" style="width:80px;height:34px;padding:0;">✕ 退件</button>
-      <button class="review-btn approve" id="reviewApproveBtn" onclick="submitReview('approve')" style="width:80px;height:34px;padding:0;">✓ 核准</button>
-    </div>
-  </div>
-</div>
 </main>
   </div>
 </div>
+<!-- 帳號 Modal -->
+<div class="modal-overlay" id="accModal" onclick="if(event.target===this)closeModal('accModal')">
+  <div style="background:#fff;border-radius:16px;padding:32px 36px;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:18px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="flex:1;"></div>
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text-primary);text-align:center;" id="accModalTitle">新增帳號</div>
+      <div style="flex:1;display:flex;justify-content:flex-end;">
+        <button onclick="closeModal('accModal')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--color-text-muted);line-height:1;">✕</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div id="acc-form-err" style="display:none;color:#c62828;font-size:12px;background:#fce4e4;padding:8px 12px;border-radius:7px;"></div>
+
+      <!-- 信箱 -->
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">電子信箱<span style="color:#e53935;margin-left:2px;">*</span></label>
+        <div style="position:relative;">
+    <input style="border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;box-sizing:border-box;" id="acc-mail-input" type="text" placeholder="example@gmail.com" autocomplete="off" oninput="updateAccMailSuggestions(this)"/>
+    <div id="acc-mail-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--color-border-card);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;max-height:160px;overflow-y:auto;margin-top:3px;"></div>
+        </div>
+      </div>
+
+      <!-- 姓名 + 權限 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:5px;">
+    <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">姓名<span style="color:#e53935;margin-left:2px;">*</span></label>
+    <input class="form-input" id="acc-name" placeholder="真實姓名"/>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+    <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">權限<span style="color:#e53935;margin-left:2px;">*</span></label>
+    <select class="filter-select" id="acc-role" style="height:36px;">
+      <option value="boss">boss（老闆）</option>
+      <option value="admin">admin（營運）</option>
+      <option value="manager">manager（主管）</option>
+      <option value="fulltime">fulltime（正職）</option>
+      <option value="parttime">parttime（兼職）</option>
+    </select>
+        </div>
+      </div>
+
+      <!-- 團隊 + 職稱 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:5px;">
+    <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">團隊</label>
+    <select class="filter-select" id="acc-team" style="height:36px;">
+      <option value="">請選擇</option>
+      <option value="營運">營運</option>
+      <option value="外場">外場</option>
+      <option value="吧檯">吧檯</option>
+      <option value="內廚">內廚</option>
+    </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+    <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">職稱</label>
+    <select class="filter-select" id="acc-title" style="height:36px;">
+      <option value="">請選擇</option>
+      <option value="正職">正職</option>
+      <option value="兼職">兼職</option>
+      <option value="臨時工">臨時工</option>
+      <option value="打雜的">打雜的</option>
+    </select>
+        </div>
+      </div>
+
+      <!-- 密碼 -->
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">密碼<span style="color:#e53935;margin-left:2px;">*</span><span id="acc-pass-hint" style="font-size:11px;color:var(--color-text-muted);margin-left:6px;">（留空則保持不變）</span></label>
+        <input class="form-input" id="acc-pass" type="password" placeholder="設定密碼"/>
+      </div>
+
+      <!-- 狀態開關 -->
+      <div style="display:flex;align-items:center;gap:12px;">
+        <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);">帳號狀態</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+    <span style="position:relative;display:inline-block;width:44px;height:24px;">
+      <input type="checkbox" id="acc-active" checked style="display:none;" onchange="document.getElementById('acc-active-label').textContent=this.checked?'啟用':'停用';document.getElementById('acc-toggle-track').style.background=this.checked?'var(--color-gold)':'#ccc';document.getElementById('acc-toggle-knob').style.transform=this.checked?'translateX(20px)':'translateX(0)'"/>
+      <span id="acc-toggle-track" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;inset:0;border-radius:24px;background:var(--color-gold);cursor:pointer;transition:.2s;"></span>
+      <span id="acc-toggle-knob" onclick="var cb=document.getElementById('acc-active');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s;transform:translateX(20px);cursor:pointer;"></span>
+    </span>
+    <span style="font-size:13px;font-weight:500;" id="acc-active-label">啟用</span>
+        </label>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:12px;margin-top:4px;">
+      <button onclick="closeModal('accModal')" style="height:40px;padding:0 24px;border-radius:10px;border:1.5px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:14px;cursor:pointer;transition:.15s;" onmouseover="this.style.background='#e8e3d6'" onmouseout="this.style.background='#f5f5f5'">取消</button>
+      <button id="acc-save-btn" onclick="saveAccount()" style="height:40px;padding:0 32px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold-light)'" onmouseout="this.style.background='var(--color-gold)'">💾 儲存</button>
+    </div>
+    <input type="hidden" id="acc-edit-id"/>
+  </div>
+
 
 <!-- ══ 新增申請 Modal ══ -->
 <div class="modal-overlay" id="formModal">
@@ -2840,7 +2798,7 @@ function renderPagination(totalPage, total) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbx9qltw6lveXQhEiCl22Zc0ViEokEudsiahtt_aY4CpbRyG73rJuQyiu8mlYMM8J_oKdw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzXE86xy_jZ-sH0eCpGaQ5O3LShea8-OCSpUkZrd9hgKctGnudbR86mbZRqEevdkPNtkw/exec';
 
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
@@ -3425,7 +3383,7 @@ function updateAnalytics() {
       var el=g2(id); if(el) el.textContent='…';
     });
     var url = GAS_URL + '?action=getApplications&_=' + Date.now();
-    fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+    fetch(url, {method:'GET', cache:'no-store'})
       .then(function(r){ return r.json(); })
       .then(function(data){
         if (data.success && data.applications) {
@@ -3679,7 +3637,7 @@ function loadMainData() {
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
@@ -3698,12 +3656,12 @@ function loadMainData() {
 
 function updateMainStats(apps) {
   var total=apps.length, active=0, pending=0, done=0, reject=0, supp=0;
-  var activeList=[], pendingList=[], rejectList=[];
+  var activeList=[], doneList=[], pendingList=[], rejectList=[];
   var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
   var lcDetails={'事假':[],'病假':[],'生理假':[],'國假':[],'特休':[],'其他':[]};
   apps.forEach(function(a){
     var s = a.status||'';
-    if (s.indexOf('完成')>-1) done++;
+    if (s.indexOf('完成')>-1) { done++; doneList.push(a); }
     else if (s.indexOf('退件')>-1) { reject++; rejectList.push(a); }
     else if (s.indexOf('補件')>-1) supp++;
     else if (s.indexOf('待')>-1 || s.indexOf('審')>-1) {
@@ -3803,8 +3761,7 @@ function updateMainStats(apps) {
   // 大卡 tooltip（總申請/審核中/已完成/退件）
   buildTip(apps,       g('stat-total')   ? g('stat-total').closest('.stat-card')   : null);
   buildTip(activeList, g('stat-active')  ? g('stat-active').closest('.stat-card')  : null);
-  buildTip(pendingList.length ? pendingList : activeList,
-                       g('stat-pending') ? g('stat-pending').closest('.stat-card') : null);
+  buildTip(doneList,   g('stat-pending') ? g('stat-pending').closest('.stat-card') : null);
   buildTip(rejectList, g('stat-reject')  ? g('stat-reject').closest('.stat-card')  : null);
 }
 
@@ -3852,7 +3809,7 @@ function renderMainTable(apps) {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;text-align:center;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span>'+proofBadge(a)+'</td>'+
+      '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+reviewerCell+'</td>'+
       '<td style="text-align:center;">'+verifierCell+'</td>'+
       '<td style="text-align:center;"></td>';
@@ -4063,7 +4020,7 @@ function loadMyRecords() {
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
@@ -4127,13 +4084,8 @@ function loadMyRecords() {
       renderMyTable();
     })
     .catch(function(err){
-      // 可能是 CORS 或網路問題，嘗試用 no-cors 方式重新載入
-      var url2 = GAS_URL + '?action=getApplications&_=' + Date.now();
-      fetch(url2, {method:'GET', mode:'no-cors', cache:'no-store'})
-        .then(function(){ /* no-cors 無法讀取 body，顯示提示 */ })
-        .catch(function(){});
       if (document.getElementById('my-tbody'))
-        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:#e65100;">⚠ 連線失敗，請確認 GAS 已部署並重新整理頁面</td></tr>';
+        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:#e65100;">⚠ 載入失敗：請確認 GAS 已重新部署並重新整理頁面<br><small style="color:#9a9482;">(' + (err.message||'網路錯誤') + ')</small></td></tr>';
     });
 }
 
@@ -4141,19 +4093,14 @@ function loadMyRecords() {
 function proofBadge(app) {
   var subtype  = (app.subtype || app.type || '');
   var isPhysio = subtype.indexOf('生理假') > -1;
-  if (isPhysio) {
-    return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">無須證明</div>';
-  }
+  var styleGray = 'display:block;margin-top:4px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;white-space:nowrap;';
+  var styleRed  = 'display:block;margin-top:4px;font-size:9px;font-weight:600;color:#c62828;background:#fff8f8;border:1px solid #ffcdd2;border-radius:5px;padding:1px 6px;white-space:nowrap;';
+  if (isPhysio) return '<span style="'+styleGray+'">無須證明</span>';
   var proof = (app.proofLink || '').trim();
-  if (proof) {
-    return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">有附件</div>';
-  }
-  // 補件申請（status含「補件」或subtype含「補件」）視為已補件
+  if (proof)   return '<span style="'+styleGray+'">有附件</span>';
   var status = (app.status || '');
-  if (status.indexOf('補件') > -1) {
-    return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">已補件</div>';
-  }
-  return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#c62828;background:#fff8f8;border:1px solid #ffcdd2;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">須補件</div>';
+  if (status.indexOf('補件') > -1) return '<span style="'+styleGray+'">已補件</span>';
+  return '<span style="'+styleRed+'">須補件</span>';
 }
 
 function renderMyTable() {
@@ -4227,7 +4174,7 @@ function renderMyTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
+      '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>';
     var lastTd = document.createElement('td');
@@ -4395,7 +4342,7 @@ function loadFeedbackMgr() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getFeedbacks&_=' + Date.now();
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -4429,7 +4376,7 @@ function loadReportMgr() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getReports&_=' + Date.now();
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -4628,7 +4575,7 @@ function testGasConnection() {
   errEl.style.color = '#7a5000';
   errEl.textContent = '⏳ 測試連線中…';
   var url = GAS_URL + '?action=ping&v=' + Date.now();
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
       errEl.style.color = '#2e7d32';
@@ -4654,7 +4601,7 @@ function doLogin() {
 
   // 從 GAS 驗證帳號
   var url = GAS_URL + '?action=login&mail=' + encodeURIComponent(mail) + '&v=' + Date.now();
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       btn.disabled = false; btn.textContent = '登 入';
@@ -4913,7 +4860,7 @@ function loadAccounts() {
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getAccounts&v=' + Date.now() + '_' + Math.random();
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -5634,7 +5581,7 @@ function loadMonthlyData() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
@@ -5736,7 +5683,7 @@ function renderMonTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
+      '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>'+
       '<td style="text-align:center;"></td>';
@@ -5893,7 +5840,7 @@ function loadMallData() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', mode:'cors', cache:'no-store'})
+  fetch(url, {method:'GET', cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
@@ -5984,7 +5931,7 @@ function renderMallTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
+      '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
       '<td style="text-align:center;"></td>';
@@ -6077,5 +6024,46 @@ dcLoadFiles();
 applyBlur(true); // 預設模糊，initAuth 登入成功後解除
 initAuth(); // 進入文件中心時立即從 GAS 載入
 </script>
+
+<!-- 審核 Modal -->
+<div class="review-modal-overlay" id="reviewModal">
+  <div class="review-modal" style="max-width:480px;width:100%;gap:12px;">
+    <div class="review-modal-title" id="reviewModalTitle" style="text-align:center;">審核申請</div>
+    <!-- 流程狀態條 -->
+    <div id="reviewFlowBar" style="display:flex;align-items:center;justify-content:center;gap:0;font-family:var(--font-body);">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;max-width:80px;">
+        <div style="font-size:11px;font-weight:700;color:#2e7d32;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:78px;" id="flow-emp-name">員工</div>
+        <div style="font-size:9px;color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:6px;padding:1px 6px;white-space:nowrap;">已遞出</div>
+      </div>
+      <div style="flex:1;height:2px;background:linear-gradient(90deg,#a5d6a7,#ccc);min-width:16px;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
+        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">主管審核</div>
+        <div id="flow-manager-status" style="font-size:9px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:6px;padding:1px 6px;white-space:nowrap;">審核中</div>
+      </div>
+      <div style="flex:1;height:2px;background:#e0e0e0;min-width:16px;" id="flow-line-2"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
+        <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">人資覆核</div>
+        <div id="flow-admin-status" style="font-size:9px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:6px;padding:1px 6px;white-space:nowrap;">等待中</div>
+      </div>
+    </div>
+    <!-- 申請資訊 -->
+    <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-text-secondary);line-height:2;font-family:var(--font-mono);"></div>
+    <!-- 審核意見（橫向等高）-->
+    <div id="reviewCommentWrap" style="display:flex;align-items:center;gap:10px;">
+      <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);white-space:nowrap;flex-shrink:0;">審核意見（選填）</label>
+      <input id="reviewComment" type="text" style="flex:1;border:1.5px solid var(--color-border-card);border-radius:7px;padding:0 10px;font-family:var(--font-body);font-size:13px;height:34px;outline:none;" placeholder="可填寫審核備註…"/>
+    </div>
+    <!-- 已審核人員顯示 -->
+    <div id="reviewerDisplay" style="display:none;text-align:center;padding:8px 10px;background:#f0f9f1;border:1px solid #a5d6a7;border-radius:8px;">
+      <div id="reviewerDisplayName" style="font-size:14px;font-weight:700;color:#2e7d32;"></div>
+      <div id="reviewerDisplayTime" style="font-size:11px;color:#5a8060;font-family:var(--font-mono);margin-top:2px;"></div>
+    </div>
+    <div class="review-modal-footer" style="justify-content:center;gap:10px;">
+      <button onclick="closeReviewModal()" style="height:34px;padding:0;width:80px;border-radius:7px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">取消</button>
+      <button class="review-btn reject" id="reviewRejectBtn" onclick="submitReview('reject')" style="width:80px;height:34px;padding:0;">✕ 退件</button>
+      <button class="review-btn approve" id="reviewApproveBtn" onclick="submitReview('approve')" style="width:80px;height:34px;padding:0;">✓ 核准</button>
+    </div>
+  
+
 </body>
 </html>
