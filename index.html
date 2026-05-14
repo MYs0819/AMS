@@ -2041,21 +2041,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
       </div>
 
-      <!-- 詳細查看 Modal（意見/問題共用）-->
-      <div class="modal-overlay" id="fbrpDetailModal" onclick="if(event.target===this)closeModal('fbrpDetailModal')">
-        <div style="background:#fff;border-radius:14px;padding:28px 32px;width:100%;max-width:500px;box-shadow:0 16px 48px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:14px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div style="font-size:16px;font-weight:700;color:var(--color-text-primary);" id="fbrp-detail-title">詳細內容</div>
-            <button onclick="closeModal('fbrpDetailModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--color-text-muted);">✕</button>
-          </div>
-          <div style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:12px 16px;font-size:12.5px;line-height:1.8;font-family:var(--font-mono);" id="fbrp-detail-info"></div>
-          <div style="white-space:pre-wrap;font-size:13px;color:var(--color-text-primary);background:#f9f9f9;border-radius:8px;padding:12px 16px;line-height:1.7;max-height:200px;overflow-y:auto;" id="fbrp-detail-body"></div>
-          <div style="display:flex;gap:10px;justify-content:center;">
-            <button id="fbrp-mark-btn" onclick="markFbrpDone()" style="height:34px;padding:0 24px;border-radius:8px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;">✅ 標記已處理</button>
-            <button onclick="closeModal('fbrpDetailModal')" style="height:34px;padding:0 24px;border-radius:8px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">關閉</button>
-          </div>
-        </div>
-      </div>
+
 
       <div class="page-section" id="page-workhour">
         <div class="article-wrap dark-page" style="background-color:#434343;border-color:#555;flex:1;min-height:0;overflow-y:auto;">
@@ -4072,10 +4058,10 @@ function loadMyRecords() {
         });
       }
       document.getElementById('my-total').textContent   = total;
-      document.getElementById('my-pending').textContent = active; // 審核中
+      document.getElementById('my-pending').textContent = active;
       document.getElementById('my-done').textContent    = done;
       document.getElementById('my-reject').textContent  = reject;
-      document.getElementById('my-row-count').textContent = total;
+      var myRc = document.getElementById('my-row-count'); if (myRc) myRc.textContent = total;
       if (document.getElementById('mytab-all'))     document.getElementById('mytab-all').textContent     = total;
       if (document.getElementById('mytab-active'))  document.getElementById('mytab-active').textContent  = active;
       if (document.getElementById('mytab-done'))    document.getElementById('mytab-done').textContent    = done;
@@ -4093,8 +4079,8 @@ function loadMyRecords() {
 function proofBadge(app) {
   var subtype  = (app.subtype || app.type || '');
   var isPhysio = subtype.indexOf('生理假') > -1;
-  var styleGray = 'display:block;margin-top:4px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;white-space:nowrap;';
-  var styleRed  = 'display:block;margin-top:4px;font-size:9px;font-weight:600;color:#c62828;background:#fff8f8;border:1px solid #ffcdd2;border-radius:5px;padding:1px 6px;white-space:nowrap;';
+  var styleGray = 'display:block;margin-top:3px;font-size:10px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:2px 8px;white-space:nowrap;';
+  var styleRed  = 'display:block;margin-top:3px;font-size:10px;font-weight:600;color:#c62828;background:#fff8f8;border:1px solid #ffcdd2;border-radius:8px;padding:2px 8px;white-space:nowrap;';
   if (isPhysio) return '<span style="'+styleGray+'">無須證明</span>';
   var proof = (app.proofLink || '').trim();
   if (proof)   return '<span style="'+styleGray+'">有附件</span>';
@@ -4256,7 +4242,7 @@ function exportMainRecords() {
 }
 
 function exportMonRecords() {
-  var src = (typeof MON_DATA !== 'undefined' ? MON_DATA : []);
+  var src = (typeof MONTHLY_DATA !== 'undefined' ? MONTHLY_DATA : []);
   if (!src.length) { alert('尚無資料可匯出'); return; }
   var headers = ['申請編號','員工姓名','團隊','申請類型','假別','申請日期','起訖期間','狀態','審核人','覆核人'];
   var rows = src.map(function(a){
@@ -6064,6 +6050,23 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
       <button class="review-btn approve" id="reviewApproveBtn" onclick="submitReview('approve')" style="width:80px;height:34px;padding:0;">✓ 核准</button>
     </div>
   
+
+
+<!-- 詳細查看 Modal（意見/問題共用）-->
+      <div class="modal-overlay" id="fbrpDetailModal" onclick="if(event.target===this)closeModal('fbrpDetailModal')">
+        <div style="background:#fff;border-radius:14px;padding:28px 32px;width:100%;max-width:500px;box-shadow:0 16px 48px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-size:16px;font-weight:700;color:var(--color-text-primary);" id="fbrp-detail-title">詳細內容</div>
+            <button onclick="closeModal('fbrpDetailModal')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--color-text-muted);">✕</button>
+          </div>
+          <div style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:12px 16px;font-size:12.5px;line-height:1.8;font-family:var(--font-mono);" id="fbrp-detail-info"></div>
+          <div style="white-space:pre-wrap;font-size:13px;color:var(--color-text-primary);background:#f9f9f9;border-radius:8px;padding:12px 16px;line-height:1.7;max-height:200px;overflow-y:auto;" id="fbrp-detail-body"></div>
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button id="fbrp-mark-btn" onclick="markFbrpDone()" style="height:34px;padding:0 24px;border-radius:8px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;">✅ 標記已處理</button>
+            <button onclick="closeModal('fbrpDetailModal')" style="height:34px;padding:0 24px;border-radius:8px;border:1px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:13px;cursor:pointer;">關閉</button>
+          </div>
+        </div>
+      </div>
 
 </body>
 </html>
