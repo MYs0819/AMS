@@ -473,7 +473,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 /* ============================================================
    Modal
    ============================================================ */
-.modal-overlay{display:none;position:fixed;inset:0;background-color:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay{display:none;position:fixed;inset:0;background-color:rgba(0,0,0,.55);z-index:8000;align-items:center;justify-content:center;pointer-events:auto !important;}
 .modal-overlay.open{display:flex;}
 
 /* 退件 Modal */
@@ -908,7 +908,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .review-btn.approve:hover{background:#2e7d32;color:#fff;}
 .review-btn.reject{border-color:#c62828;background:#fce4e4;color:#c62828;}
 .review-btn.reject:hover{background:#c62828;color:#fff;}
-.review-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:800;display:none;align-items:center;justify-content:center;}
+.review-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:8001;display:none;align-items:center;justify-content:center;pointer-events:auto !important;}
 .review-modal-overlay.open{display:flex;}
 .review-modal{background:#fff;border-radius:12px;padding:28px 32px;width:100%;max-width:420px;box-shadow:0 16px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:16px;}
 .review-modal-title{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--color-text-primary);}
@@ -1986,12 +1986,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:250px;"/>
               <col style="width:200px;"/>
-              <col style="width:200px;"/>
+              <col style="width:100px;"/>
+              <col style="width:100px;"/>
               <col/>
-              <col style="width:200px;"/>
-              <col style="width:200px;"/>
+              <col style="width:100px;"/>
+              <col style="width:100px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">送出時間</th>
@@ -2021,12 +2021,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
           <table class="data-table">
             <colgroup>
-              <col style="width:250px;"/>
               <col style="width:200px;"/>
-              <col style="width:200px;"/>
+              <col style="width:100px;"/>
+              <col style="width:100px;"/>
               <col/>
-              <col style="width:200px;"/>
-              <col style="width:200px;"/>
+              <col style="width:100px;"/>
+              <col style="width:100px;"/>
             </colgroup>
             <thead><tr>
               <th style="text-align:center;">回報時間</th>
@@ -3852,7 +3852,7 @@ function renderMainTable(apps) {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;text-align:center;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span></td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+reviewerCell+'</td>'+
       '<td style="text-align:center;">'+verifierCell+'</td>'+
       '<td style="text-align:center;"></td>';
@@ -4126,10 +4126,34 @@ function loadMyRecords() {
       updateLeaveStats();
       renderMyTable();
     })
-    .catch(function(){
+    .catch(function(err){
+      // 可能是 CORS 或網路問題，嘗試用 no-cors 方式重新載入
+      var url2 = GAS_URL + '?action=getApplications&_=' + Date.now();
+      fetch(url2, {method:'GET', mode:'no-cors', cache:'no-store'})
+        .then(function(){ /* no-cors 無法讀取 body，顯示提示 */ })
+        .catch(function(){});
       if (document.getElementById('my-tbody'))
-        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:#f44336;">載入失敗，請重試</td></tr>';
+        document.getElementById('my-tbody').innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:#e65100;">⚠ 連線失敗，請確認 GAS 已部署並重新整理頁面</td></tr>';
     });
+}
+
+/* ── 附件狀態徽章 helper ── */
+function proofBadge(app) {
+  var subtype  = (app.subtype || app.type || '');
+  var isPhysio = subtype.indexOf('生理假') > -1;
+  if (isPhysio) {
+    return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">無須證明</div>';
+  }
+  var proof = (app.proofLink || '').trim();
+  if (proof) {
+    return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">有附件</div>';
+  }
+  // 補件申請（status含「補件」或subtype含「補件」）視為已補件
+  var status = (app.status || '');
+  if (status.indexOf('補件') > -1) {
+    return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">已補件</div>';
+  }
+  return '<div style="margin-top:3px;font-size:9px;font-weight:600;color:#c62828;background:#fff8f8;border:1px solid #ffcdd2;border-radius:5px;padding:1px 6px;display:inline-block;white-space:nowrap;">須補件</div>';
 }
 
 function renderMyTable() {
@@ -4203,7 +4227,7 @@ function renderMyTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>';
     var lastTd = document.createElement('td');
@@ -5712,7 +5736,7 @@ function renderMonTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>'+
       '<td style="text-align:center;"></td>';
@@ -5960,7 +5984,7 @@ function renderMallTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span></td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
       '<td style="text-align:center;"></td>';
