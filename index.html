@@ -2786,6 +2786,15 @@ function renderPagination(totalPage, total) {
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbzXE86xy_jZ-sH0eCpGaQ5O3LShea8-OCSpUkZrd9hgKctGnudbR86mbZRqEevdkPNtkw/exec';
 
+/* ── 帶 timeout 的 fetch（避免長時間 pending 卡 UI）── */
+function fetchWithTimeout(url, options, timeoutMs) {
+  timeoutMs = timeoutMs || 8000;
+  var ctrl = new AbortController();
+  var timer = setTimeout(function(){ ctrl.abort(); }, timeoutMs);
+  var opts = Object.assign({}, options || {}, { signal: ctrl.signal });
+  return fetch(url, opts).finally(function(){ clearTimeout(timer); });
+}
+
 var dcCurrentCat = 'all';
 var dcViewMode   = 'list';
 var dcPage       = 1;
@@ -3369,7 +3378,7 @@ function updateAnalytics() {
       var el=g2(id); if(el) el.textContent='…';
     });
     var url = GAS_URL + '?action=getApplications&_=' + Date.now();
-    fetch(url, {method:'GET', cache:'no-store'})
+    fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
       .then(function(r){ return r.json(); })
       .then(function(data){
         if (data.success && data.applications) {
@@ -3623,7 +3632,7 @@ function loadMainData() {
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
@@ -4006,7 +4015,7 @@ function loadMyRecords() {
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
@@ -4328,7 +4337,7 @@ function loadFeedbackMgr() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getFeedbacks&_=' + Date.now();
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -4362,7 +4371,7 @@ function loadReportMgr() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getReports&_=' + Date.now();
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -4432,7 +4441,7 @@ function renderFbTable() {
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||'—')+'</td>'+
-      '<td style="font-size:12px;padding-left:10px;">'+content.slice(0,80)+(content.length>80?'…':'')+'</td>'+
+      '<td style="font-size:12px;padding-left:10px;text-align:left;">'+content.slice(0,80)+(content.length>80?'…':'')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
@@ -4468,7 +4477,7 @@ function renderRpTable() {
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+timeStr+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(r.name||r.user||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+(r.type||r.category||r.issueType||'—')+'</td>'+
-      '<td style="font-size:12px;padding-left:10px;">'+desc.slice(0,80)+(desc.length>80?'…':'')+'</td>'+
+      '<td style="font-size:12px;padding-left:10px;text-align:left;">'+desc.slice(0,80)+(desc.length>80?'…':'')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span></td>'+
       '<td style="text-align:center;"></td>';
     var lastTd=tr.lastElementChild;
@@ -4561,7 +4570,7 @@ function testGasConnection() {
   errEl.style.color = '#7a5000';
   errEl.textContent = '⏳ 測試連線中…';
   var url = GAS_URL + '?action=ping&v=' + Date.now();
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){ return r.json(); })
     .then(function(d){
       errEl.style.color = '#2e7d32';
@@ -4587,7 +4596,7 @@ function doLogin() {
 
   // 從 GAS 驗證帳號
   var url = GAS_URL + '?action=login&mail=' + encodeURIComponent(mail) + '&v=' + Date.now();
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){ return r.json(); })
     .then(function(data){
       btn.disabled = false; btn.textContent = '登 入';
@@ -4846,7 +4855,7 @@ function loadAccounts() {
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
 
   var url = GAS_URL + '?action=getAccounts&v=' + Date.now() + '_' + Math.random();
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -5567,7 +5576,7 @@ function loadMonthlyData() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
@@ -5826,7 +5835,7 @@ function loadMallData() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr>';
   var url = GAS_URL + '?action=getApplications&_=' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  fetch(url, {method:'GET', cache:'no-store'})
+  fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){ return r.json(); })
     .then(function(data){
       if (!data.success || !data.applications) {
