@@ -1108,19 +1108,25 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div class="stat-card-sub">次</div>
             </div>
           </div>
-          <!-- 4 卡統計（跟本月查詢相同，保留 tooltip 動態更新）-->
-          <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+          <!-- 5 卡統計：總申請 審核中 覆核中 已完成 退件 -->
+          <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
             <div class="stat-card bg-total clickable">
               <span class="stat-card-label">總申請</span>
               <div class="stat-card-value-row"><span class="stat-card-value" data-stat="total" id="stat-total">—</span><span class="stat-card-unit">件</span></div>
-              <span class="stat-card-sub">累計</span>
+              <span class="stat-card-sub">全部</span>
               <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
             </div>
             <div class="stat-card bg-progress clickable">
               <span class="stat-card-label">審核中</span>
               <div class="stat-card-value-row"><span class="stat-card-value gold" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
-              <span class="stat-card-sub">待處理</span>
-              <div class="stat-tooltip"><div class="stat-tooltip-title">審核中</div></div>
+              <span class="stat-card-sub">待主管</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">主管審核中</div></div>
+            </div>
+            <div class="stat-card bg-progress clickable" style="background-color:var(--tab-supplement-bg);">
+              <span class="stat-card-label">覆核中</span>
+              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" data-stat="verifying" id="stat-verifying">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-sub">待人資</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
             </div>
             <div class="stat-card bg-progress clickable">
               <span class="stat-card-label">已完成</span>
@@ -3650,35 +3656,52 @@ function loadMainData() {
 }
 
 function updateMainStats(apps) {
-  var total=apps.length, active=0, pending=0, done=0, reject=0, supp=0;
-  var activeList=[], doneList=[], pendingList=[], rejectList=[];
+  // 審核中 = 有 reviewer 還沒有 verifier，或完全沒有 reviewer（待主管）
+  // 覆核中 = 已有 reviewer 但沒有 verifier，且尚未完成/退件
+  // 總申請 = 審核中 + 覆核中 + 已完成 + 退件
+  var reviewing=0, verifying=0, done=0, reject=0;
+  var reviewingList=[], verifyingList=[], doneList=[], rejectList=[];
   var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
   var lcDetails={'事假':[],'病假':[],'生理假':[],'國假':[],'特休':[],'其他':[]};
+
   apps.forEach(function(a){
     var s = a.status||'';
-    if (s.indexOf('完成')>-1) { done++; doneList.push(a); }
-    else if (s.indexOf('退件')>-1) { reject++; rejectList.push(a); }
-    else if (s.indexOf('補件')>-1) supp++;
-    else if (s.indexOf('待')>-1 || s.indexOf('審')>-1) {
-      active++; pending++;
-      activeList.push(a);
-      if (s.indexOf('主管')>-1 && s.indexOf('待')>-1) pendingList.push(a);
+    var isDone   = s.indexOf('完成')>-1;
+    var isReject = s.indexOf('退件')>-1;
+    var hasReviewer = !!(a.reviewer);
+    var hasVerifier = !!(a.verifier);
+
+    if (isDone)        { done++;      doneList.push(a); }
+    else if (isReject) { reject++;    rejectList.push(a); }
+    else if (hasReviewer && !hasVerifier) { verifying++;  verifyingList.push(a); } // 覆核中
+    else               { reviewing++; reviewingList.push(a); }                      // 審核中
+
+    // 假別統計（含特別休假→特休、國定假日→國假）
+    var subtype = (a.subtype||'').trim();
+    var base = subtype.split(' ')[0].split('(')[0].trim();
+    // 特別休假 / 特別休假申請 → 特休
+    if (base==='特休' || base.indexOf('特別休假')>-1 || base.indexOf('特別休')>-1) {
+      lc['特休'] += parseFloat(a.days||1); lcDetails['特休'].push(a);
     }
-    // 假別統計
-    if (a.type === '請假申請' || a.type === '國假及特休申請') {
-      var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
-      if (base==='特休') { lc['特休']+=parseFloat(a.days||1); lcDetails['特休'].push(a); }
-      else if (base==='國假') { lc['國假']+=parseFloat(a.days||1); lcDetails['國假'].push(a); }
-      else if (lc.hasOwnProperty(base)) { lc[base]+=1; lcDetails[base].push(a); }
-      else { lc['其他']+=1; lcDetails['其他'].push(a); }
+    // 國定假日 / 國假 → 國假
+    else if (base==='國假' || base.indexOf('國定假日')>-1 || base.indexOf('特別休假')>-1 || (a.type||'').indexOf('國假及特休')>-1) {
+      lc['國假'] += parseFloat(a.days||1); lcDetails['國假'].push(a);
+    }
+    else if (a.type==='請假申請' || a.type==='國假及特休申請') {
+      if      (base==='事假')   { lc['事假']++;   lcDetails['事假'].push(a); }
+      else if (base==='病假')   { lc['病假']++;   lcDetails['病假'].push(a); }
+      else if (base==='生理假') { lc['生理假']++; lcDetails['生理假'].push(a); }
+      else                      { lc['其他']++;   lcDetails['其他'].push(a); }
     }
   });
+
+  var total = reviewing + verifying + done + reject;
   var g = function(id){ return document.getElementById(id); };
-  if (g('stat-total'))   g('stat-total').textContent   = total;
-  if (g('stat-active'))  g('stat-active').textContent  = active;
-  if (g('stat-pending')) g('stat-pending').textContent = done;
-  if (g('stat-reject'))  g('stat-reject').textContent  = reject;
-  if (g('stat-supp'))    g('stat-supp').textContent    = supp;
+  if (g('stat-total'))     g('stat-total').textContent     = total;
+  if (g('stat-active'))    g('stat-active').textContent    = reviewing;
+  if (g('stat-verifying')) g('stat-verifying').textContent = verifying;
+  if (g('stat-pending'))   g('stat-pending').textContent   = done;
+  if (g('stat-reject'))    g('stat-reject').textContent    = reject;
 
   // 假別卡數字
   Object.keys(lc).forEach(function(k){
@@ -3693,7 +3716,6 @@ function updateMainStats(apps) {
     var tip = card.querySelector('.stat-tooltip');
     if (!tip) return;
     var dots = ['field','bar','kitchen'];
-    // 計算各人次數
     var nameCount = {};
     list.forEach(function(a){ var n=a.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
     var entries = Object.keys(nameCount).map(function(n){ return {name:n, count:nameCount[n]}; });
@@ -3753,11 +3775,12 @@ function updateMainStats(apps) {
     }
   });
 
-  // 大卡 tooltip（總申請/審核中/已完成/退件）
-  buildTip(apps,       g('stat-total')   ? g('stat-total').closest('.stat-card')   : null);
-  buildTip(activeList, g('stat-active')  ? g('stat-active').closest('.stat-card')  : null);
-  buildTip(doneList,   g('stat-pending') ? g('stat-pending').closest('.stat-card') : null);
-  buildTip(rejectList, g('stat-reject')  ? g('stat-reject').closest('.stat-card')  : null);
+  // 大卡 tooltip
+  buildTip(apps,           g('stat-total')     ? g('stat-total').closest('.stat-card')     : null);
+  buildTip(reviewingList,  g('stat-active')    ? g('stat-active').closest('.stat-card')    : null);
+  buildTip(verifyingList,  g('stat-verifying') ? g('stat-verifying').closest('.stat-card') : null);
+  buildTip(doneList,       g('stat-pending')   ? g('stat-pending').closest('.stat-card')   : null);
+  buildTip(rejectList,     g('stat-reject')    ? g('stat-reject').closest('.stat-card')    : null);
 }
 
 function renderMainTable(apps) {
@@ -3986,19 +4009,19 @@ function filterMyLeaveType(type, el) {
 
 function updateLeaveStats() {
   var year = myAllYear ? 'all' : ((document.getElementById('my-year-filter') || {}).value || String(new Date().getFullYear()));
-  // 次數統計（事假/病假/生理假/其他）
   var lc = { '事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0 };
   myRecordsData.forEach(function(a){
     if (!a.applyDate) return;
     var ay = (a.applyDate||'').slice(0,4);
     if (year !== 'all' && ay !== year) return;
-    if (a.type !== '請假申請') return;
+    if (a.type !== '請假申請' && a.type !== '國假及特休申請') return;
     var base = (a.subtype || '').split(' ')[0].split('(')[0].trim();
-    if (base === '特休') {
-      // 特休用天數
+    if (base === '特休' || base.indexOf('特別休假')>-1 || base.indexOf('特別休')>-1) {
       lc['特休'] += parseFloat(a.days || 1);
+    } else if (base === '國假' || base.indexOf('國定假日')>-1 || (a.type||'').indexOf('國假及特休')>-1) {
+      lc['國假'] += parseFloat(a.days || 1);
     } else if (lc.hasOwnProperty(base)) {
-      lc[base] += 1; // 其餘用次數
+      lc[base] += 1;
     } else {
       lc['其他'] += 1;
     }
@@ -5172,6 +5195,22 @@ function openReview(id, name, type, readOnly) {
            '<br>假　　別：' + (app.subtype||'') +
            '<br>起　　訖：' + fmtDRange(app.startDate, app.endDate) : '');
 
+  // 附件區（顯示員工附件給主管/人資查看，不允許代替上傳）
+  var reviewAttach = document.getElementById('reviewModalAttach');
+  if (reviewAttach && app) {
+    var proof = (app.proofLink || '').trim();
+    reviewAttach.style.display = '';
+    if (proof) {
+      reviewAttach.innerHTML = '<span style="font-weight:600;color:var(--color-text-secondary);">📎 附件證明：</span>' +
+        '<a href="' + proof + '" target="_blank" style="color:#1565c0;font-weight:600;text-decoration:underline;margin-left:6px;">🔗 查看附件</a>';
+    } else {
+      reviewAttach.innerHTML = '<span style="font-weight:600;color:var(--color-text-secondary);">📎 附件證明：</span>' +
+        '<span style="color:#c62828;font-size:12px;margin-left:6px;">⚠ 員工尚未上傳附件（上傳功能僅限申請本人）</span>';
+    }
+  } else if (reviewAttach) {
+    reviewAttach.style.display = 'none';
+  }
+
   // 流程狀態條
   var managerStatus = document.getElementById('flow-manager-status');
   var adminStatus   = document.getElementById('flow-admin-status');
@@ -5435,17 +5474,24 @@ function openFlowModal(app) {
   // 附件區
   var attachDiv = document.getElementById('flowModalAttach');
   if (attachDiv) {
-    var proof = app ? (app.proofLink || '') : '';
-    var role  = CURRENT_USER ? CURRENT_USER.role : 'guest';
+    var proof  = app ? (app.proofLink || '') : '';
+    var role   = CURRENT_USER ? CURRENT_USER.role : 'guest';
     var isSelf = CURRENT_USER && app && CURRENT_USER.name === app.name;
-    var canSupp = isSelf && !proof && !(isDone); // 本人且無附件且未完成
+    // 主管/人資/老闆 不可代替上傳
+    var isReviewer = (role === 'manager' || role === 'admin' || role === 'boss');
+    // 本人且未完成且無附件 → 可補件
+    var canSupp = isSelf && !proof && !isDone && !isReject;
+    // 主管/人資開啟時：有附件就顯示，沒附件就顯示「員工尚未上傳」提示（不給上傳框）
+    var showAttach = proof || canSupp || (isReviewer && !proof);
 
-    if (proof || canSupp) {
+    if (showAttach) {
       attachDiv.style.display = '';
       var html = '<div style="font-weight:600;color:var(--color-text-secondary);margin-bottom:6px;">📎 附件證明</div>';
       if (proof) {
+        // 有附件：所有人都可以查看
         html += '<a href="' + proof + '" target="_blank" style="color:#1565c0;font-weight:600;text-decoration:underline;">🔗 查看附件</a>';
       } else if (canSupp) {
+        // 本人、未完成、無附件 → 可補件上傳
         html += '<div style="color:#9a9482;margin-bottom:8px;">尚未上傳附件</div>';
         html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
           '<label style="display:flex;align-items:center;gap:5px;border:1.5px dashed #e8dbb0;border-radius:7px;padding:5px 12px;cursor:pointer;font-size:11px;color:#9a9482;background:#fff;">' +
@@ -5453,6 +5499,9 @@ function openFlowModal(app) {
           '<span id="flow-supp-name" style="font-size:11px;color:#5a5646;"></span>' +
           '<button id="flow-supp-btn" onclick="submitFlowSupp(\'' + (app?app.id:'') + '\',\'' + (app?app.name:'') + '\',\'' + (app?app.startDate:'') + '\')" style="font-size:11px;height:26px;padding:0 12px;border-radius:6px;border:1.5px solid var(--color-gold);background:var(--color-gold-bg);color:#7a5000;font-weight:600;cursor:pointer;">📤 補件上傳</button>' +
           '</div>';
+      } else if (isReviewer) {
+        // 主管/人資查看時，員工未上傳 → 顯示提示，不給上傳入口
+        html += '<div style="color:#c62828;font-size:12px;background:#fce4e4;border:1px solid #ef9a9a;border-radius:7px;padding:6px 12px;">⚠ 員工尚未上傳附件證明</div>';
       }
       attachDiv.innerHTML = html;
     } else {
@@ -6041,7 +6090,8 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
     </div>
     <!-- 申請資訊 -->
     <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-text-secondary);line-height:2;font-family:var(--font-mono);"></div>
-    <!-- 審核意見（橫向等高）-->
+    <!-- 附件區（審核時顯示員工附件，上傳功能鎖定）-->
+    <div id="reviewModalAttach" style="display:none;background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:8px 14px;font-size:12px;"></div>
     <div id="reviewCommentWrap" style="display:flex;align-items:center;gap:10px;">
       <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);white-space:nowrap;flex-shrink:0;">審核意見（選填）</label>
       <input id="reviewComment" type="text" style="flex:1;border:1.5px solid var(--color-border-card);border-radius:7px;padding:0 10px;font-family:var(--font-body);font-size:13px;height:34px;outline:none;" placeholder="可填寫審核備註…"/>
