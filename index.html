@@ -2328,7 +2328,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     </div>
     <input type="hidden" id="acc-edit-id"/>
   </div>
-
+</div>
 
 <!-- ══ 新增申請 Modal ══ -->
 <div class="modal-overlay" id="formModal">
@@ -4646,7 +4646,7 @@ function onLoginSuccess(user, silent) {
   document.getElementById('um-name').textContent = user.name + '（' + (user.team||'') + ' ' + (user.title||'') + '）';
   document.getElementById('um-role').textContent = '角色：' + (ROLE_LABEL[user.role]||user.role);
 
-  // 立即套用權限（同步，確保側邊欄在 load 前就正確顯示）
+  // 立即套用權限（同步）
   applyPermissions(user.role);
   initGjCard();
   initAllMonthBtn();
