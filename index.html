@@ -1108,7 +1108,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div class="stat-card-sub">次</div>
             </div>
           </div>
-          <!-- 5 卡統計：總申請 審核中 覆核中 已完成 退件 -->
+          <!-- 5 卡統計：總申請 查核中 覆核中 已完成 退件 -->
           <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
             <div class="stat-card bg-total clickable">
               <span class="stat-card-label">總申請</span>
@@ -1117,10 +1117,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
             </div>
             <div class="stat-card bg-progress clickable">
-              <span class="stat-card-label">審核中</span>
-              <div class="stat-card-value-row"><span class="stat-card-value gold" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-label">查核中</span>
+              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
               <span class="stat-card-sub">待主管</span>
-              <div class="stat-tooltip"><div class="stat-tooltip-title">主管審核中</div></div>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">主管查核中</div></div>
             </div>
             <div class="stat-card bg-progress clickable" style="background-color:var(--tab-supplement-bg);">
               <span class="stat-card-label">覆核中</span>
@@ -1130,7 +1130,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </div>
             <div class="stat-card bg-progress clickable">
               <span class="stat-card-label">已完成</span>
-              <div class="stat-card-value-row"><span class="stat-card-value deep-blue" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
+              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
               <span class="stat-card-sub">已結案</span>
               <div class="stat-tooltip"><div class="stat-tooltip-title">已完成</div></div>
             </div>
@@ -1145,7 +1145,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchTab(this,'all')">全部 <span class="tab-count">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">審核中 <span class="tab-count">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">查核中 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchTab(this,'done')">已完成 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchTab(this,'reject')">已退件 <span class="tab-count">0</span></div>
         </div>
@@ -1634,21 +1634,26 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
         </div>
 
-        <!-- 統計卡片（跟所有申請同樣的 stat-card）-->
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <!-- 統計卡片 5欄 -->
+        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card bg-total">
             <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="my-total">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">累計</span>
+            <span class="stat-card-sub">全部</span>
           </div>
           <div class="stat-card bg-progress">
-            <span class="stat-card-label">審核中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" id="my-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待處理</span>
+            <span class="stat-card-label">查核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待主管</span>
+          </div>
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">覆核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-verifying">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待人資</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">已完成</span>
-            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="my-done">0</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="my-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
           </div>
           <div class="stat-card bg-reject-grp">
@@ -1661,7 +1666,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab（跟所有申請同樣的 tab-bar）-->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"     onclick="switchMyTab(this,'all')">全部 <span class="tab-count" id="mytab-all">0</span></div>
-          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">審核中 <span class="tab-count" id="mytab-active">0</span></div>
+          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">查核中 <span class="tab-count" id="mytab-active">0</span></div>
           <div class="tab-item"        data-tab="done"    onclick="switchMyTab(this,'done')">已完成 <span class="tab-count" id="mytab-done">0</span></div>
           <div class="tab-item"        data-tab="reject"  onclick="switchMyTab(this,'reject')">已退件 <span class="tab-count" id="mytab-reject">0</span></div>
         </div>
@@ -1773,20 +1778,25 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
         </div>
         <!-- 統計卡片 -->
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card bg-total">
             <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="mon-total">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub" id="mon-month-label">累計</span>
+            <span class="stat-card-sub" id="mon-month-label">本月</span>
           </div>
           <div class="stat-card bg-progress">
-            <span class="stat-card-label">審核中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" id="mon-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待處理</span>
+            <span class="stat-card-label">查核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待主管</span>
+          </div>
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">覆核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-verifying">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待人資</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">已完成</span>
-            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mon-done">0</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="mon-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
           </div>
           <div class="stat-card bg-reject-grp">
@@ -1797,7 +1807,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMonTab(this,'all')">全部 <span class="tab-count" id="montab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">審核中 <span class="tab-count" id="montab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">查核中 <span class="tab-count" id="montab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMonTab(this,'done')">已完成 <span class="tab-count" id="montab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMonTab(this,'reject')">已退件 <span class="tab-count" id="montab-reject">0</span></div>
         </div>
@@ -1886,8 +1896,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-sub">次</div>
           </div>
         </div>
-        <!-- 統計卡 -->
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <!-- 統計卡 5欄 -->
+        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card bg-total clickable">
             <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="mall-total">0</span><span class="stat-card-unit">件</span></div>
@@ -1895,14 +1905,20 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
           </div>
           <div class="stat-card bg-progress clickable">
-            <span class="stat-card-label">審核中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" id="mall-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待處理</span>
-            <div class="stat-tooltip"><div class="stat-tooltip-title">審核中</div></div>
+            <span class="stat-card-label">查核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mall-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待主管</span>
+            <div class="stat-tooltip"><div class="stat-tooltip-title">主管查核中</div></div>
+          </div>
+          <div class="stat-card bg-progress clickable">
+            <span class="stat-card-label">覆核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mall-verifying">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待人資</span>
+            <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
           </div>
           <div class="stat-card bg-progress clickable">
             <span class="stat-card-label">已完成</span>
-            <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mall-done">0</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="mall-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
             <div class="stat-tooltip"><div class="stat-tooltip-title">已完成</div></div>
           </div>
@@ -1916,7 +1932,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab bar 獨立全寬 -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">審核中 <span class="tab-count" id="malltab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">查核中 <span class="tab-count" id="malltab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">已退件 <span class="tab-count" id="malltab-reject">0</span></div>
         </div>
@@ -2192,14 +2208,15 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <button class="btn" onclick="openAccountModal('add')" style="display:flex;align-items:center;gap:6px;">＋ 新增帳號</button>
         </div>
 
-        <!-- 統計列 -->
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
-          <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div></div>
+        <!-- 統計列：總帳號=兼職+正職+主管+營運+老闆+已停用 -->
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;">
+          <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div><span class="stat-card-sub" style="font-size:9px;">兼+正+主+營+老+停</span></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">兼職</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#e65100;" id="acc-pt">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">正職</span><div class="stat-card-value-row"><span class="stat-card-value gold" id="acc-ft">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">主管</span><div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="acc-mgr">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">營運</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#7b1fa2;" id="acc-ops">0</span><span class="stat-card-unit">人</span></div></div>
-          <div class="stat-card bg-reject-grp"><span class="stat-card-label">停用</span><div class="stat-card-value-row"><span class="stat-card-value red" id="acc-dis">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">老闆</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#c9a84c;" id="acc-boss">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-reject-grp"><span class="stat-card-label">已停用</span><div class="stat-card-value-row"><span class="stat-card-value red" id="acc-dis">0</span><span class="stat-card-unit">人</span></div></div>
         </div>
 
         <!-- 表格 -->
@@ -3781,6 +3798,16 @@ function updateMainStats(apps) {
   buildTip(verifyingList,  g('stat-verifying') ? g('stat-verifying').closest('.stat-card') : null);
   buildTip(doneList,       g('stat-pending')   ? g('stat-pending').closest('.stat-card')   : null);
   buildTip(rejectList,     g('stat-reject')    ? g('stat-reject').closest('.stat-card')    : null);
+
+  // 更新 tab bar counts（全部/查核中/已完成/已退件）
+  var mainTabAll    = document.querySelector('#page-main .tab-item[data-tab="all"] .tab-count');
+  var mainTabActive = document.querySelector('#page-main .tab-item[data-tab="active"] .tab-count');
+  var mainTabDone   = document.querySelector('#page-main .tab-item[data-tab="done"] .tab-count');
+  var mainTabReject = document.querySelector('#page-main .tab-item[data-tab="reject"] .tab-count');
+  if(mainTabAll)    mainTabAll.textContent    = total;
+  if(mainTabActive) mainTabActive.textContent = reviewing + verifying;
+  if(mainTabDone)   mainTabDone.textContent   = done;
+  if(mainTabReject) mainTabReject.textContent = reject;
 }
 
 function renderMainTable(apps) {
@@ -4066,17 +4093,21 @@ function loadMyRecords() {
       if (typeof updateLeaveStats === 'function') updateLeaveStats();
       // 確保全年按鈕樣式正確
       if (typeof initMyAllYearBtn === 'function') initMyAllYearBtn();
-      var total=myRecordsData.length, active=0, done=0, reject=0;
+      var total=0, reviewing=0, verifying=0, done=0, reject=0;
       var typeSet = {};
       myRecordsData.forEach(function(a){
         var s = a.status || '';
-        if (s.indexOf('完成') > -1)      done++;
-        else if (s.indexOf('退件') > -1)  reject++;
-        else                               active++; // 審核中（含待審核+待覆核）
-        // 收集申請類型（用 subtype 細分）
+        var isDone   = s.indexOf('完成') > -1;
+        var isReject = s.indexOf('退件') > -1;
+        if (isDone)        done++;
+        else if (isReject) reject++;
+        else if (a.reviewer && !a.verifier) verifying++; // 覆核中
+        else               reviewing++;                   // 查核中
+        // 收集申請類型
         var key = a.subtype || a.type || '';
         if (key) typeSet[key] = true;
       });
+      total = reviewing + verifying + done + reject;
       // 動態更新類型選單
       var typeFilter = document.getElementById('my-type-filter');
       if (typeFilter) {
@@ -4090,12 +4121,13 @@ function loadMyRecords() {
         });
       }
       document.getElementById('my-total').textContent   = total;
-      document.getElementById('my-pending').textContent = active;
+      document.getElementById('my-pending').textContent = reviewing;
+      var myVer = document.getElementById('my-verifying'); if (myVer) myVer.textContent = verifying;
       document.getElementById('my-done').textContent    = done;
       document.getElementById('my-reject').textContent  = reject;
       var myRc = document.getElementById('my-row-count'); if (myRc) myRc.textContent = total;
       if (document.getElementById('mytab-all'))     document.getElementById('mytab-all').textContent     = total;
-      if (document.getElementById('mytab-active'))  document.getElementById('mytab-active').textContent  = active;
+      if (document.getElementById('mytab-active'))  document.getElementById('mytab-active').textContent  = reviewing + verifying;
       if (document.getElementById('mytab-done'))    document.getElementById('mytab-done').textContent    = done;
       if (document.getElementById('mytab-reject'))  document.getElementById('mytab-reject').textContent  = reject;
       updateLeaveStats();
@@ -4899,22 +4931,23 @@ function loadAccounts() {
 
 /* ── 統計 ── */
 function updateAccStats() {
-  var total=ACCOUNTS_DATA.length, pt=0, ft=0, mgr=0, ops=0, dis=0;
+  var pt=0, ft=0, mgr=0, ops=0, boss=0, dis=0;
   ACCOUNTS_DATA.forEach(function(a){
-    if(a.status==='停用') dis++;
-    else if(a.role==='admin')    ops++;
-    else if(a.role==='manager')  mgr++;
-    else if(a.role==='fulltime') ft++;
+    if(a.status==='停用')    dis++;
+    else if(a.role==='boss')    boss++;
+    else if(a.role==='admin')   ops++;
+    else if(a.role==='manager') mgr++;
+    else if(a.role==='fulltime' || a.role==='employee') ft++;
     else if(a.role==='parttime') pt++;
-    // employee 舊帳號 → 計入 ft
-    else if(a.role==='employee') ft++;
   });
+  var total = pt + ft + mgr + ops + boss + dis;
   var g = function(id){ return document.getElementById(id); };
   if(g('acc-total')) g('acc-total').textContent = total;
   if(g('acc-pt'))    g('acc-pt').textContent    = pt;
   if(g('acc-ft'))    g('acc-ft').textContent    = ft;
   if(g('acc-mgr'))   g('acc-mgr').textContent   = mgr;
   if(g('acc-ops'))   g('acc-ops').textContent   = ops;
+  if(g('acc-boss'))  g('acc-boss').textContent  = boss;
   if(g('acc-dis'))   g('acc-dis').textContent   = dis;
 }
 
@@ -4954,7 +4987,7 @@ function renderAccTable() {
       '<td style="text-align:center;">' +
         '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:3px;">編輯</button>' +
         '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;margin-right:3px;">重設密碼</button>' +
-        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">停用</button>') +
+        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">已停用</button>') +
         '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer;">🗑</button>'
       '</td>';
     tbody.appendChild(tr);
@@ -5579,20 +5612,23 @@ function onMonthChange() {
 }
 
 function updateMonStats() {
-  var total=MONTHLY_DATA.length, active=0, done=0, reject=0;
+  var reviewing=0, verifying=0, done=0, reject=0;
   MONTHLY_DATA.forEach(function(a){
     var s=a.status||'';
-    if(s.indexOf('完成')>-1) done++;
-    else if(s.indexOf('退件')>-1) reject++;
-    else active++;
+    if(s.indexOf('完成')>-1)       done++;
+    else if(s.indexOf('退件')>-1)  reject++;
+    else if(a.reviewer && !a.verifier) verifying++;
+    else                           reviewing++;
   });
+  var total = reviewing + verifying + done + reject;
   var g=function(id){return document.getElementById(id);};
   if(g('mon-total'))       g('mon-total').textContent=total;
-  if(g('mon-pending'))     g('mon-pending').textContent=active;
+  if(g('mon-pending'))     g('mon-pending').textContent=reviewing;
+  if(g('mon-verifying'))   g('mon-verifying').textContent=verifying;
   if(g('mon-done'))        g('mon-done').textContent=done;
   if(g('mon-reject'))      g('mon-reject').textContent=reject;
   if(g('montab-all'))      g('montab-all').textContent=total;
-  if(g('montab-active'))   g('montab-active').textContent=active;
+  if(g('montab-active'))   g('montab-active').textContent=reviewing+verifying;
   if(g('montab-done'))     g('montab-done').textContent=done;
   if(g('montab-reject'))   g('montab-reject').textContent=reject;
 }
@@ -5791,23 +5827,26 @@ function onMallMonthChange() {
 }
 
 function updateMallStats() {
-  var total=MALL_DATA.length, active=0, done=0, reject=0;
-  var activeList=[], doneList=[], rejectList=[];
+  var reviewing=0, verifying=0, done=0, reject=0;
+  var reviewingList=[], verifyingList=[], doneList=[], rejectList=[];
   MALL_DATA.forEach(function(a){
     var s=a.status||'';
-    if(s.indexOf('完成')>-1) { done++; doneList.push(a); }
-    else if(s.indexOf('退件')>-1) { reject++; rejectList.push(a); }
-    else { active++; activeList.push(a); }
+    if(s.indexOf('完成')>-1)       { done++;      doneList.push(a); }
+    else if(s.indexOf('退件')>-1)  { reject++;    rejectList.push(a); }
+    else if(a.reviewer && !a.verifier) { verifying++;  verifyingList.push(a); }
+    else                           { reviewing++; reviewingList.push(a); }
   });
+  var total = reviewing + verifying + done + reject;
   var g=function(id){return document.getElementById(id);};
-  if(g('mall-total'))      g('mall-total').textContent=total;
-  if(g('mall-pending'))    g('mall-pending').textContent=active;
-  if(g('mall-done'))       g('mall-done').textContent=done;
-  if(g('mall-reject'))     g('mall-reject').textContent=reject;
-  if(g('malltab-all'))     g('malltab-all').textContent=total;
-  if(g('malltab-active'))  g('malltab-active').textContent=active;
-  if(g('malltab-done'))    g('malltab-done').textContent=done;
-  if(g('malltab-reject'))  g('malltab-reject').textContent=reject;
+  if(g('mall-total'))       g('mall-total').textContent=total;
+  if(g('mall-pending'))     g('mall-pending').textContent=reviewing;
+  if(g('mall-verifying'))   g('mall-verifying').textContent=verifying;
+  if(g('mall-done'))        g('mall-done').textContent=done;
+  if(g('mall-reject'))      g('mall-reject').textContent=reject;
+  if(g('malltab-all'))      g('malltab-all').textContent=total;
+  if(g('malltab-active'))   g('malltab-active').textContent=reviewing+verifying;
+  if(g('malltab-done'))     g('malltab-done').textContent=done;
+  if(g('malltab-reject'))   g('malltab-reject').textContent=reject;
   // Tooltip
   function buildMallTip(list, id) {
     var el = g(id); if(!el) return;
@@ -5822,10 +5861,11 @@ function updateMallStats() {
     });
     if(!list.length){ var div=document.createElement('div'); div.className='stat-tooltip-item'; div.style.color='#999'; div.textContent='暫無資料'; tip.appendChild(div); }
   }
-  buildMallTip(MALL_DATA,    'mall-total');
-  buildMallTip(activeList,   'mall-pending');
-  buildMallTip(doneList,     'mall-done');
-  buildMallTip(rejectList,   'mall-reject');
+  buildMallTip(MALL_DATA.slice(0, MALL_DATA.length), 'mall-total');
+  buildMallTip(reviewingList,  'mall-pending');
+  buildMallTip(verifyingList,  'mall-verifying');
+  buildMallTip(doneList,       'mall-done');
+  buildMallTip(rejectList,     'mall-reject');
 }
 
 function updateMallLeaveStats() {
