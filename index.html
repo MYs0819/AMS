@@ -914,6 +914,17 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .review-modal-title{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--color-text-primary);}
 .review-modal-info{font-size:13px;color:var(--color-text-secondary);line-height:1.7;}
 .review-modal-footer{display:flex;justify-content:flex-end;gap:10px;}
+
+/* ── 假別卡點擊篩選 ── */
+.leave-filter-card:hover { box-shadow: var(--shadow-card-hover) !important; }
+.leave-filter-card.active { outline: 2px solid var(--color-gold); box-shadow: var(--shadow-card-hover) !important; }
+.leave-tip {
+  position:absolute; bottom:calc(100% + 4px); left:50%; transform:translateX(-50%);
+  background:#333; color:#fff; font-size:10px; padding:3px 8px; border-radius:5px;
+  white-space:nowrap; pointer-events:none; z-index:999;
+  opacity:0; transition:opacity .15s;
+}
+.leave-filter-card:hover .leave-tip { opacity:1; }
 </style>
   <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
   <meta property="og:description" content="整合各類行政申請簽核與企業文件中心，全面提升團隊行政效率與協作！" />
@@ -1077,32 +1088,38 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- 統計卡片 -->
                   <!-- 假別統計（所有申請）-->
           <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
-            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="leave-filter-card" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);cursor:pointer;position:relative;" onclick="filterMainLeave('事假',this)">
+              <span class="leave-tip">個人私事請假（點擊篩選）</span>
               <div class="stat-card-label">事假</div>
               <div class="stat-card-value-row"><span class="stat-card-value red" id="main-lc-事假">0</span></div>
               <div class="stat-card-sub">次</div>
             </div>
-            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="leave-filter-card" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);cursor:pointer;position:relative;" onclick="filterMainLeave('病假',this)">
+              <span class="leave-tip">因病就醫請假（點擊篩選）</span>
               <div class="stat-card-label">病假</div>
               <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="main-lc-病假">0</span></div>
               <div class="stat-card-sub">次</div>
             </div>
-            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="leave-filter-card" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);cursor:pointer;position:relative;" onclick="filterMainLeave('生理假',this)">
+              <span class="leave-tip">生理不適請假（點擊篩選）</span>
               <div class="stat-card-label">生理假</div>
               <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="main-lc-生理假">0</span></div>
               <div class="stat-card-sub">次</div>
             </div>
-            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="leave-filter-card" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);cursor:pointer;position:relative;" onclick="filterMainLeave('國假',this)">
+              <span class="leave-tip">國定假日補休（點擊篩選）</span>
               <div class="stat-card-label">國假</div>
               <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="main-lc-國假">0</span></div>
               <div class="stat-card-sub">日</div>
             </div>
-            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="leave-filter-card" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);cursor:pointer;position:relative;" onclick="filterMainLeave('特休',this)">
+              <span class="leave-tip">年資特別休假（點擊篩選）</span>
               <div class="stat-card-label">特休</div>
               <div class="stat-card-value-row"><span class="stat-card-value purple" id="main-lc-特休">0</span></div>
               <div class="stat-card-sub">日</div>
             </div>
-            <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
+            <div class="leave-filter-card" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);cursor:pointer;position:relative;" onclick="filterMainLeave('其他',this)">
+              <span class="leave-tip">其他類型請假（點擊篩選）</span>
               <div class="stat-card-label">其他</div>
               <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="main-lc-其他">0</span></div>
               <div class="stat-card-sub">次</div>
@@ -1117,15 +1134,15 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
             </div>
             <div class="stat-card bg-progress clickable">
-              <span class="stat-card-label">查核中</span>
+              <span class="stat-card-label">審核中</span>
               <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
-              <span class="stat-card-sub">待主管</span>
-              <div class="stat-tooltip"><div class="stat-tooltip-title">主管查核中</div></div>
+              <span class="stat-card-sub">待主管處理</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">主管審核中</div></div>
             </div>
             <div class="stat-card bg-progress clickable" style="background-color:var(--tab-supplement-bg);">
               <span class="stat-card-label">覆核中</span>
               <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" data-stat="verifying" id="stat-verifying">—</span><span class="stat-card-unit">件</span></div>
-              <span class="stat-card-sub">待人資</span>
+              <span class="stat-card-sub">待人資處理</span>
               <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
             </div>
             <div class="stat-card bg-progress clickable">
@@ -1145,7 +1162,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchTab(this,'all')">全部 <span class="tab-count">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">查核中 <span class="tab-count">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">審核中 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchTab(this,'done')">已完成 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchTab(this,'reject')">已退件 <span class="tab-count">0</span></div>
         </div>
@@ -1603,32 +1620,38 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- 假別統計 -->
         <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
           <div onclick="filterMyLeaveType('事假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
-            <div class="stat-card-label">事假</div>
+            <span class="leave-tip">個人私事請假（點擊篩選）</span>
+              <div class="stat-card-label">事假</div>
             <div class="stat-card-value-row"><span class="stat-card-value red" id="lc-事假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
           <div onclick="filterMyLeaveType('病假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
-            <div class="stat-card-label">病假</div>
+            <span class="leave-tip">因病就醫請假（點擊篩選）</span>
+              <div class="stat-card-label">病假</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="lc-病假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
           <div onclick="filterMyLeaveType('生理假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
-            <div class="stat-card-label">生理假</div>
+            <span class="leave-tip">生理不適請假（點擊篩選）</span>
+              <div class="stat-card-label">生理假</div>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="lc-生理假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
           <div onclick="filterMyLeaveType('國假',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;justify-content:space-between;" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
-            <div class="stat-card-label">國假</div>
+            <span class="leave-tip">國定假日補休（點擊篩選）</span>
+              <div class="stat-card-label">國假</div>
             <div id="gj-value-row" style="display:flex;align-items:center;justify-content:center;min-height:36px;"><span class="stat-card-value gold" style="color:#43a047;" id="lc-國假">0</span></div>
             <div class="stat-card-sub" id="gj-sub">日</div>
           </div>
           <div onclick="filterMyLeaveType('特休',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
-            <div class="stat-card-label">特休</div>
+            <span class="leave-tip">年資特別休假（點擊篩選）</span>
+              <div class="stat-card-label">特休</div>
             <div class="stat-card-value-row"><span class="stat-card-value purple" id="lc-特休">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
           <div onclick="filterMyLeaveType('其他',this)" style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;cursor:pointer;transition:box-shadow .15s;box-shadow:var(--shadow-card);" onmouseover="this.style.boxShadow='var(--shadow-card-hover)'" onmouseout="this.style.boxShadow='var(--shadow-card)'">
-            <div class="stat-card-label">其他</div>
+            <span class="leave-tip">其他類型請假（點擊篩選）</span>
+              <div class="stat-card-label">其他</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="lc-其他">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
@@ -1642,14 +1665,14 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <span class="stat-card-sub">全部</span>
           </div>
           <div class="stat-card bg-progress">
-            <span class="stat-card-label">查核中</span>
+            <span class="stat-card-label">審核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待主管</span>
+            <span class="stat-card-sub">待主管處理</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">覆核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-verifying">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待人資</span>
+            <span class="stat-card-sub">待人資處理</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">已完成</span>
@@ -1666,7 +1689,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab（跟所有申請同樣的 tab-bar）-->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"     onclick="switchMyTab(this,'all')">全部 <span class="tab-count" id="mytab-all">0</span></div>
-          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">查核中 <span class="tab-count" id="mytab-active">0</span></div>
+          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">審核中 <span class="tab-count" id="mytab-active">0</span></div>
           <div class="tab-item"        data-tab="done"    onclick="switchMyTab(this,'done')">已完成 <span class="tab-count" id="mytab-done">0</span></div>
           <div class="tab-item"        data-tab="reject"  onclick="switchMyTab(this,'reject')">已退件 <span class="tab-count" id="mytab-reject">0</span></div>
         </div>
@@ -1746,33 +1769,39 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="page-section" id="page-monthly">
         <!-- 假別統計（本月）-->
         <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;" id="mon-leave-grid">
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">事假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMonLeave('事假',this)">
+            <span class="leave-tip">個人私事請假（點擊篩選）</span>
+              <div class="stat-card-label">事假</div>
             <div class="stat-card-value-row"><span class="stat-card-value red" id="mon-lc-事假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">病假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMonLeave('病假',this)">
+            <span class="leave-tip">因病就醫請假（點擊篩選）</span>
+              <div class="stat-card-label">病假</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mon-lc-病假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">生理假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMonLeave('生理假',this)">
+            <span class="leave-tip">生理不適請假（點擊篩選）</span>
+              <div class="stat-card-label">生理假</div>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="mon-lc-生理假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;justify-content:space-between;">
-            <div class="stat-card-label">國假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;justify-content:space-between;position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMonLeave('國假',this)">
+            <span class="leave-tip">國定假日補休（點擊篩選）</span>
+              <div class="stat-card-label">國假</div>
             <div id="mon-gj-value-row" style="display:flex;align-items:center;justify-content:center;min-height:36px;"><span class="stat-card-value gold" style="color:#43a047;" id="mon-lc-國假">0</span></div>
             <div class="stat-card-sub" id="mon-gj-sub">日</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">特休</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMonLeave('特休',this)">
+            <span class="leave-tip">年資特別休假（點擊篩選）</span>
+              <div class="stat-card-label">特休</div>
             <div class="stat-card-value-row"><span class="stat-card-value purple" id="mon-lc-特休">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">其他</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMonLeave('其他',this)">
+            <span class="leave-tip">其他類型請假（點擊篩選）</span>
+              <div class="stat-card-label">其他</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mon-lc-其他">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
@@ -1785,14 +1814,14 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <span class="stat-card-sub" id="mon-month-label">本月</span>
           </div>
           <div class="stat-card bg-progress">
-            <span class="stat-card-label">查核中</span>
+            <span class="stat-card-label">審核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待主管</span>
+            <span class="stat-card-sub">待主管處理</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">覆核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-verifying">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待人資</span>
+            <span class="stat-card-sub">待人資處理</span>
           </div>
           <div class="stat-card bg-progress">
             <span class="stat-card-label">已完成</span>
@@ -1807,7 +1836,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMonTab(this,'all')">全部 <span class="tab-count" id="montab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">查核中 <span class="tab-count" id="montab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">審核中 <span class="tab-count" id="montab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMonTab(this,'done')">已完成 <span class="tab-count" id="montab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMonTab(this,'reject')">已退件 <span class="tab-count" id="montab-reject">0</span></div>
         </div>
@@ -1865,33 +1894,39 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
       <div class="page-section" id="page-monthly-all">
         <!-- 假別統計（全員本月）-->
         <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">事假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMallLeave('事假',this)">
+            <span class="leave-tip">個人私事請假（點擊篩選）</span>
+              <div class="stat-card-label">事假</div>
             <div class="stat-card-value-row"><span class="stat-card-value red" id="mall-lc-事假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">病假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMallLeave('病假',this)">
+            <span class="leave-tip">因病就醫請假（點擊篩選）</span>
+              <div class="stat-card-label">病假</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mall-lc-病假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">生理假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMallLeave('生理假',this)">
+            <span class="leave-tip">生理不適請假（點擊篩選）</span>
+              <div class="stat-card-label">生理假</div>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#e91e63;" id="mall-lc-生理假">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">國假</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMallLeave('國假',this)">
+            <span class="leave-tip">國定假日補休（點擊篩選）</span>
+              <div class="stat-card-label">國假</div>
             <div class="stat-card-value-row"><span class="stat-card-value gold" style="color:#43a047;" id="mall-lc-國假">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">特休</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMallLeave('特休',this)">
+            <span class="leave-tip">年資特別休假（點擊篩選）</span>
+              <div class="stat-card-label">特休</div>
             <div class="stat-card-value-row"><span class="stat-card-value purple" id="mall-lc-特休">0</span></div>
             <div class="stat-card-sub">日</div>
           </div>
-          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);">
-            <div class="stat-card-label">其他</div>
+          <div style="background:var(--color-bg-card);border:1px solid var(--color-border-card);border-radius:var(--radius-lg);padding:var(--card-padding);text-align:center;box-shadow:var(--shadow-card);position:relative;cursor:pointer;" class="leave-filter-card" onclick="filterMallLeave('其他',this)">
+            <span class="leave-tip">其他類型請假（點擊篩選）</span>
+              <div class="stat-card-label">其他</div>
             <div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="mall-lc-其他">0</span></div>
             <div class="stat-card-sub">次</div>
           </div>
@@ -1905,15 +1940,15 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
           </div>
           <div class="stat-card bg-progress clickable">
-            <span class="stat-card-label">查核中</span>
+            <span class="stat-card-label">審核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mall-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待主管</span>
-            <div class="stat-tooltip"><div class="stat-tooltip-title">主管查核中</div></div>
+            <span class="stat-card-sub">待主管處理</span>
+            <div class="stat-tooltip"><div class="stat-tooltip-title">主管審核中</div></div>
           </div>
           <div class="stat-card bg-progress clickable">
             <span class="stat-card-label">覆核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mall-verifying">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待人資</span>
+            <span class="stat-card-sub">待人資處理</span>
             <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
           </div>
           <div class="stat-card bg-progress clickable">
@@ -1932,7 +1967,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab bar 獨立全寬 -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">查核中 <span class="tab-count" id="malltab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">審核中 <span class="tab-count" id="malltab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">已退件 <span class="tab-count" id="malltab-reject">0</span></div>
         </div>
@@ -2534,6 +2569,48 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 <script>
 var ROWS_PER_PAGE = 10;
 var allMonthMode  = true;  // 預設全年顯示
+var mainLeaveFilter = ''; // 所有申請假別篩選
+var monLeaveFilter  = ''; // 本月紀錄假別篩選
+var mallLeaveFilter = ''; // 本月查詢假別篩選
+
+function filterMainLeave(type, el) {
+  mainLeaveFilter = (mainLeaveFilter === type) ? '' : type;
+  // 更新卡片選中樣式
+  document.querySelectorAll('#page-main .leave-filter-card').forEach(function(c){
+    c.style.boxShadow = 'var(--shadow-card)';
+    c.style.borderColor = 'var(--color-border-card)';
+    c.style.outline = '';
+  });
+  if (mainLeaveFilter && el) {
+    el.style.boxShadow = 'var(--shadow-card-hover)';
+    el.style.outline = '2px solid var(--color-gold)';
+  }
+  currentPage = 1; filterTable();
+}
+function filterMonLeave(type, el) {
+  monLeaveFilter = (monLeaveFilter === type) ? '' : type;
+  document.querySelectorAll('#page-monthly .leave-filter-card').forEach(function(c){
+    c.style.boxShadow = 'var(--shadow-card)';
+    c.style.outline = '';
+  });
+  if (monLeaveFilter && el) {
+    el.style.boxShadow = 'var(--shadow-card-hover)';
+    el.style.outline = '2px solid var(--color-gold)';
+  }
+  renderMonTable();
+}
+function filterMallLeave(type, el) {
+  mallLeaveFilter = (mallLeaveFilter === type) ? '' : type;
+  document.querySelectorAll('#page-monthly-all .leave-filter-card').forEach(function(c){
+    c.style.boxShadow = 'var(--shadow-card)';
+    c.style.outline = '';
+  });
+  if (mallLeaveFilter && el) {
+    el.style.boxShadow = 'var(--shadow-card-hover)';
+    el.style.outline = '2px solid var(--color-gold)';
+  }
+  renderMallTable();
+}
 
 /* ══ 右側介面跳轉 ══ */
 function showPage(pageId, el) {
@@ -3828,7 +3905,7 @@ function renderMainTable(apps) {
     var isReject = s.indexOf('退件')>-1;
     var isPendingManager = s.indexOf('主管')>-1 && s.indexOf('待')>-1;
     var isPendingAdmin   = s.indexOf('覆核')>-1 || (s.indexOf('待')>-1 && a.reviewer && !a.verifier);
-    var sDisplay = isDone?'已完成':isReject?'退件':isPendingAdmin?'待覆核':'待審核';
+    var sDisplay = isDone?'已完成':isReject?'已退件':isPendingAdmin?'待覆核':'待審核';
     var sColor = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
     var sBg    = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var tr = document.createElement('tr');
@@ -3844,7 +3921,7 @@ function renderMainTable(apps) {
       '<span style="color:#d4a017;font-size:12px;">待審核</span>';
     var verifierCell = a.verifier ?
       '<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':'') :
-      (a.reviewer ? '<span style="color:#d4a017;font-size:11px;">待覆核</span>' : '<span style="color:#ccc;font-size:12px;">—</span>');
+      (a.reviewer ? '<span style="color:#d4a017;font-size:11px;">待覆核</span>' : (s.indexOf('退件')>-1 ? '<span style="color:#9e9e9e;font-size:11px;">未覆核</span>' : '<span style="color:#ccc;font-size:12px;">—</span>'));
 
     tr.innerHTML =
       '<td class="td-mono" style="font-size:11px;">'+(a.id||'—')+'</td>'+
@@ -3931,6 +4008,11 @@ function filterTable() {
         if (mon && (a.applyDate||'').slice(5,7) !== mon) return false;
       }
       if (search  && (a.name||'').toLowerCase().indexOf(search)<0 && (a.id||'').toLowerCase().indexOf(search)<0) return false;
+      // 假別卡篩選
+      if (mainLeaveFilter) {
+        var sub = (a.subtype||'');
+        if (sub.indexOf(mainLeaveFilter) === -1) return false;
+      }
       return true;
     });
     renderMainTable(filtered);
@@ -4205,7 +4287,7 @@ function renderMyTable() {
     var s        = a.status || '';
     var isDone   = s.indexOf('完成') > -1;
     var isReject = s.indexOf('退件') > -1;
-    var sLabel   = isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
+    var sLabel   = isDone?'已完成':isReject?'已退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg      = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor   = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
     var r1Cell = a.reviewer
@@ -4213,7 +4295,7 @@ function renderMyTable() {
       : (isDone||isReject?'<span style="color:#ccc;font-size:12px;">—</span>':'<span style="color:#d4a017;font-size:12px;">待審核</span>');
     var r2Cell = a.verifier
       ? '<div style="font-weight:500;font-size:12px;">'+ a.verifier +'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':'')
-      : (a.reviewer ? '<span style="color:#d4a017;font-size:11px;">待覆核</span>' : '<span style="color:#ccc;font-size:12px;">—</span>');
+      : (a.reviewer ? '<span style="color:#d4a017;font-size:11px;">待覆核</span>' : (s.indexOf('退件')>-1 ? '<span style="color:#9e9e9e;font-size:11px;">未覆核</span>' : '<span style="color:#ccc;font-size:12px;">—</span>'));
     var tr = document.createElement('tr');
     if (i % 2) tr.style.background = 'var(--color-bg-table-alt)';
     tr.innerHTML =
@@ -4987,7 +5069,7 @@ function renderAccTable() {
       '<td style="text-align:center;">' +
         '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:3px;">編輯</button>' +
         '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;margin-right:3px;">重設密碼</button>' +
-        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">已停用</button>') +
+        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">停用</button>') +
         '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer;">🗑</button>'
       '</td>';
     tbody.appendChild(tr);
@@ -5238,7 +5320,7 @@ function openReview(id, name, type, readOnly) {
         '<a href="' + proof + '" target="_blank" style="color:#1565c0;font-weight:600;text-decoration:underline;margin-left:6px;">🔗 查看附件</a>';
     } else {
       reviewAttach.innerHTML = '<span style="font-weight:600;color:var(--color-text-secondary);">📎 附件證明：</span>' +
-        '<span style="color:#c62828;font-size:12px;margin-left:6px;">⚠ 員工尚未上傳附件（上傳功能僅限申請本人）</span>';
+        '<span style="color:#c62828;font-size:12px;margin-left:6px;">⚠ 員工尚未上傳附件</span>';
     }
   } else if (reviewAttach) {
     reviewAttach.style.display = 'none';
@@ -5439,33 +5521,34 @@ function openFlowModal(app) {
   var mgrIcon  = document.getElementById('flow-mgr-icon2');
   var mgrBadge = document.getElementById('flow-mgr-badge2');
   var mgrTime  = document.getElementById('flow-mgr-time2');
-  if (r1) {
+  if (isReject) {
+    // 退件優先：不論哪一關退的，主管欄顯示退件狀態
+    mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#c62828;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    mgrIcon.textContent    = '✕';
+    mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fce4e4;color:#c62828;';
+    mgrBadge.textContent   = r1 ? (r1 + ' 已退件') : '已退件';
+    mgrTime.style.color    = '#c62828';
+    mgrTime.innerHTML      = r1t;
+    if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#ef9a9a)';
+  } else if (r1) {
     mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#2e7d32;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
     mgrIcon.textContent    = '✓';
     mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#e8f5e9;color:#2e7d32;';
     mgrBadge.textContent   = r1 + ' 已通過';
     mgrTime.style.color    = '#5a8060';
-    mgrTime.innerHTML    = r1t;
+    mgrTime.innerHTML      = r1t;
     if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#90caf9)';
-  } else if (isReject) {
-    mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#c62828;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
-    mgrIcon.textContent    = '✕';
-    mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fce4e4;color:#c62828;';
-    mgrBadge.textContent   = '已退件';
-    mgrTime.style.color    = '#c62828';
-    mgrTime.innerHTML    = r1t;
-    if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#ef9a9a)';
   } else {
     mgrIcon.style.cssText  = 'width:30px;height:30px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
     mgrIcon.textContent    = '⏳';
     mgrBadge.style.cssText = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fff8e1;color:#e65100;';
     mgrBadge.textContent   = '待審核';
     mgrTime.style.color    = '#9a9482';
-    mgrTime.innerHTML    = '';
+    mgrTime.innerHTML      = '';
     if (line1) line1.style.background = 'linear-gradient(90deg,#a5d6a7,#ccc)';
   }
 
-  // 人資審核
+  // 人資覆核
   var adminIcon  = document.getElementById('flow-admin-icon2');
   var adminBadge = document.getElementById('flow-admin-badge2');
   var adminTime  = document.getElementById('flow-admin-time2');
@@ -5475,27 +5558,29 @@ function openFlowModal(app) {
     adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#e8f5e9;color:#2e7d32;';
     adminBadge.textContent    = r2 + ' 已結案';
     adminTime.style.color     = '#5a8060';
-    adminTime.innerHTML     = r2t;
+    adminTime.innerHTML       = r2t;
     if (line2) line2.style.background = 'linear-gradient(90deg,#90caf9,#a5d6a7)';
-  } else if (isReject && !r1) {
-    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+  } else if (isReject) {
+    // 退件時人資欄：顯示「未過關」（因為錢一關就退，人資根本沒到）
+    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#bdbdbd;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
     adminIcon.textContent     = '—';
-    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;background:#f0f0f0;color:#9a9482;';
-    adminBadge.textContent    = '—';
+    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#f5f5f5;color:#757575;';
+    adminBadge.textContent    = '未經覆核';
+    adminTime.style.color     = '#9a9482';
     adminTime.textContent     = '';
     if (line2) line2.style.background = '#e0e0e0';
   } else if (r1) {
     adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
     adminIcon.textContent     = '⏳';
     adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#fff8e1;color:#e65100;';
-    adminBadge.textContent    = '待審核';
+    adminBadge.textContent    = '待覆核';
     adminTime.style.color     = '#9a9482';
     adminTime.textContent     = '';
     if (line2) line2.style.background = 'linear-gradient(90deg,#90caf9,#ccc)';
   } else {
-    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#ccc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
+    adminIcon.style.cssText   = 'width:30px;height:30px;border-radius:50%;background:#bdbdbd;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;';
     adminIcon.textContent     = '⏳';
-    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;background:#f0f0f0;color:#9a9482;';
+    adminBadge.style.cssText  = 'font-size:10px;text-align:center;border-radius:6px;padding:1px 7px;white-space:nowrap;background:#f0f0f0;color:#9a9482;';
     adminBadge.textContent    = '等待中';
     adminTime.style.color     = '#9a9482';
     adminTime.textContent     = '';
@@ -5534,7 +5619,7 @@ function openFlowModal(app) {
           '</div>';
       } else if (isReviewer) {
         // 主管/人資查看時，員工未上傳 → 顯示提示，不給上傳入口
-        html += '<div style="color:#c62828;font-size:12px;background:#fce4e4;border:1px solid #ef9a9a;border-radius:7px;padding:6px 12px;">⚠ 員工尚未上傳附件證明</div>';
+        html += '<div style="color:#c62828;font-size:12px;background:#fce4e4;border:1px solid #ef9a9a;border-radius:7px;padding:6px 12px;">⚠ 員工尚未上傳附件</div>';
       }
       attachDiv.innerHTML = html;
     } else {
@@ -5722,6 +5807,7 @@ function renderMonTable() {
     if (monCurrentTab==='reject' && !isRejectM)  return false;
     if (typeVal && (a.type||'')!==typeVal) return false;
     if (search && (a.name||'').toLowerCase().indexOf(search)<0 && (a.id||'').toLowerCase().indexOf(search)<0) return false;
+    if (monLeaveFilter && (a.subtype||'').indexOf(monLeaveFilter) === -1) return false;
     return true;
   });
 
@@ -5746,7 +5832,7 @@ function renderMonTable() {
   paged.forEach(function(a,i){
     var s=a.status||'';
     var isDone=s.indexOf('完成')>-1, isReject=s.indexOf('退件')>-1;
-    var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
+    var sLabel=isDone?'已完成':isReject?'已退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
     var r1Cell=a.reviewer?'<div style="font-weight:500;font-size:12px;">'+a.reviewer+'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':''):(isDone||isReject?'<span style="color:#ccc;font-size:12px;">—</span>':'<span style="color:#d4a017;font-size:12px;">待審核</span>');
@@ -5974,6 +6060,7 @@ function renderMallTable() {
     if(typeVal&&(a.type||'')!==typeVal) return false;
     if(teamVal&&(a.team||'')!==teamVal) return false;
     if(search&&(a.name||'').toLowerCase().indexOf(search)<0&&(a.id||'').toLowerCase().indexOf(search)<0) return false;
+    if(mallLeaveFilter && (a.subtype||'').indexOf(mallLeaveFilter) === -1) return false;
     return true;
   });
 
@@ -5998,7 +6085,7 @@ function renderMallTable() {
   paged.forEach(function(a,i){
     var s=a.status||'';
     var isDone=s.indexOf('完成')>-1, isReject=s.indexOf('退件')>-1;
-    var sLabel=isDone?'已完成':isReject?'退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
+    var sLabel=isDone?'已完成':isReject?'已退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
     var r1=a.reviewer?'<div style="font-weight:500;font-size:12px;">'+a.reviewer+'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':''):(isDone||isReject?'<span style="color:#ccc;font-size:12px;">—</span>':'<span style="color:#d4a017;font-size:12px;">待審核</span>');
