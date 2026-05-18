@@ -1133,7 +1133,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <span class="stat-card-sub">全部</span>
               <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
             </div>
-            <div class="stat-card bg-progress clickable">
+            <div class="stat-card bg-progress clickable" style="background-color:var(--tab-supplement-bg);">
               <span class="stat-card-label">審核中</span>
               <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
               <span class="stat-card-sub">待主管處理</span>
@@ -1145,7 +1145,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <span class="stat-card-sub">待人資處理</span>
               <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
             </div>
-            <div class="stat-card bg-progress clickable">
+            <div class="stat-card bg-progress clickable" style="background-color:#f5f5f5;">
               <span class="stat-card-label">已完成</span>
               <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
               <span class="stat-card-sub">已結案</span>
@@ -1162,7 +1162,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchTab(this,'all')">全部 <span class="tab-count">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">審核中 <span class="tab-count">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">查核中 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchTab(this,'done')">已完成 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchTab(this,'reject')">已退件 <span class="tab-count">0</span></div>
         </div>
@@ -1664,7 +1664,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-value-row"><span class="stat-card-value" id="my-total">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">全部</span>
           </div>
-          <div class="stat-card bg-progress">
+          <div class="stat-card bg-progress" style="background-color:var(--tab-supplement-bg);">
             <span class="stat-card-label">審核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-pending">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待主管處理</span>
@@ -1674,7 +1674,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-verifying">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待人資處理</span>
           </div>
-          <div class="stat-card bg-progress">
+          <div class="stat-card bg-progress" style="background-color:#f5f5f5;">
             <span class="stat-card-label">已完成</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="my-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
@@ -1689,7 +1689,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab（跟所有申請同樣的 tab-bar）-->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"     onclick="switchMyTab(this,'all')">全部 <span class="tab-count" id="mytab-all">0</span></div>
-          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">審核中 <span class="tab-count" id="mytab-active">0</span></div>
+          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">查核中 <span class="tab-count" id="mytab-active">0</span></div>
           <div class="tab-item"        data-tab="done"    onclick="switchMyTab(this,'done')">已完成 <span class="tab-count" id="mytab-done">0</span></div>
           <div class="tab-item"        data-tab="reject"  onclick="switchMyTab(this,'reject')">已退件 <span class="tab-count" id="mytab-reject">0</span></div>
         </div>
@@ -1813,7 +1813,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-value-row"><span class="stat-card-value" id="mon-total">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub" id="mon-month-label">本月</span>
           </div>
-          <div class="stat-card bg-progress">
+          <div class="stat-card bg-progress" style="background-color:var(--tab-supplement-bg);">
             <span class="stat-card-label">審核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-pending">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待主管處理</span>
@@ -1823,7 +1823,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-verifying">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待人資處理</span>
           </div>
-          <div class="stat-card bg-progress">
+          <div class="stat-card bg-progress" style="background-color:#f5f5f5;">
             <span class="stat-card-label">已完成</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="mon-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
@@ -1836,7 +1836,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMonTab(this,'all')">全部 <span class="tab-count" id="montab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">審核中 <span class="tab-count" id="montab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">查核中 <span class="tab-count" id="montab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMonTab(this,'done')">已完成 <span class="tab-count" id="montab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMonTab(this,'reject')">已退件 <span class="tab-count" id="montab-reject">0</span></div>
         </div>
@@ -1939,7 +1939,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <span class="stat-card-sub" id="mall-month-label">本月</span>
             <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
           </div>
-          <div class="stat-card bg-progress clickable">
+          <div class="stat-card bg-progress clickable" style="background-color:var(--tab-supplement-bg);">
             <span class="stat-card-label">審核中</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mall-pending">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待主管處理</span>
@@ -1951,7 +1951,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <span class="stat-card-sub">待人資處理</span>
             <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
           </div>
-          <div class="stat-card bg-progress clickable">
+          <div class="stat-card bg-progress clickable" style="background-color:#f5f5f5;">
             <span class="stat-card-label">已完成</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="mall-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
@@ -1967,7 +1967,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab bar 獨立全寬 -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">審核中 <span class="tab-count" id="malltab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">查核中 <span class="tab-count" id="malltab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">已退件 <span class="tab-count" id="malltab-reject">0</span></div>
         </div>
@@ -2567,7 +2567,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 </div>
 
 <script>
-var ROWS_PER_PAGE = 10;
+var ROWS_PER_PAGE = 6;
 var allMonthMode  = true;  // 預設全年顯示
 var mainLeaveFilter = ''; // 所有申請假別篩選
 var monLeaveFilter  = ''; // 本月紀錄假別篩選
@@ -4269,7 +4269,7 @@ function renderMyTable() {
 
   var total = filtered.length;
 
-  var PER_PAGE = 8;
+  var PER_PAGE = 6;
   var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
   if (myCurrentPage > totalPage) myCurrentPage = totalPage;
   var piEl = document.getElementById('my-page-info');
@@ -5813,7 +5813,7 @@ function renderMonTable() {
 
   var total = filtered.length;
 
-  var PER_PAGE = 8;
+  var PER_PAGE = 6;
   var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
   if (monCurrentPage > totalPage) monCurrentPage = totalPage;
   var piEl = document.getElementById('mon-page-info');
@@ -6066,7 +6066,7 @@ function renderMallTable() {
 
   var total = filtered.length;
 
-  var PER_PAGE = 8;
+  var PER_PAGE = 6;
   var totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
   if (mallCurrentPage > totalPage) mallCurrentPage = totalPage;
   var piEl = document.getElementById('mall-page-info');
