@@ -67,8 +67,7 @@
 
   /* ---------- 統計卡片底色 ---------- */
   --stat-bg-total:             #fdf8ee;
-  --stat-bg-progress:          #e3f2fd;
-  --stat-bg-done:              #f5f5f5;
+  --stat-bg-progress:          #f0f9f1;
   --stat-bg-reject:            #fdf0f0;
   --stat-bg-payroll:           #f5f0fb;
 
@@ -321,7 +320,6 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .stat-card.clickable{cursor:pointer;}
 .stat-card.bg-total     {background-color:var(--stat-bg-total);}
 .stat-card.bg-progress  {background-color:var(--stat-bg-progress);}
-.stat-card.bg-done      {background-color:var(--stat-bg-done);}
 .stat-card.bg-reject-grp{background-color:var(--stat-bg-reject);}
 .stat-card.bg-payroll   {background-color:var(--stat-bg-payroll);}
 .stat-card-label{font-family:var(--font-body);font-size:var(--font-size-xs);color:var(--color-text-secondary);letter-spacing:.02em;text-align:center;white-space:nowrap;}
@@ -1110,23 +1108,29 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               <div class="stat-card-sub">次</div>
             </div>
           </div>
-          <!-- 4 卡統計（跟本月查詢相同，保留 tooltip 動態更新）-->
-          <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+          <!-- 5 卡統計：總申請 查核中 覆核中 已完成 退件 -->
+          <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
             <div class="stat-card bg-total clickable">
               <span class="stat-card-label">總申請</span>
               <div class="stat-card-value-row"><span class="stat-card-value" data-stat="total" id="stat-total">—</span><span class="stat-card-unit">件</span></div>
-              <span class="stat-card-sub">累計</span>
+              <span class="stat-card-sub">全部</span>
               <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
             </div>
             <div class="stat-card bg-progress clickable">
-              <span class="stat-card-label">審核中</span>
-              <div class="stat-card-value-row"><span class="stat-card-value gold" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
-              <span class="stat-card-sub">待處理</span>
-              <div class="stat-tooltip"><div class="stat-tooltip-title">審核中</div></div>
+              <span class="stat-card-label">查核中</span>
+              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" data-stat="active" id="stat-active">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-sub">待主管</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">主管查核中</div></div>
             </div>
-            <div class="stat-card bg-done clickable">
+            <div class="stat-card bg-progress clickable" style="background-color:var(--tab-supplement-bg);">
+              <span class="stat-card-label">覆核中</span>
+              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" data-stat="verifying" id="stat-verifying">—</span><span class="stat-card-unit">件</span></div>
+              <span class="stat-card-sub">待人資</span>
+              <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
+            </div>
+            <div class="stat-card bg-progress clickable">
               <span class="stat-card-label">已完成</span>
-              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#222;" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
+              <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" data-stat="pending" id="stat-pending">—</span><span class="stat-card-unit">件</span></div>
               <span class="stat-card-sub">已結案</span>
               <div class="stat-tooltip"><div class="stat-tooltip-title">已完成</div></div>
             </div>
@@ -1141,7 +1145,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchTab(this,'all')">全部 <span class="tab-count">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">審核中 <span class="tab-count">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchTab(this,'active')">查核中 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchTab(this,'done')">已完成 <span class="tab-count">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchTab(this,'reject')">已退件 <span class="tab-count">0</span></div>
         </div>
@@ -1630,21 +1634,26 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
         </div>
 
-        <!-- 統計卡片（跟所有申請同樣的 stat-card）-->
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <!-- 統計卡片 5欄 -->
+        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card bg-total">
             <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="my-total">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">累計</span>
+            <span class="stat-card-sub">全部</span>
           </div>
           <div class="stat-card bg-progress">
-            <span class="stat-card-label">審核中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" id="my-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待處理</span>
+            <span class="stat-card-label">查核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待主管</span>
           </div>
-          <div class="stat-card bg-done">
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">覆核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="my-verifying">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待人資</span>
+          </div>
+          <div class="stat-card bg-progress">
             <span class="stat-card-label">已完成</span>
-            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#222;" id="my-done">0</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="my-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
           </div>
           <div class="stat-card bg-reject-grp">
@@ -1657,7 +1666,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab（跟所有申請同樣的 tab-bar）-->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"     onclick="switchMyTab(this,'all')">全部 <span class="tab-count" id="mytab-all">0</span></div>
-          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">審核中 <span class="tab-count" id="mytab-active">0</span></div>
+          <div class="tab-item"        data-tab="active"  onclick="switchMyTab(this,'active')">查核中 <span class="tab-count" id="mytab-active">0</span></div>
           <div class="tab-item"        data-tab="done"    onclick="switchMyTab(this,'done')">已完成 <span class="tab-count" id="mytab-done">0</span></div>
           <div class="tab-item"        data-tab="reject"  onclick="switchMyTab(this,'reject')">已退件 <span class="tab-count" id="mytab-reject">0</span></div>
         </div>
@@ -1769,20 +1778,25 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           </div>
         </div>
         <!-- 統計卡片 -->
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card bg-total">
             <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="mon-total">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub" id="mon-month-label">累計</span>
+            <span class="stat-card-sub" id="mon-month-label">本月</span>
           </div>
           <div class="stat-card bg-progress">
-            <span class="stat-card-label">審核中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" id="mon-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待處理</span>
+            <span class="stat-card-label">查核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待主管</span>
           </div>
-          <div class="stat-card bg-done">
+          <div class="stat-card bg-progress">
+            <span class="stat-card-label">覆核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-verifying">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待人資</span>
+          </div>
+          <div class="stat-card bg-progress">
             <span class="stat-card-label">已完成</span>
-            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#222;" id="mon-done">0</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="mon-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
           </div>
           <div class="stat-card bg-reject-grp">
@@ -1793,7 +1807,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         </div>
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMonTab(this,'all')">全部 <span class="tab-count" id="montab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">審核中 <span class="tab-count" id="montab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMonTab(this,'active')">查核中 <span class="tab-count" id="montab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMonTab(this,'done')">已完成 <span class="tab-count" id="montab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMonTab(this,'reject')">已退件 <span class="tab-count" id="montab-reject">0</span></div>
         </div>
@@ -1882,8 +1896,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-sub">次</div>
           </div>
         </div>
-        <!-- 統計卡 -->
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <!-- 統計卡 5欄 -->
+        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card bg-total clickable">
             <span class="stat-card-label">總申請</span>
             <div class="stat-card-value-row"><span class="stat-card-value" id="mall-total">0</span><span class="stat-card-unit">件</span></div>
@@ -1891,14 +1905,20 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-tooltip"><div class="stat-tooltip-title">所有申請</div></div>
           </div>
           <div class="stat-card bg-progress clickable">
-            <span class="stat-card-label">審核中</span>
-            <div class="stat-card-value-row"><span class="stat-card-value gold" id="mall-pending">0</span><span class="stat-card-unit">件</span></div>
-            <span class="stat-card-sub">待處理</span>
-            <div class="stat-tooltip"><div class="stat-tooltip-title">審核中</div></div>
+            <span class="stat-card-label">查核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mall-pending">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待主管</span>
+            <div class="stat-tooltip"><div class="stat-tooltip-title">主管查核中</div></div>
           </div>
-          <div class="stat-card bg-done clickable">
+          <div class="stat-card bg-progress clickable">
+            <span class="stat-card-label">覆核中</span>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mall-verifying">0</span><span class="stat-card-unit">件</span></div>
+            <span class="stat-card-sub">待人資</span>
+            <div class="stat-tooltip"><div class="stat-tooltip-title">人資覆核中</div></div>
+          </div>
+          <div class="stat-card bg-progress clickable">
             <span class="stat-card-label">已完成</span>
-            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#222;" id="mall-done">0</span><span class="stat-card-unit">件</span></div>
+            <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="mall-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
             <div class="stat-tooltip"><div class="stat-tooltip-title">已完成</div></div>
           </div>
@@ -1912,7 +1932,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
         <!-- Tab bar 獨立全寬 -->
         <div class="tab-bar">
           <div class="tab-item active" data-tab="all"    onclick="switchMallTab(this,'all')">全部 <span class="tab-count" id="malltab-all">0</span></div>
-          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">審核中 <span class="tab-count" id="malltab-active">0</span></div>
+          <div class="tab-item"        data-tab="active" onclick="switchMallTab(this,'active')">查核中 <span class="tab-count" id="malltab-active">0</span></div>
           <div class="tab-item"        data-tab="done"   onclick="switchMallTab(this,'done')">已完成 <span class="tab-count" id="malltab-done">0</span></div>
           <div class="tab-item"        data-tab="reject" onclick="switchMallTab(this,'reject')">已退件 <span class="tab-count" id="malltab-reject">0</span></div>
         </div>
@@ -2188,14 +2208,15 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <button class="btn" onclick="openAccountModal('add')" style="display:flex;align-items:center;gap:6px;">＋ 新增帳號</button>
         </div>
 
-        <!-- 統計列 -->
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
-          <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div></div>
+        <!-- 統計列：總帳號=兼職+正職+主管+營運+老闆+已停用 -->
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;">
+          <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div><span class="stat-card-sub" style="font-size:9px;">兼+正+主+營+老+停</span></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">兼職</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#e65100;" id="acc-pt">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">正職</span><div class="stat-card-value-row"><span class="stat-card-value gold" id="acc-ft">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">主管</span><div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="acc-mgr">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">營運</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#7b1fa2;" id="acc-ops">0</span><span class="stat-card-unit">人</span></div></div>
-          <div class="stat-card bg-reject-grp"><span class="stat-card-label">停用</span><div class="stat-card-value-row"><span class="stat-card-value red" id="acc-dis">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-progress"><span class="stat-card-label">老闆</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#c9a84c;" id="acc-boss">0</span><span class="stat-card-unit">人</span></div></div>
+          <div class="stat-card bg-reject-grp"><span class="stat-card-label">已停用</span><div class="stat-card-value-row"><span class="stat-card-value red" id="acc-dis">0</span><span class="stat-card-unit">人</span></div></div>
         </div>
 
         <!-- 表格 -->
@@ -2330,7 +2351,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     </div>
     <input type="hidden" id="acc-edit-id"/>
   </div>
-
+</div>
 
 <!-- ══ 新增申請 Modal ══ -->
 <div class="modal-overlay" id="formModal">
@@ -3652,35 +3673,52 @@ function loadMainData() {
 }
 
 function updateMainStats(apps) {
-  var total=apps.length, active=0, pending=0, done=0, reject=0, supp=0;
-  var activeList=[], doneList=[], pendingList=[], rejectList=[];
+  // 審核中 = 有 reviewer 還沒有 verifier，或完全沒有 reviewer（待主管）
+  // 覆核中 = 已有 reviewer 但沒有 verifier，且尚未完成/退件
+  // 總申請 = 審核中 + 覆核中 + 已完成 + 退件
+  var reviewing=0, verifying=0, done=0, reject=0;
+  var reviewingList=[], verifyingList=[], doneList=[], rejectList=[];
   var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
   var lcDetails={'事假':[],'病假':[],'生理假':[],'國假':[],'特休':[],'其他':[]};
+
   apps.forEach(function(a){
     var s = a.status||'';
-    if (s.indexOf('完成')>-1) { done++; doneList.push(a); }
-    else if (s.indexOf('退件')>-1) { reject++; rejectList.push(a); }
-    else if (s.indexOf('補件')>-1) supp++;
-    else if (s.indexOf('待')>-1 || s.indexOf('審')>-1) {
-      active++; pending++;
-      activeList.push(a);
-      if (s.indexOf('主管')>-1 && s.indexOf('待')>-1) pendingList.push(a);
+    var isDone   = s.indexOf('完成')>-1;
+    var isReject = s.indexOf('退件')>-1;
+    var hasReviewer = !!(a.reviewer);
+    var hasVerifier = !!(a.verifier);
+
+    if (isDone)        { done++;      doneList.push(a); }
+    else if (isReject) { reject++;    rejectList.push(a); }
+    else if (hasReviewer && !hasVerifier) { verifying++;  verifyingList.push(a); } // 覆核中
+    else               { reviewing++; reviewingList.push(a); }                      // 審核中
+
+    // 假別統計（含特別休假→特休、國定假日→國假）
+    var subtype = (a.subtype||'').trim();
+    var base = subtype.split(' ')[0].split('(')[0].trim();
+    // 特別休假 / 特別休假申請 → 特休
+    if (base==='特休' || base.indexOf('特別休假')>-1 || base.indexOf('特別休')>-1) {
+      lc['特休'] += parseFloat(a.days||1); lcDetails['特休'].push(a);
     }
-    // 假別統計
-    if (a.type === '請假申請' || a.type === '國假及特休申請') {
-      var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
-      if (base==='特休') { lc['特休']+=parseFloat(a.days||1); lcDetails['特休'].push(a); }
-      else if (base==='國假') { lc['國假']+=parseFloat(a.days||1); lcDetails['國假'].push(a); }
-      else if (lc.hasOwnProperty(base)) { lc[base]+=1; lcDetails[base].push(a); }
-      else { lc['其他']+=1; lcDetails['其他'].push(a); }
+    // 國定假日 / 國假 → 國假
+    else if (base==='國假' || base.indexOf('國定假日')>-1 || base.indexOf('特別休假')>-1 || (a.type||'').indexOf('國假及特休')>-1) {
+      lc['國假'] += parseFloat(a.days||1); lcDetails['國假'].push(a);
+    }
+    else if (a.type==='請假申請' || a.type==='國假及特休申請') {
+      if      (base==='事假')   { lc['事假']++;   lcDetails['事假'].push(a); }
+      else if (base==='病假')   { lc['病假']++;   lcDetails['病假'].push(a); }
+      else if (base==='生理假') { lc['生理假']++; lcDetails['生理假'].push(a); }
+      else                      { lc['其他']++;   lcDetails['其他'].push(a); }
     }
   });
+
+  var total = reviewing + verifying + done + reject;
   var g = function(id){ return document.getElementById(id); };
-  if (g('stat-total'))   g('stat-total').textContent   = total;
-  if (g('stat-active'))  g('stat-active').textContent  = active;
-  if (g('stat-pending')) g('stat-pending').textContent = done;
-  if (g('stat-reject'))  g('stat-reject').textContent  = reject;
-  if (g('stat-supp'))    g('stat-supp').textContent    = supp;
+  if (g('stat-total'))     g('stat-total').textContent     = total;
+  if (g('stat-active'))    g('stat-active').textContent    = reviewing;
+  if (g('stat-verifying')) g('stat-verifying').textContent = verifying;
+  if (g('stat-pending'))   g('stat-pending').textContent   = done;
+  if (g('stat-reject'))    g('stat-reject').textContent    = reject;
 
   // 假別卡數字
   Object.keys(lc).forEach(function(k){
@@ -3695,7 +3733,6 @@ function updateMainStats(apps) {
     var tip = card.querySelector('.stat-tooltip');
     if (!tip) return;
     var dots = ['field','bar','kitchen'];
-    // 計算各人次數
     var nameCount = {};
     list.forEach(function(a){ var n=a.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
     var entries = Object.keys(nameCount).map(function(n){ return {name:n, count:nameCount[n]}; });
@@ -3755,11 +3792,22 @@ function updateMainStats(apps) {
     }
   });
 
-  // 大卡 tooltip（總申請/審核中/已完成/退件）
-  buildTip(apps,       g('stat-total')   ? g('stat-total').closest('.stat-card')   : null);
-  buildTip(activeList, g('stat-active')  ? g('stat-active').closest('.stat-card')  : null);
-  buildTip(doneList,   g('stat-pending') ? g('stat-pending').closest('.stat-card') : null);
-  buildTip(rejectList, g('stat-reject')  ? g('stat-reject').closest('.stat-card')  : null);
+  // 大卡 tooltip
+  buildTip(apps,           g('stat-total')     ? g('stat-total').closest('.stat-card')     : null);
+  buildTip(reviewingList,  g('stat-active')    ? g('stat-active').closest('.stat-card')    : null);
+  buildTip(verifyingList,  g('stat-verifying') ? g('stat-verifying').closest('.stat-card') : null);
+  buildTip(doneList,       g('stat-pending')   ? g('stat-pending').closest('.stat-card')   : null);
+  buildTip(rejectList,     g('stat-reject')    ? g('stat-reject').closest('.stat-card')    : null);
+
+  // 更新 tab bar counts（全部/查核中/已完成/已退件）
+  var mainTabAll    = document.querySelector('#page-main .tab-item[data-tab="all"] .tab-count');
+  var mainTabActive = document.querySelector('#page-main .tab-item[data-tab="active"] .tab-count');
+  var mainTabDone   = document.querySelector('#page-main .tab-item[data-tab="done"] .tab-count');
+  var mainTabReject = document.querySelector('#page-main .tab-item[data-tab="reject"] .tab-count');
+  if(mainTabAll)    mainTabAll.textContent    = total;
+  if(mainTabActive) mainTabActive.textContent = reviewing + verifying;
+  if(mainTabDone)   mainTabDone.textContent   = done;
+  if(mainTabReject) mainTabReject.textContent = reject;
 }
 
 function renderMainTable(apps) {
@@ -3988,7 +4036,6 @@ function filterMyLeaveType(type, el) {
 
 function updateLeaveStats() {
   var year = myAllYear ? 'all' : ((document.getElementById('my-year-filter') || {}).value || String(new Date().getFullYear()));
-  // 次數統計（事假/病假/生理假/其他）
   var lc = { '事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0 };
   myRecordsData.forEach(function(a){
     if (!a.applyDate) return;
@@ -3996,12 +4043,12 @@ function updateLeaveStats() {
     if (year !== 'all' && ay !== year) return;
     if (a.type !== '請假申請' && a.type !== '國假及特休申請') return;
     var base = (a.subtype || '').split(' ')[0].split('(')[0].trim();
-    if (base === '特別休假') base = '特休';
-    if (base === '特休') {
-      // 特休用天數
+    if (base === '特休' || base.indexOf('特別休假')>-1 || base.indexOf('特別休')>-1) {
       lc['特休'] += parseFloat(a.days || 1);
+    } else if (base === '國假' || base.indexOf('國定假日')>-1 || (a.type||'').indexOf('國假及特休')>-1) {
+      lc['國假'] += parseFloat(a.days || 1);
     } else if (lc.hasOwnProperty(base)) {
-      lc[base] += 1; // 其餘用次數
+      lc[base] += 1;
     } else {
       lc['其他'] += 1;
     }
@@ -4046,17 +4093,21 @@ function loadMyRecords() {
       if (typeof updateLeaveStats === 'function') updateLeaveStats();
       // 確保全年按鈕樣式正確
       if (typeof initMyAllYearBtn === 'function') initMyAllYearBtn();
-      var total=myRecordsData.length, active=0, done=0, reject=0;
+      var total=0, reviewing=0, verifying=0, done=0, reject=0;
       var typeSet = {};
       myRecordsData.forEach(function(a){
         var s = a.status || '';
-        if (s.indexOf('完成') > -1)      done++;
-        else if (s.indexOf('退件') > -1)  reject++;
-        else                               active++; // 審核中（含待審核+待覆核）
-        // 收集申請類型（用 subtype 細分）
+        var isDone   = s.indexOf('完成') > -1;
+        var isReject = s.indexOf('退件') > -1;
+        if (isDone)        done++;
+        else if (isReject) reject++;
+        else if (a.reviewer && !a.verifier) verifying++; // 覆核中
+        else               reviewing++;                   // 查核中
+        // 收集申請類型
         var key = a.subtype || a.type || '';
         if (key) typeSet[key] = true;
       });
+      total = reviewing + verifying + done + reject;
       // 動態更新類型選單
       var typeFilter = document.getElementById('my-type-filter');
       if (typeFilter) {
@@ -4070,12 +4121,13 @@ function loadMyRecords() {
         });
       }
       document.getElementById('my-total').textContent   = total;
-      document.getElementById('my-pending').textContent = active;
+      document.getElementById('my-pending').textContent = reviewing;
+      var myVer = document.getElementById('my-verifying'); if (myVer) myVer.textContent = verifying;
       document.getElementById('my-done').textContent    = done;
       document.getElementById('my-reject').textContent  = reject;
       var myRc = document.getElementById('my-row-count'); if (myRc) myRc.textContent = total;
       if (document.getElementById('mytab-all'))     document.getElementById('mytab-all').textContent     = total;
-      if (document.getElementById('mytab-active'))  document.getElementById('mytab-active').textContent  = active;
+      if (document.getElementById('mytab-active'))  document.getElementById('mytab-active').textContent  = reviewing + verifying;
       if (document.getElementById('mytab-done'))    document.getElementById('mytab-done').textContent    = done;
       if (document.getElementById('mytab-reject'))  document.getElementById('mytab-reject').textContent  = reject;
       updateLeaveStats();
@@ -4649,13 +4701,11 @@ function onLoginSuccess(user, silent) {
   document.getElementById('um-name').textContent = user.name + '（' + (user.team||'') + ' ' + (user.title||'') + '）';
   document.getElementById('um-role').textContent = '角色：' + (ROLE_LABEL[user.role]||user.role);
 
-  // 套用權限
-  setTimeout(function(){
-    applyPermissions(user.role);
-    initGjCard();
-    initAllMonthBtn();
-    initMyAllYearBtn();
-  }, 50);
+  // 立即套用權限（同步）
+  applyPermissions(user.role);
+  initGjCard();
+  initAllMonthBtn();
+  initMyAllYearBtn();
 
   // 載入文件中心
   if (typeof dcLoadFiles === 'function') dcLoadFiles();
@@ -4881,22 +4931,23 @@ function loadAccounts() {
 
 /* ── 統計 ── */
 function updateAccStats() {
-  var total=ACCOUNTS_DATA.length, pt=0, ft=0, mgr=0, ops=0, dis=0;
+  var pt=0, ft=0, mgr=0, ops=0, boss=0, dis=0;
   ACCOUNTS_DATA.forEach(function(a){
-    if(a.status==='停用') dis++;
-    else if(a.role==='admin')    ops++;
-    else if(a.role==='manager')  mgr++;
-    else if(a.role==='fulltime') ft++;
+    if(a.status==='停用')    dis++;
+    else if(a.role==='boss')    boss++;
+    else if(a.role==='admin')   ops++;
+    else if(a.role==='manager') mgr++;
+    else if(a.role==='fulltime' || a.role==='employee') ft++;
     else if(a.role==='parttime') pt++;
-    // employee 舊帳號 → 計入 ft
-    else if(a.role==='employee') ft++;
   });
+  var total = pt + ft + mgr + ops + boss + dis;
   var g = function(id){ return document.getElementById(id); };
   if(g('acc-total')) g('acc-total').textContent = total;
   if(g('acc-pt'))    g('acc-pt').textContent    = pt;
   if(g('acc-ft'))    g('acc-ft').textContent    = ft;
   if(g('acc-mgr'))   g('acc-mgr').textContent   = mgr;
   if(g('acc-ops'))   g('acc-ops').textContent   = ops;
+  if(g('acc-boss'))  g('acc-boss').textContent  = boss;
   if(g('acc-dis'))   g('acc-dis').textContent   = dis;
 }
 
@@ -4931,12 +4982,12 @@ function renderAccTable() {
       '<td style="text-align:center;font-size:12px;">'+(a.team||'—')+'</td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.title||'—')+'</td>'+
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;'+roleStyle+'">'+(ROLE_LABEL[a.role]||a.role)+'</span></td>'+
-      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;'+(a.status==='停用'?'color:#c62828;background:#fce4e4;border:1px solid #ef9a9a;':'color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;')+'">'+(a.status==='停用'?'已停用':'啟用中')+'</span></td>'+
+      '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;'+(a.status==='停用'?'color:#c62828;background:#fce4e4;border:1px solid #ef9a9a;':'color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;')+'">'+(a.status==='停用'?'停用':'啟用中')+'</span></td>'+
       '<td style="font-size:11px;color:var(--color-text-muted);text-align:center;font-family:var(--font-mono);">' + formatAccDate(a.createdAt) + '</td>'+
       '<td style="text-align:center;">' +
         '<button data-acc="' + encodeURIComponent(JSON.stringify(a)) + '" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid var(--color-border-table);background:#fdfcf9;cursor:pointer;margin-right:3px;">編輯</button>' +
         '<button data-mail="' + (a.mail||'') + '" onclick="resetPassword(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ffcc80;background:#fff8e1;color:#7a5000;cursor:pointer;margin-right:3px;">重設密碼</button>' +
-        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">停用</button>') +
+        (a.status==='停用' ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #a5d6a7;background:#e8f5e9;color:#2e7d32;cursor:pointer;margin-right:3px;">啟用</button>' : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #ef9a9a;background:#fce4e4;color:#c62828;cursor:pointer;margin-right:3px;">已停用</button>') +
         '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer;">🗑</button>'
       '</td>';
     tbody.appendChild(tr);
@@ -5017,7 +5068,7 @@ function deleteAccount(mail, name) {
   fetch(GAS_URL, { method:'POST', mode:'no-cors',
     body: JSON.stringify({ action:'deleteAccount', mail:mail })
   }).then(function(){
-    showToastGlobal('⚠️ 帳號已刪除','ok');
+    showToastGlobal('帳號已刪除','ok');
     setTimeout(loadAccounts, 1200);
   }).catch(function(e){
     showToastGlobal('刪除失敗：'+e.message,'err');
@@ -5177,6 +5228,22 @@ function openReview(id, name, type, readOnly) {
            '<br>假　　別：' + (app.subtype||'') +
            '<br>起　　訖：' + fmtDRange(app.startDate, app.endDate) : '');
 
+  // 附件區（顯示員工附件給主管/人資查看，不允許代替上傳）
+  var reviewAttach = document.getElementById('reviewModalAttach');
+  if (reviewAttach && app) {
+    var proof = (app.proofLink || '').trim();
+    reviewAttach.style.display = '';
+    if (proof) {
+      reviewAttach.innerHTML = '<span style="font-weight:600;color:var(--color-text-secondary);">📎 附件證明：</span>' +
+        '<a href="' + proof + '" target="_blank" style="color:#1565c0;font-weight:600;text-decoration:underline;margin-left:6px;">🔗 查看附件</a>';
+    } else {
+      reviewAttach.innerHTML = '<span style="font-weight:600;color:var(--color-text-secondary);">📎 附件證明：</span>' +
+        '<span style="color:#c62828;font-size:12px;margin-left:6px;">⚠ 員工尚未上傳附件（上傳功能僅限申請本人）</span>';
+    }
+  } else if (reviewAttach) {
+    reviewAttach.style.display = 'none';
+  }
+
   // 流程狀態條
   var managerStatus = document.getElementById('flow-manager-status');
   var adminStatus   = document.getElementById('flow-admin-status');
@@ -5192,21 +5259,20 @@ function openReview(id, name, type, readOnly) {
       adminStatus.textContent = '已退件';
       adminStatus.style.cssText = 'font-size:10px;color:#c62828;background:#fce4e4;border:1px solid #ef9a9a;border-radius:8px;padding:1px 8px;';
     } else {
-      adminStatus.textContent = '待人資處理';
+      adminStatus.textContent = '審核中';
       adminStatus.style.cssText = 'font-size:10px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:8px;padding:1px 8px;';
     }
   } else if (isRejectApp) {
-    // 主管退件 → admin 欄顯示「已終止」
     managerStatus.textContent = '已退件';
     managerStatus.style.cssText = 'font-size:10px;color:#c62828;background:#fce4e4;border:1px solid #ef9a9a;border-radius:8px;padding:1px 8px;';
     flowLine2.style.background = '#e0e0e0';
-    adminStatus.textContent = '已終止';
-    adminStatus.style.cssText = 'font-size:10px;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:1px 8px;';
+    adminStatus.textContent = '—';
+    adminStatus.style.cssText = 'font-size:10px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:8px;padding:1px 8px;';
   } else {
-    managerStatus.textContent = '待主管處理';
+    managerStatus.textContent = '審核中';
     managerStatus.style.cssText = 'font-size:10px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:8px;padding:1px 8px;';
     flowLine2.style.background = '#e0e0e0';
-    adminStatus.textContent = '待人資處理';
+    adminStatus.textContent = '等待中';
     adminStatus.style.cssText = 'font-size:10px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:8px;padding:1px 8px;';
   }
 
@@ -5441,26 +5507,34 @@ function openFlowModal(app) {
   // 附件區
   var attachDiv = document.getElementById('flowModalAttach');
   if (attachDiv) {
-    var proof = app ? (app.proofLink || '') : '';
-    var role  = CURRENT_USER ? CURRENT_USER.role : 'guest';
+    var proof  = app ? (app.proofLink || '') : '';
+    var role   = CURRENT_USER ? CURRENT_USER.role : 'guest';
     var isSelf = CURRENT_USER && app && CURRENT_USER.name === app.name;
-    var subtype = app ? (app.subtype || '') : '';
-    var noSuppNeeded = subtype.indexOf('生理假') > -1 || subtype.indexOf('國假') > -1 || subtype.indexOf('特休') > -1 || subtype.indexOf('特別休假') > -1;
-    var canSupp = isSelf && !proof && !isDone && !noSuppNeeded;
+    // 主管/人資/老闆 不可代替上傳
+    var isReviewer = (role === 'manager' || role === 'admin' || role === 'boss');
+    // 本人且未完成且無附件 → 可補件
+    var canSupp = isSelf && !proof && !isDone && !isReject;
+    // 主管/人資開啟時：有附件就顯示，沒附件就顯示「員工尚未上傳」提示（不給上傳框）
+    var showAttach = proof || canSupp || (isReviewer && !proof);
 
-    if (proof || canSupp) {
+    if (showAttach) {
       attachDiv.style.display = '';
       var html = '<div style="font-weight:600;color:var(--color-text-secondary);margin-bottom:6px;">📎 附件證明</div>';
       if (proof) {
+        // 有附件：所有人都可以查看
         html += '<a href="' + proof + '" target="_blank" style="color:#1565c0;font-weight:600;text-decoration:underline;">🔗 查看附件</a>';
       } else if (canSupp) {
-        html += '<div style="color:#9a9482;margin-bottom:8px;">⚠ 員工尚未上傳附件</div>';
+        // 本人、未完成、無附件 → 可補件上傳
+        html += '<div style="color:#9a9482;margin-bottom:8px;">尚未上傳附件</div>';
         html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
           '<label style="display:flex;align-items:center;gap:5px;border:1.5px dashed #e8dbb0;border-radius:7px;padding:5px 12px;cursor:pointer;font-size:11px;color:#9a9482;background:#fff;">' +
           '選擇檔案（PDF/圖片）<input type="file" id="flow-supp-file" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="document.getElementById(\'flow-supp-name\').textContent=this.files[0]?\'📄 \'+this.files[0].name:\'\'"/></label>' +
           '<span id="flow-supp-name" style="font-size:11px;color:#5a5646;"></span>' +
           '<button id="flow-supp-btn" onclick="submitFlowSupp(\'' + (app?app.id:'') + '\',\'' + (app?app.name:'') + '\',\'' + (app?app.startDate:'') + '\')" style="font-size:11px;height:26px;padding:0 12px;border-radius:6px;border:1.5px solid var(--color-gold);background:var(--color-gold-bg);color:#7a5000;font-weight:600;cursor:pointer;">📤 補件上傳</button>' +
           '</div>';
+      } else if (isReviewer) {
+        // 主管/人資查看時，員工未上傳 → 顯示提示，不給上傳入口
+        html += '<div style="color:#c62828;font-size:12px;background:#fce4e4;border:1px solid #ef9a9a;border-radius:7px;padding:6px 12px;">⚠ 員工尚未上傳附件證明</div>';
       }
       attachDiv.innerHTML = html;
     } else {
@@ -5538,20 +5612,23 @@ function onMonthChange() {
 }
 
 function updateMonStats() {
-  var total=MONTHLY_DATA.length, active=0, done=0, reject=0;
+  var reviewing=0, verifying=0, done=0, reject=0;
   MONTHLY_DATA.forEach(function(a){
     var s=a.status||'';
-    if(s.indexOf('完成')>-1) done++;
-    else if(s.indexOf('退件')>-1) reject++;
-    else active++;
+    if(s.indexOf('完成')>-1)       done++;
+    else if(s.indexOf('退件')>-1)  reject++;
+    else if(a.reviewer && !a.verifier) verifying++;
+    else                           reviewing++;
   });
+  var total = reviewing + verifying + done + reject;
   var g=function(id){return document.getElementById(id);};
   if(g('mon-total'))       g('mon-total').textContent=total;
-  if(g('mon-pending'))     g('mon-pending').textContent=active;
+  if(g('mon-pending'))     g('mon-pending').textContent=reviewing;
+  if(g('mon-verifying'))   g('mon-verifying').textContent=verifying;
   if(g('mon-done'))        g('mon-done').textContent=done;
   if(g('mon-reject'))      g('mon-reject').textContent=reject;
   if(g('montab-all'))      g('montab-all').textContent=total;
-  if(g('montab-active'))   g('montab-active').textContent=active;
+  if(g('montab-active'))   g('montab-active').textContent=reviewing+verifying;
   if(g('montab-done'))     g('montab-done').textContent=done;
   if(g('montab-reject'))   g('montab-reject').textContent=reject;
 }
@@ -5559,9 +5636,8 @@ function updateMonStats() {
 function updateMonLeaveStats() {
   var lc={'事假':0,'病假':0,'生理假':0,'國假':0,'特休':0,'其他':0};
   MONTHLY_DATA.forEach(function(a){
-    if (a.type !== '請假申請' && a.type !== '國假及特休申請') return;
+    if (a.type !== '請假申請') return;
     var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
-    if (base === '特別休假') base = '特休';
     if (base === '特休') {
       lc['特休'] += parseFloat(a.days||1);
     } else if (base === '國假') {
@@ -5751,23 +5827,26 @@ function onMallMonthChange() {
 }
 
 function updateMallStats() {
-  var total=MALL_DATA.length, active=0, done=0, reject=0;
-  var activeList=[], doneList=[], rejectList=[];
+  var reviewing=0, verifying=0, done=0, reject=0;
+  var reviewingList=[], verifyingList=[], doneList=[], rejectList=[];
   MALL_DATA.forEach(function(a){
     var s=a.status||'';
-    if(s.indexOf('完成')>-1) { done++; doneList.push(a); }
-    else if(s.indexOf('退件')>-1) { reject++; rejectList.push(a); }
-    else { active++; activeList.push(a); }
+    if(s.indexOf('完成')>-1)       { done++;      doneList.push(a); }
+    else if(s.indexOf('退件')>-1)  { reject++;    rejectList.push(a); }
+    else if(a.reviewer && !a.verifier) { verifying++;  verifyingList.push(a); }
+    else                           { reviewing++; reviewingList.push(a); }
   });
+  var total = reviewing + verifying + done + reject;
   var g=function(id){return document.getElementById(id);};
-  if(g('mall-total'))      g('mall-total').textContent=total;
-  if(g('mall-pending'))    g('mall-pending').textContent=active;
-  if(g('mall-done'))       g('mall-done').textContent=done;
-  if(g('mall-reject'))     g('mall-reject').textContent=reject;
-  if(g('malltab-all'))     g('malltab-all').textContent=total;
-  if(g('malltab-active'))  g('malltab-active').textContent=active;
-  if(g('malltab-done'))    g('malltab-done').textContent=done;
-  if(g('malltab-reject'))  g('malltab-reject').textContent=reject;
+  if(g('mall-total'))       g('mall-total').textContent=total;
+  if(g('mall-pending'))     g('mall-pending').textContent=reviewing;
+  if(g('mall-verifying'))   g('mall-verifying').textContent=verifying;
+  if(g('mall-done'))        g('mall-done').textContent=done;
+  if(g('mall-reject'))      g('mall-reject').textContent=reject;
+  if(g('malltab-all'))      g('malltab-all').textContent=total;
+  if(g('malltab-active'))   g('malltab-active').textContent=reviewing+verifying;
+  if(g('malltab-done'))     g('malltab-done').textContent=done;
+  if(g('malltab-reject'))   g('malltab-reject').textContent=reject;
   // Tooltip
   function buildMallTip(list, id) {
     var el = g(id); if(!el) return;
@@ -5782,10 +5861,11 @@ function updateMallStats() {
     });
     if(!list.length){ var div=document.createElement('div'); div.className='stat-tooltip-item'; div.style.color='#999'; div.textContent='暫無資料'; tip.appendChild(div); }
   }
-  buildMallTip(MALL_DATA,    'mall-total');
-  buildMallTip(activeList,   'mall-pending');
-  buildMallTip(doneList,     'mall-done');
-  buildMallTip(rejectList,   'mall-reject');
+  buildMallTip(MALL_DATA.slice(0, MALL_DATA.length), 'mall-total');
+  buildMallTip(reviewingList,  'mall-pending');
+  buildMallTip(verifyingList,  'mall-verifying');
+  buildMallTip(doneList,       'mall-done');
+  buildMallTip(rejectList,     'mall-reject');
 }
 
 function updateMallLeaveStats() {
@@ -5794,8 +5874,6 @@ function updateMallLeaveStats() {
   MALL_DATA.forEach(function(a){
     if (a.type !== '請假申請' && a.type !== '國假及特休申請') return;
     var base=(a.subtype||'').split(' ')[0].split('(')[0].trim();
-    // 「特別休假」對應「特休」欄位
-    if(base==='特別休假') base='特休';
     if(base==='特休') { lc['特休']+=parseFloat(a.days||1); lcDet['特休'].push(a); }
     else if(base==='國假') { lc['國假']+=parseFloat(a.days||1); lcDet['國假'].push(a); }
     else if(lc.hasOwnProperty(base)) { lc[base]+=1; lcDet[base].push(a); }
@@ -6042,17 +6120,18 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
       <div style="flex:1;height:2px;background:linear-gradient(90deg,#a5d6a7,#ccc);min-width:16px;"></div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
         <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">主管審核</div>
-        <div id="flow-manager-status" style="font-size:9px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:6px;padding:1px 6px;white-space:nowrap;">待主管處理</div>
+        <div id="flow-manager-status" style="font-size:9px;color:#e65100;background:#fff8e1;border:1px solid #ffcc80;border-radius:6px;padding:1px 6px;white-space:nowrap;">審核中</div>
       </div>
       <div style="flex:1;height:2px;background:#e0e0e0;min-width:16px;" id="flow-line-2"></div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;">
         <div style="font-size:11px;font-weight:700;color:var(--color-text-primary);text-align:center;">人資覆核</div>
-        <div id="flow-admin-status" style="font-size:9px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:6px;padding:1px 6px;white-space:nowrap;">待人資處理</div>
+        <div id="flow-admin-status" style="font-size:9px;color:#9a9482;background:#f0f0f0;border:1px solid #ddd;border-radius:6px;padding:1px 6px;white-space:nowrap;">等待中</div>
       </div>
     </div>
     <!-- 申請資訊 -->
     <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-text-secondary);line-height:2;font-family:var(--font-mono);"></div>
-    <!-- 審核意見（橫向等高）-->
+    <!-- 附件區（審核時顯示員工附件，上傳功能鎖定）-->
+    <div id="reviewModalAttach" style="display:none;background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:8px 14px;font-size:12px;"></div>
     <div id="reviewCommentWrap" style="display:flex;align-items:center;gap:10px;">
       <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);white-space:nowrap;flex-shrink:0;">審核意見（選填）</label>
       <input id="reviewComment" type="text" style="flex:1;border:1.5px solid var(--color-border-card);border-radius:7px;padding:0 10px;font-family:var(--font-body);font-size:13px;height:34px;outline:none;" placeholder="可填寫審核備註…"/>
@@ -6067,8 +6146,8 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
       <button class="review-btn reject" id="reviewRejectBtn" onclick="submitReview('reject')" style="width:80px;height:34px;padding:0;">✕ 退件</button>
       <button class="review-btn approve" id="reviewApproveBtn" onclick="submitReview('approve')" style="width:80px;height:34px;padding:0;">✓ 核准</button>
     </div>
-  
-
+  </div>
+</div>
 
 <!-- 詳細查看 Modal（意見/問題共用）-->
       <div class="modal-overlay" id="fbrpDetailModal" onclick="if(event.target===this)closeModal('fbrpDetailModal')">
