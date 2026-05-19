@@ -3500,7 +3500,7 @@ function updateAnalytics() {
   var g = function(id){ return document.getElementById(id); };
   if (g('ana-total'))   g('ana-total').textContent   = total;
   if (g('ana-leave'))   g('ana-leave').textContent   = filtered.filter(function(a){ return a.type==='請假申請'; }).length;
-  if (g('ana-retain'))  g('ana-retain').textContent  = filtered.filter(function(a){ return a.type==='留復職申請'; }).length;
+  if (g('ana-retain'))  g('ana-retain').textContent  = filtered.filter(function(a){ return a.type==='留復職申請'||a.type==='合意離職申請'; }).length;
   if (g('ana-done'))    g('ana-done').textContent    = filtered.filter(function(a){ return (a.status||'').indexOf('完成')>-1; }).length;
   if (g('ana-reject'))  g('ana-reject').textContent  = filtered.filter(function(a){ return (a.status||'').indexOf('退件')>-1; }).length;
   if (g('ana-pending')) g('ana-pending').textContent = filtered.filter(function(a){ var s=a.status||''; return s.indexOf('完成')===-1&&s.indexOf('退件')===-1; }).length;
@@ -3509,7 +3509,7 @@ function updateAnalytics() {
   var typeCount = {};
   filtered.forEach(function(a){ var t=a.type||'其他'; typeCount[t]=(typeCount[t]||0)+1; });
   var totalT = total || 1;
-  var typeColors = {'請假申請':'#4caf50','國假及特休申請':'#c9a84c','留復職申請':'#2196f3','其他':'#9e9e9e'};
+  var typeColors = {'請假申請':'#4caf50','國假及特休申請':'#c9a84c','留復職申請':'#2196f3','合意離職申請':'#e91e63','其他':'#9e9e9e'};
   var typeChart = g('ana-type-chart');
   if (typeChart) {
     var svgContent = '';
@@ -5589,9 +5589,11 @@ function openFlowModal(app) {
 
   document.getElementById('flowModal').classList.add('open');
 
-  // 附件區
+  // 附件區（合意離職不需要附件）
   var attachDiv = document.getElementById('flowModalAttach');
   if (attachDiv) {
+    var isQuit = (app && (app.type||'').indexOf('合意離職') > -1);
+    if (isQuit) { attachDiv.style.display = 'none'; } else {
     var proof  = app ? (app.proofLink || '') : '';
     var role   = CURRENT_USER ? CURRENT_USER.role : 'guest';
     var isSelf = CURRENT_USER && app && CURRENT_USER.name === app.name;
@@ -5625,6 +5627,7 @@ function openFlowModal(app) {
     } else {
       attachDiv.style.display = 'none';
     }
+  } // end else (!isQuit)
   }
 }
 
@@ -5836,7 +5839,7 @@ function renderMonTable() {
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
     var r1Cell=a.reviewer?'<div style="font-weight:500;font-size:12px;">'+a.reviewer+'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':''):(isDone||isReject?'<span style="color:#ccc;font-size:12px;">—</span>':'<span style="color:#d4a017;font-size:12px;">待審核</span>');
-    var r2Cell=a.verifier?'<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':''):(a.reviewer?'<span style="color:#d4a017;font-size:11px;">待覆核</span>':'<span style="color:#ccc;font-size:12px;">—</span>');
+    var r2Cell=a.verifier?'<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':''):(isReject?'<span style="color:#9e9e9e;font-size:11px;">未覆核</span>':(a.reviewer?'<span style="color:#d4a017;font-size:11px;">待覆核</span>':'<span style="color:#ccc;font-size:12px;">—</span>'));
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML=
@@ -6089,7 +6092,7 @@ function renderMallTable() {
     var sBg=isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
     var sColor=isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
     var r1=a.reviewer?'<div style="font-weight:500;font-size:12px;">'+a.reviewer+'</div>'+(a.reviewerTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.reviewerTime)+'</div>':''):(isDone||isReject?'<span style="color:#ccc;font-size:12px;">—</span>':'<span style="color:#d4a017;font-size:12px;">待審核</span>');
-    var r2=a.verifier?'<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':''):(a.reviewer?'<span style="color:#d4a017;font-size:11px;">待覆核</span>':'<span style="color:#ccc;font-size:12px;">—</span>');
+    var r2=a.verifier?'<div style="font-weight:500;font-size:12px;">'+a.verifier+'</div>'+(a.verifierTime?'<div style="font-size:10px;color:var(--color-text-muted);">'+fmtDT(a.verifierTime)+'</div>':''):(isReject?'<span style="color:#9e9e9e;font-size:11px;">未覆核</span>':(a.reviewer?'<span style="color:#d4a017;font-size:11px;">待覆核</span>':'<span style="color:#ccc;font-size:12px;">—</span>'));
     var tr=document.createElement('tr');
     if(i%2) tr.style.background='var(--color-bg-table-alt)';
     tr.innerHTML=
