@@ -169,7 +169,7 @@ input[type="time"] { color-scheme: dark; }
 <main class="app-main" style="justify-content:center;">
   <div class="selector-wrap">
     <div class="selector-title" style="margin-bottom:20px;">請選擇申請類型</div>
-    <div class="selector-grid" style="grid-template-columns:repeat(5,1fr);">
+    <div class="selector-grid" style="grid-template-columns:repeat(4,1fr);">
       <div class="sel-card" onclick="openModal('lvModal')">
         <span class="sel-icon">🗓️</span>
         <div>
@@ -1015,7 +1015,6 @@ function submitQuit() {
 }
 
 // openModal 補上 quit 初始化
-var _origOpenModal = typeof openModal === 'function' ? openModal : null;
 
   duration = duration || 3500;
   var ct  = document.getElementById('toast-container');
@@ -1045,7 +1044,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzYExo52jxH7BysC5YK_D_2GH022fjUn9Q1wfX7Fvea9Pjbx3Ysf7ygDePmD3NemZn48Q/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzXE86xy_jZ-sH0eCpGaQ5O3LShea8-OCSpUkZrd9hgKctGnudbR86mbZRqEevdkPNtkw/exec';
 
 /* ── 工具 ── */
 function today() {
