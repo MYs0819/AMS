@@ -816,10 +816,8 @@ input[type="time"] { color-scheme: dark; }
       <button class="modal-close" onclick="closeModal('quitModal')">✕</button>
     </div>
     <div class="modal-body">
-
       <div id="quit-st" class="st hidden"></div>
-
-      <!-- 基本資料一：申請日期、到職日期、預計離職日期 -->
+      <!-- 基本資料一：日期 -->
       <div>
         <div class="f-sec">基本資料</div>
         <div class="f-row f-c3">
@@ -828,8 +826,7 @@ input[type="time"] { color-scheme: dark; }
           <div class="f-g"><label class="f-lbl">預計離職日期<span class="req">*</span></label><input class="f-inp" id="quit-plan-date" type="date" style="text-align:center;"/></div>
         </div>
       </div>
-
-      <!-- 基本資料二：申請團隊、職稱、申請人親簽 -->
+      <!-- 基本資料二：團隊/職稱/簽名 + 地址電話 -->
       <div>
         <div class="f-sec">基本資料*</div>
         <div class="f-row f-c3">
@@ -842,13 +839,11 @@ input[type="time"] { color-scheme: dark; }
             <input id="quit-name" type="hidden" value="（簽名）"/>
           </div>
         </div>
-        <!-- 離職後通訊地址 -->
         <div class="f-row f-c3">
           <div class="f-g" style="grid-column:1/3;"><label class="f-lbl">離職後通訊地址<span class="req">*</span></label><input class="f-inp" id="quit-addr" placeholder="離職後通訊地址"/></div>
           <div class="f-g"><label class="f-lbl">聯絡電話<span class="req">*</span></label><input class="f-inp" id="quit-phone" placeholder="0912-345-678"/></div>
         </div>
       </div>
-
       <!-- 申請原因 -->
       <div>
         <div class="f-sec">申請原因*（可複選）</div>
@@ -868,50 +863,37 @@ input[type="time"] { color-scheme: dark; }
           <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" name="quit-reason" value="其他" id="quit-reason-other-chk" onchange="document.getElementById('quit-reason-other-wrap').style.display=this.checked?'block':'none'"/> 其他原因</label>
         </div>
         <div id="quit-reason-other-wrap" style="display:none;">
-          <div class="f-g"><label class="f-lbl">其他原因說明</label><input class="f-inp" id="quit-reason-other" placeholder="說明："/></div>
+          <div class="f-g"><label class="f-lbl">說明</label><input class="f-inp" id="quit-reason-other" placeholder="說明："/></div>
         </div>
       </div>
-
-      <!-- 備註說明（填寫框） -->
+      <!-- 備註 -->
       <div>
         <div class="f-sec">備註說明</div>
         <textarea class="f-ta" id="quit-note" rows="2" placeholder="其他說明（選填）…"></textarea>
       </div>
-
-      <!-- 離職手續 -->
+      <!-- 離職手續（員工端鎖定，流程完成後由主管/人資填） -->
       <div style="background:#faf8f3;border:1.5px solid var(--border);border-radius:9px;padding:14px 16px;">
-        <div class="f-sec" style="margin-bottom:10px;">離職手續*（由主管/人資填寫）</div>
+        <div class="f-sec" style="margin-bottom:10px;">離職手續*（主管/人資填寫）</div>
         <div class="f-row f-c2" style="margin-bottom:8px;">
           <div class="f-g"><label class="f-lbl">移交事項</label><textarea class="f-ta" id="quit-handover" rows="2" placeholder="移交事項說明…" disabled style="opacity:.6;cursor:not-allowed;"></textarea></div>
           <div class="f-g" style="display:flex;flex-direction:column;gap:8px;">
-            <div class="f-g"><label class="f-lbl">接收人簽收</label>
-              <div id="quit-recv-sig-preview" style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;cursor:not-allowed;">🔒 僅接收人可簽</div>
-            </div>
-            <div class="f-g"><label class="f-lbl">主管簽</label>
-              <div id="quit-mgr-sig-preview" style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;cursor:not-allowed;">🔒 僅主管可簽</div>
-            </div>
+            <div class="f-g"><label class="f-lbl">接收人簽收</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 僅接收人可簽</div></div>
+            <div class="f-g"><label class="f-lbl">主管簽</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 僅主管可簽</div></div>
           </div>
         </div>
         <div class="f-row f-c3">
-          <div class="f-g"><label class="f-lbl">實際離職日期</label><input class="f-inp" id="quit-actual-date" type="date" style="text-align:center;" disabled style="opacity:.6;cursor:not-allowed;"/></div>
-          <div class="f-g"><label class="f-lbl">單位主管（簽名）</label>
-            <div id="quit-unit-mgr-preview" style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;cursor:not-allowed;">🔒 流程完成後開放</div>
-          </div>
-          <div class="f-g"><label class="f-lbl">人資主管（簽名）</label>
-            <div id="quit-hr-mgr-preview" style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;cursor:not-allowed;">🔒 流程完成後開放</div>
-          </div>
+          <div class="f-g"><label class="f-lbl">實際離職日期</label><input class="f-inp" id="quit-actual-date" type="date" disabled style="opacity:.6;cursor:not-allowed;"/></div>
+          <div class="f-g"><label class="f-lbl">單位主管（簽名）</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 流程完成後開放</div></div>
+          <div class="f-g"><label class="f-lbl">人資主管（簽名）</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 流程完成後開放</div></div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px;background:#fff8e1;border-radius:6px;padding:6px 10px;">
-          ℹ️ 離職手續欄位須完成以下兩個步驟後才可填寫：①主管審核通過 → ②人資覆核通過。移交確認完成後，由主管與人資主管各自簽名並填寫實際離職日期，即完成全部流程。
-        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;background:#fff8e1;border-radius:6px;padding:6px 10px;">ℹ️ 離職手續欄須完成兩個步驟後才可填寫：①主管審核通過 → ②人資覆核通過。完成移交後由主管與人資各自簽名並填寫實際離職日期即完成全部流程。</div>
       </div>
-
-      <!-- 備註說明（已知悉） -->
+      <!-- 已知悉簽名 -->
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
           <li><span class="n-num">1.</span><span class="n-txt">本申請單須經主管審核後，再由人資主管覆核，方視為正式受理。</span></li>
-          <li><span class="n-num">2.</span><span class="n-txt">離職手續移交欄位（移交事項、接收人簽收、主管簽）須完成後，方可填寫實際離職日期。</span></li>
+          <li><span class="n-num">2.</span><span class="n-txt">離職手續欄位（移交事項、接收人簽收、主管簽）須完成後，方可填寫實際離職日期。</span></li>
           <li><span class="n-num">3.</span><span class="n-txt">實際離職日期確認後，由單位主管及人資主管各自簽名，即完成全部離職流程。</span></li>
           <li><span class="n-num">4.</span><span class="n-txt">如對離職流程有任何疑問，請洽人資部門。</span></li>
         </ul>
@@ -923,7 +905,6 @@ input[type="time"] { color-scheme: dark; }
           <canvas id="quit-sig2" width="1" height="1" style="display:none;"></canvas>
         </div>
       </div>
-
     </div>
     <div class="modal-footer" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 24px 18px;">
       <button class="btn-c" onclick="closeModal('quitModal')" style="width:100%;justify-content:center;">取消</button>
@@ -933,89 +914,9 @@ input[type="time"] { color-scheme: dark; }
 </div>
 
 <script>
-/* ── 代理人不得為兼職（請假人為正職/主管時）── */
-function checkProxyTitle() {
-  var applyTitle = (document.getElementById('lv-title') || {}).value || '';
-  var proxySelect = document.getElementById('lv-ptitle');
-  if (!proxySelect) return;
-  var proxyVal = proxySelect.value;
-  var isApplyFulltime = (applyTitle === '主管正職' || applyTitle === '一般正職');
-  var partOpt = proxySelect.querySelector('option[value="兼職"]');
-  if (partOpt) {
-    partOpt.disabled = isApplyFulltime;
-    partOpt.title = isApplyFulltime ? '正職/主管之代理人不得為兼職' : '';
-  }
-  if (isApplyFulltime && proxyVal === '兼職') {
-    proxySelect.value = '';
-    showToast('正職或主管之代理人不可為兼職，已清除選擇','err');
-  }
-}
 
-/* ── 合意離職送出 ── */
-var _quitSubmitted = false;
-function submitQuit() {
-  if (_quitSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
-  var team      = document.getElementById('quit-team').value;
-  var title     = document.getElementById('quit-title').value;
-  var applyDate = document.getElementById('quit-apply-date').value;
-  var hireDate  = document.getElementById('quit-hire-date').value;
-  var planDate  = document.getElementById('quit-plan-date').value;
-  var addr      = document.getElementById('quit-addr').value.trim();
-  var phone     = document.getElementById('quit-phone').value.trim();
-  if (!team)      { showToast('請選擇申請團隊','err'); return; }
-  if (!title)     { showToast('請選擇職稱','err'); return; }
-  if (!applyDate) { showToast('請填寫申請日期','err'); return; }
-  if (!hireDate)  { showToast('請填寫到職日期','err'); return; }
-  if (!planDate)  { showToast('請填寫預計離職日期','err'); return; }
-  if (!addr)      { showToast('請填寫離職後通訊地址','err'); return; }
-  if (!phone)     { showToast('請填寫聯絡電話','err'); return; }
-  var reasons = Array.from(document.querySelectorAll('input[name="quit-reason"]:checked')).map(function(c){
-    if (c.value === '其他') { var o = document.getElementById('quit-reason-other').value.trim(); return o ? '其他：'+o : '其他'; }
-    return c.value;
-  });
-  if (!reasons.length) { showToast('請選擇申請原因','err'); return; }
-  if (sigEmpty('quit-sig1')) { showToast('請完成申請人姓名簽名','err'); return; }
-  if (sigEmpty('quit-sig2')) { showToast('請完成已知悉規定簽名','err'); return; }
-
-  var btn = document.getElementById('quit-btn');
-  btn.disabled = true; btn.textContent = '⏳ 送出中…';
-  showToast('正在送出申請，請稍候…','info');
-  var name = getLoginName();
-  var fmtD2 = function(d){ if(!d) return ''; var p=d.split('-'); return p[0]+'/'+p[1]+'/'+p[2]; };
-  fetch(GAS_URL, {
-    method:'POST', mode:'no-cors',
-    body: JSON.stringify({
-      action:     'addApplication',
-      id:         genId('leave'),
-      name:       name,
-      sig1: (function(){ var cv=document.getElementById('quit-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
-      sig2: (function(){ var cv=document.getElementById('quit-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
-      team:       team,
-      applyTitle: title,
-      type:       '合意離職申請',
-      subtype:    '合意離職',
-      startDate:  fmtD2(planDate),
-      endDate:    fmtD2(planDate),
-      reason:     reasons.join('、') + (document.getElementById('quit-note').value.trim() ? '；備註：'+document.getElementById('quit-note').value.trim() : ''),
-      applyDate:  nowStr(),
-      status:     '主管待審核',
-      quitApplyDate: fmtD2(applyDate),
-      quitHireDate:  fmtD2(hireDate),
-      quitPlanDate:  fmtD2(planDate),
-      quitAddr:   addr,
-      quitPhone:  phone,
-    })
-  })
-  .then(function(){
-    _quitSubmitted = true;
-    showToast('申請已送出！目前狀態：主管待審核中。','ok', 3500);
-    setTimeout(function(){ closeModal('quitModal'); }, 2000);
-  })
-  .catch(function(e){ btn.disabled=false; btn.textContent='📤 送出申請'; showToast('❌ 送出失敗：'+e.message,'err'); });
-}
-
-// openModal 補上 quit 初始化
-
+/* ══ Toast 通知 ══ */
+function showToast(msg, type, duration) {
   duration = duration || 3500;
   var ct  = document.getElementById('toast-container');
   var t   = document.createElement('div');
@@ -1084,6 +985,11 @@ function hideSt(id) { document.getElementById(id).classList.add('hidden'); }
 /* ── Modal ── */
 function openModal(id) {
   document.getElementById(id).classList.add('open');
+  if (id === 'quitModal') {
+    var d=new Date(); var p=function(n){return String(n).padStart(2,'0');};
+    document.getElementById('quit-apply-date').value = d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+    _quitSubmitted = false;
+  }
   if (id === 'lvModal') {
     document.getElementById('lv-date').value = today();
   }
@@ -1094,11 +1000,6 @@ function openModal(id) {
   if (id === 'holModal') {
     document.getElementById('hol-date').value = today();
     _holSubmitted = false;
-  }
-  if (id === 'quitModal') {
-    var today2 = (function(){ var d=new Date(); var p=function(n){return String(n).padStart(2,'0');}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); })();
-    document.getElementById('quit-apply-date').value = today2;
-    _quitSubmitted = false;
   }
   if (id === 'rtModal') {
     document.getElementById('rt-date').value = today();
@@ -1169,7 +1070,7 @@ function submitHol() {
   .then(function(){
     _holSubmitted = true;
     showToast('申請已送出！','ok');
-    setTimeout(function(){ closeModal('holModal'); }, 1000);
+    setTimeout(function(){ alert('✅ 申請已送出！\n申請人：'+name+'\n假別：'+type+'\n期間：'+fmtD2(fd)+' ~ '+fmtD2(document.getElementById('hol-td').value)); closeModal('holModal'); }, 1000);
   })
   .catch(function(e){ btn.disabled=false; btn.textContent='📤 送出申請'; showToast('❌ 送出失敗：'+e.message,'err'); });
 }
@@ -1280,7 +1181,7 @@ function submitLvSup() {
   var fd     = document.getElementById('lvs-fd').value;
   var reason = document.getElementById('lvs-reason').value.trim();
 
-  if (!unit)   { showToast('請選擇團隊','err'); return; }
+  if (!unit)   { showToast('請選擇單位','err'); return; }
   if (!type)   { showToast('請選擇假別','err'); return; }
   if (!fd)     { showToast('請填寫起始日期','err'); return; }
   if (!reason) { showToast('請填寫事由','err'); return; }
@@ -1448,7 +1349,7 @@ function submitLv() {
   var reason = reasonEl ? reasonEl.value.trim() : '';
   var name   = getLoginName();
 
-  if (!unit)   { showToast('請選擇團隊','err'); return; }
+  if (!unit)   { showToast('請選擇單位','err'); return; }
   if (!type)   { showToast('請選擇假別','err'); return; }
   if (!fd)     { showToast('請填寫起始日期','err'); return; }
   if (!reason) { showToast('請填寫請假事由','err'); return; }
@@ -1497,7 +1398,7 @@ function submitLv() {
     })
     .then(function(){
       _lvSubmitted = true;
-      showToast('申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
+      showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
       // 啟用補件按鈕
       var suppB = document.getElementById('lv-supp-btn');
       if (suppB) { suppB.disabled=false; suppB.style.borderColor='var(--gold)'; suppB.style.color='var(--gold)'; suppB.style.cursor='pointer'; suppB.removeAttribute('title'); }
@@ -1586,7 +1487,7 @@ function submitRt() {
   })
   .then(function(){
     _rtSubmitted = true;
-    showToast('申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
+    showToast('✅ 申請已送出！目前狀態：主管待審核中。', 'ok', 3000);
     var suppB2 = document.getElementById('rt-supp-btn');
     if (suppB2) { suppB2.disabled=false; suppB2.style.borderColor='var(--gold)'; suppB2.style.color='var(--gold)'; suppB2.style.cursor='pointer'; suppB2.removeAttribute('title'); }
     var body = document.querySelector('#rtModal .modal-body');
@@ -1655,6 +1556,85 @@ function confirmSig() {
 document.getElementById('sigModal').addEventListener('click', function(e){
   if (e.target === this) closeSigModal();
 });
+/* ── 代理人不得為兼職（請假人為正職/主管時）── */
+function checkProxyTitle() {
+  var applyTitle  = (document.getElementById('lv-title')  || {}).value || '';
+  var proxySelect = document.getElementById('lv-ptitle');
+  if (!proxySelect) return;
+  var isFulltime  = (applyTitle === '主管正職' || applyTitle === '一般正職');
+  var partOpt     = proxySelect.querySelector('option[value="兼職"]');
+  if (partOpt) {
+    partOpt.disabled = isFulltime;
+    partOpt.title    = isFulltime ? '正職/主管之代理人不得為兼職' : '';
+  }
+  if (isFulltime && proxySelect.value === '兼職') {
+    proxySelect.value = '';
+    showToast('正職或主管之代理人不可為兼職，已清除選擇','err');
+  }
+}
+
+/* ── 合意離職送出 ── */
+var _quitSubmitted = false;
+function submitQuit() {
+  if (_quitSubmitted) { showToast('申請已送出，請勿重複送出','err'); return; }
+  var team      = document.getElementById('quit-team').value;
+  var title     = document.getElementById('quit-title').value;
+  var applyDate = document.getElementById('quit-apply-date').value;
+  var hireDate  = document.getElementById('quit-hire-date').value;
+  var planDate  = document.getElementById('quit-plan-date').value;
+  var addr      = document.getElementById('quit-addr').value.trim();
+  var phone     = document.getElementById('quit-phone').value.trim();
+  if (!team)      { showToast('請選擇申請團隊','err'); return; }
+  if (!title)     { showToast('請選擇職稱','err'); return; }
+  if (!applyDate) { showToast('請填寫申請日期','err'); return; }
+  if (!hireDate)  { showToast('請填寫到職日期','err'); return; }
+  if (!planDate)  { showToast('請填寫預計離職日期','err'); return; }
+  if (!addr)      { showToast('請填寫離職後通訊地址','err'); return; }
+  if (!phone)     { showToast('請填寫聯絡電話','err'); return; }
+  var reasons = Array.from(document.querySelectorAll('input[name="quit-reason"]:checked')).map(function(c){
+    if (c.value === '其他') { var o = document.getElementById('quit-reason-other').value.trim(); return o ? '其他：'+o : '其他'; }
+    return c.value;
+  });
+  if (!reasons.length) { showToast('請選擇申請原因','err'); return; }
+  if (sigEmpty('quit-sig1')) { showToast('請完成申請人姓名簽名','err'); return; }
+  if (sigEmpty('quit-sig2')) { showToast('請完成已知悉規定簽名','err'); return; }
+  var btn = document.getElementById('quit-btn');
+  btn.disabled = true; btn.textContent = '⏳ 送出中…';
+  showToast('正在送出申請，請稍候…','info');
+  var name = getLoginName();
+  var fmtD2 = function(d){ if(!d) return ''; var p=d.split('-'); return p[0]+'/'+p[1]+'/'+p[2]; };
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    body: JSON.stringify({
+      action:     'addApplication',
+      id:         genId('leave'),
+      name:       name,
+      sig1: (function(){ var cv=document.getElementById('quit-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+      sig2: (function(){ var cv=document.getElementById('quit-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
+      team:       team,
+      applyTitle: title,
+      type:       '合意離職申請',
+      subtype:    '合意離職',
+      startDate:  fmtD2(planDate),
+      endDate:    fmtD2(planDate),
+      reason:     reasons.join('、') + (document.getElementById('quit-note').value.trim() ? '；備註：'+document.getElementById('quit-note').value.trim() : ''),
+      applyDate:  nowStr(),
+      status:     '主管待審核',
+      quitApplyDate: fmtD2(applyDate),
+      quitHireDate:  fmtD2(hireDate),
+      quitPlanDate:  fmtD2(planDate),
+      quitAddr:   addr,
+      quitPhone:  phone,
+    })
+  })
+  .then(function(){
+    _quitSubmitted = true;
+    showToast('申請已送出！目前狀態：主管待審核中。','ok', 3500);
+    setTimeout(function(){ closeModal('quitModal'); }, 2000);
+  })
+  .catch(function(e){ btn.disabled=false; btn.textContent='📤 送出申請'; showToast('❌ 送出失敗：'+e.message,'err'); });
+}
+
 </script>
 
 <!-- ════ 簽名放大 Modal ════ -->
