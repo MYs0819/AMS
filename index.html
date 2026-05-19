@@ -1823,7 +1823,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#1565c0;" id="mon-verifying">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">待人資處理</span>
           </div>
-          <div class="stat-card bg-progress" style="background-color:var(--tab-supplement-bg);" style="background-color:#f5f5f5;">
+          <div class="stat-card bg-progress" style="background-color:#f5f5f5;">
             <span class="stat-card-label">已完成</span>
             <div class="stat-card-value-row"><span class="stat-card-value" style="color:#9e9e9e;" id="mon-done">0</span><span class="stat-card-unit">件</span></div>
             <span class="stat-card-sub">已結案</span>
@@ -2823,6 +2823,7 @@ function submitBug() {
 
 /* ══ Tab 切換 ══ */
 var currentTab='all', currentPage=1;
+var _lastFilteredApps = [];
 function switchTab(el,status){
   document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
@@ -2865,7 +2866,7 @@ function renderPagination(totalPage, total) {
     var btn=document.createElement('button');
     btn.className='page-btn'+(isActive?' active':'')+(cls?' '+cls:'');
     btn.textContent=label;
-    if(!isDisabled&&page!==null) btn.onclick=(function(p){return function(){currentPage=p;filterTable();};})(page);
+    if(!isDisabled&&page!==null) btn.onclick=(function(p){return function(){currentPage=p; if(_lastFilteredApps.length>0){renderMainTable(_lastFilteredApps);}else{filterTable();} };})(page);
     else btn.disabled=true;
     return btn;
   }
@@ -2884,7 +2885,7 @@ function renderPagination(totalPage, total) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzXE86xy_jZ-sH0eCpGaQ5O3LShea8-OCSpUkZrd9hgKctGnudbR86mbZRqEevdkPNtkw/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzYExo52jxH7BysC5YK_D_2GH022fjUn9Q1wfX7Fvea9Pjbx3Ysf7ygDePmD3NemZn48Q/exec';
 
 /* ── 帶 timeout 的 fetch（避免長時間 pending 卡 UI）── */
 function fetchWithTimeout(url, options, timeoutMs) {
@@ -3492,8 +3493,10 @@ function updateAnalytics() {
 
   var source = ALL_APPS_DATA;
   var filtered = source.filter(function(a){
-    if (!anaAllMode) return (a.applyDate||'').slice(0,7) === (year + '/' + month);
-    return (a.applyDate||'').slice(0,4) === year;
+    // applyDate 可能是 "2026/05/19 ..." 或 "2026-05-19 ..." 格式
+    var d = (a.applyDate||'').replace(/-/g,'/').slice(0,7); // 統一成 "YYYY/MM"
+    if (!anaAllMode) return d === (year + '/' + month);
+    return d.slice(0,4) === year;
   });
 
   var total = filtered.length;
@@ -3607,7 +3610,7 @@ function updateAnalytics() {
       var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
       var monthLabels = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
       var monthCounts = months.map(function(m){
-        return source.filter(function(a){ return (a.applyDate||'').slice(0,7)===(year+'/'+m); }).length;
+        return source.filter(function(a){ return (a.applyDate||'').replace(/-/g,'/').slice(0,7)===(year+'/'+m); }).length;
       });
       var maxM = Math.max.apply(null, monthCounts.concat([1]));
       var svgW=455, svgH=110, padL=40, padR=5, padT=10, padB=20;
@@ -3890,16 +3893,31 @@ function updateMainStats(apps) {
 function renderMainTable(apps) {
   var tbody = document.getElementById('tableBody');
   if (!tbody) return;
+
+  // ── 分頁：只 render 當頁5筆 ──
+  var total     = apps.length;
+  var totalPage = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
+  if (currentPage > totalPage) currentPage = totalPage;
+  var start = (currentPage - 1) * ROWS_PER_PAGE;
+  var end   = start + ROWS_PER_PAGE;
+  var paged = apps.slice(start, end);
+
+  // 更新 pageInfo / rowCount / paginationBar
+  var piEl = document.getElementById('pageInfo');
+  var rcEl = document.getElementById('rowCount');
+  if (piEl) piEl.textContent = currentPage + ' / ' + totalPage;
+  if (rcEl) rcEl.textContent = total;
+  renderPagination(totalPage, total);
+  // 讓 renderPagination 的 onclick 能拿到最新 apps
+  _lastFilteredApps = apps;
+
   tbody.innerHTML = '';
-  if (!apps.length) {
+  if (!paged.length) {
     tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無申請資料</td></tr>';
     return;
   }
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
-  // 更新總筆數顯示
-  var rcEl = document.getElementById('rowCount');
-  if (rcEl) rcEl.textContent = apps.length;
-  apps.forEach(function(a, i){
+  paged.forEach(function(a, i){
     var s   = a.status||'';
     var isDone   = s.indexOf('完成')>-1;
     var isReject = s.indexOf('退件')>-1;
