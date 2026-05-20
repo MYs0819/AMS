@@ -3555,27 +3555,30 @@ function updateAnalytics() {
     typeChart.innerHTML = svgContent;
   }
 
-  // ── 假別橫條圖 ──
-  var leaveTypes = ['事假','病假','特休','公假','婚假','喪假','生理假','普通傷病假','其他'];
-  var leaveColors = {'事假':'#ff5722','病假':'#03a9f4','特休':'#8bc34a','公假':'#ffc107','婚假':'#e91e63','喪假':'#795548','生理假':'#ab47bc','普通傷病假':'#26c6da','其他':'#9e9e9e'};
+  // ── 假別橫條圖（動態抓所有出現的假別，不限定清單）──
+  var leaveColorMap = {'事假':'#ff5722','病假':'#03a9f4','特休':'#8bc34a','特別休假':'#8bc34a','公假':'#ffc107','婚假':'#e91e63','喪假':'#795548','生理假':'#ab47bc','普通傷病假':'#26c6da','安胎休養假':'#f48fb1','家庭照顧假':'#ffb74d','陪產假':'#4db6ac','其他':'#9e9e9e'};
   var leaveCount = {};
   filtered.forEach(function(a){
     if (a.type!=='請假申請' && a.type!=='國假及特休申請') return;
-    var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
-    var key = leaveCount.hasOwnProperty(base) ? base : (leaveColors.hasOwnProperty(base) ? base : '其他');
-    leaveCount[key] = (leaveCount[key]||0) + 1;
+    var base = (a.subtype||'').split(' ')[0].split('(')[0].trim() || '其他';
+    leaveCount[base] = (leaveCount[base]||0) + 1;
   });
-  var maxLeave = Math.max.apply(null, leaveTypes.map(function(t){ return leaveCount[t]||0; }).concat([1]));
+  var leaveTypes = Object.keys(leaveCount).sort(function(a,b){ return leaveCount[b]-leaveCount[a]; });
+  var maxLeave = Math.max.apply(null, leaveTypes.map(function(t){ return leaveCount[t]; }).concat([1]));
+  var leaveEmoMap = {'事假':'🔴','病假':'🔵','特休':'🟢','特別休假':'🟢','公假':'🟡','婚假':'💗','喪假':'🖤','生理假':'🌸','普通傷病假':'🩺','安胎休養假':'🩷','家庭照顧假':'🏠','陪產假':'👶','其他':'⚪'};
   var leaveBarEl = g('ana-leave-bars');
   if (leaveBarEl) {
-    leaveBarEl.innerHTML = leaveTypes.filter(function(t){ return leaveCount[t]>0; }).map(function(t){
-      var cnt = leaveCount[t]||0;
-      var pct = (cnt/maxLeave*100).toFixed(1);
-      var color = leaveColors[t]||'#9e9e9e';
-      var emo = {'事假':'🔴','病假':'🔵','特休':'🟢','公假':'🟡','婚假':'💗','喪假':'🖤','生理假':'🌸','普通傷病假':'🩺','其他':'⚪'}[t]||'●';
-      return '<div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>'+emo+' '+t+'</span><span style="color:'+color+';font-weight:600;">'+cnt+'件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,'+color+','+color+'aa);border-radius:999px;transition:width .5s;"></div></div></div>';
-    }).join('');
-    if (!Object.keys(leaveCount).length) leaveBarEl.innerHTML = '<p style="color:#9a9680;font-size:11px;text-align:center;">本期無假別申請</p>';
+    if (!leaveTypes.length) {
+      leaveBarEl.innerHTML = '<p style="color:#9a9680;font-size:11px;text-align:center;">本期無假別申請</p>';
+    } else {
+      leaveBarEl.innerHTML = leaveTypes.map(function(t){
+        var cnt = leaveCount[t];
+        var pct = (cnt/maxLeave*100).toFixed(1);
+        var color = leaveColorMap[t] || '#9e9e9e';
+        var emo = leaveEmoMap[t] || '●';
+        return '<div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>'+emo+' '+t+'</span><span style="color:'+color+';font-weight:600;">'+cnt+'件</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,'+color+','+color+'aa);border-radius:999px;transition:width .5s;"></div></div></div>';
+      }).join('');
+    }
   }
 
   // ── 申請狀態橫條圖 ──
@@ -3832,7 +3835,7 @@ function updateMainStats(apps) {
     }
   }
 
-  // 假別卡 tooltip
+  // 假別卡 tooltip（其他：顯示假別-姓名×次）
   Object.keys(lcDetails).forEach(function(k){
     var el = g('main-lc-'+k);
     if (!el) return;
@@ -3853,17 +3856,41 @@ function updateMainStats(apps) {
     var oldItems = tip.querySelectorAll('.stat-tooltip-item');
     oldItems.forEach(function(i){ i.remove(); });
     var dots = ['field','bar','kitchen'];
-    var nameCount = {};
-    lcDetails[k].forEach(function(a){ var n=a.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
-    var entries = Object.keys(nameCount).map(function(n){ return {name:n, count:nameCount[n]}; });
-    entries.sort(function(a,b){ return b.count-a.count; });
-    entries.slice(0,6).forEach(function(e,idx){
-      var div = document.createElement('div');
-      div.className = 'stat-tooltip-item';
-      div.innerHTML = '<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>' + e.name + ' × ' + e.count;
-      tip.appendChild(div);
-    });
-    if (!entries.length) {
+
+    if (k === '其他') {
+      // 其他：按「假別-姓名」分組，顯示假別-姓名×次
+      var comboCount = {};
+      lcDetails[k].forEach(function(a){
+        var subtype = (a.subtype||a.type||'其他').trim();
+        var name = a.name||'—';
+        var key = subtype + '-' + name;
+        if (!comboCount[key]) comboCount[key] = {subtype:subtype, name:name, count:0};
+        comboCount[key].count++;
+      });
+      var entries = Object.keys(comboCount).map(function(k2){ return comboCount[k2]; });
+      entries.sort(function(a,b){ return b.count-a.count; });
+      entries.slice(0,8).forEach(function(e,idx){
+        var div = document.createElement('div');
+        div.className = 'stat-tooltip-item';
+        div.innerHTML = '<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>'
+          + '<span style="color:#c9a84c;font-weight:600;">' + e.subtype + '</span>'
+          + ' — ' + e.name + ' × ' + e.count;
+        tip.appendChild(div);
+      });
+    } else {
+      // 其他假別：只顯示姓名×次
+      var nameCount = {};
+      lcDetails[k].forEach(function(a){ var n=a.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
+      var entries = Object.keys(nameCount).map(function(n){ return {name:n, count:nameCount[n]}; });
+      entries.sort(function(a,b){ return b.count-a.count; });
+      entries.slice(0,6).forEach(function(e,idx){
+        var div = document.createElement('div');
+        div.className = 'stat-tooltip-item';
+        div.innerHTML = '<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>' + e.name + ' × ' + e.count;
+        tip.appendChild(div);
+      });
+    }
+    if (!tip.querySelectorAll('.stat-tooltip-item').length) {
       var div = document.createElement('div');
       div.className = 'stat-tooltip-item';
       div.style.color = '#999';
@@ -6007,16 +6034,37 @@ function updateMallLeaveStats() {
       var oldItems = tip.querySelectorAll('.stat-tooltip-item');
       oldItems.forEach(function(i){ i.remove(); });
       var dots = ['field','bar','kitchen'];
-      var nameCount = {};
-      lcDet[k].forEach(function(a2){ var n=a2.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
-      var entries = Object.keys(nameCount).map(function(n){ return {name:n,count:nameCount[n]}; });
-      entries.sort(function(a2,b){ return b.count-a2.count; });
-      entries.slice(0,6).forEach(function(e,idx){
-        var div=document.createElement('div'); div.className='stat-tooltip-item';
-        div.innerHTML='<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>'+e.name+' × '+e.count;
-        tip.appendChild(div);
-      });
-      if(!entries.length){
+      if (k === '其他') {
+        // 其他：顯示假別-姓名×次
+        var comboCount2 = {};
+        lcDet[k].forEach(function(a2){
+          var sub2 = (a2.subtype||a2.type||'其他').trim();
+          var n2 = a2.name||'—';
+          var key2 = sub2 + '-' + n2;
+          if (!comboCount2[key2]) comboCount2[key2] = {subtype:sub2, name:n2, count:0};
+          comboCount2[key2].count++;
+        });
+        var ents2 = Object.keys(comboCount2).map(function(k3){ return comboCount2[k3]; });
+        ents2.sort(function(a2,b){ return b.count-a2.count; });
+        ents2.slice(0,8).forEach(function(e,idx){
+          var div=document.createElement('div'); div.className='stat-tooltip-item';
+          div.innerHTML='<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>'
+            +'<span style="color:#c9a84c;font-weight:600;">'+e.subtype+'</span>'
+            +' — '+e.name+' × '+e.count;
+          tip.appendChild(div);
+        });
+      } else {
+        var nameCount = {};
+        lcDet[k].forEach(function(a2){ var n=a2.name||'—'; nameCount[n]=(nameCount[n]||0)+1; });
+        var entries = Object.keys(nameCount).map(function(n){ return {name:n,count:nameCount[n]}; });
+        entries.sort(function(a2,b){ return b.count-a2.count; });
+        entries.slice(0,6).forEach(function(e,idx){
+          var div=document.createElement('div'); div.className='stat-tooltip-item';
+          div.innerHTML='<span class="stat-tooltip-dot '+dots[idx%3]+'"></span>'+e.name+' × '+e.count;
+          tip.appendChild(div);
+        });
+      }
+      if(!tip.querySelectorAll('.stat-tooltip-item').length){
         var div=document.createElement('div'); div.className='stat-tooltip-item';
         div.style.color='#999'; div.textContent='暫無資料'; tip.appendChild(div);
       }
