@@ -238,9 +238,10 @@ input[type="time"] { color-scheme: dark; }
       <!-- 基本資料 -->
       <div>
         <div class="f-sec">基本資料</div>
-        <!-- 第一行：單位 | 申請日期（靠右） -->
-        <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
-          <div class="f-g" style="flex:1;"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+        <!-- 第一行：團隊 | 申請類型職稱 | 申請日期 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin-bottom:10px;">
+          <div class="f-g"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+          <div class="f-g"><label class="f-lbl">申請人職稱<span class="req">*</span></label><select class="f-sel" id="lv-empTitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
           <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:left;"/></div>
         </div>
         <!-- 第二行：(請假人)職稱 | (請假人)姓名親簽 | (代理人)職稱 | (代理人)姓名 -->
@@ -563,8 +564,9 @@ input[type="time"] { color-scheme: dark; }
       <!-- 基本資料 -->
       <div>
         <div class="f-sec">基本資料</div>
-        <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
-          <div class="f-g" style="flex:1;"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="nat-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin-bottom:10px;">
+          <div class="f-g"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="nat-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+          <div class="f-g"><label class="f-lbl">申請人職稱<span class="req">*</span></label><select class="f-sel" id="nat-empTitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option></select></div>
           <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="nat-date" readonly style="text-align:left;"/></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;align-items:end;">
@@ -717,8 +719,9 @@ input[type="time"] { color-scheme: dark; }
       <!-- 基本資料 -->
       <div>
         <div class="f-sec">基本資料</div>
-        <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
-          <div class="f-g" style="flex:1;"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="ann-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin-bottom:10px;">
+          <div class="f-g"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="ann-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
+          <div class="f-g"><label class="f-lbl">申請人職稱<span class="req">*</span></label><select class="f-sel" id="ann-empTitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
           <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="ann-date" readonly style="text-align:left;"/></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;align-items:end;">
@@ -737,6 +740,7 @@ input[type="time"] { color-scheme: dark; }
       <div>
         <div class="f-sec">假別*</div>
         <input type="hidden" id="ann-type" value="特別休假"/>
+        <p style="font-size:13px;color:var(--dark);margin:0;">特別休假（已預設）</p>
         <span style="font-size:13px;font-weight:600;color:var(--dark);">特別休假</span>
       </div>
       <!-- 實施日期（三組，至少填一） -->
@@ -1116,7 +1120,7 @@ try {
 } catch(e) {}
 function getLoginName() { return _loginUser ? (_loginUser.name || '（簽名）') : '（簽名）'; }
 
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzYExo52jxH7BysC5YK_D_2GH022fjUn9Q1wfX7Fvea9Pjbx3Ysf7ygDePmD3NemZn48Q/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyWYV8A6bTCgAwQTbVVSiphJbDb7y-Jdj5UGYcxcSLr5HEYgBiVO3I3OJvDteYHNiuyvA/exec';
 
 /* ── 工具 ── */
 function today() {
@@ -1569,7 +1573,7 @@ function submitLv() {
         sig1: (function(){ var cv=document.getElementById('lv-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
         sig2: (function(){ var cv=document.getElementById('lv-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
         team:        unit,
-        applyTitle:  document.getElementById('lv-title').value.trim(),
+        applyTitle:  (document.getElementById('lv-empTitle')||{value:''}).value.trim() || document.getElementById('lv-title').value.trim(),
         type:        '請假申請',
         subtype:     subtype,
         startDate:   fmtD(fd) + ' ' + (document.getElementById('lv-fth').value||'00') + ':' + (document.getElementById('lv-ftm').value||'00'),
@@ -1812,7 +1816,7 @@ function submitNat() {
       name:getLoginName(),
       sig1:(function(){ var cv=document.getElementById('nat-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
       sig2:(function(){ var cv=document.getElementById('nat-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
-      team:unit, applyTitle:(document.getElementById('nat-title')||{}).value||'',
+      team:unit, applyTitle:(document.getElementById('nat-empTitle')||{value:''}).value.trim() || (document.getElementById('nat-title')||{}).value||'',
       type:'國假及特休申請', subtype:type,
       startDate:dates.fd, endDate:dates.td,
       dateDetail:dates.str,
@@ -1847,7 +1851,7 @@ function submitAnn() {
       name:getLoginName(),
       sig1:(function(){ var cv=document.getElementById('ann-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
       sig2:(function(){ var cv=document.getElementById('ann-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
-      team:unit, applyTitle:(document.getElementById('ann-title')||{}).value||'',
+      team:unit, applyTitle:(document.getElementById('ann-empTitle')||{value:''}).value.trim() || (document.getElementById('ann-title')||{}).value||'',
       type:'國假及特休申請', subtype:'特別休假',
       startDate:dates.fd, endDate:dates.td,
       dateDetail:dates.str,
