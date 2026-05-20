@@ -1337,42 +1337,42 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:10px 18px 0;flex-shrink:0;">
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">總申請</div>
-              <div style="font-size:18px;font-weight:700;color:#e8e4d8;" id="ana-total">—</div>
+              <div style="font-size:18px;font-weight:700;color:#e8e4d8;" id="ana-total" style="color:#c9a84c;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">事假</div>
-              <div style="font-size:18px;font-weight:700;color:#ff5722;" id="ana-lc-事假">—</div>
+              <div style="font-size:18px;font-weight:700;color:#ff5722;" id="ana-lc-事假" style="color:#ef5350;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">病假</div>
-              <div style="font-size:18px;font-weight:700;color:#03a9f4;" id="ana-lc-病假">—</div>
+              <div style="font-size:18px;font-weight:700;color:#03a9f4;" id="ana-lc-病假" style="color:#fb8c00;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">生理假</div>
-              <div style="font-size:18px;font-weight:700;color:#ab47bc;" id="ana-lc-生理假">—</div>
+              <div style="font-size:18px;font-weight:700;color:#ab47bc;" id="ana-lc-生理假" style="color:#ab47bc;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">公假</div>
-              <div style="font-size:18px;font-weight:700;color:#ffc107;" id="ana-lc-公假">—</div>
+              <div style="font-size:18px;font-weight:700;color:#ffc107;" id="ana-lc-公假" style="color:#26c6da;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">國假</div>
-              <div style="font-size:18px;font-weight:700;color:#43a047;" id="ana-lc-國假">—</div>
+              <div style="font-size:18px;font-weight:700;color:#43a047;" id="ana-lc-國假" style="color:#43a047;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">特休</div>
-              <div style="font-size:18px;font-weight:700;color:#8bc34a;" id="ana-lc-特休">—</div>
+              <div style="font-size:18px;font-weight:700;color:#8bc34a;" id="ana-lc-特休" style="color:#8bc34a;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">其他</div>
-              <div style="font-size:18px;font-weight:700;color:#9e9e9e;" id="ana-lc-其他">—</div>
+              <div style="font-size:18px;font-weight:700;color:#9e9e9e;" id="ana-lc-其他" style="color:#9e9e9e;">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
           </div>
@@ -2895,7 +2895,7 @@ function renderPagination(totalPage, total) {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzYExo52jxH7BysC5YK_D_2GH022fjUn9Q1wfX7Fvea9Pjbx3Ysf7ygDePmD3NemZn48Q/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyWYV8A6bTCgAwQTbVVSiphJbDb7y-Jdj5UGYcxcSLr5HEYgBiVO3I3OJvDteYHNiuyvA/exec';
 
 /* ── 帶 timeout 的 fetch（避免長時間 pending 卡 UI）── */
 function fetchWithTimeout(url, options, timeoutMs) {
