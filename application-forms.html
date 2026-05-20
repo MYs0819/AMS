@@ -568,7 +568,7 @@ input[type="time"] { color-scheme: dark; }
           <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="nat-date" readonly style="text-align:left;"/></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;align-items:end;">
-          <div class="f-g"><label class="f-lbl">（請假人）職稱</label><select class="f-sel" id="nat-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+          <div class="f-g"><label class="f-lbl">（請假人）職稱</label><select class="f-sel" id="nat-title"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option></select></div>
           <div class="f-g">
             <label class="f-lbl">（請假人）姓名*（親簽）</label>
             <div id="nat-sig1-preview" onclick="openSigModal('nat-sig1','請假人姓名親簽')" style="border:1.5px solid var(--border);border-radius:7px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:6px;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='#fdf8ee'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fafafa'">✍ 點擊簽名</div>
@@ -605,7 +605,7 @@ input[type="time"] { color-scheme: dark; }
       <!-- 實施日期（三組，至少填一） -->
       <div>
         <div class="f-sec">實施日期*（至少填寫一組）</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:8px;">
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px;">
           <div style="display:flex;flex-direction:column;gap:4px;border:1px solid #f0ece0;border-radius:8px;padding:8px 10px;background:#fdfcf9;">
               <div style="font-size:10px;color:var(--muted);font-weight:600;margin-bottom:2px;">時段 1</div>
               <div class="date-line">
@@ -678,22 +678,6 @@ input[type="time"] { color-scheme: dark; }
           <span style="font-size:12px;color:var(--sub);">時</span>
         </div>
       </div>
-      <!-- 備註 -->
-      <div>
-        <div class="f-sec">備註說明</div>
-        <textarea class="f-ta" id="nat-note" rows="2" placeholder="其他說明（選填）…"></textarea>
-      </div>
-      <!-- 附件 -->
-      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            選擇檔案（PDF/圖片）
-            <input type="file" id="nat-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('nat-attachment','nat-attach-name')"/>
-          </label>
-          <span id="nat-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        </div>
-      </div>
       <div class="notes-box">
         <div class="notes-title">備 註 說 明</div>
         <ul class="notes-list">
@@ -758,7 +742,7 @@ input[type="time"] { color-scheme: dark; }
       <!-- 實施日期（三組，至少填一） -->
       <div>
         <div class="f-sec">實施日期*（至少填寫一組）</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:8px;">
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px;">
           <div style="display:flex;flex-direction:column;gap:4px;border:1px solid #f0ece0;border-radius:8px;padding:8px 10px;background:#fdfcf9;">
               <div style="font-size:10px;color:var(--muted);font-weight:600;margin-bottom:2px;">時段 1</div>
               <div class="date-line">
@@ -829,22 +813,6 @@ input[type="time"] { color-scheme: dark; }
           <span style="font-size:12px;color:var(--sub);">日</span>
           <input class="f-inp" id="ann-hrs" placeholder="0" readonly style="width:44px;text-align:center;padding:4px 6px;font-size:16px;font-weight:600;border-radius:5px;"/>
           <span style="font-size:12px;color:var(--sub);">時</span>
-        </div>
-      </div>
-      <!-- 備註 -->
-      <div>
-        <div class="f-sec">備註說明</div>
-        <textarea class="f-ta" id="ann-note" rows="2" placeholder="其他說明（選填）…"></textarea>
-      </div>
-      <!-- 附件 -->
-      <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            選擇檔案（PDF/圖片）
-            <input type="file" id="ann-attachment" accept=".pdf,.jpg,.jpeg,.png,.gif" style="display:none;" onchange="showAttachName('ann-attachment','ann-attach-name')"/>
-          </label>
-          <span id="ann-attach-name" style="font-size:12px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
         </div>
       </div>
       <div class="notes-box">
