@@ -1201,7 +1201,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
                 <option value="01">01</option>
                 <option value="02">02</option>
                 <option value="03">03</option>
-                <option value="04" selected>04</option>
+                <option>04</option>
                 <option value="05">05</option>
                 <option value="06">06</option>
                 <option value="07">07</option>
@@ -1318,7 +1318,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
           <!-- 標題列（跟文件中心同高）-->
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#2a2a2a;">
-            <p id="analytics-main-title" class="inner-page-title" style="color:#e8e4d8;">📊 2026年 04月 數據分析</p>
+            <p id="analytics-main-title" class="inner-page-title" style="color:#e8e4d8;">📊 2026年 05月 數據分析</p>
             <div style="display:flex;align-items:center;gap:8px;">
               <span style="color:#9a9680;font-size:11px;">年度</span>
               <select id="anaYear" onchange="updateAnalytics()" style="height:26px;padding:0 6px;border-radius:5px;border:1px solid #555;background:#3a3a3a;color:#e8e4d8;font-size:11px;width:62px;">
@@ -1326,43 +1326,53 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
               </select>
               <button id="anaAllBtn" onclick="toggleAnaAll()" style="height:26px;padding:0 10px;border-radius:5px;border:1px solid #555;background:transparent;color:#c8c4b4;font-size:11px;cursor:pointer;font-family:var(--font-body);">全年</button>
               <select id="anaMonth" onchange="updateAnalytics()" style="height:26px;padding:0 6px;border-radius:5px;border:1px solid #555;background:#3a3a3a;color:#e8e4d8;font-size:11px;width:48px;">
-                <option>01</option><option>02</option><option>03</option><option value="04" selected>04</option>
-                <option>05</option><option>06</option><option>07</option><option>08</option>
+                <option>01</option><option>02</option><option>03</option><option>04</option>
+                <option value="05" selected>05</option><option>06</option><option>07</option><option>08</option>
                 <option>09</option><option>10</option><option>11</option><option>12</option>
               </select>
             </div>
           </div>
 
-          <!-- 統計摘要列 -->
-          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:10px 18px 0;flex-shrink:0;">
+          <!-- 統計摘要列：總申請 + 7種假別 -->
+          <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:10px 18px 0;flex-shrink:0;">
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">總申請</div>
               <div style="font-size:18px;font-weight:700;color:#e8e4d8;" id="ana-total">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
-              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">請假申請</div>
-              <div style="font-size:18px;font-weight:700;color:#4caf50;" id="ana-leave">—</div>
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">事假</div>
+              <div style="font-size:18px;font-weight:700;color:#ff5722;" id="ana-lc-事假">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
-              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">留復職申請</div>
-              <div style="font-size:18px;font-weight:700;color:#2196f3;" id="ana-retain">—</div>
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">病假</div>
+              <div style="font-size:18px;font-weight:700;color:#03a9f4;" id="ana-lc-病假">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
-              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">審核中</div>
-              <div style="font-size:18px;font-weight:700;color:#c9a84c;" id="ana-pending">—</div>
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">生理假</div>
+              <div style="font-size:18px;font-weight:700;color:#ab47bc;" id="ana-lc-生理假">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
-              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">已完成</div>
-              <div style="font-size:18px;font-weight:700;color:#4caf50;" id="ana-done">—</div>
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">公假</div>
+              <div style="font-size:18px;font-weight:700;color:#ffc107;" id="ana-lc-公假">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
-              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">已退件</div>
-              <div style="font-size:18px;font-weight:700;color:#f44336;" id="ana-reject">—</div>
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">國假</div>
+              <div style="font-size:18px;font-weight:700;color:#43a047;" id="ana-lc-國假">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">特休</div>
+              <div style="font-size:18px;font-weight:700;color:#8bc34a;" id="ana-lc-特休">—</div>
+              <div style="font-size:9px;color:#9a9680;">件</div>
+            </div>
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:9px;color:#9a9680;margin-bottom:2px;">其他</div>
+              <div style="font-size:18px;font-weight:700;color:#9e9e9e;" id="ana-lc-其他">—</div>
               <div style="font-size:9px;color:#9a9680;">件</div>
             </div>
           </div>
@@ -2263,12 +2273,12 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             </div>
             <select class="filter-select" id="acc-role-filter" onchange="renderAccTable()">
               <option value="">全部角色</option>
-              <option value="boss">老闆</option>
-              <option value="admin">管理者</option>
-              <option value="manager">主管</option>
-              <option value="fulltime">正職</option>
+              <option value="boss">boss</option>
+              <option value="admin">admin</option>
+              <option value="manager">manager</option>
+              <option value="fulltime">fulltime</option>
               <option value="employee">員工（舊）</option>
-              <option value="parttime">兼職</option>
+              <option value="parttime">parttime</option>
             </select>
             <select class="filter-select" id="acc-status-filter" onchange="renderAccTable()">
               <option value="">全部狀態</option>
@@ -3501,12 +3511,31 @@ function updateAnalytics() {
 
   var total = filtered.length;
   var g = function(id){ return document.getElementById(id); };
-  if (g('ana-total'))   g('ana-total').textContent   = total;
-  if (g('ana-leave'))   g('ana-leave').textContent   = filtered.filter(function(a){ return a.type==='請假申請'; }).length;
-  if (g('ana-retain'))  g('ana-retain').textContent  = filtered.filter(function(a){ return a.type==='留復職申請'||a.type==='合意離職申請'; }).length;
-  if (g('ana-done'))    g('ana-done').textContent    = filtered.filter(function(a){ return (a.status||'').indexOf('完成')>-1; }).length;
-  if (g('ana-reject'))  g('ana-reject').textContent  = filtered.filter(function(a){ return (a.status||'').indexOf('退件')>-1; }).length;
-  if (g('ana-pending')) g('ana-pending').textContent = filtered.filter(function(a){ var s=a.status||''; return s.indexOf('完成')===-1&&s.indexOf('退件')===-1; }).length;
+  if (g('ana-total')) g('ana-total').textContent = total;
+  // 各假別件數
+  var anaLc = {'事假':0,'病假':0,'生理假':0,'公假':0,'國假':0,'特休':0,'其他':0};
+  filtered.forEach(function(a){
+    if (a.type!=='請假申請' && a.type!=='國假及特休申請') return;
+    var base = (a.subtype||'').split(' ')[0].split('(')[0].trim();
+    if      (base==='事假')               anaLc['事假']++;
+    else if (base==='病假'||base.indexOf('傷病')>-1) anaLc['病假']++;
+    else if (base==='生理假')             anaLc['生理假']++;
+    else if (base==='公假')               anaLc['公假']++;
+    else if (base==='國假'||base===''&&(a.type||'').indexOf('國假')>-1) anaLc['國假']++;
+    else if (base==='特休'||base.indexOf('特別休假')>-1) anaLc['特休']++;
+    else                                  anaLc['其他']++;
+  });
+  // 國假調移也計入國假
+  filtered.forEach(function(a){
+    if (a.type==='國假及特休申請') {
+      var sub = (a.subtype||'').trim();
+      if (sub.indexOf('特別休假')>-1) { /* 已計入特休，跳過 */ }
+      else { anaLc['國假']++; }
+    }
+  });
+  Object.keys(anaLc).forEach(function(k){
+    var el = g('ana-lc-'+k); if(el) el.textContent = anaLc[k]||0;
+  });
 
   // ── 申請類型環狀圖 ──
   var typeCount = {};
@@ -4475,8 +4504,8 @@ var ACCOUNTS_DATA = [];  // 所有帳號
 
 /* ── 角色中文對照 ── */
 var ROLE_LABEL = {
-  parttime: '兼職', fulltime: '正職', employee: '員工',
-  manager: '主管', admin: '營運', boss: '老闆'
+  parttime: 'parttime', fulltime: 'fulltime', employee: 'fulltime',
+  manager: 'manager', admin: 'admin', boss: 'boss'
 };
 var ROLE_BADGE = {
   parttime: 'background:#e65100;color:#fff;',
