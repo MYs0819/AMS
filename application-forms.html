@@ -238,10 +238,9 @@ input[type="time"] { color-scheme: dark; }
       <!-- 基本資料 -->
       <div>
         <div class="f-sec">基本資料</div>
-        <!-- 第一行：團隊 | 申請類型職稱 | 申請日期 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin-bottom:10px;">
-          <div class="f-g"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
-          <div class="f-g"><label class="f-lbl">職稱<span class="req">*</span></label><select class="f-sel" id="lv-empTitle"><option value="">請選擇</option><option value="主管正職">主管正職</option><option value="一般正職">一般正職</option><option value="兼職">兼職</option></select></div>
+        <!-- 第一行：團隊 | 申請日期 -->
+        <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
+          <div class="f-g" style="flex:1;"><label class="f-lbl">團隊<span class="req">*</span></label><select class="f-sel" id="lv-unit"><option value="">請選擇</option><option value="外場">外場</option><option value="吧檯">吧檯</option><option value="內廚">內廚</option></select></div>
           <div class="f-g" style="min-width:160px;"><label class="f-lbl" style="text-align:left;display:block;">申請日期</label><input class="f-inp" id="lv-date" readonly style="text-align:left;"/></div>
         </div>
         <!-- 第二行：(請假人)職稱 | (請假人)姓名親簽 | (代理人)職稱 | (代理人)姓名 -->
@@ -343,7 +342,7 @@ input[type="time"] { color-scheme: dark; }
 
       <!-- 附件上傳（事由與備註說明之間）-->
       <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;margin-bottom:8px;">
-        <div style="font-size:12px;font-weight:600;color:#c62828;margin-bottom:8px;">📎 附件上傳<span style="color:#e53935;">*</span>（必填）</div>
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
             選擇檔案（PDF/圖片）
@@ -507,7 +506,7 @@ input[type="time"] { color-scheme: dark; }
 
       <!-- 附件上傳（事由與備註說明之間）-->
       <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;margin-bottom:8px;">
-        <div style="font-size:12px;font-weight:600;color:#c62828;margin-bottom:8px;">📎 附件上傳<span style="color:#e53935;">*</span>（必填）</div>
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
             選擇檔案（PDF/圖片）
@@ -740,7 +739,7 @@ input[type="time"] { color-scheme: dark; }
       <div>
         <div class="f-sec">假別*</div>
         <input type="hidden" id="ann-type" value="特別休假"/>
-        <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;color:#555;cursor:not-allowed;">🔒 特別休假</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;color:#555;cursor:not-allowed;">🔒</div>
         <span style="font-size:13px;font-weight:600;color:var(--dark);">特別休假</span>
       </div>
       <!-- 實施日期（三組，至少填一） -->
@@ -938,7 +937,7 @@ input[type="time"] { color-scheme: dark; }
 
       <!-- 附件上傳（事由與備註說明之間）-->
       <div style="background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:12px 16px;">
-        <div style="font-size:12px;font-weight:600;color:#c62828;margin-bottom:8px;">📎 附件上傳<span style="color:#e53935;">*</span>（必填）</div>
+        <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px;">📎 附件上傳（選填，可事後補件）</div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <label style="display:flex;align-items:center;gap:6px;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--muted);background:#fff;transition:.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
             選擇檔案（PDF/圖片）
@@ -1573,7 +1572,7 @@ function submitLv() {
         sig1: (function(){ var cv=document.getElementById('lv-sig1'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
         sig2: (function(){ var cv=document.getElementById('lv-sig2'); return (cv&&cv.width>1)?cv.toDataURL():''; })(),
         team:        unit,
-        applyTitle:  (document.getElementById('lv-empTitle')||{value:''}).value.trim() || document.getElementById('lv-title').value.trim(),
+        applyTitle:  document.getElementById('lv-title').value.trim(),
         type:        '請假申請',
         subtype:     subtype,
         startDate:   fmtD(fd) + ' ' + (document.getElementById('lv-fth').value||'00') + ':' + (document.getElementById('lv-ftm').value||'00'),
