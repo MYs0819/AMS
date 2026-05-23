@@ -1380,19 +1380,17 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <!-- 上半：4欄圖表 -->
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 18px 0;flex-shrink:0;">
 
-            <!-- C1: 申請類型 環狀圖 + 圖例 -->
+            <!-- C1: 申請類型 環狀圖 + 引線標籤 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">申請類型分布</p>
               <div style="width:100%;display:flex;justify-content:center;">
-                <svg id="ana-type-chart" viewBox="0 0 200 200" style="width:100%;max-width:160px;">
+                <svg id="ana-type-chart" viewBox="-70 -60 340 320" style="width:100%;max-width:260px;overflow:visible;">
                   <circle cx="100" cy="100" r="70" fill="none" stroke="#4caf50" stroke-width="30" stroke-dasharray="439.82 0" transform="rotate(-90 100 100)"/>
                   <circle cx="100" cy="100" r="55" fill="#333"/>
-                  <text x="100" y="94" text-anchor="middle" font-size="26" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">—</text>
-                  <text x="100" y="112" text-anchor="middle" font-size="12" fill="#9a9680" font-family="sans-serif">件</text>
+                  <text x="100" y="96" text-anchor="middle" font-size="22" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">—</text>
+                  <text x="100" y="114" text-anchor="middle" font-size="11" fill="#9a9680" font-family="sans-serif">件</text>
                 </svg>
               </div>
-              <!-- 圖例（可捲動） -->
-              <div id="ana-type-legend" style="display:flex;flex-direction:column;gap:5px;overflow-y:auto;max-height:140px;padding-right:2px;"></div>
             </div>
 
             <!-- C2: 部門×假別 雙環 -->
@@ -3477,43 +3475,68 @@ function updateAnalytics() {
     var el = g('ana-lc-'+k); if(el) el.textContent = anaLc[k]||0;
   });
 
-  // ── 申請類型環狀圖 ──
+  // ── 申請類型環狀圖（引線標籤）──
   var typeCount = {};
   filtered.forEach(function(a){ var t=a.type||'其他'; typeCount[t]=(typeCount[t]||0)+1; });
   var totalT = total || 1;
   var typeColors = {'請假申請':'#4caf50','國假及特休申請':'#c9a84c','留復職申請':'#2196f3','合意離職申請':'#e91e63','其他':'#9e9e9e'};
   var typeChart = g('ana-type-chart');
   if (typeChart) {
+    var cx=100, cy=100, r=70, rInner=55, strokeW=30, lineR=90, tipR=108;
+    var circumference = 2 * Math.PI * r; // 439.82
+    var entries = Object.entries ? Object.entries(typeCount) : Object.keys(typeCount).map(function(k){ return [k, typeCount[k]]; });
     var svgContent = '';
     var offset = 0;
-    var circumference = 439.82;
-    var entries = Object.entries ? Object.entries(typeCount) : Object.keys(typeCount).map(function(k){ return [k, typeCount[k]]; });
+
+    // 每段圓弧的起始角度，用於計算引線中心點
+    var segAngles = [];
     entries.forEach(function(e){
       var pct = e[1] / totalT;
       var arc = pct * circumference;
-      var color = typeColors[e[0]] || '#9e9e9e';
-      svgContent += '<circle cx="100" cy="100" r="70" fill="none" stroke="'+color+'" stroke-width="30" stroke-dasharray="'+arc.toFixed(2)+' '+(circumference-arc).toFixed(2)+'" stroke-dashoffset="-'+offset.toFixed(2)+'" transform="rotate(-90 100 100)"/>';
+      var startDeg = offset / circumference * 360 - 90;
+      var midDeg   = startDeg + pct * 360 / 2;
+      segAngles.push({ name: e[0], cnt: e[1], pct: pct, midDeg: midDeg, color: typeColors[e[0]] || '#9e9e9e' });
+      svgContent += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+(typeColors[e[0]]||'#9e9e9e')+'" stroke-width="'+strokeW+'" stroke-dasharray="'+arc.toFixed(2)+' '+(circumference-arc).toFixed(2)+'" stroke-dashoffset="-'+offset.toFixed(2)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
       offset += arc;
     });
-    svgContent += '<circle cx="100" cy="100" r="55" fill="#333"/>';
-    svgContent += '<text x="100" y="94" text-anchor="middle" font-size="26" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">'+total+'</text>';
-    svgContent += '<text x="100" y="112" text-anchor="middle" font-size="12" fill="#9a9680" font-family="sans-serif">件</text>';
+
+    // 中心文字
+    svgContent += '<circle cx="'+cx+'" cy="'+cy+'" r="'+rInner+'" fill="#333"/>';
+    svgContent += '<text x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle" font-size="22" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">'+total+'</text>';
+    svgContent += '<text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" font-size="11" fill="#9a9680" font-family="sans-serif">件</text>';
+
+    // 引線 + 標籤
+    segAngles.forEach(function(seg){
+      var rad = seg.midDeg * Math.PI / 180;
+      // 引線起點：環中心（r=70，線從r+strokeW/2=85處）
+      var x1 = cx + (r + strokeW/2 + 2) * Math.cos(rad);
+      var y1 = cy + (r + strokeW/2 + 2) * Math.sin(rad);
+      // 引線折點：再往外延伸
+      var x2 = cx + (r + strokeW/2 + 22) * Math.cos(rad);
+      var y2 = cy + (r + strokeW/2 + 22) * Math.sin(rad);
+      // 水平橫線（右側向右、左側向左）
+      var isRight = Math.cos(rad) >= 0;
+      var x3 = x2 + (isRight ? 20 : -20);
+      var y3 = y2;
+      // 標籤 anchor
+      var anchor = isRight ? 'start' : 'end';
+      var labelX = x3 + (isRight ? 3 : -3);
+      var pctStr = (seg.pct * 100).toFixed(0) + '%';
+      // 只顯示佔比 >= 3% 的標籤（避免太小擠在一起）
+      if (seg.pct >= 0.03) {
+        svgContent += '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+seg.color+'" stroke-width="1.2"/>';
+        svgContent += '<line x1="'+x2.toFixed(1)+'" y1="'+y2.toFixed(1)+'" x2="'+x3.toFixed(1)+'" y2="'+y3.toFixed(1)+'" stroke="'+seg.color+'" stroke-width="1.2"/>';
+        svgContent += '<circle cx="'+x3.toFixed(1)+'" cy="'+y3.toFixed(1)+'" r="2" fill="'+seg.color+'"/>';
+        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3-4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="9.5" font-weight="600" fill="'+seg.color+'" font-family="sans-serif">'+seg.name+'</text>';
+        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3+7).toFixed(1)+'" text-anchor="'+anchor+'" font-size="9" fill="#9a9680" font-family="sans-serif">'+seg.cnt+'件 '+pctStr+'</text>';
+      }
+    });
+
     typeChart.innerHTML = svgContent;
-    // 圖例（捲動式，每項顯示色點 + 名稱 + 件數 + %）
+
+    // 移除舊圖例（引線已包含標籤，不需另外圖例）
     var legendEl = g('ana-type-legend');
-    if (legendEl) {
-      legendEl.innerHTML = entries.length === 0
-        ? '<span style="font-size:11px;color:#555;">無資料</span>'
-        : entries.map(function(e){
-          var pct2 = (e[1]/totalT*100).toFixed(0);
-          var color = typeColors[e[0]] || '#9e9e9e';
-          return '<div style="display:flex;align-items:center;gap:6px;font-size:11px;">'
-            +'<span style="width:10px;height:10px;border-radius:50%;background:'+color+';flex-shrink:0;"></span>'
-            +'<span style="color:#c8c4b4;flex:1;">'+e[0]+'</span>'
-            +'<span style="color:'+color+';font-weight:700;white-space:nowrap;">'+e[1]+'件 '+pct2+'%</span>'
-            +'</div>';
-        }).join('');
-    }
+    if (legendEl) legendEl.innerHTML = '';
   }
 
   // ── 假別橫條圖（只顯示有申請的假別，平均高度，可捲動）──
@@ -3675,7 +3698,7 @@ function updateAnalytics() {
 
   // 部門×假別 雙環更新（資料驅動）
   var teamOrder = ['外場','吧台','吧檯','內廚'];
-  var teamColors = {'外場':'#c9a84c','吧台':'#4caf50','吧檯':'#4caf50','內廚':'#2196f3'};
+  var teamColors = {'外場':'#c9a84c','吧台':'#2196f3','吧檯':'#2196f3','內廚':'#e53935'};
   var teamCount = {};
   filtered.forEach(function(a){ var t=a.team||'其他'; teamCount[t]=(teamCount[t]||0)+1; });
   // 外環：部門比例
@@ -3689,7 +3712,7 @@ function updateAnalytics() {
   });
   var outerKeys = ['外場','吧檯','內廚'].filter(function(t){ return teamMerged[t]>0; });
   var outerTotal = outerKeys.reduce(function(s,t){ return s+teamMerged[t]; },0)||1;
-  var outerColors2 = {'外場':'#c9a84c','吧檯':'#4caf50','內廚':'#2196f3'};
+  var outerColors2 = {'外場':'#c9a84c','吧檯':'#2196f3','內廚':'#e53935'};
   // 內環：假別比例
   var innerLeave = {};
   filtered.forEach(function(a){
