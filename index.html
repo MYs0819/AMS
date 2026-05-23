@@ -1380,54 +1380,19 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
           <!-- 上半：4欄圖表 -->
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 18px 0;flex-shrink:0;">
 
-            <!-- C1: 申請類型 帶引線環狀圖 -->
-            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <!-- C1: 申請類型 環狀圖 + 圖例 -->
+            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">申請類型分布</p>
               <div style="width:100%;display:flex;justify-content:center;">
-                <svg id="ana-type-chart" viewBox="-40 -20 280 240" style="width:100%;max-width:240px;overflow:visible;">
-                  <!-- 環狀扇形 r=70, cx=100,cy=100, 周長=439.82 -->
-                  <!-- 請假35%=153.94, 留職25%=109.95, 離職20%=87.96, 展延12%=52.78, 復職8%=35.18 -->
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#4caf50" stroke-width="30"
-                    stroke-dasharray="153.94 285.88" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#2196f3" stroke-width="30"
-                    stroke-dasharray="109.95 329.87" stroke-dashoffset="-153.94" transform="rotate(-90 100 100)"/>
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#ff9800" stroke-width="30"
-                    stroke-dasharray="87.96 351.86" stroke-dashoffset="-263.89" transform="rotate(-90 100 100)"/>
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#9c27b0" stroke-width="30"
-                    stroke-dasharray="52.78 387.04" stroke-dashoffset="-351.85" transform="rotate(-90 100 100)"/>
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#c9a84c" stroke-width="30"
-                    stroke-dasharray="35.18 404.64" stroke-dashoffset="-404.63" transform="rotate(-90 100 100)"/>
-                  <!-- 中心 -->
+                <svg id="ana-type-chart" viewBox="0 0 200 200" style="width:100%;max-width:160px;">
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#4caf50" stroke-width="30" stroke-dasharray="439.82 0" transform="rotate(-90 100 100)"/>
                   <circle cx="100" cy="100" r="55" fill="#333"/>
-                  <text x="100" y="94" text-anchor="middle" font-size="26" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">15</text>
+                  <text x="100" y="94" text-anchor="middle" font-size="26" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">—</text>
                   <text x="100" y="112" text-anchor="middle" font-size="12" fill="#9a9680" font-family="sans-serif">件</text>
-
-                  <!-- 引線：請假35% 約在 17.5° 位置 → 外點(100+85*sin17.5, 100-85*cos17.5)=(125.6,18.8) -->
-                  <line x1="125" y1="25"  x2="148" y2="5"   stroke="#4caf50" stroke-width="1.2"/>
-                  <line x1="148" y1="5"   x2="180" y2="5"   stroke="#4caf50" stroke-width="1.2"/>
-                  <text x="184" y="9" font-size="11" fill="#4caf50" font-family="sans-serif" font-weight="600">請假 35%</text>
-
-                  <!-- 留職25% 約在 72.5° -->
-                  <line x1="166" y1="79"  x2="190" y2="60"  stroke="#2196f3" stroke-width="1.2"/>
-                  <line x1="190" y1="60"  x2="220" y2="60"  stroke="#2196f3" stroke-width="1.2"/>
-                  <text x="224" y="64" font-size="11" fill="#2196f3" font-family="sans-serif" font-weight="600">留職 25%</text>
-
-                  <!-- 離職20% 約在 126° -->
-                  <line x1="157" y1="157" x2="180" y2="175" stroke="#ff9800" stroke-width="1.2"/>
-                  <line x1="180" y1="175" x2="220" y2="175" stroke="#ff9800" stroke-width="1.2"/>
-                  <text x="224" y="179" font-size="11" fill="#ff9800" font-family="sans-serif" font-weight="600">離職 20%</text>
-
-                  <!-- 展延12% 約在 169° -->
-                  <line x1="68"  y1="168" x2="40"  y2="185" stroke="#9c27b0" stroke-width="1.2"/>
-                  <line x1="40"  y1="185" x2="-20" y2="185" stroke="#9c27b0" stroke-width="1.2"/>
-                  <text x="-38" y="189" font-size="11" fill="#9c27b0" font-family="sans-serif" font-weight="600" text-anchor="end">展延 12%</text>
-
-                  <!-- 復職8% 約在 192° -->
-                  <line x1="30"  y1="86"  x2="5"   y2="65"  stroke="#c9a84c" stroke-width="1.2"/>
-                  <line x1="5"   y1="65"  x2="-20" y2="65"  stroke="#c9a84c" stroke-width="1.2"/>
-                  <text x="-38" y="69" font-size="11" fill="#c9a84c" font-family="sans-serif" font-weight="600" text-anchor="end">復職 8%</text>
                 </svg>
               </div>
+              <!-- 圖例（可捲動） -->
+              <div id="ana-type-legend" style="display:flex;flex-direction:column;gap:5px;overflow-y:auto;max-height:140px;padding-right:2px;"></div>
             </div>
 
             <!-- C2: 部門×假別 雙環 -->
@@ -1450,7 +1415,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <!-- C3: 假別量 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">假別申請量</p>
-              <div id="ana-leave-bars" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;max-height:180px;">
+              <div id="ana-leave-bars" style="display:flex;flex-direction:column;flex:1;height:100%;gap:0;overflow-y:auto;">
               </div>
             </div>
 
@@ -2126,7 +2091,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <p class="article-body">
               表單申請權限後，並回報於Line群組：<br>
               03_交接群➤SC並Tag名揚完成申請，<br>
-              兼職同仁請於私訊名揚完成申請，<br>
+              兼職同仁請私訊名揚完成申請，<br>
+              並告知個人信箱帳號，<br>
               如無回報，則權限不開放。
             </p>
             <div class="article-btn-group">
@@ -2139,7 +2105,8 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <p class="article-body">
               表單申請權限後，並回報於Line群組：<br>
               03_交接群➤SC並Tag名揚完成申請，<br>
-              兼職同仁請於私訊名揚完成申請，<br>
+              兼職同仁請私訊名揚完成申請，<br>
+              並告知個人信箱帳號，<br>
               如無回報，則權限不開放。
             </p>
             <div class="article-btn-group">
@@ -2152,6 +2119,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <p class="article-body">
               表單申請權限後，並回報於Line群組：<br>
               03_交接群➤SC並Tag名揚完成申請，<br>
+              並告知個人信箱帳號，<br>
               如無回報，則權限不開放。
             </p>
             <div class="article-btn-group">
@@ -2164,6 +2132,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <p class="article-body">
               表單申請權限後，並回報於Line群組：<br>
               03_交接群➤SC並Tag名揚完成申請，<br>
+              並告知個人信箱帳號，<br>
               如無回報，則權限不開放。
             </p>
             <div class="article-btn-group">
@@ -2176,6 +2145,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <p class="article-body">
               表單申請權限後，並回報於Line群組：<br>
               03_交接群➤SC並Tag名揚完成申請，<br>
+              並告知個人信箱帳號，<br>
               如無回報，則權限不開放。
             </p>
             <div class="article-btn-group">
@@ -3529,17 +3499,20 @@ function updateAnalytics() {
     svgContent += '<text x="100" y="94" text-anchor="middle" font-size="26" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">'+total+'</text>';
     svgContent += '<text x="100" y="112" text-anchor="middle" font-size="12" fill="#9a9680" font-family="sans-serif">件</text>';
     typeChart.innerHTML = svgContent;
-    // 圖例（在SVG下方，不用跨線）
+    // 圖例（捲動式，每項顯示色點 + 名稱 + 件數 + %）
     var legendEl = g('ana-type-legend');
     if (legendEl) {
-      legendEl.innerHTML = entries.map(function(e){
-        var pct2 = e[1]/totalT;
-        var color = typeColors[e[0]] || '#9e9e9e';
-        return '<span style="display:flex;align-items:center;gap:3px;font-size:10px;color:'+color+';white-space:nowrap;">'
-          +'<span style="width:9px;height:9px;border-radius:50%;background:'+color+';flex-shrink:0;"></span>'
-          +e[0]+' '+(pct2*100).toFixed(0)+'%'
-          +'</span>';
-      }).join('');
+      legendEl.innerHTML = entries.length === 0
+        ? '<span style="font-size:11px;color:#555;">無資料</span>'
+        : entries.map(function(e){
+          var pct2 = (e[1]/totalT*100).toFixed(0);
+          var color = typeColors[e[0]] || '#9e9e9e';
+          return '<div style="display:flex;align-items:center;gap:6px;font-size:11px;">'
+            +'<span style="width:10px;height:10px;border-radius:50%;background:'+color+';flex-shrink:0;"></span>'
+            +'<span style="color:#c8c4b4;flex:1;">'+e[0]+'</span>'
+            +'<span style="color:'+color+';font-weight:700;white-space:nowrap;">'+e[1]+'件 '+pct2+'%</span>'
+            +'</div>';
+        }).join('');
     }
   }
 
@@ -3560,16 +3533,26 @@ function updateAnalytics() {
     leaveBarEl.style.maxHeight = '100%';
     leaveBarEl.style.display = 'flex';
     leaveBarEl.style.flexDirection = 'column';
-    leaveBarEl.style.gap = '6px';
+    leaveBarEl.style.justifyContent = 'space-between';
+    leaveBarEl.style.height = '100%';
+    leaveBarEl.style.gap = '0';
     if (leaveTypes.length === 0) {
-      leaveBarEl.innerHTML = '<div style="font-size:11px;color:#555;text-align:center;padding:12px 0;">無假別資料</div>';
+      leaveBarEl.innerHTML = '<div style="font-size:11px;color:#9a9680;text-align:center;padding:12px 0;">無假別資料</div>';
     } else {
       leaveBarEl.innerHTML = leaveTypes.map(function(t){
         var cnt = leaveCount[t];
         var pct = (cnt/maxLeave*100).toFixed(1);
         var color = leaveColorMap[t] || '#9e9e9e';
         var emo = leaveEmoMap[t] || '●';
-        return '<div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:2px;"><span>'+emo+' '+t+'</span><span style="color:'+color+';font-weight:600;">'+cnt+'件</span></div><div style="height:7px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,'+color+','+color+'aa);border-radius:999px;transition:width .5s;"></div></div></div>';
+        return '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;">'
+          +'<div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;">'
+          +'<span>'+emo+' '+t+'</span>'
+          +'<span style="color:'+color+';font-weight:600;">'+cnt+'件</span>'
+          +'</div>'
+          +'<div style="height:9px;background:#222;border-radius:999px;overflow:hidden;">'
+          +'<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,'+color+','+color+'aa);border-radius:999px;transition:width .5s;"></div>'
+          +'</div>'
+          +'</div>';
       }).join('');
     }
   }
@@ -3786,14 +3769,17 @@ function updateAnalytics() {
       if (tmTotal === 0) {
         return '<div style="flex:1;display:flex;align-items:center;gap:10px;">'
           +'<span style="font-size:11px;color:#c8c4b4;width:68px;flex-shrink:0;">'+label+'</span>'
-          +'<div style="flex:1;height:24px;background:#1a1a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;color:#555;">無申請</span></div>'
+          +'<div style="flex:1;height:24px;background:#1a1a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;color:#9a9680;">無申請</span></div>'
           +'</div>';
       }
       var allKeys = Object.keys(lc3).sort(function(a,b){ return lc3[b]-lc3[a]; });
       var bars = allKeys.map(function(k){
         var pct3 = (lc3[k]/tmTotal*100).toFixed(1);
         var color3 = leaveColorMap[k] || '#757575';
-        return '<div title="'+k+'×'+lc3[k]+'" style="width:'+pct3+'%;background:'+color3+';display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;min-width:30px;overflow:hidden;white-space:nowrap;padding:0 2px;">'+k+'<span style="font-size:8px;opacity:.85;margin-left:1px;">×'+lc3[k]+'</span></div>';
+        // 淡色底（普通傷病假#26c6da等）用黑色文字，深色底用白色文字
+        var luminance = parseInt(color3.slice(1,3),16)*0.299 + parseInt(color3.slice(3,5),16)*0.587 + parseInt(color3.slice(5,7),16)*0.114;
+        var txtColor = luminance > 160 ? '#1c1c15' : '#fff';
+        return '<div title="'+k+'×'+lc3[k]+'" style="width:'+pct3+'%;background:'+color3+';display:flex;align-items:center;justify-content:center;font-size:9px;color:'+txtColor+';font-weight:700;min-width:30px;overflow:hidden;white-space:nowrap;padding:0 2px;">'+k+'<span style="font-size:8px;opacity:.85;margin-left:1px;">×'+lc3[k]+'</span></div>';
       }).join('');
       return '<div style="flex:1;display:flex;align-items:center;gap:10px;">'
         +'<span style="font-size:11px;color:#c8c4b4;width:68px;flex-shrink:0;">'+label+'</span>'
@@ -5497,7 +5483,7 @@ function openReview(id, name, type, readOnly) {
   var isDoneApp  = app && (app.status||'').indexOf('完成') > -1;
   var isRejectApp= app && (app.status||'').indexOf('退件') > -1;
   var titleBase  = type === 'reviewer' ? '主管審核' : '人資覆核';
-  document.getElementById('reviewModalTitle').textContent = readOnly ? titleBase + '（已完成）' : titleBase;
+  document.getElementById('reviewModalTitle').textContent = titleBase;
 
   // 申請資訊
   document.getElementById('reviewModalInfo').innerHTML =
@@ -6422,7 +6408,7 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
 <!-- 審核 Modal -->
 <div class="review-modal-overlay" id="reviewModal">
   <div class="review-modal" style="max-width:480px;width:100%;gap:12px;">
-    <div class="review-modal-title" id="reviewModalTitle" style="text-align:center;">審核申請</div>
+    <div class="review-modal-title" id="reviewModalTitle" style="text-align:center;">申請進度</div>
     <!-- 流程狀態條 -->
     <div id="reviewFlowBar" style="display:flex;align-items:center;justify-content:center;gap:0;font-family:var(--font-body);">
       <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px;max-width:80px;">
