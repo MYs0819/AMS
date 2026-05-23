@@ -865,7 +865,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .app-sidebar::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.08);}
 
 /* ════ 登入系統 ════ */
-.login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.45);z-index:9000;display:flex;align-items:center;justify-content:center;}
+.login-overlay{position:fixed;inset:0;background:rgba(20,20,16,.72);z-index:9000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
 .login-box{background:#fff;border-radius:16px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:20px;}
 .login-logo-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .login-logo{width:48px;height:48px;object-fit:contain;}
@@ -950,9 +950,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
     <div class="login-field">
       <label class="login-label">電子信箱</label>
       <div style="position:relative;">
-        <input class="login-input" id="login-mail" type="email"
+        <input class="login-input" id="login-mail" type="text"
           placeholder="example@gmail.com"
-          autocomplete="email"
+          autocomplete="username"
           oninput="updateMailSuggestions()"
           onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"
           list="mail-suggestions"
@@ -4912,12 +4912,16 @@ function testGasConnection() {
 }
 
 function doLogin() {
-  var mail   = (document.getElementById('login-mail').value||'').trim().toLowerCase();
-  var pass   = document.getElementById('login-pass').value;
+  var mailEl = document.getElementById('login-mail');
+  var passEl = document.getElementById('login-pass');
+  var mail   = (mailEl ? (mailEl.value||'') : '').trim().toLowerCase();
+  var pass   = passEl ? (passEl.value||'') : '';
   var errEl  = document.getElementById('login-err');
   var btn    = document.getElementById('login-btn');
 
-  if (!mail || !pass) { errEl.textContent = '請填寫信箱和密碼'; return; }
+  errEl.textContent = '';
+  if (!mail) { errEl.textContent = '請填寫電子信箱'; mailEl && mailEl.focus(); return; }
+  if (!pass) { errEl.textContent = '請填寫密碼'; passEl && passEl.focus(); return; }
   if (mail.indexOf('@') < 0) { errEl.textContent = '請輸入完整的電子信箱（含 @）'; return; }
 
   btn.disabled = true; btn.textContent = '登入中…';
