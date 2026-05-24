@@ -864,3 +864,65 @@ html, body {
   opacity:0;transition:opacity .15s;
 }
 .leave-filter-card:hover .leave-tip { opacity:1; }
+
+
+/* ============================================================
+   ⑯ 深色內頁覆寫（dark-page）
+      ↑ 用於「每日工時登記」「線上表單申請」「勞報稅務建檔」等深色背景頁面
+      在 .dark-page 裡的所有文字統一改為淺色，讓深色背景可讀
+   ============================================================ */
+
+/* 副標題類別（style.css 原本缺少）*/
+.article-sub-heading {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--article-section-color);
+  margin-bottom: 4px;
+}
+.article-sub {
+  font-family: var(--font-body);
+  font-size: var(--article-sub-size);
+  color: var(--article-sub-color);
+}
+
+/* ── 深色背景頁面文字覆寫 ── */
+/* 所有在 .dark-page 內的 article 文字改為淺色，讓暗底可讀 */
+.dark-page .article-section-title {
+  color: #e8e4d8;                   /* 節標題：米白色 ★可調 */
+}
+.dark-page .article-body {
+  color: #c8c4b4;                   /* 內文：淺灰米白 ★可調 */
+}
+.dark-page .article-sub-heading {
+  color: #d4c99a;                   /* 副大標：金黃色 ★可調 */
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.dark-page .article-sub {
+  color: #9a9680;                   /* 副說明：灰色 ★可調 */
+  font-size: 13px;
+}
+.dark-page .article-warn {
+  background-color: rgba(201,168,76,0.12);
+  border-color: #c9a84c;
+  color: #c9a84c;                   /* 警告區塊：金色系 ★可調 */
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  height: var(--article-link-btn-height);
+  padding: 0 var(--space-4);
+  border-radius: var(--article-link-btn-radius);
+  font-size: var(--article-link-btn-size);
+  font-weight: var(--article-link-btn-weight);
+  white-space: nowrap;
+  transition: background-color var(--transition-fast);
+}
+.dark-page .article-warn:hover {
+  background-color: rgba(201,168,76,0.22);
+}
+/* inner-page-title 在深色頁已用 inline style 設色，此處補保險 */
+.dark-page .inner-page-title {
+  color: #e8e4d8;
+}
