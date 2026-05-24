@@ -739,7 +739,8 @@ input[type="time"] { color-scheme: dark; }
       <div>
         <div class="f-sec">假別*</div>
         <input type="hidden" id="ann-type" value="特別休假"/>
-        <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;color:#555;font-weight:600;cursor:not-allowed;">🔒 特別休假</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;color:#555;cursor:not-allowed;">🔒</div>
+        <span style="font-size:13px;font-weight:600;color:var(--dark);">特別休假</span>
       </div>
       <!-- 實施日期（三組，至少填一） -->
       <div>
@@ -1158,6 +1159,90 @@ function hideSt(id) { document.getElementById(id).classList.add('hidden'); }
 /* ── Modal ── */
 function openModal(id) {
   document.getElementById(id).classList.add('open');
+
+  /* ── 自動帶入登入者資料（從主系統 localStorage 讀取）── */
+  var _u = null;
+  try {
+    var _raw = localStorage.getItem('mys_user') || sessionStorage.getItem('mys_user');
+    if (_raw) _u = JSON.parse(_raw);
+  } catch(e) { _u = null; }
+
+  /* 職稱對照：主系統 title（如「正職」「兼職」「主管」）→ 申請單選項 */
+  function _mapTitle(t) {
+    if (!t) return '';
+    if (t.indexOf('主管') > -1) return '主管正職';
+    if (t.indexOf('正職') > -1) return '一般正職';
+    if (t.indexOf('兼職') > -1) return '兼職';
+    return '';
+  }
+  /* 團隊對照：主系統 team（如「吧台」）→ 申請單選項（如「吧檯」）*/
+  function _mapTeam(t) {
+    if (!t) return '';
+    if (t.indexOf('吧台') > -1 || t.indexOf('吧檯') > -1) return '吧檯';
+    if (t.indexOf('外場') > -1) return '外場';
+    if (t.indexOf('內廚') > -1) return '內廚';
+    return t;
+  }
+  /* 通用：帶入 select 並鎖定（灰底不能改）*/
+  function _fillSelect(elId, val) {
+    var el = document.getElementById(elId);
+    if (!el || !val) return;
+    el.value = val;
+    el.disabled = true;
+    el.style.background = '#f0ece2';
+    el.style.color = '#888';
+    el.style.cursor = 'not-allowed';
+    el.title = '自動帶入，不可修改';
+  }
+  /* 申請人姓名：在簽名預覽區旁顯示名字（僅顯示，不影響親簽流程）*/
+  function _showNameHint(previewId, name) {
+    var el = document.getElementById(previewId);
+    if (!el || !name) return;
+    // 在 preview 按鈕旁加一個小標籤（避免重複）
+    var hintId = previewId + '-autohint';
+    if (!document.getElementById(hintId)) {
+      var hint = document.createElement('div');
+      hint.id = hintId;
+      hint.style.cssText = 'font-size:11px;color:#c9a84c;margin-top:3px;font-weight:600;';
+      hint.textContent = '👤 ' + name + '（請親簽確認）';
+      el.parentNode.appendChild(hint);
+    }
+  }
+
+  if (_u) {
+    var _team  = _mapTeam(_u.team || '');
+    var _title = _mapTitle(_u.title || '');
+
+    if (id === 'lvModal') {
+      _fillSelect('lv-unit',  _team);
+      _fillSelect('lv-title', _title);
+      _showNameHint('lv-sig1-preview', _u.name);
+    }
+    if (id === 'lvSupModal') {
+      _fillSelect('lvs-unit',  _team);
+      _fillSelect('lvs-title', _title);
+      _showNameHint('lvs-sig1-preview', _u.name);
+    }
+    if (id === 'natModal') {
+      _fillSelect('nat-unit',     _team);
+      _fillSelect('nat-empTitle', _title);
+      _showNameHint('nat-sig1-preview', _u.name);
+    }
+    if (id === 'annModal') {
+      _fillSelect('ann-unit',     _team);
+      _fillSelect('ann-empTitle', _title);
+      _showNameHint('ann-sig1-preview', _u.name);
+    }
+    if (id === 'rtModal') {
+      _fillSelect('rt-title', _title);
+      _showNameHint('rt-sig1-canvas-preview', _u.name);
+    }
+    if (id === 'quitModal') {
+      _fillSelect('quit-title', _title);
+      _showNameHint('quit-sig1-preview', _u.name);
+    }
+  }
+
   if (id === 'quitModal') {
     var d=new Date(); var p=function(n){return String(n).padStart(2,'0');};
     document.getElementById('quit-apply-date').value = d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
