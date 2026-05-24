@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="style.css">
 
   <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
   <meta property="og:description" content="整合各類行政申請簽核與企業文件中心，全面提升團隊行政效率與協作！" />
@@ -1441,21 +1441,27 @@
 
     <div class="form-row">
       <label class="form-label">員工姓名 <span class="required">*</span></label>
-      <input class="form-input" type="text" id="f-name" placeholder="請輸入員工姓名" />
+      <div style="position:relative;">
+        <input class="form-input" type="text" id="f-name" placeholder="請輸入員工姓名" />
+        <span id="f-name-lock" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:#9a9482;">🔒 自動帶入</span>
+      </div>
       <p class="form-error-msg" id="err-name">請輸入員工姓名</p>
     </div>
 
     <div class="form-row">
       <label class="form-label">所屬團隊 <span class="required">*</span></label>
-      <select class="form-select" id="f-team">
-        <option value="">請選擇</option>
-        <option value="外場－正職">外場－正職</option>
-        <option value="外場－兼職">外場－兼職</option>
-        <option value="吧台－正職">吧台－正職</option>
-        <option value="吧台－兼職">吧台－兼職</option>
-        <option value="內廚－正職">內廚－正職</option>
-        <option value="內廚－兼職">內廚－兼職</option>
-      </select>
+      <div style="position:relative;">
+        <select class="form-select" id="f-team">
+          <option value="">請選擇</option>
+          <option value="外場－正職">外場－正職</option>
+          <option value="外場－兼職">外場－兼職</option>
+          <option value="吧台－正職">吧台－正職</option>
+          <option value="吧台－兼職">吧台－兼職</option>
+          <option value="內廚－正職">內廚－正職</option>
+          <option value="內廚－兼職">內廚－兼職</option>
+        </select>
+        <span id="f-team-lock" style="display:none;position:absolute;right:28px;top:50%;transform:translateY(-50%);font-size:12px;color:#9a9482;pointer-events:none;">🔒</span>
+      </div>
       <p class="form-error-msg" id="err-team">請選擇所屬團隊</p>
     </div>
 
@@ -1702,8 +1708,72 @@ function handleUpload(input, listId, gridId) {
 }
 
 /* ══ 申請表單 Modal ══ */
-function openFormModal()  { document.getElementById('formModal').classList.add('open'); }
-function closeFormModal() { document.getElementById('formModal').classList.remove('open'); clearFormErrors(); }
+function openFormModal() {
+  // 自動帶入登入者資料
+  var nameEl  = document.getElementById('f-name');
+  var teamEl  = document.getElementById('f-team');
+  var nameLock= document.getElementById('f-name-lock');
+  var teamLock= document.getElementById('f-team-lock');
+
+  if (CURRENT_USER && CURRENT_USER.name) {
+    // ── 姓名：帶入並鎖定 ──
+    nameEl.value    = CURRENT_USER.name;
+    nameEl.readOnly = true;
+    nameEl.style.cssText = 'background:#f5f3ee;color:#5a5646;border-color:#d4cfc0;cursor:not-allowed;padding-right:90px;';
+    if (nameLock) nameLock.style.display = 'inline';
+
+    // ── 團隊：帶入並鎖定（用 CURRENT_USER.team + title 組合）──
+    // CURRENT_USER.team 例如「外場」，CURRENT_USER.title 例如「正職」
+    var teamVal = (CURRENT_USER.team || '') + '－' + (CURRENT_USER.title || '');
+    // 找最接近的選項
+    var matched = false;
+    for (var i = 0; i < teamEl.options.length; i++) {
+      if (teamEl.options[i].value === teamVal) {
+        teamEl.value  = teamVal;
+        matched = true;
+        break;
+      }
+    }
+    // 若無完全匹配，嘗試只比對 team 部分
+    if (!matched && CURRENT_USER.team) {
+      for (var j = 0; j < teamEl.options.length; j++) {
+        if (teamEl.options[j].value.indexOf(CURRENT_USER.team) === 0) {
+          teamEl.value = teamEl.options[j].value;
+          matched = true;
+          break;
+        }
+      }
+    }
+    teamEl.disabled    = true;
+    teamEl.style.cssText = 'background:#f5f3ee;color:#5a5646;border-color:#d4cfc0;cursor:not-allowed;';
+    if (teamLock) teamLock.style.display = 'inline';
+  } else {
+    // 未登入或無資料：還原為可編輯
+    nameEl.value    = '';
+    nameEl.readOnly = false;
+    nameEl.style.cssText = '';
+    if (nameLock) nameLock.style.display = 'none';
+    teamEl.value    = '';
+    teamEl.disabled = false;
+    teamEl.style.cssText = '';
+    if (teamLock) teamLock.style.display = 'none';
+  }
+
+  document.getElementById('formModal').classList.add('open');
+}
+function closeFormModal() {
+  document.getElementById('formModal').classList.remove('open');
+  clearFormErrors();
+  // 還原鎖定樣式
+  var nameEl  = document.getElementById('f-name');
+  var teamEl  = document.getElementById('f-team');
+  var nameLock= document.getElementById('f-name-lock');
+  var teamLock= document.getElementById('f-team-lock');
+  nameEl.readOnly = false; nameEl.style.cssText = ''; nameEl.value = '';
+  teamEl.disabled = false; teamEl.style.cssText = ''; teamEl.value = '';
+  if (nameLock) nameLock.style.display = 'none';
+  if (teamLock) teamLock.style.display = 'none';
+}
 document.getElementById('formModal').addEventListener('click', function(e){ if(e.target===this) closeFormModal(); });
 
 function clearFormErrors() {
@@ -1718,7 +1788,9 @@ function submitForm() {
   var ok=true;
   var ftype  = document.getElementById('f-type').value;
   var fname  = document.getElementById('f-name').value.trim();
-  var fteam  = document.getElementById('f-team').value;
+  // disabled select 的 value 依然可讀，但加一層保護
+  var fteamEl = document.getElementById('f-team');
+  var fteam  = fteamEl.value || (fteamEl.options[fteamEl.selectedIndex] ? fteamEl.options[fteamEl.selectedIndex].value : '');
   var fstart = document.getElementById('f-start').value;
   var fend   = document.getElementById('f-end').value;
 
