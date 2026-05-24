@@ -3289,7 +3289,7 @@ function renderMainTable(apps) {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;text-align:center;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
-      '<td class="td-mono" style="font-size:11px;">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td class="td-mono" style="font-size:11px;">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+reviewerCell+'</td>'+
       '<td style="text-align:center;">'+verifierCell+'</td>'+
@@ -3599,10 +3599,11 @@ function loadMyRecords() {
 /* ── 附件狀態徽章 helper ── */
 function proofBadge(app) {
   var subtype  = (app.subtype || app.type || '');
-  var isPhysio = subtype.indexOf('生理假') > -1 || subtype.indexOf('特別休假') > -1 || subtype.indexOf('公假') > -1;
+  var appType  = (app.type || '');
+  var isNoProof = subtype.indexOf('生理假') > -1 || subtype.indexOf('特別休假') > -1 || subtype.indexOf('公假') > -1 || appType.indexOf('合意離職') > -1;
   var styleGray = 'display:block;margin-top:3px;font-size:10px;font-weight:600;color:#9a9482;background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:2px 5px;white-space:nowrap;';
   var styleRed  = 'display:block;margin-top:3px;font-size:10px;font-weight:600;color:#c62828;background:#fff8f8;border:1px solid #ffcdd2;border-radius:8px;padding:2px 5px;white-space:nowrap;';
-  if (isPhysio) return '<span style="'+styleGray+'">無須證明</span>';
+  if (isNoProof) return '<span style="'+styleGray+'">無須附件</span>';
   var proof = (app.proofLink || '').trim();
   if (proof)   return '<span style="'+styleGray+'">有附件</span>';
   var status = (app.status || '');
@@ -3680,7 +3681,7 @@ function renderMyTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>';
@@ -4699,7 +4700,8 @@ function openReview(id, name, type, readOnly) {
         '<a href="' + proof + '" target="_blank" style="color:#1565c0;font-weight:600;text-decoration:underline;margin-left:6px;">🔗 查看附件</a>';
     } else {
       var _noProofSub = (app.subtype||'');
-      var _noProof = _noProofSub.indexOf('生理假')>-1 || _noProofSub.indexOf('特別休假')>-1 || _noProofSub.indexOf('小年夜')>-1 || _noProofSub.indexOf('除夕')>-1 || _noProofSub.indexOf('初')>-1 || _noProofSub.indexOf('假')>-1 && _noProofSub.length<=4;
+      var _isQuitType = (app.type||'').indexOf('合意離職') > -1;
+      var _noProof = _isQuitType || _noProofSub.indexOf('生理假')>-1 || _noProofSub.indexOf('特別休假')>-1 || _noProofSub.indexOf('小年夜')>-1 || _noProofSub.indexOf('除夕')>-1 || _noProofSub.indexOf('初')>-1 || _noProofSub.indexOf('假')>-1 && _noProofSub.length<=4;
       reviewAttach.innerHTML = '<span style="font-weight:600;color:var(--color-text-secondary);">📎 附件證明：</span>' +
         (_noProof ? '<span style="color:#9e9e9e;font-size:12px;margin-left:6px;">⚠ 員工無須上傳附件</span>' : '<span style="color:#c62828;font-size:12px;margin-left:6px;">⚠ 員工尚未上傳附件</span>');
     }
@@ -5045,7 +5047,9 @@ function openFlowModal(app) {
   var attachDiv = document.getElementById('flowModalAttach');
   if (attachDiv) {
     var isQuit = (app && (app.type||'').indexOf('合意離職') > -1);
-    if (isQuit) { attachDiv.style.display = 'none'; } else {
+    if (isQuit) {
+      attachDiv.innerHTML = '<span style="font-weight:600;color:var(--color-text-secondary);">📎 附件證明：</span><span style="color:#9e9e9e;font-size:12px;margin-left:6px;">⚠ 員工無須上傳附件</span>';
+    } else {
     var proof  = app ? (app.proofLink || '') : '';
     var role   = CURRENT_USER ? CURRENT_USER.role : 'guest';
     var isSelf = CURRENT_USER && app && CURRENT_USER.name === app.name;
@@ -5303,7 +5307,7 @@ function renderMonTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>'+
@@ -5577,7 +5581,7 @@ function renderMallTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDRange(a.startDate,a.endDate)+'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
