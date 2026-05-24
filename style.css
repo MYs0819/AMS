@@ -724,6 +724,17 @@ html, body {
 /* 版型 */
 .doccenter-wrap    { display:flex;flex:1;min-height:0;overflow:hidden; }
 .doccenter-sidebar { width:180px;background-color:#3a3a3a;border-right:1px solid #555;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0; }
+/* ── 文件中心側邊欄「分類」標題 ── */
+.doccenter-sidebar-label { font-family:var(--font-body);font-size:13px;font-weight:var(--font-weight-bold);color:#9a9680;letter-spacing:.08em;padding:var(--space-2) var(--space-3) var(--space-1);text-transform:uppercase;flex-shrink:0; }
+/* ── 文件中心側邊欄分類項目 ── */
+.doccenter-sidebar-item { display:flex;align-items:center;gap:var(--space-2);padding:10px var(--space-3);font-family:var(--font-body);font-size:14px;color:#c8c4b4;cursor:pointer;transition:background-color var(--transition-fast);border-left:3px solid transparent;user-select:none;flex-shrink:0; }
+.doccenter-sidebar-item:hover  { background-color:#4a4a4a;color:#e8e4d8; }
+.doccenter-sidebar-item.active { background-color:#434343;color:#c9a84c;border-left-color:var(--color-gold);font-weight:var(--font-weight-medium); }
+.doccenter-sidebar-item.active .doccenter-count { background-color:rgba(201,168,76,.2);color:var(--color-gold); }
+/* ── 文件數量徽章 ── */
+.doccenter-count { margin-left:auto;font-size:10px;background-color:rgba(255,255,255,.1);color:#9a9680;border-radius:var(--radius-full);padding:1px 6px;flex-shrink:0; }
+/* ── 底部彈性填充（把「新增分類」按鈕推到底）── */
+.doccenter-sidebar-spacer { flex:1; }
 .doccenter-content { flex:1;background-color:#434343;overflow-y:auto;display:flex;flex-direction:column;min-height:0; }
 /* 分類資料夾 */
 .doccenter-folder-item { display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);cursor:pointer;transition:background-color var(--transition-fast);border-left:3px solid transparent;font-family:var(--font-body);font-size:var(--font-size-sm);color:#c8c4b4; }
