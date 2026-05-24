@@ -520,7 +520,7 @@
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">全年度每月申請趨勢</p>
               <div style="flex:1;min-height:0;display:flex;align-items:stretch;">
-                <svg id="ana-trend-svg" viewBox="0 0 500 170" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
+                <svg id="ana-trend-svg" viewBox="0 0 500 150" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
                   <defs>
                     <linearGradient id="tg3" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/>
@@ -2682,8 +2682,8 @@ function updateAnalytics() {
         svgContent += '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+seg.color+'" stroke-width="1.2"/>';
         svgContent += '<line x1="'+x2.toFixed(1)+'" y1="'+y2.toFixed(1)+'" x2="'+x3.toFixed(1)+'" y2="'+y3.toFixed(1)+'" stroke="'+seg.color+'" stroke-width="1.2"/>';
         svgContent += '<circle cx="'+x3.toFixed(1)+'" cy="'+y3.toFixed(1)+'" r="2" fill="'+seg.color+'"/>';
-        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3-4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="13" font-weight="700" fill="'+seg.color+'" font-family="sans-serif">'+seg.name+'</text>';
-        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3+11).toFixed(1)+'" text-anchor="'+anchor+'" font-size="12" fill="#c8c4b4" font-family="sans-serif">'+seg.cnt+'件 '+pctStr+'</text>';
+        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3-4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="15" font-weight="700" fill="'+seg.color+'" font-family="sans-serif">'+seg.name+'</text>';
+        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3+12).toFixed(1)+'" text-anchor="'+anchor+'" font-size="13.5" fill="#c8c4b4" font-family="sans-serif">'+seg.cnt+'件 '+pctStr+'</text>';
       }
     });
 
@@ -2828,7 +2828,7 @@ function updateAnalytics() {
       }
       var maxW = Math.max.apply(null, weekCounts.concat([1]));
       var nW = weekCounts.length;
-      var svgW2=460, svgH2=140, padL2=44, padR2=44, padT2=28, padB2=28;
+      var svgW2=455, svgH2=110, padL2=40, padR2=40, padT2=20, padB2=20;
       var w2 = svgW2-padL2-padR2, h2 = svgH2-padT2-padB2;
       var pts2 = weekCounts.map(function(cnt3,i){ return {x:padL2+(nW<2?w2/2:i*w2/(nW-1)), y:padT2+h2-(cnt3/maxW)*h2}; });
       var svgW2Inner = '<defs><linearGradient id="tg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0.03"/></linearGradient></defs>';
@@ -3315,6 +3315,14 @@ function renderMainTable(apps) {
         (function(aid,aname){ vBtn.onclick = function(){ openReview(aid,aname,'verifier',false); }; })(a.id||'',a.name||'');
       }
       lastTd.appendChild(vBtn);
+      // 合意離職：審核完成後顯示「填離職手續」按鈕
+      if (isDone && (a.type||'').indexOf('合意離職') > -1) {
+        var qBtn = document.createElement('button');
+        qBtn.style.cssText = OPS_BASE + 'border-color:#e91e63;background:#fce4ec;color:#c2185b;margin-top:4px;display:block;';
+        qBtn.textContent = '📋 離職手續';
+        (function(app4){ qBtn.onclick = function(){ openQuitStage2(app4); }; })(a);
+        lastTd.appendChild(qBtn);
+      }
     } else if (userRole === 'manager') {
       var rvBtn = document.createElement('button');
       if (isDone || isReject) {
@@ -3331,6 +3339,14 @@ function renderMainTable(apps) {
         (function(aid,aname){ rvBtn.onclick = function(){ openReview(aid,aname,'reviewer',false); }; })(a.id||'',a.name||'');
       }
       lastTd.appendChild(rvBtn);
+      // 合意離職：審核完成後顯示「填離職手續」按鈕
+      if (isDone && (a.type||'').indexOf('合意離職') > -1) {
+        var qBtn2 = document.createElement('button');
+        qBtn2.style.cssText = OPS_BASE + 'border-color:#e91e63;background:#fce4ec;color:#c2185b;margin-top:4px;display:block;';
+        qBtn2.textContent = '📋 離職手續';
+        (function(app4){ qBtn2.onclick = function(){ openQuitStage2(app4); }; })(a);
+        lastTd.appendChild(qBtn2);
+      }
     } else {
       var viewBtn2 = document.createElement('button');
       viewBtn2.style.cssText = OPS_BASE + 'border-color:#90caf9;background:#deeeff;color:#5b9bd5;';
@@ -4854,6 +4870,77 @@ function showToastGlobal(msg, type) {
   setTimeout(function(){ t.style.transform='translateX(120%)'; setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },350); }, 3500);
 }
 
+function openQs2Sig(canvasId, label) {
+  // 複用全局簽名 Modal（如果有）
+  if (typeof openSigModal === 'function') {
+    openSigModal(canvasId, label);
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   離職第二階段 Modal（主管/人資在審核完成後填離職手續）
+   ══════════════════════════════════════════════════════ */
+function openQuitStage2(app) {
+  var m = document.getElementById('quitStage2Modal');
+  if (!m) return;
+  // 填入申請資訊
+  document.getElementById('qs2-info').innerHTML =
+    '<b>申請編號：</b>' + (app.id||'') + '&emsp;' +
+    '<b>申請同仁：</b>' + (app.name||'') + '&emsp;' +
+    '<b>預計離職：</b>' + (app.endDate||'');
+  document.getElementById('qs2-id').value = app.id || '';
+  document.getElementById('qs2-name-display').value = app.name || '';
+  // 若已有移交紀錄則帶入（handover 欄）
+  document.getElementById('qs2-handover').value = app.handover || '';
+  document.getElementById('qs2-actual-date').value = '';
+  // 清除簽名
+  ['qs2-mgr-sig','qs2-hr-sig'].forEach(function(id){
+    var cv = document.getElementById(id);
+    if (cv) { var ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height); cv.width=1; }
+    var pv = document.getElementById(id+'-preview');
+    if (pv) pv.innerHTML = '✍ 點擊簽名';
+  });
+  m.classList.add('open');
+}
+function closeQuitStage2() {
+  var m = document.getElementById('quitStage2Modal');
+  if (m) m.classList.remove('open');
+}
+function submitQuitStage2() {
+  var appId    = (document.getElementById('qs2-id')||{}).value || '';
+  var handover = (document.getElementById('qs2-handover')||{}).value.trim();
+  var actual   = (document.getElementById('qs2-actual-date')||{}).value;
+  if (!handover)  { alert('請填寫移交事項'); return; }
+  if (!actual)    { alert('請填寫實際離職日期'); return; }
+  var mgrCv  = document.getElementById('qs2-mgr-sig');
+  var hrCv   = document.getElementById('qs2-hr-sig');
+  var mgrSig = (mgrCv && mgrCv.width > 1) ? mgrCv.toDataURL() : '';
+  var hrSig  = (hrCv  && hrCv.width  > 1) ? hrCv.toDataURL()  : '';
+  if (!mgrSig) { alert('請完成主管簽名'); return; }
+  if (!hrSig)  { alert('請完成人資簽名'); return; }
+  var btn = document.getElementById('qs2-submit-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ 送出中…'; }
+  fetch(GAS_URL, {
+    method: 'POST', mode: 'no-cors',
+    body: JSON.stringify({
+      action: 'updateQuitStage2',
+      id:           appId,
+      handover:     handover,
+      actualDate:   actual,
+      mgrSig:       mgrSig,
+      hrSig:        hrSig,
+      updatedBy:    CURRENT_USER ? (CURRENT_USER.name||'') : '',
+    })
+  }).then(function(){
+    alert('✅ 離職手續已完成送出！');
+    closeQuitStage2();
+    loadAllApps();
+  }).catch(function(e){
+    if (btn) { btn.disabled = false; btn.textContent = '✅ 確認完成'; }
+    alert('送出失敗：' + e.message);
+  });
+}
+
 function openFlowModal(app) {
   var s   = app.status || '';
   var r1  = app.reviewer || '';
@@ -5642,6 +5729,61 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
           </div>
         </div>
       </div>
+
+<!-- ══ 離職第二階段 Modal（主管/人資填寫離職手續）══ -->
+<div class="modal-overlay" id="quitStage2Modal" style="z-index:8100;">
+  <div style="background:#fff;border-radius:14px;padding:28px 32px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:16px;">
+    <!-- 標題 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-family:var(--font-display);font-size:17px;font-weight:700;color:#1c1c15;">📋 離職手續（第二階段）</div>
+      <button onclick="closeQuitStage2()" style="border:none;background:none;font-size:20px;cursor:pointer;color:#9a9482;line-height:1;">✕</button>
+    </div>
+    <!-- 申請資訊 -->
+    <div id="qs2-info" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:13px;color:#5a5646;line-height:1.8;"></div>
+    <input type="hidden" id="qs2-id"/>
+    <!-- 姓名（唯讀）-->
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <label style="font-size:12px;font-weight:600;color:#5a5646;">申請人姓名</label>
+      <input id="qs2-name-display" class="form-input" readonly style="background:#f5f3ee;color:#5a5646;cursor:not-allowed;"/>
+    </div>
+    <!-- 移交事項 -->
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <label style="font-size:12px;font-weight:600;color:#5a5646;">移交事項 <span style="color:#e53935;">*</span></label>
+      <textarea id="qs2-handover" class="form-textarea" rows="5" placeholder="請填寫工作移交事項、帳號交接、設備歸還等…" style="height:110px;resize:vertical;"></textarea>
+    </div>
+    <!-- 實際離職日期 -->
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <label style="font-size:12px;font-weight:600;color:#5a5646;">實際離職日期 <span style="color:#e53935;">*</span></label>
+      <input id="qs2-actual-date" type="date" class="form-input" style="text-align:left;"/>
+    </div>
+    <!-- 簽名區 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <!-- 主管簽名 -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">主管簽名 <span style="color:#e53935;">*</span></label>
+        <div id="qs2-mgr-sig-preview" onclick="openQs2Sig('qs2-mgr-sig','主管簽名')"
+          style="border:1.5px solid #d4cfc0;border-radius:8px;height:44px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
+          onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
+          onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 點擊簽名</div>
+        <canvas id="qs2-mgr-sig" width="1" height="1" style="display:none;"></canvas>
+      </div>
+      <!-- 人資簽名 -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">人資簽名 <span style="color:#e53935;">*</span></label>
+        <div id="qs2-hr-sig-preview" onclick="openQs2Sig('qs2-hr-sig','人資簽名')"
+          style="border:1.5px solid #d4cfc0;border-radius:8px;height:44px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
+          onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
+          onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 點擊簽名</div>
+        <canvas id="qs2-hr-sig" width="1" height="1" style="display:none;"></canvas>
+      </div>
+    </div>
+    <!-- 底部按鈕 -->
+    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:4px;">
+      <button onclick="closeQuitStage2()" class="btn-cancel">取消</button>
+      <button id="qs2-submit-btn" onclick="submitQuitStage2()" class="btn-submit" style="width:130px;">✅ 確認完成</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
