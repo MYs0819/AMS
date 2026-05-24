@@ -1050,22 +1050,14 @@ input[type="time"] { color-scheme: dark; }
         <div class="f-sec">備註說明</div>
         <textarea class="f-ta" id="quit-note" rows="2" placeholder="其他說明（選填）…"></textarea>
       </div>
-      <!-- 離職手續（員工端鎖定，流程完成後由主管/人資填） -->
-      <div style="background:#faf8f3;border:1.5px solid var(--border);border-radius:9px;padding:14px 16px;">
-        <div class="f-sec" style="margin-bottom:10px;">離職手續*（主管/人資填寫）</div>
-        <div class="f-row f-c2" style="margin-bottom:8px;">
-          <div class="f-g"><label class="f-lbl">移交事項</label><textarea class="f-ta" id="quit-handover" rows="6" placeholder="移交事項說明…" disabled style="opacity:.6;cursor:not-allowed;height:auto;"></textarea></div>
-          <div class="f-g" style="display:flex;flex-direction:column;gap:8px;">
-            <div class="f-g"><label class="f-lbl">接收人簽收</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 僅接收人可簽</div></div>
-            <div class="f-g"><label class="f-lbl">主管簽</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 僅主管可簽</div></div>
-          </div>
+      <!-- 離職手續（員工端僅顯示說明，第二階段由主管/人資在系統操作） -->
+      <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:9px;padding:16px 18px;">
+        <div style="font-size:13px;color:#7a5000;line-height:2;">
+          ℹ️ 離職手續欄須完成兩個步驟後才可填寫：<br>
+          ① 主管審核通過<br>
+          ② 人資覆核通過<br>
+          完成移交後由主管與人資各自簽名並填寫實際離職日期，即完成全部流程。
         </div>
-        <div class="f-row f-c3">
-          <div class="f-g"><label class="f-lbl">實際離職日期</label><input class="f-inp" id="quit-actual-date" type="date" disabled style="opacity:.6;cursor:not-allowed;"/></div>
-          <div class="f-g"><label class="f-lbl">單位主管（簽名）</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 流程完成後開放</div></div>
-          <div class="f-g"><label class="f-lbl">人資主管（簽名）</label><div style="border:1.5px solid var(--border);border-radius:7px;height:36px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa;">🔒 流程完成後開放</div></div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px;background:#fff8e1;border-radius:6px;padding:6px 10px;">ℹ️ 離職手續欄須完成兩個步驟後才可填寫：①主管審核通過 → ②人資覆核通過。完成移交後由主管與人資各自簽名並填寫實際離職日期即完成全部流程。</div>
       </div>
       <!-- 已知悉簽名 -->
       <div class="notes-box">
