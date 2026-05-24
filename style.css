@@ -101,7 +101,7 @@
      ──────────────────────────────────── */
   --color-number-default:      #1c1c15;   /* 預設數字色（申請總數）*/
   --color-number-gold:         #c9a84c;   /* 金色數字（國假/待領等）★可調 */
-  --color-number-deep-blue:    #1a3a6b;   /* 深藍數字（已完成）★可調 */
+  --color-number-deep-blue:    #5b9bd5;   /* 淺藍數字（審核中/已完成）★可調 */
   --color-number-red:          #ff0000;   /* 紅色數字 ★可調 */
   --color-number-purple:       #5c1f8a;   /* 紫色數字 ★可調 */
   --color-number-alert:        #e65100;   /* 橘色警示數字（審核中）★可調 */
@@ -123,7 +123,7 @@
   --tab-pending-bg:    #ede8f5;   /* 「待補件」Tab ★可調 */
   --tab-done-bg:       #efefef;   /* 「已完成」Tab ★可調 */
   --tab-reject-bg:     #fae8e8;   /* 「已退件」Tab ★可調 */
-  --tab-supplement-bg: #dceeff;   /* 「審核中/覆核中」Tab ★可調 */
+  --tab-supplement-bg: #e8f4fd;   /* 「審核中/覆核中」Tab ★可調（調淺了）*/
   --tab-selected-bg:   #434343;   /* 選中 Tab 背景色 ★可調 */
   --tab-selected-text: #ffff00;   /* 選中 Tab 文字色 ★可調 */
 
@@ -150,9 +150,9 @@
   --color-status-pending-text:  #e65100;
   --color-status-pending-border:#ffcc80;
   /* 狀態：已完成（藍）*/
-  --color-status-done-bg:       #e3f2fd;
-  --color-status-done-text:     #1565c0;
-  --color-status-done-border:   #90caf9;
+  --color-status-done-bg:       #edf6ff;
+  --color-status-done-text:     #5b9bd5;
+  --color-status-done-border:   #b8d9f5;
   /* 狀態：退件（紅）*/
   --color-status-reject-bg:     #fce4e4;
   --color-status-reject-text:   #b71c1c;
