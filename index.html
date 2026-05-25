@@ -164,22 +164,29 @@
 
     <!-- ══ 手機底部導覽列（≤768px 顯示）══ -->
     <nav id="mobile-bottom-nav" style="display:none;">
-      <a class="mob-nav-item" onclick="showPage('doccenter',this)" data-page="doccenter">
+      <a class="mob-nav-item" id="mnav-文件" onclick="mobNavToggle('文件')">
         <span class="mob-nav-icon">📁</span><span class="mob-nav-label">文件</span>
       </a>
-      <a class="mob-nav-item" onclick="showPage('my',this)" data-page="my">
+      <a class="mob-nav-item" id="mnav-申請" onclick="mobNavToggle('申請')">
         <span class="mob-nav-icon">📝</span><span class="mob-nav-label">申請</span>
       </a>
-      <a class="mob-nav-item mob-nav-center" onclick="openFormModal()">
-        <span class="mob-nav-icon" style="font-size:26px;line-height:1;">＋</span>
+      <a class="mob-nav-item" id="mnav-系統" onclick="mobNavToggle('系統')">
+        <span class="mob-nav-icon">⚙️</span><span class="mob-nav-label">系統</span>
       </a>
-      <a class="mob-nav-item" onclick="showPage('monthly',this)" data-page="monthly">
-        <span class="mob-nav-icon">📅</span><span class="mob-nav-label">本月</span>
+      <a class="mob-nav-item" id="mnav-功能" onclick="mobNavToggle('功能')">
+        <span class="mob-nav-icon">🗂</span><span class="mob-nav-label">功能</span>
       </a>
-      <a class="mob-nav-item" onclick="showPage('analytics',this)" data-page="analytics">
-        <span class="mob-nav-icon">📊</span><span class="mob-nav-label">數據</span>
+      <a class="mob-nav-item" id="mnav-管理" onclick="mobNavToggle('管理')">
+        <span class="mob-nav-icon">🔧</span><span class="mob-nav-label">管理</span>
       </a>
     </nav>
+
+    <!-- 手機選單：展開式子選單 -->
+    <div id="mob-submenu-overlay" onclick="mobNavClose()" style="display:none;position:fixed;inset:0;z-index:590;background:rgba(0,0,0,.45);"></div>
+    <div id="mob-submenu" style="display:none;position:fixed;bottom:58px;left:0;right:0;z-index:595;background:#1f1f17;border-top:1px solid #3a3a2a;border-radius:16px 16px 0 0;padding:12px 8px 6px;max-height:55vh;overflow-y:auto;">
+      <div id="mob-submenu-title" style="font-size:11px;font-weight:700;color:#9a9680;letter-spacing:.08em;padding:0 8px 8px;text-transform:uppercase;"></div>
+      <div id="mob-submenu-items" style="display:flex;flex-direction:column;gap:2px;"></div>
+    </div>
 
     <!-- ══ 主內容 ══ -->
     <main class="app-main">
@@ -2079,9 +2086,9 @@ function dcPreviewFile(fileId, name) {
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9500;display:flex;flex-direction:column;align-items:center;justify-content:center;';
     overlay.innerHTML =
       '<div style="position:relative;width:92vw;height:88vh;background:#111;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1a1a1a;flex-shrink:0;">' +
-          '<span id="dc-preview-title" style="color:#e8e4d8;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80%;"></span>' +
-          '<button onclick="document.getElementById(\'dc-preview-overlay\').style.display=\'none\'" style="background:#e53935;border:none;color:#fff;border-radius:6px;width:28px;height:28px;font-size:16px;cursor:pointer;flex-shrink:0;">✕</button>' +
+        '<div style="display:flex;align-items:center;justify-content:center;position:relative;padding:10px 16px;background:#1a1a1a;flex-shrink:0;">' +
+          '<span id="dc-preview-title" style="color:#e8e4d8;font-size:14px;font-weight:600;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75%;"></span>' +
+          '<button onclick="document.getElementById(\'dc-preview-overlay\').style.display=\'none\'" style="position:absolute;right:12px;background:#e53935;border:none;color:#fff;border-radius:6px;width:28px;height:28px;font-size:16px;cursor:pointer;">✕</button>' +
         '</div>' +
         '<div id="dc-preview-body" style="flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;"></div>' +
       '</div>';
@@ -3096,6 +3103,23 @@ function fmtDRange(s, e) {
   return cvt(s) + ' ~ ' + cvt(e);
 }
 
+/* ── 只格式化日期（不含時間），處理各種格式包括 Date.toString() ── */
+function fmtDateOnly(v) {
+  if (!v) return '—';
+  var str = String(v).trim();
+  // 已是 YYYY/MM/DD 或 YYYY-MM-DD
+  var m = str.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if (m) return m[1]+'/'+String(m[2]).padStart(2,'0')+'/'+String(m[3]).padStart(2,'0');
+  // Date.toString() 格式：Mon May 31 2026 ...
+  var d = new Date(str);
+  if (!isNaN(d.getTime())) {
+    var p=function(n){return String(n).padStart(2,'0');};
+    return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate());
+  }
+  return str;
+}
+
+
 function loadMainData() {
   var tbody = document.getElementById('tableBody');
   if (!tbody) return;
@@ -3339,7 +3363,7 @@ function renderMainTable(apps) {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;text-align:center;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
-      '<td class="td-mono" style="font-size:11px;">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td class="td-mono" style="font-size:11px;">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+reviewerCell+'</td>'+
       '<td style="text-align:center;">'+verifierCell+'</td>'+
@@ -3731,7 +3755,7 @@ function renderMyTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>';
@@ -4738,7 +4762,9 @@ function openReview(id, name, type, readOnly) {
     '申請同仁：<strong>' + name + '</strong>' +
     (app ? '<br>類　　型：' + (app.type||'') +
            '<br>假　　別：' + (app.subtype||'') +
-           '<br>起　　訖：' + fmtDRange(app.startDate, app.endDate) : '');
+           ((app.type||'').indexOf('合意離職') > -1
+             ? '<br>預計離職：' + fmtDateOnly(app.endDate)
+             : '<br>起　　訖：' + fmtDRange(app.startDate, app.endDate)) : '');
 
   // 附件區（顯示員工附件給主管/人資查看，不允許代替上傳）
   var reviewAttach = document.getElementById('reviewModalAttach');
@@ -4826,6 +4852,74 @@ function openReview(id, name, type, readOnly) {
   }
 
   document.getElementById('reviewModal').classList.add('open');
+}
+
+/* ══ 手機底部導覽 ── 展開式子選單 ══ */
+var MOB_MENUS = {
+  '文件': [
+    { icon:'🗂', label:'文件中心', action:function(){ showPage('doccenter', null); } }
+  ],
+  '申請': [
+    { icon:'📝', label:'請假申請',     action:function(){ window.open('application-forms.html','_blank'); } },
+    { icon:'📂', label:'申請紀錄',     action:function(){ showPage('myrecords', null); } },
+    { icon:'🚨', label:'本月紀錄',     action:function(){ showPage('monthly', null); } },
+    { icon:'📋', label:'線上表單申請', action:function(){ showPage('extraops', null); } }
+  ],
+  '系統': [
+    { icon:'🕐', label:'每日工時登記', action:function(){ showPage('workhour', null); } },
+    { icon:'📑', label:'勞報稅務建檔', action:function(){ showPage('labor', null); } },
+    { icon:'🧾', label:'核銷帳務登記', action:function(){ window.open('https://docs.google.com/spreadsheets/d/1_rWMMZDsfxztQhuZNZyMpey1RqhkS_ufs4InAbxUNus/edit','_blank'); } },
+    { icon:'💳', label:'每月匯款明細', action:function(){ window.open('https://docs.google.com/spreadsheets/d/1SMXjeTg0H4iFAXOovIdqFs-eSuziysDGhQpxVMHoLu4/edit','_blank'); } }
+  ],
+  '功能': [
+    { icon:'📁', label:'所有申請', action:function(){ showPage('main', null); } },
+    { icon:'📅', label:'本月查詢', action:function(){ showPage('monthly-all', null); } }
+  ],
+  '管理': [
+    { icon:'💰', label:'薪資單',   action:function(){ showToastGlobal('薪資單功能開發中…','info'); } },
+    { icon:'📈', label:'數據分析', action:function(){ showPage('analytics', null); } },
+    { icon:'💬', label:'意見回饋', action:function(){ showPage('feedback-mgr', null); } },
+    { icon:'🚨', label:'問題回報', action:function(){ showPage('report-mgr', null); } },
+    { icon:'🧑‍💼', label:'帳號管理', action:function(){ showPage('account', null); } }
+  ]
+};
+var _mobActiveSection = '';
+function mobNavToggle(section) {
+  if (_mobActiveSection === section) { mobNavClose(); return; }
+  _mobActiveSection = section;
+  var items = MOB_MENUS[section] || [];
+  var titleEl = document.getElementById('mob-submenu-title');
+  var itemsEl = document.getElementById('mob-submenu-items');
+  var sub = document.getElementById('mob-submenu');
+  var ov  = document.getElementById('mob-submenu-overlay');
+  if (!sub || !itemsEl) return;
+  if (titleEl) titleEl.textContent = section;
+  itemsEl.innerHTML = '';
+  items.forEach(function(it, idx) {
+    var div = document.createElement('div');
+    div.className = 'mob-sub-item';
+    div.innerHTML = '<span style="font-size:18px;">'+it.icon+'</span><span style="font-size:14px;font-weight:500;color:#c8c4b4;">'+it.label+'</span>';
+    (function(i,s){ div.onclick = function(){ mobSubExec(i,s); }; })(idx, section);
+    itemsEl.appendChild(div);
+  });
+  sub.style.display = 'block';
+  if (ov) ov.style.display = 'block';
+  document.querySelectorAll('.mob-nav-item').forEach(function(el){ el.classList.remove('active'); });
+  var activeTab = document.getElementById('mnav-'+section);
+  if (activeTab) activeTab.classList.add('active');
+}
+function mobSubExec(idx, section) {
+  var items = MOB_MENUS[section] || [];
+  if (items[idx]) items[idx].action();
+  mobNavClose();
+}
+function mobNavClose() {
+  _mobActiveSection = '';
+  var sub = document.getElementById('mob-submenu');
+  var ov  = document.getElementById('mob-submenu-overlay');
+  if (sub) sub.style.display = 'none';
+  if (ov)  ov.style.display  = 'none';
+  document.querySelectorAll('.mob-nav-item').forEach(function(el){ el.classList.remove('active'); });
 }
 
 function openReviewSig() {
@@ -4949,7 +5043,7 @@ function openQs2Sig(canvasId, label) {
 function openQuitStage2(app) {
   var m = document.getElementById('quitStage2Modal');
   if (!m) return;
-  var planDate = app.endDate || app.quitPlanDate || '';
+  var planDate = fmtDateOnly(app.endDate || app.quitPlanDate || '');
   document.getElementById('qs2-info').innerHTML =
     '<b>申請編號：</b>' + (app.id||'') + '&emsp;' +
     '<b>申請同仁：</b>' + (app.name||'') + '&emsp;' +
@@ -5033,7 +5127,9 @@ function openFlowModal(app) {
     '申請同仁：' + (app.name||'') + '<br>' +
     '類　　型：' + (app.type||'') + '<br>' +
     '假　　別：' + (app.subtype||'') + '<br>' +
-    '起　　訖：' + fmtDRange(app.startDate, app.endDate);
+    ((app.type||'').indexOf('合意離職') > -1
+      ? '預計離職：' + fmtDateOnly(app.endDate)
+      : '起　　訖：' + fmtDRange(app.startDate, app.endDate));
 
   // 員工名字 & 送出時間
   var empName = document.getElementById('flow-emp-name2');
@@ -5381,7 +5477,7 @@ function renderMonTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>'+
@@ -5655,7 +5751,7 @@ function renderMallTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+(a.endDate||'—') : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
