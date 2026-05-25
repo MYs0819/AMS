@@ -33,14 +33,13 @@
     <div class="login-field">
       <label class="login-label">電子信箱</label>
       <div style="position:relative;">
-        <input class="login-input" id="login-mail" type="text"
+        <input class="login-input" id="login-mail" type="email"
           placeholder="example@gmail.com"
-          autocomplete="username"
+          autocomplete="email"
           oninput="updateMailSuggestions()"
           onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"
-          list="mail-suggestions"
-          style="padding-right:12px;"/>
-        <datalist id="mail-suggestions"></datalist>
+          style="padding-right:12px;font-size:16px;"/>
+        <div id="login-mail-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--color-gold);border-radius:8px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.12);overflow:hidden;"></div>
       </div>
     </div>
 
@@ -83,8 +82,8 @@
       </div>
     </div>
     <div class="header-right">
-      <button class="btn-feedback" onclick="openFeedback()">！意見欄</button>
-      <button class="btn-danger" onclick="openBugReport()">❌ 回報問題</button>
+      <button class="btn-feedback" onclick="openFeedback()" title="意見欄"><span class="header-btn-icon">！</span><span class="header-btn-text">意見欄</span></button>
+      <button class="btn-danger" onclick="openBugReport()" title="回報問題"><span class="header-btn-icon">❌</span><span class="header-btn-text">回報問題</span></button>
       <button onclick="openLoginModal()" id="loginNavBtn" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid var(--color-gold);background:var(--color-gold-bg);color:var(--color-gold);font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold)';this.style.color='#1c1c15'" onmouseout="this.style.background='var(--color-gold-bg)';this.style.color='var(--color-gold)'">🔑 登入</button>
       <div class="user-chip" id="userChip" onclick="toggleUserMenu()" style="display:none;"><div class="user-chip-avatar" id="userInitial">?</div><span class="user-chip-name" id="userName">訪客</span></div>
       
@@ -1312,8 +1311,8 @@
         </div>
 
         <!-- 表格 -->
-        <div class="table-section" style="border-top:none;border-radius:var(--radius-lg);">
-          <div class="toolbar" style="flex-wrap:wrap;gap:8px;">
+        <div class="table-section" id="acc-desktop-table" style="border-top:none;border-radius:var(--radius-lg);">
+          <div class="toolbar acc-filter-bar" style="flex-wrap:wrap;gap:8px;">
             <div class="search-box" style="flex:1;min-width:140px;">
               <span class="search-icon">🔍</span>
               <input class="search-input" id="acc-search" placeholder="搜尋姓名或信箱…" oninput="renderAccTable()"/>
@@ -1324,7 +1323,6 @@
               <option value="admin">admin</option>
               <option value="manager">manager</option>
               <option value="fulltime">fulltime</option>
-              <option value="employee">員工（舊）</option>
               <option value="parttime">parttime</option>
             </select>
             <select class="filter-select" id="acc-status-filter" onchange="renderAccTable()" style="flex:1;min-width:100px;">
@@ -1347,6 +1345,9 @@
             </tbody>
           </table>
         </div>
+
+        <!-- 手機版帳號卡片列表 -->
+        <div id="acc-mobile-list" style="display:none;padding:8px 0;"></div>
 
       </div>
 
@@ -1438,8 +1439,8 @@
       </div>
     </div>
     <div style="display:flex;justify-content:center;gap:12px;margin-top:4px;">
-      <button onclick="closeModal('accModal')" style="height:40px;padding:0 24px;border-radius:10px;border:1.5px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:14px;cursor:pointer;transition:.15s;" onmouseover="this.style.background='#e8e3d6'" onmouseout="this.style.background='#f5f5f5'">取消</button>
-      <button id="acc-save-btn" onclick="saveAccount()" style="height:40px;padding:0 32px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold-light)'" onmouseout="this.style.background='var(--color-gold)'">💾 儲存</button>
+      <button onclick="closeModal('accModal')" style="width:130px;height:40px;border-radius:10px;border:1.5px solid var(--color-border-card);background:#f5f5f5;font-family:var(--font-body);font-size:14px;cursor:pointer;transition:.15s;" onmouseover="this.style.background='#e8e3d6'" onmouseout="this.style.background='#f5f5f5'">取消</button>
+      <button id="acc-save-btn" onclick="saveAccount()" style="width:130px;height:40px;border-radius:10px;border:none;background:var(--color-gold);color:#1c1c15;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold-light)'" onmouseout="this.style.background='var(--color-gold)'">💾 儲存</button>
     </div>
     <input type="hidden" id="acc-edit-id"/>
   </div>
@@ -3108,7 +3109,8 @@ function fmtDRange(s, e) {
 function fmtDateOnly(v) {
   if (!v) return '—';
   var str = String(v).trim();
-  // 已是 YYYY/MM/DD 或 YYYY-MM-DD
+  if (str === '—' || str === '') return '—';
+  // 已是 YYYY/MM/DD 或 YYYY-MM-DD（可能含時間）
   var m = str.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
   if (m) return m[1]+'/'+String(m[2]).padStart(2,'0')+'/'+String(m[3]).padStart(2,'0');
   // Date.toString() 格式：Mon May 31 2026 ...
@@ -3364,7 +3366,7 @@ function renderMainTable(apps) {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td class="td-mono" style="font-size:11px;text-align:center;">'+(fmtDT(a.applyDate)||'—')+'</td>'+
-      '<td class="td-mono" style="font-size:11px;">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td class="td-mono" style="font-size:11px;">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.startDate||a.endDate||a.quitPlanDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:'+sBg+';color:'+sColor+';">'+sDisplay+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+reviewerCell+'</td>'+
       '<td style="text-align:center;">'+verifierCell+'</td>'+
@@ -3756,7 +3758,7 @@ function renderMyTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.startDate||a.endDate||a.quitPlanDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>';
@@ -4329,28 +4331,35 @@ function applyPermissions(role) {
   });
 }
 function updateMailSuggestions() {
-  var val  = document.getElementById('login-mail').value;
-  var list = document.getElementById('mail-suggestions');
-  list.innerHTML = '';
+  var mailEl = document.getElementById('login-mail');
+  var val    = mailEl ? mailEl.value : '';
+  var dd     = document.getElementById('login-mail-dropdown');
+  if (!dd) return;
+  if (!val) { dd.style.display='none'; return; }
   var atIdx = val.indexOf('@');
+  var suggestions = [];
   if (atIdx < 0) {
-    // 還沒打 @，補全各個 domain
-    MAIL_DOMAINS.forEach(function(d){
-      var opt = document.createElement('option');
-      opt.value = val + '@' + d;
-      list.appendChild(opt);
-    });
+    suggestions = MAIL_DOMAINS.map(function(d){ return val + '@' + d; });
   } else {
-    // 已有 @，比對 domain
-    var user   = val.slice(0, atIdx);
-    var domain = val.slice(atIdx + 1).toLowerCase();
-    MAIL_DOMAINS.filter(function(d){ return d.startsWith(domain); })
-      .forEach(function(d){
-        var opt = document.createElement('option');
-        opt.value = user + '@' + d;
-        list.appendChild(opt);
-      });
+    var u   = val.slice(0, atIdx);
+    var dom = val.slice(atIdx + 1).toLowerCase();
+    suggestions = dom
+      ? MAIL_DOMAINS.filter(function(d){ return d.startsWith(dom); }).map(function(d){ return u + '@' + d; })
+      : MAIL_DOMAINS.map(function(d){ return u + '@' + d; });
   }
+  suggestions = suggestions.filter(function(s){ return s !== val; });
+  if (!suggestions.length) { dd.style.display='none'; return; }
+  dd.innerHTML = suggestions.map(function(s){
+    return '<div onclick="selectLoginMail(\''+s+'\')" style="padding:10px 14px;cursor:pointer;font-size:14px;color:#1c1c15;border-bottom:1px solid #f0ece2;transition:.1s;" onmouseover="this.style.background=\'#fdf8ee\'" onmouseout="this.style.background=\'\'">'+s+'</div>';
+  }).join('');
+  dd.style.display = 'block';
+}
+function selectLoginMail(val) {
+  var el = document.getElementById('login-mail');
+  if (el) { el.value = val; }
+  var dd = document.getElementById('login-mail-dropdown');
+  if (dd) dd.style.display = 'none';
+  setTimeout(function(){ var p=document.getElementById('login-pass'); if(p) p.focus(); }, 50);
 }
 
 /* ── 顯示/隱藏密碼 ── */
@@ -4504,8 +4513,12 @@ function renderAccTable() {
   });
 
   tbody.innerHTML = '';
+  var mobileList = document.getElementById('acc-mobile-list');
+  if (mobileList) mobileList.innerHTML = '';
+
   if (!list.length) {
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--color-text-muted);">無符合帳號</td></tr>';
+    if (mobileList) mobileList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-text-muted);">無符合帳號</div>';
     return;
   }
   list.forEach(function(a, i){
@@ -4528,7 +4541,46 @@ function renderAccTable() {
         '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer;">🗑</button>'
       '</td>';
     tbody.appendChild(tr);
+
+    // 手機版：卡片
+    if (mobileList) {
+      var card = document.createElement('div');
+      card.className = 'acc-mobile-card';
+      card.innerHTML =
+        '<div class="acc-mobile-card-header">' +
+          '<div>' +
+            '<div class="acc-mobile-card-name">' + (a.name||'—') + '</div>' +
+            '<div class="acc-mobile-card-mail">' + (a.mail||'—') + '</div>' +
+          '</div>' +
+          '<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;'+roleStyle+'">' + (ROLE_LABEL[a.role]||a.role) + '</span>' +
+        '</div>' +
+        '<div class="acc-mobile-card-row">' +
+          '<span style="font-size:12px;color:var(--color-text-secondary);">團隊：' + (a.team||'—') + '</span>' +
+          '<span style="font-size:12px;color:var(--color-text-secondary);">職稱：' + (a.title||'—') + '</span>' +
+          '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;' + (a.status==='停用'?'color:#c62828;background:#fce4e4;border:1px solid #ef9a9a;':'color:#2e7d32;background:#e8f5e9;border:1px solid #a5d6a7;') + '">' + (a.status==='停用'?'停用':'啟用中') + '</span>' +
+        '</div>' +
+        '<div class="acc-mobile-card-detail" id="acc-card-detail-'+i+'">' +
+          '<div style="font-size:11px;color:var(--color-text-muted);">建立：' + formatAccDate(a.createdAt) + '</div>' +
+          '<div class="acc-mobile-card-actions">' +
+            '<button data-acc="'+encodeURIComponent(JSON.stringify(a))+'" onclick="openAccountModal(\'edit\',this.dataset.acc)" style="background:#fdfcf9;border-color:var(--color-border-table);">✏️ 編輯</button>' +
+            '<button data-mail="'+(a.mail||'')+'" onclick="resetPassword(this.dataset.mail)" style="background:#fff8e1;border-color:#ffcc80;color:#7a5000;">🔑 重設密碼</button>' +
+            (a.status==='停用'
+              ? '<button data-mail="'+(a.mail||'')+'" onclick="enableAccount(this.dataset.mail)" style="background:#e8f5e9;border-color:#a5d6a7;color:#2e7d32;">✅ 啟用</button>'
+              : '<button data-mail="'+(a.mail||'')+'" onclick="disableAccount(this.dataset.mail)" style="background:#fce4e4;border-color:#ef9a9a;color:#c62828;">🚫 停用</button>') +
+            '<button data-mail="'+(a.mail||'')+'" data-name="'+(a.name||'')+'" onclick="deleteAccount(this.dataset.mail,this.dataset.name)" style="background:#fff;border-color:#d32f2f;color:#d32f2f;">🗑 刪除</button>' +
+          '</div>' +
+        '</div>' +
+        '<div style="text-align:right;font-size:11px;color:var(--color-text-muted);margin-top:2px;" onclick="toggleAccCard(\'acc-card-detail-'+i+'\',this)">▼ 展開</div>';
+      mobileList.appendChild(card);
+    }
   });
+}
+
+function toggleAccCard(detailId, toggleEl) {
+  var d = document.getElementById(detailId);
+  if (!d) return;
+  d.classList.toggle('open');
+  if (toggleEl) toggleEl.textContent = d.classList.contains('open') ? '▲ 收起' : '▼ 展開';
 }
 
 /* ── 開啟帳號 Modal ── */
@@ -4764,7 +4816,7 @@ function openReview(id, name, type, readOnly) {
     (app ? '<br>類　　型：' + (app.type||'') +
            '<br>假　　別：' + (app.subtype||'') +
            '<br>起　　訖：' + ((app.type||'').indexOf('合意離職') > -1
-             ? fmtDateOnly(app.endDate)
+             ? fmtDateOnly(app.startDate||app.endDate||app.quitPlanDate)
              : fmtDRange(app.startDate, app.endDate)) : '');
 
   // 附件區（顯示員工附件給主管/人資查看，不允許代替上傳）
@@ -5044,7 +5096,7 @@ function openQs2Sig(canvasId, label) {
 function openQuitStage2(app) {
   var m = document.getElementById('quitStage2Modal');
   if (!m) return;
-  var planDate = fmtDateOnly(app.endDate || app.quitPlanDate || '');
+  var planDate = fmtDateOnly(app.startDate || app.endDate || app.quitPlanDate || '');
   document.getElementById('qs2-info').innerHTML =
     '<b>申請編號：</b>' + (app.id||'') + '&emsp;' +
     '<b>申請同仁：</b>' + (app.name||'') + '&emsp;' +
@@ -5129,7 +5181,7 @@ function openFlowModal(app) {
     '類　　型：' + (app.type||'') + '<br>' +
     '假　　別：' + (app.subtype||'') + '<br>' +
     '起　　訖：' + ((app.type||'').indexOf('合意離職') > -1
-      ? fmtDateOnly(app.endDate)
+      ? fmtDateOnly(app.startDate||app.endDate||app.quitPlanDate)
       : fmtDRange(app.startDate, app.endDate));
 
   // 員工名字 & 送出時間
@@ -5478,7 +5530,7 @@ function renderMonTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.startDate||a.endDate||a.quitPlanDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1Cell+'</td>'+
       '<td style="text-align:center;">'+r2Cell+'</td>'+
@@ -5752,7 +5804,7 @@ function renderMallTable() {
       '<td style="text-align:center;"><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:#f0e8c4;color:#7a5000;">'+(a.type||'—')+'</span></td>'+
       '<td style="text-align:center;font-size:12px;">'+(a.subtype||'—')+'</td>'+
       '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+fmtDT(a.applyDate||'')+'</td>'+
-      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.endDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
+      '<td style="text-align:center;font-size:11px;font-family:var(--font-mono);">'+ ((a.type||'').indexOf('合意離職')>-1 ? '<span style="font-size:10px;color:#9a9482;">預計離職</span><br>'+fmtDateOnly(a.startDate||a.endDate||a.quitPlanDate) : fmtDRange(a.startDate,a.endDate)) +'</td>'+
       '<td style="text-align:center;vertical-align:middle;line-height:1.4;"><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'+proofBadge(a)+'</td>'+
       '<td style="text-align:center;">'+r1+'</td>'+
       '<td style="text-align:center;font-size:11px;">'+r2+'</td>'+
