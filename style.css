@@ -1129,6 +1129,32 @@ html, body {
 }
 
 
+/* ── 手機版 Header 置頂 ── */
+@media (max-width: 768px) {
+  .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .app-wrapper {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .app-body {
+    flex: 1;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  .app-main {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 70px;
+  }
+}
+
 /* ── 手機底部導覽列 ── */
 #mobile-bottom-nav {
   position: fixed;
@@ -1140,7 +1166,7 @@ html, body {
   align-items: center;
   justify-content: space-around;
   z-index: 600;
-  padding-bottom: env(safe-area-inset-bottom, 0px); /* iPhone 底部安全區 */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .mob-nav-item {
   flex: 1;
@@ -1153,27 +1179,32 @@ html, body {
   cursor: pointer;
   padding: 6px 4px;
   border-radius: 8px;
-  transition: background-color .15s;
+  transition: color .15s;
   color: #9a9680;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 .mob-nav-item:hover,
 .mob-nav-item.active { color: var(--color-gold); }
 .mob-nav-icon  { font-size: 20px; line-height: 1; }
-.mob-nav-label { font-size: 10px; font-weight: 500; white-space: nowrap; }
-.mob-nav-center {
-  flex: 0 0 52px;
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: var(--color-gold);
-  color: #1c1c15 !important;
-  margin-bottom: 18px;
-  box-shadow: 0 4px 12px rgba(201,168,76,.45);
-}
+.mob-nav-label { font-size: 10px; font-weight: 600; white-space: nowrap; }
 
-/* 手機版：底部 nav 出現時，main 要留出空間 */
+/* ── 手機子選單項目 ── */
+.mob-sub-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mob-sub-item:hover,
+.mob-sub-item:active { background-color: #2e2e22; }
+
+/* 手機版：底部 nav 出現時 */
 @media (max-width: 768px) {
   #mobile-bottom-nav { display: flex !important; }
-  .app-sidebar        { display: none !important; }  /* 側欄改為底部 nav，隱藏桌面側欄 */
-  .app-main           { padding-bottom: 70px; }      /* 避免內容被 nav 遮住 */
-  .app-body           { flex-direction: column; }
+  .app-sidebar        { display: none !important; }
 }
