@@ -162,6 +162,25 @@
 
     </aside>
 
+    <!-- ══ 手機底部導覽列（≤768px 顯示）══ -->
+    <nav id="mobile-bottom-nav" style="display:none;">
+      <a class="mob-nav-item" onclick="showPage('doccenter',this)" data-page="doccenter">
+        <span class="mob-nav-icon">📁</span><span class="mob-nav-label">文件</span>
+      </a>
+      <a class="mob-nav-item" onclick="showPage('my',this)" data-page="my">
+        <span class="mob-nav-icon">📝</span><span class="mob-nav-label">申請</span>
+      </a>
+      <a class="mob-nav-item mob-nav-center" onclick="openFormModal()">
+        <span class="mob-nav-icon" style="font-size:26px;line-height:1;">＋</span>
+      </a>
+      <a class="mob-nav-item" onclick="showPage('monthly',this)" data-page="monthly">
+        <span class="mob-nav-icon">📅</span><span class="mob-nav-label">本月</span>
+      </a>
+      <a class="mob-nav-item" onclick="showPage('analytics',this)" data-page="analytics">
+        <span class="mob-nav-icon">📊</span><span class="mob-nav-label">數據</span>
+      </a>
+    </nav>
+
     <!-- ══ 主內容 ══ -->
     <main class="app-main">
 
@@ -1522,6 +1541,8 @@
       <select class="feedback-type-select" id="feedbackType">
         <option value="">請選擇</option>
         <option value="投訴">📢 投訴</option>
+        <option value="霸凌">🚫 霸凌</option>
+        <option value="性騷擾">⚠️ 性騷擾</option>
         <option value="詢問">❓ 詢問</option>
         <option value="建議">💡 建議</option>
         <option value="表揚">🌟 表揚</option>
@@ -2048,16 +2069,40 @@ function dcUpdateCounts() {
 /* ── 圖片點擊預覽 ── */
 function dcPreviewFile(fileId, name) {
   var ext = (name || '').split('.').pop().toLowerCase();
-  var isImg = ['jpg','jpeg','png','gif','webp'].indexOf(ext) >= 0;
-  var url;
-  if (isImg) {
-    // 圖片用 thumbnail URL 直接顯示
-    url = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200';
-  } else {
-    // PDF 用 Google Drive 預覽頁
-    url = 'https://drive.google.com/file/d/' + fileId + '/view';
+  var isImg = ['jpg','jpeg','png','gif','webp','bmp'].indexOf(ext) >= 0;
+  var isPdf = ext === 'pdf';
+  // 建立或取得預覽 Modal
+  var overlay = document.getElementById('dc-preview-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'dc-preview-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9500;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+    overlay.innerHTML =
+      '<div style="position:relative;width:92vw;height:88vh;background:#111;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1a1a1a;flex-shrink:0;">' +
+          '<span id="dc-preview-title" style="color:#e8e4d8;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80%;"></span>' +
+          '<button onclick="document.getElementById(\'dc-preview-overlay\').style.display=\'none\'" style="background:#e53935;border:none;color:#fff;border-radius:6px;width:28px;height:28px;font-size:16px;cursor:pointer;flex-shrink:0;">✕</button>' +
+        '</div>' +
+        '<div id="dc-preview-body" style="flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;"></div>' +
+      '</div>';
+    overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.style.display='none'; });
+    document.body.appendChild(overlay);
   }
-  window.open(url, '_blank');
+  var titleEl = document.getElementById('dc-preview-title');
+  var bodyEl  = document.getElementById('dc-preview-body');
+  if (titleEl) titleEl.textContent = dcStripExt(name);
+  if (bodyEl) {
+    if (isImg) {
+      var imgUrl = 'https://drive.google.com/thumbnail?id='+fileId+'&sz=w1600';
+      bodyEl.innerHTML = '<img src="'+imgUrl+'" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:4px;" onerror="this.src=\'https://drive.google.com/uc?export=view&id='+fileId+'\'"/>';
+    } else if (isPdf) {
+      var embedUrl = 'https://drive.google.com/file/d/'+fileId+'/preview';
+      bodyEl.innerHTML = '<iframe src="'+embedUrl+'" style="width:100%;height:100%;border:none;" allow="autoplay"></iframe>';
+    } else {
+      bodyEl.innerHTML = '<div style="color:#aaa;text-align:center;padding:40px;font-size:14px;">此格式暫不支援預覽<br><a href="https://drive.google.com/file/d/'+fileId+'/view" target="_blank" style="color:#c9a84c;margin-top:12px;display:inline-block;">在新分頁開啟 ↗</a></div>';
+    }
+  }
+  overlay.style.display = 'flex';
 }
 
 /* ── 中文分類 → DOM key 對應表 ── */
@@ -2117,11 +2162,15 @@ function dcBuildFileList(files) {
     var tagLabel = f.cat || '其他';
     var icon     = dcFileIcon(f.name); // 🖼️ 圖片 / 📋 PDF / 📄 其他
     var dlUrl    = 'https://drive.google.com/uc?export=download&id=' + f.fileId;
+    var viewUrl  = 'https://drive.google.com/file/d/' + f.fileId + '/preview';
+    var isImage  = /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(f.name);
+    var isPdf    = /\.pdf$/i.test(f.name);
+    var canPreview = isImage || isPdf;
 
     // 清單模式
     var li = document.createElement('div');
     li.className = 'doccenter-file-item';
-    li.setAttribute('data-cat', catKey);     // 英文 key，供過濾
+    li.setAttribute('data-cat', catKey);
     li.setAttribute('data-fileid', f.fileId);
     li.innerHTML =
       '<span class="doccenter-file-icon">' + icon + '</span>' +
@@ -2133,6 +2182,7 @@ function dcBuildFileList(files) {
           '<span>' + f.size + ' MB</span>' +
         '</div>' +
       '</div>' +
+      (canPreview ? '<button style="'+dcDlStyle.replace('text-decoration:none','')+'margin-right:4px;border:1px solid #555;border-radius:5px;background:#444;cursor:pointer;" onclick="dcPreviewFile(\''+f.fileId+'\',\''+f.name+'\')">👁 預覽</button>' : '') +
       '<a style="' + dcDlStyle + '" href="' + dlUrl + '" target="_blank">⬇ 下載</a>' +
       '<button class="dc-del-btn" onclick="dcDeleteItem(this)" title="刪除">✕</button>';
     area.appendChild(li);
@@ -2140,7 +2190,7 @@ function dcBuildFileList(files) {
     // 圖示模式
     var gc = document.createElement('div');
     gc.className = 'doccenter-file-card';
-    gc.setAttribute('data-cat', catKey);     // 英文 key
+    gc.setAttribute('data-cat', catKey);
     gc.setAttribute('data-fileid', f.fileId);
     gc.innerHTML =
       '<span class="doccenter-card-icon">' + icon + '</span>' +
@@ -2148,7 +2198,7 @@ function dcBuildFileList(files) {
       '<span class="doccenter-card-date">' + dcFormatDate(f.date) + '</span>' +
       '<a class="doccenter-card-dl" href="' + dlUrl + '" target="_blank">⬇</a>' +
       '<button class="dc-card-del-btn" onclick="dcDeleteCard(this)" title="刪除">✕</button>';
-    (function(id, nm){ gc.addEventListener('dblclick', function(){ dcPreviewFile(id, nm); }); })(f.fileId, f.name);
+    (function(id, nm){ gc.addEventListener('click', function(){ if(canPreview) dcPreviewFile(id, nm); }); })(f.fileId, f.name);
     grid.appendChild(gc);
   });
 }
@@ -2634,7 +2684,7 @@ function updateAnalytics() {
   var typeCount = {};
   filtered.forEach(function(a){ var t=a.type||'其他'; typeCount[t]=(typeCount[t]||0)+1; });
   var totalT = total || 1;
-  var typeColors = {'請假申請':'#4caf50','國假及特休申請':'#c9a84c','留復職申請':'#2196f3','合意離職申請':'#e91e63','其他':'#9e9e9e'};
+  var typeColors = {'請假申請':'#4caf50','國假及特休申請':'#c9a84c','留復職申請':'#2196f3','合意離職申請':'#e91e63','其他':'#9c27b0'};
   var typeChart = g('ana-type-chart');
   if (typeChart) {
     var cx=100, cy=100, r=70, rInner=55, strokeW=30, lineR=90, tipR=108;
@@ -2682,8 +2732,8 @@ function updateAnalytics() {
         svgContent += '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+seg.color+'" stroke-width="1.2"/>';
         svgContent += '<line x1="'+x2.toFixed(1)+'" y1="'+y2.toFixed(1)+'" x2="'+x3.toFixed(1)+'" y2="'+y3.toFixed(1)+'" stroke="'+seg.color+'" stroke-width="1.2"/>';
         svgContent += '<circle cx="'+x3.toFixed(1)+'" cy="'+y3.toFixed(1)+'" r="2" fill="'+seg.color+'"/>';
-        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3-4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="15" font-weight="700" fill="'+seg.color+'" font-family="sans-serif">'+seg.name+'</text>';
-        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3+12).toFixed(1)+'" text-anchor="'+anchor+'" font-size="13.5" fill="#c8c4b4" font-family="sans-serif">'+seg.cnt+'件 '+pctStr+'</text>';
+        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3-4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="13.5" font-weight="700" fill="'+seg.color+'" font-family="sans-serif">'+seg.name+'</text>';
+        svgContent += '<text x="'+labelX.toFixed(1)+'" y="'+(y3+12).toFixed(1)+'" text-anchor="'+anchor+'" font-size="13" fill="#c8c4b4" font-family="sans-serif">'+seg.cnt+'件 '+pctStr+'</text>';
       }
     });
 
@@ -2828,7 +2878,7 @@ function updateAnalytics() {
       }
       var maxW = Math.max.apply(null, weekCounts.concat([1]));
       var nW = weekCounts.length;
-      var svgW2=455, svgH2=110, padL2=40, padR2=40, padT2=20, padB2=20;
+      var svgW2=455, svgH2=110, padL2=40, padR2=40, padT2=30, padB2=18;
       var w2 = svgW2-padL2-padR2, h2 = svgH2-padT2-padB2;
       var pts2 = weekCounts.map(function(cnt3,i){ return {x:padL2+(nW<2?w2/2:i*w2/(nW-1)), y:padT2+h2-(cnt3/maxW)*h2}; });
       var svgW2Inner = '<defs><linearGradient id="tg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0.03"/></linearGradient></defs>';
@@ -4778,13 +4828,26 @@ function openReview(id, name, type, readOnly) {
   document.getElementById('reviewModal').classList.add('open');
 }
 
+function openReviewSig() {
+  if (typeof openSigModal === 'function') openSigModal('review-sig-canvas', '審核人簽名');
+}
+
 function closeReviewModal() {
   document.getElementById('reviewModal').classList.remove('open');
+  // 清除簽名 canvas
+  var cv = document.getElementById('review-sig-canvas');
+  if (cv) { try { var ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height); } catch(e){} cv.width=1; }
+  var pv = document.getElementById('review-sig-preview');
+  if (pv) pv.innerHTML = '✍ 點擊簽名';
   _reviewTarget = null;
 }
 
 function submitReview(action) {
   if (!_reviewTarget || _reviewTarget.readOnly) return;
+  // 審核簽名（必填）
+  var sigCv = document.getElementById('review-sig-canvas');
+  var sigData = (sigCv && sigCv.width > 1) ? sigCv.toDataURL() : '';
+  if (!sigData) { alert('請先完成審核人簽名'); return; }
   var comment = document.getElementById('reviewComment').value.trim();
   var user    = CURRENT_USER ? CURRENT_USER.name : '管理員';
   var now     = new Date(); var p=function(n){return String(n).padStart(2,'0');};
@@ -4813,6 +4876,7 @@ function submitReview(action) {
       reviewer: approver,
       verifier: verifier,
       comment:  comment,
+      sigData:  sigData,
       updatedAt: ts,
     })
   })
@@ -4885,17 +4949,23 @@ function openQs2Sig(canvasId, label) {
 function openQuitStage2(app) {
   var m = document.getElementById('quitStage2Modal');
   if (!m) return;
-  // 填入申請資訊
+  var planDate = app.endDate || app.quitPlanDate || '';
   document.getElementById('qs2-info').innerHTML =
     '<b>申請編號：</b>' + (app.id||'') + '&emsp;' +
     '<b>申請同仁：</b>' + (app.name||'') + '&emsp;' +
-    '<b>預計離職：</b>' + (app.endDate||'');
+    '<b>預計離職：</b>' + (planDate || '—');
   document.getElementById('qs2-id').value = app.id || '';
   document.getElementById('qs2-name-display').value = app.name || '';
-  // 若已有移交紀錄則帶入（handover 欄）
-  document.getElementById('qs2-handover').value = app.handover || '';
+  // 帶入團隊/職稱（唯讀）
+  var teamEl = document.getElementById('qs2-team-display');
+  var titleEl = document.getElementById('qs2-title-display');
+  if (teamEl) teamEl.value = app.team || '';
+  if (titleEl) titleEl.value = app.applyTitle || app.title || '';
+  // 清空三區移交事項
+  ['qs2-handover-general','qs2-handover-finance','qs2-handover-dept'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
   document.getElementById('qs2-actual-date').value = '';
-  // 清除簽名
   ['qs2-mgr-sig','qs2-hr-sig'].forEach(function(id){
     var cv = document.getElementById(id);
     if (cv) { var ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height); cv.width=1; }
@@ -4910,33 +4980,37 @@ function closeQuitStage2() {
 }
 function submitQuitStage2() {
   var appId    = (document.getElementById('qs2-id')||{}).value || '';
-  var handover = (document.getElementById('qs2-handover')||{}).value.trim();
+  var h1 = (document.getElementById('qs2-handover-general')||{}).value.trim();
+  var h2 = (document.getElementById('qs2-handover-finance')||{}).value.trim();
+  var h3 = (document.getElementById('qs2-handover-dept')||{}).value.trim();
+  var handover = [h1 ? '【總務移交】'+h1 : '', h2 ? '【財務移交】'+h2 : '', h3 ? '【本部移交】'+h3 : ''].filter(Boolean).join('\n');
   var actual   = (document.getElementById('qs2-actual-date')||{}).value;
-  if (!handover)  { alert('請填寫移交事項'); return; }
-  if (!actual)    { alert('請填寫實際離職日期'); return; }
-  var mgrCv  = document.getElementById('qs2-mgr-sig');
-  var hrCv   = document.getElementById('qs2-hr-sig');
+  if (!handover) { alert('請至少填寫一項移交事項'); return; }
+  if (!actual)   { alert('請填寫實際離職日期'); return; }
+  var mgrCv = document.getElementById('qs2-mgr-sig');
+  var hrCv  = document.getElementById('qs2-hr-sig');
   var mgrSig = (mgrCv && mgrCv.width > 1) ? mgrCv.toDataURL() : '';
   var hrSig  = (hrCv  && hrCv.width  > 1) ? hrCv.toDataURL()  : '';
-  if (!mgrSig) { alert('請完成主管簽名'); return; }
-  if (!hrSig)  { alert('請完成人資簽名'); return; }
+  if (!mgrSig) { alert('請完成單位主管簽名'); return; }
+  if (!hrSig)  { alert('請完成人資承辦簽名'); return; }
   var btn = document.getElementById('qs2-submit-btn');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ 送出中…'; }
   fetch(GAS_URL, {
     method: 'POST', mode: 'no-cors',
     body: JSON.stringify({
-      action: 'updateQuitStage2',
-      id:           appId,
-      handover:     handover,
-      actualDate:   actual,
-      mgrSig:       mgrSig,
-      hrSig:        hrSig,
-      updatedBy:    CURRENT_USER ? (CURRENT_USER.name||'') : '',
+      action:     'updateQuitStage2',
+      id:         appId,
+      handover:   handover,
+      actualDate: actual,
+      mgrSig:     mgrSig,
+      hrSig:      hrSig,
+      updatedBy:  CURRENT_USER ? (CURRENT_USER.name||'') : '',
     })
   }).then(function(){
     alert('✅ 離職手續已完成送出！');
     closeQuitStage2();
-    loadAllApps();
+    if (typeof loadAllApps === 'function') loadAllApps();
+    if (typeof loadMainData === 'function') loadMainData();
   }).catch(function(e){
     if (btn) { btn.disabled = false; btn.textContent = '✅ 確認完成'; }
     alert('送出失敗：' + e.message);
@@ -5701,9 +5775,19 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
     <div class="review-modal-info" id="reviewModalInfo" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-text-secondary);line-height:2;font-family:var(--font-mono);"></div>
     <!-- 附件區（審核時顯示員工附件，上傳功能鎖定）-->
     <div id="reviewModalAttach" style="display:none;background:#fdf8ee;border:1.5px dashed #e8dbb0;border-radius:8px;padding:8px 14px;font-size:12px;"></div>
-    <div id="reviewCommentWrap" style="display:flex;align-items:center;gap:10px;">
-      <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);white-space:nowrap;flex-shrink:0;">審核意見（選填）</label>
-      <input id="reviewComment" type="text" style="flex:1;border:1.5px solid var(--color-border-card);border-radius:7px;padding:0 10px;font-family:var(--font-body);font-size:13px;height:34px;outline:none;" placeholder="可填寫審核備註…"/>
+    <div id="reviewCommentWrap" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <label style="font-size:12px;font-weight:500;color:var(--color-text-secondary);white-space:nowrap;flex-shrink:0;">審核意見（選填）</label>
+        <input id="reviewComment" type="text" style="flex:1;border:1.5px solid var(--color-border-card);border-radius:7px;padding:0 10px;font-family:var(--font-body);font-size:13px;height:34px;outline:none;" placeholder="可填寫審核備註…"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;white-space:nowrap;flex-shrink:0;">審核人簽名 <span style="color:#e53935;">*</span></label>
+        <div id="review-sig-preview" onclick="openReviewSig()"
+          style="flex:1;border:1.5px solid #d4cfc0;border-radius:8px;height:36px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
+          onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
+          onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 點擊簽名</div>
+        <canvas id="review-sig-canvas" width="1" height="1" style="display:none;"></canvas>
+      </div>
     </div>
     <!-- 已審核人員顯示 -->
     <div id="reviewerDisplay" style="display:none;text-align:center;padding:8px 10px;background:#f0f9f1;border:1px solid #a5d6a7;border-radius:8px;">
@@ -5736,58 +5820,107 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
 
 <!-- ══ 離職第二階段 Modal（主管/人資填寫離職手續）══ -->
 <div class="modal-overlay" id="quitStage2Modal" style="z-index:8100;">
-  <div style="background:#fff;border-radius:14px;padding:28px 32px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:16px;">
-    <!-- 標題 -->
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-      <div style="font-family:var(--font-display);font-size:17px;font-weight:700;color:#1c1c15;">📋 離職手續（第二階段）</div>
-      <button onclick="closeQuitStage2()" style="border:none;background:none;font-size:20px;cursor:pointer;color:#9a9482;line-height:1;">✕</button>
+  <div style="background:#fff;border-radius:14px;padding:24px 28px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:14px;">
+    <!-- 標題（置中，不顯示「第二階段」）-->
+    <div style="display:flex;align-items:center;justify-content:center;position:relative;">
+      <div style="font-family:var(--font-display);font-size:17px;font-weight:700;color:#1c1c15;text-align:center;">📋 離職手續</div>
+      <button onclick="closeQuitStage2()" style="border:none;background:none;font-size:20px;cursor:pointer;color:#9a9482;line-height:1;position:absolute;right:0;">✕</button>
     </div>
     <!-- 申請資訊 -->
     <div id="qs2-info" style="background:#faf8f3;border:1px solid #e4dfd0;border-radius:8px;padding:10px 14px;font-size:13px;color:#5a5646;line-height:1.8;"></div>
     <input type="hidden" id="qs2-id"/>
-    <!-- 姓名（唯讀）-->
-    <div style="display:flex;flex-direction:column;gap:4px;">
-      <label style="font-size:12px;font-weight:600;color:#5a5646;">申請人姓名</label>
-      <input id="qs2-name-display" class="form-input" readonly style="background:#f5f3ee;color:#5a5646;cursor:not-allowed;"/>
+    <!-- 團隊 | 職稱 | 姓名 一排 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">團隊</label>
+        <input id="qs2-team-display" class="form-input" readonly style="background:#f5f3ee;color:#5a5646;cursor:not-allowed;"/>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">職稱</label>
+        <input id="qs2-title-display" class="form-input" readonly style="background:#f5f3ee;color:#5a5646;cursor:not-allowed;"/>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">申請人姓名</label>
+        <input id="qs2-name-display" class="form-input" readonly style="background:#f5f3ee;color:#5a5646;cursor:not-allowed;"/>
+      </div>
     </div>
-    <!-- 移交事項 -->
-    <div style="display:flex;flex-direction:column;gap:4px;">
-      <label style="font-size:12px;font-weight:600;color:#5a5646;">移交事項 <span style="color:#e53935;">*</span></label>
-      <textarea id="qs2-handover" class="form-textarea" rows="5" placeholder="請填寫工作移交事項、帳號交接、設備歸還等…" style="height:110px;resize:vertical;"></textarea>
+
+    <!-- ── 總務移交事項 ── -->
+    <div style="border:1.5px solid #e4dfd0;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:#fdfcf9;">
+      <div style="font-size:13px;font-weight:700;color:#2a2a20;">📦 總務移交事項</div>
+      <textarea id="qs2-handover-general" class="form-textarea" rows="3" placeholder="如：設備歸還、鑰匙交接、資產盤點…" style="height:72px;resize:vertical;"></textarea>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">接收人簽收</label>
+        <div id="qs2-recv-general-preview" onclick="openQs2Sig('qs2-recv-general','總務接收人簽收')"
+          style="border:1.5px solid #d4cfc0;border-radius:8px;height:38px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
+          onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
+          onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 接收人簽名</div>
+        <canvas id="qs2-recv-general" width="1" height="1" style="display:none;"></canvas>
+      </div>
     </div>
+
+    <!-- ── 財務移交事項 ── -->
+    <div style="border:1.5px solid #e4dfd0;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:#fdfcf9;">
+      <div style="font-size:13px;font-weight:700;color:#2a2a20;">💰 財務移交事項</div>
+      <textarea id="qs2-handover-finance" class="form-textarea" rows="3" placeholder="如：備用金、帳款、報銷單據…" style="height:72px;resize:vertical;"></textarea>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">接收人簽收</label>
+        <div id="qs2-recv-finance-preview" onclick="openQs2Sig('qs2-recv-finance','財務接收人簽收')"
+          style="border:1.5px solid #d4cfc0;border-radius:8px;height:38px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
+          onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
+          onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 接收人簽名</div>
+        <canvas id="qs2-recv-finance" width="1" height="1" style="display:none;"></canvas>
+      </div>
+    </div>
+
+    <!-- ── 本部移交事項 ── -->
+    <div style="border:1.5px solid #e4dfd0;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:#fdfcf9;">
+      <div style="font-size:13px;font-weight:700;color:#2a2a20;">🏢 本部移交事項</div>
+      <textarea id="qs2-handover-dept" class="form-textarea" rows="3" placeholder="如：業務交接、工作說明文件、系統帳號…" style="height:72px;resize:vertical;"></textarea>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">接收人簽收</label>
+        <div id="qs2-recv-dept-preview" onclick="openQs2Sig('qs2-recv-dept','本部接收人簽收')"
+          style="border:1.5px solid #d4cfc0;border-radius:8px;height:38px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
+          onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
+          onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 接收人簽名</div>
+        <canvas id="qs2-recv-dept" width="1" height="1" style="display:none;"></canvas>
+      </div>
+    </div>
+
     <!-- 實際離職日期 -->
     <div style="display:flex;flex-direction:column;gap:4px;">
       <label style="font-size:12px;font-weight:600;color:#5a5646;">實際離職日期 <span style="color:#e53935;">*</span></label>
       <input id="qs2-actual-date" type="date" class="form-input" style="text-align:left;"/>
     </div>
-    <!-- 簽名區 -->
+
+    <!-- 簽名區：單位主管 & 人資承辦（必簽）-->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <!-- 主管簽名 -->
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <label style="font-size:12px;font-weight:600;color:#5a5646;">主管簽名 <span style="color:#e53935;">*</span></label>
-        <div id="qs2-mgr-sig-preview" onclick="openQs2Sig('qs2-mgr-sig','主管簽名')"
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">單位主管 <span style="color:#e53935;">*</span></label>
+        <div id="qs2-mgr-sig-preview" onclick="openQs2Sig('qs2-mgr-sig','單位主管簽名')"
           style="border:1.5px solid #d4cfc0;border-radius:8px;height:44px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
           onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
           onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 點擊簽名</div>
         <canvas id="qs2-mgr-sig" width="1" height="1" style="display:none;"></canvas>
       </div>
-      <!-- 人資簽名 -->
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <label style="font-size:12px;font-weight:600;color:#5a5646;">人資簽名 <span style="color:#e53935;">*</span></label>
-        <div id="qs2-hr-sig-preview" onclick="openQs2Sig('qs2-hr-sig','人資簽名')"
+        <label style="font-size:12px;font-weight:600;color:#5a5646;">人資承辦 <span style="color:#e53935;">*</span></label>
+        <div id="qs2-hr-sig-preview" onclick="openQs2Sig('qs2-hr-sig','人資承辦簽名')"
           style="border:1.5px solid #d4cfc0;border-radius:8px;height:44px;cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a9482;gap:6px;transition:.15s;"
           onmouseover="this.style.borderColor='#c9a84c';this.style.background='#fdf8ee'"
           onmouseout="this.style.borderColor='#d4cfc0';this.style.background='#fafafa'">✍ 點擊簽名</div>
         <canvas id="qs2-hr-sig" width="1" height="1" style="display:none;"></canvas>
       </div>
     </div>
-    <!-- 底部按鈕 -->
-    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:4px;">
-      <button onclick="closeQuitStage2()" class="btn-cancel">取消</button>
-      <button id="qs2-submit-btn" onclick="submitQuitStage2()" class="btn-submit" style="width:130px;">✅ 確認完成</button>
+
+    <!-- 底部按鈕（置中等寬）-->
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:4px;">
+      <button onclick="closeQuitStage2()" class="btn-cancel" style="width:140px;height:38px;display:flex;align-items:center;justify-content:center;">取消</button>
+      <button id="qs2-submit-btn" onclick="submitQuitStage2()" class="btn-submit" style="width:140px;height:38px;display:flex;align-items:center;justify-content:center;">✅ 確認完成</button>
     </div>
   </div>
 </div>
 
 </body>
+</html>
 </html>
