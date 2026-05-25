@@ -83,7 +83,6 @@
       </div>
     </div>
     <div class="header-right">
-      <button class="btn">↓ 匯出 CSV</button>
       <button class="btn-feedback" onclick="openFeedback()">！意見欄</button>
       <button class="btn-danger" onclick="openBugReport()">❌ 回報問題</button>
       <button onclick="openLoginModal()" id="loginNavBtn" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid var(--color-gold);background:var(--color-gold-bg);color:var(--color-gold);font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:.15s;" onmouseover="this.style.background='var(--color-gold)';this.style.color='#1c1c15'" onmouseout="this.style.background='var(--color-gold-bg)';this.style.color='var(--color-gold)'">🔑 登入</button>
@@ -493,7 +492,7 @@
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">申請類型分布</p>
               <div style="width:100%;display:flex;justify-content:center;">
-                <svg id="ana-type-chart" viewBox="-70 -60 340 320" style="width:100%;max-width:260px;overflow:visible;">
+                <svg id="ana-type-chart" viewBox="-80 -70 360 340" style="width:100%;max-width:300px;overflow:visible;">
                   <circle cx="100" cy="100" r="70" fill="none" stroke="#4caf50" stroke-width="30" stroke-dasharray="439.82 0" transform="rotate(-90 100 100)"/>
                   <circle cx="100" cy="100" r="55" fill="#333"/>
                   <text x="100" y="96" text-anchor="middle" font-size="22" font-weight="bold" fill="#e8e4d8" font-family="sans-serif">—</text>
@@ -1298,12 +1297,12 @@
             <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text-primary);">帳號管理</div>
             <div style="font-size:12px;color:var(--color-text-muted);margin-top:2px;">管理系統帳號、角色與權限設定</div>
           </div>
-          <button class="btn" onclick="openAccountModal('add')" style="display:flex;align-items:center;gap:6px;">＋ 新增帳號</button>
+          <button class="btn" onclick="openAccountModal('add')" id="acc-add-btn" style="display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;">＋ 新增帳號</button>
         </div>
 
         <!-- 統計列：總帳號=兼職+正職+主管+營運+老闆+已停用 -->
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;">
-          <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div><span class="stat-card-sub" style="font-size:9px;">兼+正+主+營+老+停</span></div>
+          <div class="stat-card bg-total"><span class="stat-card-label">總帳號數</span><div class="stat-card-value-row"><span class="stat-card-value" id="acc-total">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">兼職</span><div class="stat-card-value-row"><span class="stat-card-value" style="color:#e65100;" id="acc-pt">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">正職</span><div class="stat-card-value-row"><span class="stat-card-value gold" id="acc-ft">0</span><span class="stat-card-unit">人</span></div></div>
           <div class="stat-card bg-progress"><span class="stat-card-label">主管</span><div class="stat-card-value-row"><span class="stat-card-value deep-blue" id="acc-mgr">0</span><span class="stat-card-unit">人</span></div></div>
@@ -1314,12 +1313,12 @@
 
         <!-- 表格 -->
         <div class="table-section" style="border-top:none;border-radius:var(--radius-lg);">
-          <div class="toolbar">
-            <div class="search-box">
+          <div class="toolbar" style="flex-wrap:wrap;gap:8px;">
+            <div class="search-box" style="flex:1;min-width:140px;">
               <span class="search-icon">🔍</span>
               <input class="search-input" id="acc-search" placeholder="搜尋姓名或信箱…" oninput="renderAccTable()"/>
             </div>
-            <select class="filter-select" id="acc-role-filter" onchange="renderAccTable()">
+            <select class="filter-select" id="acc-role-filter" onchange="renderAccTable()" style="flex:1;min-width:100px;">
               <option value="">全部角色</option>
               <option value="boss">boss</option>
               <option value="admin">admin</option>
@@ -1328,7 +1327,7 @@
               <option value="employee">員工（舊）</option>
               <option value="parttime">parttime</option>
             </select>
-            <select class="filter-select" id="acc-status-filter" onchange="renderAccTable()">
+            <select class="filter-select" id="acc-status-filter" onchange="renderAccTable()" style="flex:1;min-width:100px;">
               <option value="">全部狀態</option>
               <option value="啟用">啟用</option>
               <option value="停用">停用</option>
@@ -2185,12 +2184,14 @@ function dcBuildFileList(files) {
         '<span class="doccenter-file-name">' + dcStripExt(f.name) + '</span>' +
         '<div class="doccenter-file-meta">' +
           '<span class="doccenter-file-tag">' + tagLabel + '</span>' +
-          '<span>' + dcFormatDate(f.date) + '</span>' +
-          '<span>' + f.size + ' MB</span>' +
+          '<span style="white-space:nowrap;">' + dcFormatDate(f.date) + '</span>' +
+          '<span style="white-space:nowrap;">' + f.size + ' MB</span>' +
         '</div>' +
       '</div>' +
-      (canPreview ? '<button style="'+dcDlStyle.replace('text-decoration:none','')+'margin-right:4px;border:1px solid #555;border-radius:5px;background:#444;cursor:pointer;" onclick="dcPreviewFile(\''+f.fileId+'\',\''+f.name+'\')">👁 預覽</button>' : '') +
-      '<a style="' + dcDlStyle + '" href="' + dlUrl + '" target="_blank">⬇ 下載</a>' +
+      '<div class="file-action-btns" style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">' +
+        (canPreview ? '<button style="'+dcDlStyle.replace('text-decoration:none','')+'border:1px solid #555;border-radius:5px;background:#444;cursor:pointer;font-size:11px;height:26px;padding:0 8px;white-space:nowrap;" onclick="dcPreviewFile(\''+f.fileId+'\',\''+f.name+'\')">👁 預覽</button>' : '') +
+        '<a style="'+dcDlStyle+'font-size:11px;height:26px;padding:0 8px;display:flex;align-items:center;justify-content:center;" href="'+dlUrl+'" target="_blank">⬇ 下載</a>' +
+      '</div>' +
       '<button class="dc-del-btn" onclick="dcDeleteItem(this)" title="刪除">✕</button>';
     area.appendChild(li);
 
@@ -4762,9 +4763,9 @@ function openReview(id, name, type, readOnly) {
     '申請同仁：<strong>' + name + '</strong>' +
     (app ? '<br>類　　型：' + (app.type||'') +
            '<br>假　　別：' + (app.subtype||'') +
-           ((app.type||'').indexOf('合意離職') > -1
-             ? '<br>預計離職：' + fmtDateOnly(app.endDate)
-             : '<br>起　　訖：' + fmtDRange(app.startDate, app.endDate)) : '');
+           '<br>起　　訖：' + ((app.type||'').indexOf('合意離職') > -1
+             ? fmtDateOnly(app.endDate)
+             : fmtDRange(app.startDate, app.endDate)) : '');
 
   // 附件區（顯示員工附件給主管/人資查看，不允許代替上傳）
   var reviewAttach = document.getElementById('reviewModalAttach');
@@ -5127,9 +5128,9 @@ function openFlowModal(app) {
     '申請同仁：' + (app.name||'') + '<br>' +
     '類　　型：' + (app.type||'') + '<br>' +
     '假　　別：' + (app.subtype||'') + '<br>' +
-    ((app.type||'').indexOf('合意離職') > -1
-      ? '預計離職：' + fmtDateOnly(app.endDate)
-      : '起　　訖：' + fmtDRange(app.startDate, app.endDate));
+    '起　　訖：' + ((app.type||'').indexOf('合意離職') > -1
+      ? fmtDateOnly(app.endDate)
+      : fmtDRange(app.startDate, app.endDate));
 
   // 員工名字 & 送出時間
   var empName = document.getElementById('flow-emp-name2');
@@ -5941,9 +5942,17 @@ initAuth(); // 進入文件中心時立即從 GAS 載入
       </div>
     </div>
 
+    <!-- 流程說明 -->
+    <div style="background:#fdf8ee;border:1px solid #e8dbb0;border-radius:8px;padding:10px 14px;font-size:12px;color:#7a5000;line-height:1.8;">
+      ℹ️ 流程說明：<br>
+      ① 總務移交事項（必填）→ 接收人簽收<br>
+      ② 財務 / 本部移交事項（視需求填寫）→ 各自接收人簽收<br>
+      ③ 全部完成後 → 單位主管簽名 → 人資承辦簽名 → 完成
+    </div>
+
     <!-- ── 總務移交事項 ── -->
     <div style="border:1.5px solid #e4dfd0;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:#fdfcf9;">
-      <div style="font-size:13px;font-weight:700;color:#2a2a20;">📦 總務移交事項</div>
+      <div style="font-size:13px;font-weight:700;color:#2a2a20;">📦 總務移交事項 <span style="color:#e53935;font-size:11px;">*必填</span></div>
       <textarea id="qs2-handover-general" class="form-textarea" rows="3" placeholder="如：設備歸還、鑰匙交接、資產盤點…" style="height:72px;resize:vertical;"></textarea>
       <div style="display:flex;flex-direction:column;gap:4px;">
         <label style="font-size:12px;font-weight:600;color:#5a5646;">接收人簽收</label>
