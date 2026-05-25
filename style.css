@@ -1208,3 +1208,109 @@ html, body {
   #mobile-bottom-nav { display: flex !important; }
   .app-sidebar        { display: none !important; }
 }
+
+
+/* ============================================================
+   ⑱ 手機版細部調整（文件中心 / 帳號管理 / 意見回饋）
+   ============================================================ */
+
+/* ── 手機文件中心：清單模式優化 ── */
+@media (max-width: 768px) {
+
+  /* 文件列表項目：讓tag、日期大小在一行 */
+  .doccenter-file-item {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+  .doccenter-file-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .doccenter-file-meta {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  /* 預覽/下載按鈕：垂直堆疊 */
+  .doccenter-file-item .file-action-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  /* 帳號管理：統計卡片4欄 */
+  #page-account .stats-grid,
+  #page-account > div > div[style*="grid-template-columns:repeat(7"] {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  /* 帳號管理：新增帳號按鈕確保顯示 */
+  #acc-add-btn {
+    display: flex !important;
+    font-size: 12px;
+    height: 34px;
+    padding: 0 12px;
+  }
+
+  /* 帳號管理：工具列三個在一排 */
+  .toolbar { flex-wrap: wrap; }
+  .toolbar .search-box { flex: 1 1 100%; }
+  .toolbar .filter-select { flex: 1 1 calc(50% - 4px); }
+
+  /* 意見回饋/問題回報：簡易卡片列表 */
+  .mob-feedback-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-card);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: box-shadow .15s;
+  }
+  .mob-feedback-card:hover { box-shadow: var(--shadow-card-hover); }
+  .mob-feedback-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .mob-feedback-card-type {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  .mob-feedback-card-time {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+  .mob-feedback-card-preview {
+    font-size: 13px;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mob-feedback-card-status {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    margin-top: 4px;
+  }
+}
+
+
+/* ── 帳號管理：手機版三篩選同排 ── */
+@media (max-width: 480px) {
+  /* 帳號統計：3欄 */
+  #page-account > div > div[style*="grid-template-columns:repeat(7"] {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* 帳號toolbar：搜尋獨佔一行，兩個 filter 各半 */
+  .toolbar .search-box { flex: 1 1 100%; }
+  .toolbar .filter-select { flex: 1 1 calc(50% - 4px); min-width: 0; font-size: 11px; }
+}
