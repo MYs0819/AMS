@@ -1127,3 +1127,53 @@ html, body {
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,.25); }
 }
+
+
+/* ── 手機底部導覽列 ── */
+#mobile-bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 58px;
+  background: #1f1f17;
+  border-top: 1px solid #2a2a1e;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 600;
+  padding-bottom: env(safe-area-inset-bottom, 0px); /* iPhone 底部安全區 */
+}
+.mob-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 6px 4px;
+  border-radius: 8px;
+  transition: background-color .15s;
+  color: #9a9680;
+}
+.mob-nav-item:hover,
+.mob-nav-item.active { color: var(--color-gold); }
+.mob-nav-icon  { font-size: 20px; line-height: 1; }
+.mob-nav-label { font-size: 10px; font-weight: 500; white-space: nowrap; }
+.mob-nav-center {
+  flex: 0 0 52px;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: #1c1c15 !important;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(201,168,76,.45);
+}
+
+/* 手機版：底部 nav 出現時，main 要留出空間 */
+@media (max-width: 768px) {
+  #mobile-bottom-nav { display: flex !important; }
+  .app-sidebar        { display: none !important; }  /* 側欄改為底部 nav，隱藏桌面側欄 */
+  .app-main           { padding-bottom: 70px; }      /* 避免內容被 nav 遮住 */
+  .app-body           { flex-direction: column; }
+}
