@@ -362,7 +362,6 @@
             <div class="pagination" id="paginationBar"></div>
           </div>
         </div>
-        <div id="main-mobile-list" style="display:none;padding:4px 0;"></div>
       </div><!-- end page-main -->
 
             <!-- ════ 文件中心 ════ -->
@@ -814,7 +813,6 @@
           </table>
           <div class="table-footer"><div class="pagination" id="my-pagination"></div></div>
         </div>
-        <div id="my-mobile-list" style="display:none;padding:4px 0;"></div>
 
       </div>
 
@@ -942,7 +940,6 @@
           </table>
           <div class="table-footer"><div class="pagination" id="mon-pagination"></div></div>
         </div>
-        <div id="mon-mobile-list" style="display:none;padding:4px 0;"></div>
       </div>
         <!-- 假別統計（全員本月）-->
         <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
@@ -1078,7 +1075,6 @@
           </table>
           <div class="table-footer"><div class="pagination" id="mall-pagination"></div></div>
         </div>
-        <div id="mall-mobile-list" style="display:none;padding:4px 0;"></div>
       </div>
       <div class="page-section" id="page-feedback-mgr" style="gap:var(--space-4);">
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
@@ -1112,7 +1108,6 @@
             <tbody id="fb-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
         </div>
-        <div id="fb-mobile-list" style="display:none;padding:4px 0;"></div>
       </div>
 
       <!-- ════ 問題回報管理 ════ -->
@@ -1148,7 +1143,6 @@
             <tbody id="rp-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">⏳ 載入中…</td></tr></tbody>
           </table>
         </div>
-        <div id="rp-mobile-list" style="display:none;padding:4px 0;"></div>
       </div>
 
 
@@ -3435,7 +3429,6 @@ function renderMainTable(apps) {
     }
   }); // end apps.forEach
   // 手機版卡片
-  renderMobileCards('main-mobile-list', paged, buildAppCard);
 } // end renderMainTable
 
 
@@ -3693,88 +3686,6 @@ function proofBadge(app) {
 }
 
 /* ══ 手機版：通用卡片列表渲染 ══ */
-function renderMobileCards(listId, items, cardBuilder) {
-  var el = document.getElementById(listId);
-  if (!el) return;
-  if (!items || !items.length) {
-    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-text-muted);">無符合資料</div>';
-    return;
-  }
-  el.innerHTML = '';
-  items.forEach(function(item, i) {
-    var card = document.createElement('div');
-    card.className = 'mob-app-card';
-    card.innerHTML = cardBuilder(item, i);
-    el.appendChild(card);
-  });
-}
-
-/* 申請卡片 builder（假別為主）*/
-function buildAppCard(a, i) {
-  var s = a.status || '';
-  var isDone   = s.indexOf('完成') > -1;
-  var isReject = s.indexOf('退件') > -1;
-  var sLabel   = isDone?'已完成':isReject?'已退件':s.indexOf('覆核')>-1?'待覆核':'待審核';
-  var sBg      = isDone?'#e8f5e9':isReject?'#fce4e4':'#fff8e1';
-  var sColor   = isDone?'#2e7d32':isReject?'#c62828':'#d4a017';
-  var detailId = 'mob-card-'+i+'-'+Date.now();
-  var dateStr  = (a.type||'').indexOf('合意離職')>-1
-    ? fmtDateOnly(a.startDate||a.endDate||a.quitPlanDate)
-    : fmtDRange(a.startDate, a.endDate);
-  return '<div class="mob-app-card-header">'
-    +'<div>'
-      +'<div class="mob-app-card-sub">'+(a.subtype||a.type||'—')+'</div>'
-      +'<div class="mob-app-card-name">'+(a.name||'—')+'<span style="color:var(--color-text-muted);font-size:11px;margin-left:6px;">'+(a.team||'')+'</span></div>'
-    +'</div>'
-    +'<span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>'
-  +'</div>'
-  +'<div class="mob-app-card-row">'
-    +'<span style="font-size:11px;color:var(--color-text-muted);">申請日：'+fmtDT(a.applyDate||'')+'</span>'
-  +'</div>'
-  +'<div class="mob-app-card-row" style="color:var(--color-text-secondary);font-size:12px;font-family:var(--font-mono);">'+dateStr+'</div>'
-  +'<div class="mob-app-card-detail" id="'+detailId+'">'
-    +'<div style="font-size:11px;color:var(--color-text-muted);">申請編號：'+(a.id||'—')+'</div>'
-    +'<div style="font-size:11px;color:var(--color-text-muted);">審核：'+(a.reviewer||'待審核')+(a.reviewerTime?' ('+fmtDT(a.reviewerTime)+')':'')+'</div>'
-    +'<div style="font-size:11px;color:var(--color-text-muted);">覆核：'+(a.verifier||'待覆核')+(a.verifierTime?' ('+fmtDT(a.verifierTime)+')':'')+'</div>'
-    +'<div class="mob-app-card-actions">'
-      +'<button onclick="(function(){openFlowModal('+JSON.stringify(a).replace(/'/g,"&#39;")+');})()" style="font-size:11px;padding:5px 14px;border-radius:6px;border:1.5px solid #90caf9;background:#deeeff;color:#5b9bd5;cursor:pointer;font-weight:600;">👁 查看進度</button>'
-    +'</div>'
-  +'</div>'
-  +'<div class="mob-app-toggle" onclick="toggleMobCard(\''+detailId+'\',this)">▼ 展開</div>';
-}
-
-/* 意見/問題 卡片 builder */
-function buildFeedbackCard(r, i, mode) {
-  var isDone = (r.status||'').indexOf('已')>-1;
-  var sBg    = isDone?'#e8f5e9':'#fff8e1';
-  var sColor = isDone?'#2e7d32':'#d4a017';
-  var timeStr = fmtDT(r.submittedAt||r.createdAt||r.reportedAt||'');
-  var content = r.content||r.description||'';
-  var detailId = 'mob-fb-'+i+'-'+Date.now();
-  return '<div class="mob-app-card-header">'
-    +'<div>'
-      +'<div class="mob-app-card-sub">'+(r.type||r.category||r.issueType||'—')+'</div>'
-      +'<div class="mob-app-card-name">'+(r.name||r.user||'匿名')+'<span style="color:var(--color-text-muted);font-size:10px;margin-left:6px;">'+timeStr+'</span></div>'
-    +'</div>'
-    +'<span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;background:'+sBg+';color:'+sColor+';">'+(isDone?'已處理':'待處理')+'</span>'
-  +'</div>'
-  +'<div class="mob-app-card-row" style="font-size:12px;color:var(--color-text-secondary);">'+content.slice(0,60)+(content.length>60?'…':'')+'</div>'
-  +'<div class="mob-app-card-detail" id="'+detailId+'">'
-    +'<div style="font-size:12px;color:var(--color-text-primary);line-height:1.7;white-space:pre-wrap;">'+content+'</div>'
-    +'<div class="mob-app-card-actions">'
-      +'<button onclick="openFbrpDetail('+JSON.stringify(r).replace(/'/g,"&#39;")+',\''+mode+'\')" style="font-size:11px;padding:5px 14px;border-radius:6px;border:1.5px solid #90caf9;background:#deeeff;color:#5b9bd5;cursor:pointer;font-weight:600;">詳細 / 處理</button>'
-    +'</div>'
-  +'</div>'
-  +'<div class="mob-app-toggle" onclick="toggleMobCard(\''+detailId+'\',this)">▼ 展開</div>';
-}
-
-function toggleMobCard(id, el) {
-  var d = document.getElementById(id);
-  if (!d) return;
-  d.classList.toggle('open');
-  if (el) el.textContent = d.classList.contains('open') ? '▲ 收起' : '▼ 展開';
-}
-
 function renderMyTable() {
   var tbody = document.getElementById('my-tbody');
   if (!tbody) return;
@@ -3861,7 +3772,6 @@ function renderMyTable() {
   });
   renderMyPagination(totalPage, total);
   // 手機版卡片
-  renderMobileCards('my-mobile-list', paged, buildAppCard);
 }
 
 function renderMyPagination(totalPage, total) {
@@ -4131,7 +4041,6 @@ function renderFbTable() {
     lastTd.appendChild(vBtn);
     tbody.appendChild(tr);
   });
-  renderMobileCards('fb-mobile-list', filtered, function(r,i){ return buildFeedbackCard(r,i,'feedback'); });
 }
 
 function renderRpTable() {
@@ -4168,7 +4077,6 @@ function renderRpTable() {
     lastTd.appendChild(vBtn);
     tbody.appendChild(tr);
   });
-  renderMobileCards('rp-mobile-list', filtered, function(r,i){ return buildFeedbackCard(r,i,'report'); });
 }
 
 function openFbrpDetail(rec, type) {
@@ -5635,7 +5543,6 @@ function renderMonTable() {
     tbody.appendChild(tr);
   });
   renderMonPagination(totalPage, total);
-  renderMobileCards('mon-mobile-list', paged, buildAppCard);
 }
 
 function renderMonPagination(totalPage, total) {
@@ -5925,7 +5832,6 @@ function renderMallTable() {
     tbody.appendChild(tr);
   });
   renderMallPagination(totalPage, total);
-  renderMobileCards('mall-mobile-list', paged, buildAppCard);
 }
 
 function renderMallPagination(totalPage, total) {
