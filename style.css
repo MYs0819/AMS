@@ -1432,3 +1432,148 @@ html, body {
   .login-box { padding: 28px 20px; max-width: calc(100vw - 32px); }
   .login-input { font-size: 16px; } /* 防止 iOS 自動縮放 */
 }
+
+
+/* ============================================================
+   ⑳ 手機版：統一卡片列表樣式 + 各頁修正
+   ============================================================ */
+
+/* ── 申請紀錄 / 本月紀錄 / 所有申請 / 本月查詢 卡片 ── */
+.mob-app-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mob-app-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.mob-app-card-sub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.mob-app-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.mob-app-card-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mob-app-card-detail {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-table);
+}
+.mob-app-card-detail.open { display: flex; }
+.mob-app-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.mob-app-toggle {
+  text-align: right;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding-top: 2px;
+  user-select: none;
+}
+.mob-app-toggle:hover { color: var(--color-gold); }
+
+/* ── 手機版：顯示卡片 / 隱藏桌面表格 ── */
+@media (max-width: 768px) {
+
+  /* Header 強制 sticky（最高優先）*/
+  .app-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9000 !important;
+  }
+
+  /* 帳號管理 toolbar 恢復桌面原始排列 */
+  #acc-desktop-table .toolbar { flex-wrap: wrap; gap: 8px; }
+  #acc-desktop-table .toolbar .search-box { min-width: 160px; flex: 1 1 100%; }
+  #acc-desktop-table .toolbar .filter-select { flex: 1 1 calc(50% - 4px); font-size: 12px; }
+
+  /* 申請/月/全員/本月 表格 → 卡片 */
+  #page-main    .table-section,
+  #page-myrecords .table-section,
+  #page-monthly .table-section,
+  #page-monthly-all .table-section,
+  #page-feedback-mgr .table-section,
+  #page-report-mgr .table-section { display: none !important; }
+
+  #main-mobile-list,
+  #my-mobile-list,
+  #mon-mobile-list,
+  #mall-mobile-list,
+  #fb-mobile-list,
+  #rp-mobile-list { display: block !important; }
+
+  /* tab 列保留顯示（依舊可以切換）*/
+  .tab-bar { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .tab-item { flex-shrink: 0; font-size: 11px; min-width: 68px; height: 38px; }
+
+  /* Toolbar（搜尋/篩選）保留 */
+  .tab-bar ~ .toolbar,
+  .table-section .toolbar { display: flex !important; flex-wrap: wrap; gap: 8px; }
+
+  /* 右上角 user chip：頭像＋名字 縮短版 */
+  .user-chip { padding: 4px 10px !important; }
+  .user-chip-avatar { width: 24px; height: 24px; font-size: 11px; }
+  /* 名字只顯示到第2字（隱藏第1字重複的頭像字）*/
+  /* 注意：userName 顯示完整姓名，userInitial 顯示第1字 → 不重複 */
+
+  /* 按鈕拉長：意見欄/回報問題 */
+  .btn-feedback, .btn-danger {
+    width: auto !important;
+    min-width: 70px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    height: 30px !important;
+    white-space: nowrap;
+  }
+
+  /* Copyright 顯示在 header subtitle */
+  .header-subtitle { display: block !important; font-size: 10px; }
+
+  /* 新增帳號按鈕 */
+  #acc-add-btn {
+    font-size: 11px !important;
+    padding: 0 8px !important;
+    height: 30px !important;
+    white-space: nowrap;
+    background: var(--color-gold) !important;
+    color: #1c1c15 !important;
+    border-radius: var(--radius-md) !important;
+    border: none !important;
+  }
+}
+
+/* ── 480px 以下：更緊湊 ── */
+@media (max-width: 480px) {
+  .mob-app-card { padding: 12px 12px; }
+  .mob-app-card-name { font-size: 14px; }
+  .btn-feedback, .btn-danger {
+    min-width: 60px !important;
+    font-size: 10px !important;
+    padding: 0 7px !important;
+  }
+}
