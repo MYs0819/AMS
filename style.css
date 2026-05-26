@@ -1211,369 +1211,156 @@ html, body {
 
 
 /* ============================================================
-   ⑱ 手機版細部調整（文件中心 / 帳號管理 / 意見回饋）
+   ⑱ 手機版修正（純 CSS 調整，不增加任何 HTML 結構）
    ============================================================ */
 
-/* ── 手機文件中心：清單模式優化 ── */
 @media (max-width: 768px) {
 
-  /* 文件列表項目：讓tag、日期大小在一行 */
-  .doccenter-file-item {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 12px;
-  }
-  .doccenter-file-info {
-    flex: 1;
-    min-width: 0;
-  }
-  .doccenter-file-meta {
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  /* 預覽/下載按鈕：垂直堆疊 */
-  .doccenter-file-item .file-action-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-
-  /* 帳號管理：統計卡片4欄 */
-  #page-account .stats-grid,
-  #page-account > div > div[style*="grid-template-columns:repeat(7"] {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
-
-  /* 帳號管理：新增帳號按鈕確保顯示 */
-  #acc-add-btn {
-    display: flex !important;
-    font-size: 12px;
-    height: 34px;
-    padding: 0 12px;
-  }
-
-  /* 帳號管理：工具列三個在一排 */
-  .toolbar { flex-wrap: wrap; }
-  .toolbar .search-box { flex: 1 1 100%; }
-  .toolbar .filter-select { flex: 1 1 calc(50% - 4px); }
-
-  /* 意見回饋/問題回報：簡易卡片列表 */
-  .mob-feedback-card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border-card);
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: box-shadow .15s;
-  }
-  .mob-feedback-card:hover { box-shadow: var(--shadow-card-hover); }
-  .mob-feedback-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
-  }
-  .mob-feedback-card-type {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-  }
-  .mob-feedback-card-time {
-    font-size: 10px;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-  }
-  .mob-feedback-card-preview {
-    font-size: 13px;
-    color: var(--color-text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .mob-feedback-card-status {
-    display: inline-flex;
-    align-items: center;
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 10px;
-    margin-top: 4px;
-  }
-}
-
-
-/* ── 帳號管理：手機版三篩選同排 ── */
-@media (max-width: 480px) {
-  /* 帳號統計：3欄 */
-  #page-account > div > div[style*="grid-template-columns:repeat(7"] {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-
-  /* 帳號toolbar：搜尋獨佔一行，兩個 filter 各半 */
-  .toolbar .search-box { flex: 1 1 100%; }
-  .toolbar .filter-select { flex: 1 1 calc(50% - 4px); min-width: 0; font-size: 11px; }
-}
-
-
-/* ============================================================
-   ⑲ 手機版細部修正（Header / 登入 / 帳號管理卡片）
-   ============================================================ */
-
-/* ── Header 按鈕：手機版隱藏文字，只顯示圖示 ── */
-@media (max-width: 768px) {
-
-  /* Header 強制 sticky */
-  .app-header {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 200 !important;
-  }
-
-  /* 意見欄/回報問題：隱藏文字 */
-  .header-btn-text { display: none; }
-  .btn-feedback, .btn-danger {
-    width: 34px !important;
-    min-width: 34px !important;
-    padding: 0 !important;
-    font-size: 16px !important;
-  }
-
-  /* user-chip：只顯示橘色頭像圓，隱藏姓名 */
-  .user-chip-name { display: none; }
-  .user-chip {
-    padding: 4px 8px !important;
-    border-radius: 50% !important;
-    min-width: 34px;
-    height: 34px;
-    justify-content: center;
-  }
-  .user-chip-avatar {
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
-    font-weight: 700;
-  }
-
-  /* 帳號管理：新增帳號按鈕修正 */
-  #acc-add-btn {
-    font-size: 12px !important;
-    padding: 0 10px !important;
-    height: 32px !important;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  /* 帳號管理標題列：flex-wrap 避免跑版 */
-  #page-account > div:first-child > div:first-child {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  /* 帳號管理：搜尋三個篩選器同排 */
-  .acc-filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 10px 12px;
-  }
-  .acc-filter-bar .search-box { flex: 1 1 100%; min-width: 0; }
-  .acc-filter-bar .filter-select { flex: 1 1 calc(50% - 3px); min-width: 0; font-size: 11px; height: 32px; }
-
-  /* 帳號管理：手機版卡片式列表 */
-  .acc-mobile-card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border-card);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    margin-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    cursor: pointer;
-    transition: box-shadow .15s;
-    position: relative;
-  }
-  .acc-mobile-card:hover { box-shadow: var(--shadow-card-hover); }
-  .acc-mobile-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .acc-mobile-card-name { font-size: 15px; font-weight: 600; color: var(--color-text-primary); }
-  .acc-mobile-card-mail { font-size: 11px; color: var(--color-text-muted); font-family: var(--font-mono); }
-  .acc-mobile-card-row  { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .acc-mobile-card-detail {
-    display: none;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--color-border-table);
-  }
-  .acc-mobile-card-detail.open { display: flex; }
-  .acc-mobile-card-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
-  .acc-mobile-card-actions button {
-    font-size: 11px; padding: 5px 10px; border-radius: 6px; cursor: pointer;
-    border: 1px solid var(--color-border-card); background: #fdfcf9;
-    transition: background .15s;
-  }
-
-  /* 手機版：隱藏原本帳號表格，顯示卡片 */
-  #acc-desktop-table { display: none !important; }
-  #acc-mobile-list   { display: block !important; }
-}
-
-/* 桌面版：隱藏手機卡片列表 */
-#acc-mobile-list { display: none; }
-
-/* ── 登入信箱輸入：手機版字體調整 ── */
-@media (max-width: 480px) {
-  .login-box { padding: 28px 20px; max-width: calc(100vw - 32px); }
-  .login-input { font-size: 16px; } /* 防止 iOS 自動縮放 */
-}
-
-
-/* ============================================================
-   ⑳ 手機版：統一卡片列表樣式 + 各頁修正
-   ============================================================ */
-
-/* ── 申請紀錄 / 本月紀錄 / 所有申請 / 本月查詢 卡片 ── */
-.mob-app-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-card);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-bottom: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.mob-app-card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-.mob-app-card-sub {
-  font-size: 12px;
-  color: var(--color-text-muted);
-  font-weight: 600;
-  margin-bottom: 2px;
-}
-.mob-app-card-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-.mob-app-card-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.mob-app-card-detail {
-  display: none;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 6px;
-  padding-top: 10px;
-  border-top: 1px solid var(--color-border-table);
-}
-.mob-app-card-detail.open { display: flex; }
-.mob-app-card-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-}
-.mob-app-toggle {
-  text-align: right;
-  font-size: 11px;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  padding-top: 2px;
-  user-select: none;
-}
-.mob-app-toggle:hover { color: var(--color-gold); }
-
-/* ── 手機版：顯示卡片 / 隱藏桌面表格 ── */
-@media (max-width: 768px) {
-
-  /* Header 強制 sticky（最高優先）*/
+  /* ── Header 強制 sticky ── */
   .app-header {
     position: sticky !important;
     top: 0 !important;
     z-index: 9000 !important;
   }
 
-  /* 帳號管理 toolbar 恢復桌面原始排列 */
-  #acc-desktop-table .toolbar { flex-wrap: wrap; gap: 8px; }
-  #acc-desktop-table .toolbar .search-box { min-width: 160px; flex: 1 1 100%; }
-  #acc-desktop-table .toolbar .filter-select { flex: 1 1 calc(50% - 4px); font-size: 12px; }
+  /* ── Copyright 顯示 ── */
+  .header-subtitle { display: block !important; }
 
-  /* 申請/月/全員/本月 表格 → 卡片 */
+  /* ── 意見欄 / 回報問題：完整文字，按鈕自動寬 ── */
+  .btn-feedback, .btn-danger {
+    width: auto !important;
+    min-width: 72px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    height: 30px !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── 右上角用戶：頭像＋名字，隱藏第一個重複字 ── */
+  /* user-chip-avatar 顯示第1字（如「張」），user-chip-name 顯示姓名（如「張名揚」）*/
+  /* 移除多餘的 name 隱藏，讓兩者都顯示 */
+  .user-chip-name { display: inline !important; font-size: 12px; }
+  .user-chip { padding: 4px 10px !important; gap: 5px; }
+
+  /* ── 新增帳號按鈕 ── */
+  #acc-add-btn {
+    font-size: 11px !important;
+    padding: 0 10px !important;
+    height: 32px !important;
+    white-space: nowrap;
+    background: var(--color-gold) !important;
+    color: #1c1c15 !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    flex-shrink: 0;
+  }
+
+  /* ── 帳號管理 toolbar：手機版三欄同排 ── */
+  .toolbar { flex-wrap: wrap; gap: 8px; }
+  .toolbar .search-box { flex: 1 1 100%; }
+  .toolbar .filter-select { flex: 1 1 calc(50% - 4px); font-size: 12px; height: 34px; }
+
+  /* ── 申請/月/全員/本月/意見/問題 各表格 → CSS 卡片版型 ──
+       做法：讓 table 變成 block，tr 變成卡片，td 變成行
+       只針對這幾個有資料的表格，不影響帳號管理表格（帳號管理另處理）
+  ── */
+  #page-main    .data-table,
+  #page-myrecords .data-table,
+  #page-monthly .data-table,
+  #page-monthly-all .data-table,
+  #page-feedback-mgr .data-table,
+  #page-report-mgr .data-table { display: block; width: 100%; }
+
+  /* thead 隱藏（標題列不需要顯示）*/
+  #page-main    .data-table thead,
+  #page-myrecords .data-table thead,
+  #page-monthly .data-table thead,
+  #page-monthly-all .data-table thead,
+  #page-feedback-mgr .data-table thead,
+  #page-report-mgr .data-table thead { display: none; }
+
+  /* tbody 變成 block */
+  #page-main    .data-table tbody,
+  #page-myrecords .data-table tbody,
+  #page-monthly .data-table tbody,
+  #page-monthly-all .data-table tbody,
+  #page-feedback-mgr .data-table tbody,
+  #page-report-mgr .data-table tbody { display: block; width: 100%; padding: 8px; }
+
+  /* tr 變成卡片 */
+  #page-main    .data-table tbody tr,
+  #page-myrecords .data-table tbody tr,
+  #page-monthly .data-table tbody tr,
+  #page-monthly-all .data-table tbody tr,
+  #page-feedback-mgr .data-table tbody tr,
+  #page-report-mgr .data-table tbody tr {
+    display: block;
+    background: var(--color-bg-card) !important;
+    border: 1px solid var(--color-border-card);
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* td 變成 flex 行，有 data-label 時顯示標籤 */
+  #page-main    .data-table tbody td,
+  #page-myrecords .data-table tbody td,
+  #page-monthly .data-table tbody td,
+  #page-monthly-all .data-table tbody td,
+  #page-feedback-mgr .data-table tbody td,
+  #page-report-mgr .data-table tbody td {
+    display: flex;
+    align-items: flex-start;
+    padding: 3px 0;
+    font-size: 12px;
+    text-align: left !important;
+    white-space: normal;
+    overflow: visible;
+    border: none;
+    justify-content: flex-start;
+  }
+
+  /* 編號欄（td-mono）：小字灰色 */
+  #page-main    .data-table tbody td.td-mono,
+  #page-myrecords .data-table tbody td.td-mono,
+  #page-monthly .data-table tbody td.td-mono,
+  #page-monthly-all .data-table tbody td.td-mono { font-size: 10px; color: var(--color-text-muted); }
+
+  /* 狀態徽章 td：不佔整行 */
+  #page-main .data-table tbody td:nth-child(8),
+  #page-myrecords .data-table tbody td:nth-child(8),
+  #page-monthly .data-table tbody td:nth-child(8),
+  #page-monthly-all .data-table tbody td:nth-child(8) { flex-wrap: wrap; gap: 4px; }
+
+  /* 操作 td（最後一欄）：居中 */
+  #page-main .data-table tbody td:last-child,
+  #page-myrecords .data-table tbody td:last-child,
+  #page-monthly .data-table tbody td:last-child,
+  #page-monthly-all .data-table tbody td:last-child,
+  #page-feedback-mgr .data-table tbody td:last-child,
+  #page-report-mgr .data-table tbody td:last-child {
+    justify-content: flex-end;
+    margin-top: 6px;
+    border-top: 1px solid var(--color-border-table);
+    padding-top: 8px;
+  }
+
+  /* table-section 的橫向 overflow 取消 */
   #page-main    .table-section,
   #page-myrecords .table-section,
   #page-monthly .table-section,
   #page-monthly-all .table-section,
   #page-feedback-mgr .table-section,
-  #page-report-mgr .table-section { display: none !important; }
+  #page-report-mgr .table-section { overflow-x: visible; }
 
-  #main-mobile-list,
-  #my-mobile-list,
-  #mon-mobile-list,
-  #mall-mobile-list,
-  #fb-mobile-list,
-  #rp-mobile-list { display: block !important; }
-
-  /* tab 列保留顯示（依舊可以切換）*/
-  .tab-bar { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
-  .tab-item { flex-shrink: 0; font-size: 11px; min-width: 68px; height: 38px; }
-
-  /* Toolbar（搜尋/篩選）保留 */
-  .tab-bar ~ .toolbar,
-  .table-section .toolbar { display: flex !important; flex-wrap: wrap; gap: 8px; }
-
-  /* 右上角 user chip：頭像＋名字 縮短版 */
-  .user-chip { padding: 4px 10px !important; }
-  .user-chip-avatar { width: 24px; height: 24px; font-size: 11px; }
-  /* 名字只顯示到第2字（隱藏第1字重複的頭像字）*/
-  /* 注意：userName 顯示完整姓名，userInitial 顯示第1字 → 不重複 */
-
-  /* 按鈕拉長：意見欄/回報問題 */
-  .btn-feedback, .btn-danger {
-    width: auto !important;
-    min-width: 70px !important;
-    padding: 0 10px !important;
-    font-size: 11px !important;
-    height: 30px !important;
-    white-space: nowrap;
-  }
-
-  /* Copyright 顯示在 header subtitle */
-  .header-subtitle { display: block !important; font-size: 10px; }
-
-  /* 新增帳號按鈕 */
-  #acc-add-btn {
-    font-size: 11px !important;
-    padding: 0 8px !important;
-    height: 30px !important;
-    white-space: nowrap;
-    background: var(--color-gold) !important;
-    color: #1c1c15 !important;
-    border-radius: var(--radius-md) !important;
-    border: none !important;
-  }
-}
-
-/* ── 480px 以下：更緊湊 ── */
-@media (max-width: 480px) {
-  .mob-app-card { padding: 12px 12px; }
-  .mob-app-card-name { font-size: 14px; }
-  .btn-feedback, .btn-danger {
-    min-width: 60px !important;
-    font-size: 10px !important;
-    padding: 0 7px !important;
-  }
+  /* ── 帳號管理：保持桌面表格樣式，不改為卡片 ── */
+  #page-account .data-table { display: table; }
+  #page-account .data-table thead { display: table-header-group; }
+  #page-account .data-table tbody { display: table-row-group; }
+  #page-account .data-table tbody tr { display: table-row; background: unset !important; border: none; margin: 0; padding: 0; box-shadow: none; }
+  #page-account .data-table tbody td { display: table-cell; }
+  /* 帳號表格允許橫向捲動 */
+  #page-account .table-section { overflow-x: auto; }
 }
