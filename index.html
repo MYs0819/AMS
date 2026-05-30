@@ -1059,7 +1059,7 @@ html, body {
     white-space: nowrap;
     flex-shrink: 0;
     min-width: 0;
-    margin-right: 8px;
+    margin-right: 10px;
   }
   /* 帳號管理標題列：不換行，讓按鈕和標題共存 */
   #page-account > div:first-child > div:first-child {
@@ -5396,6 +5396,15 @@ function updateRpStats() {
   if(g('rp-done'))    g('rp-done').textContent=done;
 }
 
+/* 手機卡片資料暫存（避免 onclick inline JSON 特殊字元問題）*/
+var MOB_CARD_DATA = {};
+
+function mobCardOpen(key) {
+  var d = MOB_CARD_DATA[key];
+  if (!d) return;
+  openFbrpDetail(d.rec, d.type);
+}
+
 function toggleMobInfoCard(id, el) {
   var d = document.getElementById(id);
   if (!d) return;
@@ -5448,6 +5457,8 @@ function renderFbTable() {
       var card = document.createElement('div');
       card.className = 'mob-info-card';
       var detailId = 'fb-card-'+i;
+      var cardKey = 'fb-'+Date.now()+'-'+i;
+      MOB_CARD_DATA[cardKey] = { rec: r, type: 'feedback' };
       var sLabel = isDone?'已處理':'待處理';
       card.innerHTML =
         '<div class="mic-header">' +
@@ -5461,7 +5472,7 @@ function renderFbTable() {
         '<div class="mic-detail" id="'+detailId+'">' +
           '<div class="mic-full-content">'+content+'</div>' +
           '<div class="mic-actions">' +
-            '<button class="mic-btn" onclick="openFbrpDetail('+JSON.stringify(r).replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;')+',' + "'feedback'" + ')">查看</button>' +
+            '<button class="mic-btn" onclick="mobCardOpen(\''+cardKey+'\')">查看</button>' +
           '</div>' +
         '</div>' +
         '<div class="mic-toggle" onclick="toggleMobInfoCard(\''+detailId+'\',this)">▼ 展開</div>';
@@ -5515,6 +5526,8 @@ function renderRpTable() {
       var card = document.createElement('div');
       card.className = 'mob-info-card';
       var detailId = 'rp-card-'+i;
+      var cardKey = 'rp-'+Date.now()+'-'+i;
+      MOB_CARD_DATA[cardKey] = { rec: r, type: 'report' };
       var sLabel = isDone?'已處理':'待處理';
       card.innerHTML =
         '<div class="mic-header">' +
@@ -5528,7 +5541,7 @@ function renderRpTable() {
         '<div class="mic-detail" id="'+detailId+'">' +
           '<div class="mic-full-content">'+desc+'</div>' +
           '<div class="mic-actions">' +
-            '<button class="mic-btn" onclick="openFbrpDetail('+JSON.stringify(r).replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;')+',' + "'report'" + ')">查看</button>' +
+            '<button class="mic-btn" onclick="mobCardOpen(\''+cardKey+'\')">查看</button>' +
           '</div>' +
         '</div>' +
         '<div class="mic-toggle" onclick="toggleMobInfoCard(\''+detailId+'\',this)">▼ 展開</div>';
