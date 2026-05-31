@@ -1058,10 +1058,13 @@ html, body {
     padding: 8px 0 4px;
   }
 
-  /* 本月查詢頁：確保可滑動 */
-  #page-monthly-all {
-    overflow-y: auto;
+  /* 本月查詢頁：確保可滑動（覆蓋 overflow:hidden）*/
+  #page-monthly-all,
+  #page-monthly-all.active {
+    overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
+    height: auto !important;
+    min-height: 0;
   }
 
   /* ── 帳號管理 toolbar：搜尋佔多 + 兩個 filter 同排 ── */
@@ -1123,6 +1126,10 @@ html, body {
   /* ── 文件中心 sidebar ── */
   .doccenter-sidebar { width: 120px; }
   .doccenter-sidebar-item { font-size: 12px; padding: 8px var(--space-2); }
+
+  /* 意見欄 Modal：類型下拉選單限制寬度 */
+  .feedback-type-select { width: 90px !important; max-width: 90px !important; font-size: 11px !important; }
+  .feedback-row-1 { flex-wrap: wrap; gap: 6px; }
 }
 
 
@@ -4774,6 +4781,7 @@ function buildAppMobileCard(a, listEl, prefix, idx) {
     ? fmtDateOnly(a.startDate||a.endDate||a.quitPlanDate)
     : fmtDRange(a.startDate, a.endDate);
   var subtype = a.subtype || a.type || '—';
+  var proofHtml = proofBadge(a);  // 附件狀態（含無須附件判斷）
   var cardKey = prefix + '-' + idx;
   MOB_APP_DATA[cardKey] = a;
 
@@ -4790,7 +4798,8 @@ function buildAppMobileCard(a, listEl, prefix, idx) {
       '<span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;white-space:nowrap;flex-shrink:0;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>' +
     '</div>' +
     '<div style="font-size:12px;color:var(--color-text-muted);font-family:var(--font-mono);">' + dateStr + '</div>' +
-    '<div style="display:flex;justify-content:flex-end;margin-top:4px;">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">' +
+      proofHtml +
       '<button onclick="mobAppCardOpen(\''+cardKey+'\')" style="font-size:11px;padding:6px 16px;border-radius:6px;cursor:pointer;border:1.5px solid #90caf9;background:#deeeff;color:#5b9bd5;font-weight:600;-webkit-tap-highlight-color:transparent;">查看進度</button>' +
     '</div>';
   listEl.appendChild(card);
@@ -5519,8 +5528,11 @@ function loadReportMgr() {
 
 function updateFbStats() {
   var total=FB_DATA.length, pending=0, done=0;
-  FB_DATA.forEach(function(r){ if((r.status||'').indexOf('已處理')>-1) done++; else pending++; });
   var g=function(id){return document.getElementById(id);};
+  FB_DATA.forEach(function(r){
+    var s=r.status||'';
+    if(s.indexOf('已處理')>-1 || s.indexOf('已結案')>-1) done++; else pending++;
+  });
   if(g('fb-total'))   g('fb-total').textContent=total;
   if(g('fb-pending')) g('fb-pending').textContent=pending;
   if(g('fb-done'))    g('fb-done').textContent=done;
@@ -5528,8 +5540,11 @@ function updateFbStats() {
 
 function updateRpStats() {
   var total=RP_DATA.length, pending=0, done=0;
-  RP_DATA.forEach(function(r){ if((r.status||'').indexOf('已處理')>-1) done++; else pending++; });
   var g=function(id){return document.getElementById(id);};
+  RP_DATA.forEach(function(r){
+    var s=r.status||'';
+    if(s.indexOf('已處理')>-1 || s.indexOf('已結案')>-1) done++; else pending++;
+  });
   if(g('rp-total'))   g('rp-total').textContent=total;
   if(g('rp-pending')) g('rp-pending').textContent=pending;
   if(g('rp-done'))    g('rp-done').textContent=done;
@@ -6532,37 +6547,44 @@ function openReview(id, name, type, readOnly) {
 /* ══ 手機底部導覽 ── 展開式子選單 ══ */
 var MOB_MENUS = {
   '文件': [
-    { icon:'🗂', label:'文件中心', action:function(){ showPage('doccenter', null); } }
+    { icon:'🗂', label:'文件中心', perm:'doccenter', action:function(){ showPage('doccenter', null); } }
   ],
   '申請': [
-    { icon:'📝', label:'請假申請',     action:function(){ window.open('application-forms.html','_blank'); } },
-    { icon:'📂', label:'申請紀錄',     action:function(){ showPage('myrecords', null); } },
-    { icon:'🚨', label:'本月紀錄',     action:function(){ showPage('monthly', null); } },
-    { icon:'📋', label:'線上表單申請', action:function(){ showPage('extraops', null); } }
+    { icon:'📝', label:'請假申請',     perm:'leave',    action:function(){ window.open('application-forms.html','_blank'); } },
+    { icon:'📂', label:'申請紀錄',     perm:'myrecords',action:function(){ showPage('myrecords', null); } },
+    { icon:'🚨', label:'本月紀錄',     perm:'monthly',  action:function(){ showPage('monthly', null); } },
+    { icon:'📋', label:'線上表單申請', perm:'extraops', action:function(){ showPage('extraops', null); } }
   ],
   '系統': [
-    { icon:'🕐', label:'每日工時登記', action:function(){ showPage('workhour', null); } },
-    { icon:'📑', label:'勞報稅務建檔', action:function(){ showPage('labor', null); } },
-    { icon:'🧾', label:'核銷帳務登記', action:function(){ window.open('https://docs.google.com/spreadsheets/d/1_rWMMZDsfxztQhuZNZyMpey1RqhkS_ufs4InAbxUNus/edit','_blank'); } },
-    { icon:'💳', label:'每月匯款明細', action:function(){ window.open('https://docs.google.com/spreadsheets/d/1SMXjeTg0H4iFAXOovIdqFs-eSuziysDGhQpxVMHoLu4/edit','_blank'); } }
+    { icon:'🕐', label:'每日工時登記', perm:'workhour', action:function(){ showPage('workhour', null); } },
+    { icon:'📑', label:'勞報稅務建檔', perm:'labor',    action:function(){ showPage('labor', null); } },
+    { icon:'🧾', label:'核銷帳務登記', perm:'main',     action:function(){ window.open('https://docs.google.com/spreadsheets/d/1_rWMMZDsfxztQhuZNZyMpey1RqhkS_ufs4InAbxUNus/edit','_blank'); } },
+    { icon:'💳', label:'每月匯款明細', perm:'main',     action:function(){ window.open('https://docs.google.com/spreadsheets/d/1SMXjeTg0H4iFAXOovIdqFs-eSuziysDGhQpxVMHoLu4/edit','_blank'); } }
   ],
   '功能': [
-    { icon:'📁', label:'所有申請', action:function(){ showPage('main', null); } },
-    { icon:'📅', label:'本月查詢', action:function(){ showPage('monthly-all', null); } }
+    { icon:'📁', label:'所有申請', perm:'main',      action:function(){ showPage('main', null); } },
+    { icon:'📅', label:'本月查詢', perm:'monthly-all',action:function(){ showPage('monthly-all', null); } }
   ],
   '管理': [
-    { icon:'💰', label:'薪資單',   action:function(){ showToastGlobal('薪資單功能開發中…','info'); } },
-    { icon:'📈', label:'數據分析', action:function(){ showPage('analytics', null); } },
-    { icon:'💬', label:'意見回饋', action:function(){ showPage('feedback-mgr', null); } },
-    { icon:'🚨', label:'問題回報', action:function(){ showPage('report-mgr', null); } },
-    { icon:'🧑‍💼', label:'帳號管理', action:function(){ showPage('account', null); } }
+    { icon:'💰', label:'薪資單',   perm:'salary',    action:function(){ showToastGlobal('薪資單功能開發中…','info'); } },
+    { icon:'📈', label:'數據分析', perm:'analytics', action:function(){ showPage('analytics', null); } },
+    { icon:'💬', label:'意見回饋', perm:'account',   action:function(){ showPage('feedback-mgr', null); } },
+    { icon:'🚨', label:'問題回報', perm:'account',   action:function(){ showPage('report-mgr', null); } },
+    { icon:'🧑‍💼', label:'帳號管理', perm:'account',   action:function(){ showPage('account', null); } }
   ]
 };
 var _mobActiveSection = '';
 function mobNavToggle(section) {
   if (_mobActiveSection === section) { mobNavClose(); return; }
   _mobActiveSection = section;
-  var items = MOB_MENUS[section] || [];
+  // 依角色過濾選單項目
+  var role = CURRENT_USER ? CURRENT_USER.role : 'guest';
+  var allowed = ROLE_SIDEBAR_MAP[role] || [];
+  var allItems = MOB_MENUS[section] || [];
+  var items = allItems.filter(function(it){
+    var p = it.perm || '';
+    return !p || allowed.indexOf(p) > -1 || p === 'leave' || p === 'doccenter' || p === 'myrecords' || p === 'monthly';
+  });
   var titleEl = document.getElementById('mob-submenu-title');
   var itemsEl = document.getElementById('mob-submenu-items');
   var sub = document.getElementById('mob-submenu');
