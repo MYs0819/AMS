@@ -1046,6 +1046,24 @@ html, body {
   #mon-mobile-list,
   #mall-mobile-list { display: block !important; }
 
+  /* 手機版分頁按鈕 */
+  #main-mob-pagination,
+  #my-mob-pagination,
+  #mon-mob-pagination,
+  #mall-mob-pagination {
+    display: flex !important;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px 0 4px;
+  }
+
+  /* 本月查詢頁：確保可滑動 */
+  #page-monthly-all {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* ── 帳號管理 toolbar：搜尋佔多 + 兩個 filter 同排 ── */
   #acc-desktop-table .toolbar {
     flex-wrap: wrap;
@@ -1403,6 +1421,10 @@ html, body {
 #my-mobile-list,
 #mon-mobile-list,
 #mall-mobile-list { display: none; }
+#main-mob-pagination,
+#my-mob-pagination,
+#mon-mob-pagination,
+#mall-mob-pagination { display: none; }
 
 /* ── 申請卡片（手機版）── */
 .mob-app-card {
@@ -1775,6 +1797,7 @@ html, body {
           </div>
         </div>
         <div id="main-mobile-list" style="display:none;padding:4px 0;"></div>
+        <div id="main-mob-pagination" style="display:none;"></div>
       </div><!-- end page-main -->
 
             <!-- ════ 文件中心 ════ -->
@@ -2227,6 +2250,7 @@ html, body {
           <div class="table-footer"><div class="pagination" id="my-pagination"></div></div>
         </div>
         <div id="my-mobile-list" style="display:none;padding:4px 0;"></div>
+        <div id="my-mob-pagination" style="display:none;"></div>
 
       </div>
 
@@ -2355,6 +2379,7 @@ html, body {
           <div class="table-footer"><div class="pagination" id="mon-pagination"></div></div>
         </div>
         <div id="mon-mobile-list" style="display:none;padding:4px 0;"></div>
+        <div id="mon-mob-pagination" style="display:none;"></div>
       </div>
 
       <!-- ════ 本月查詢 ════ -->
@@ -2494,6 +2519,7 @@ html, body {
           <div class="table-footer"><div class="pagination" id="mall-pagination"></div></div>
         </div>
         <div id="mall-mobile-list" style="display:none;padding:4px 0;"></div>
+        <div id="mall-mob-pagination" style="display:none;"></div>
       </div><!-- end page-monthly-all -->
 
       <div class="page-section" id="page-feedback-mgr" style="gap:var(--space-4);">
@@ -4794,6 +4820,7 @@ function renderMainTable(apps) {
   tbody.innerHTML = '';
   if (!paged.length) {
     tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無申請資料</td></tr>';
+    _renderAppMobileList('main-mobile-list', [], 'main');
     return;
   }
   var userRole = CURRENT_USER ? CURRENT_USER.role : 'guest';
@@ -4902,8 +4929,29 @@ function _renderAppMobileList(listId, paged, prefix) {
   var mList = document.getElementById(listId);
   if (!mList) return;
   mList.innerHTML = '';
-  if (!paged.length) { mList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-text-muted);">無申請資料</div>'; return; }
-  paged.forEach(function(a, i) { buildAppMobileCard(a, mList, prefix, i); });
+  if (!paged.length) {
+    mList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-text-muted);">無申請資料</div>';
+  } else {
+    paged.forEach(function(a, i) { buildAppMobileCard(a, mList, prefix, i); });
+  }
+  // 同步分頁按鈕到手機版分頁容器
+  var srcBar = document.getElementById(
+    prefix === 'main' ? 'paginationBar' :
+    prefix === 'my'   ? 'my-pagination' :
+    prefix === 'mon'  ? 'mon-pagination' : 'mall-pagination'
+  );
+  var mobBar = document.getElementById(prefix + '-mob-pagination');
+  if (mobBar && srcBar) {
+    mobBar.innerHTML = srcBar.innerHTML;
+    // 複製按鈕的 onclick（分頁按鈕用 innerHTML 複製不會帶 event，需重新綁定）
+    var btns = mobBar.querySelectorAll('.page-btn');
+    var srcBtns = srcBar.querySelectorAll('.page-btn');
+    btns.forEach(function(btn, idx) {
+      if (srcBtns[idx]) {
+        btn.onclick = srcBtns[idx].onclick;
+      }
+    });
+  }
 }
 
 
@@ -5202,7 +5250,12 @@ function renderMyTable() {
   if (piEl) piEl.textContent = myCurrentPage + ' / ' + totalPage + '，共 ' + total + ' 筆';
 
   var noData = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--color-text-muted);">無符合申請紀錄</td></tr>';
-  if (!filtered.length) { tbody.innerHTML = noData; renderMyPagination(1, 0); return; }
+  if (!filtered.length) {
+    tbody.innerHTML = noData;
+    renderMyPagination(1, 0);
+    _renderAppMobileList('my-mobile-list', [], 'my');
+    return;
+  }
 
   var start = (myCurrentPage - 1) * PER_PAGE;
   var paged = filtered.slice(start, start + PER_PAGE);
@@ -7075,7 +7128,9 @@ function renderMonTable() {
   tbody.innerHTML = '';
   if(!filtered.length){
     tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
-    renderMonPagination(1, 0); return;
+    renderMonPagination(1, 0);
+    _renderAppMobileList('mon-mobile-list', [], 'mon');
+    return;
   }
 
   var start = (monCurrentPage - 1) * PER_PAGE;
@@ -7350,7 +7405,9 @@ function renderMallTable() {
   tbody.innerHTML='';
   if(!filtered.length){
     tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:28px;color:var(--color-text-muted);">無符合資料</td></tr>';
-    renderMallPagination(1, 0); return;
+    renderMallPagination(1, 0);
+    _renderAppMobileList('mall-mobile-list', [], 'mall');
+    return;
   }
 
   var start = (mallCurrentPage - 1) * PER_PAGE;
