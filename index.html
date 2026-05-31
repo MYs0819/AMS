@@ -823,7 +823,7 @@ html, body {
 .login-field    { display:flex;flex-direction:column;gap:5px; }
 .login-label    { font-size:12px;font-weight:500;color:var(--color-text-secondary); }
 .login-email-row{ display:flex;gap:6px; }
-.login-input    { border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;transition:.15s; }
+.login-input    { border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:16px;color:var(--color-text-primary);background:#fff;outline:none;width:100%;transition:.15s; }
 .login-input:focus  { border-color:var(--color-gold);box-shadow:0 0 0 3px var(--color-gold-bg); }
 .login-domain   { border:1.5px solid var(--color-border-card);border-radius:8px;padding:9px 10px;font-family:var(--font-body);font-size:13px;color:var(--color-text-primary);background:#fff;outline:none;cursor:pointer;white-space:nowrap; }
 .login-domain:focus { border-color:var(--color-gold); }
@@ -1322,8 +1322,8 @@ html, body {
   justify-content: space-between;
   gap: 8px;
 }
-.mic-type  { font-size: 11px; font-weight: 600; color: var(--color-text-muted); margin-bottom: 2px; }
-.mic-name  { font-size: 15px; font-weight: 600; color: var(--color-text-primary); }
+.mic-type  { font-size: 15px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 2px; }
+.mic-name  { font-size: 12px; font-weight: 500; color: var(--color-text-muted); }
 .mic-status {
   font-size: 10px; font-weight: 700;
   padding: 3px 10px; border-radius: 10px;
@@ -1474,10 +1474,12 @@ html, body {
     <div class="login-field">
       <label class="login-label">電子信箱</label>
       <div style="position:relative;">
-        <input class="login-input" id="login-mail" type="email"
+        <input class="login-input" id="login-mail" type="text"
+          inputmode="email"
           placeholder="example@gmail.com"
-          autocomplete="email"
+          autocomplete="username"
           oninput="updateMailSuggestions()"
+          onblur="setTimeout(function(){var d=document.getElementById('login-mail-dropdown');if(d)d.style.display='none';},200)"
           onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"
           style="padding-right:12px;font-size:16px;"/>
         <div id="login-mail-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--color-gold);border-radius:8px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.12);overflow:hidden;"></div>
@@ -1832,7 +1834,7 @@ html, body {
               <div class="doccenter-sidebar-item" onclick="dcSwitch(this,'announce')">📢 企業公告<span class="doccenter-count" id="cnt-announce">0</span></div>
               <div class="doccenter-sidebar-item" onclick="dcSwitch(this,'law')">📜 法規公告<span class="doccenter-count" id="cnt-law">0</span></div>
               <div class="doccenter-sidebar-item" onclick="dcSwitch(this,'meeting')">📝 會議紀錄<span class="doccenter-count" id="cnt-meeting">0</span></div>
-              <div class="doccenter-sidebar-item" onclick="dcSwitch(this,'other')">🧭 其他<span class="doccenter-count" id="cnt-other">0</span></div>
+              <div class="doccenter-sidebar-item" onclick="dcSwitch(this,'other')">🧭 其他事項<span class="doccenter-count" id="cnt-other">0</span></div>
               <div class="doccenter-sidebar-spacer"></div>
               <button class="doccenter-add-cat-btn" onclick="dcAddCategory()">＋ 新增分類</button>
             </div>
@@ -5879,6 +5881,20 @@ function onLoginSuccess(user, silent) {
 
   // 立即套用權限（同步）
   applyPermissions(user.role);
+  // 手機版：根據角色隱藏不適用的底部 nav tabs
+  var restrictedRoles = ['parttime','fulltime','employee'];
+  var restrictedNavTabs = ['mnav-系統','mnav-功能','mnav-管理'];
+  if (restrictedRoles.indexOf(user.role) > -1) {
+    restrictedNavTabs.forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  } else {
+    restrictedNavTabs.forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+  }
   initGjCard();
   initAllMonthBtn();
   initMyAllYearBtn();
@@ -6581,9 +6597,17 @@ function mobNavToggle(section) {
   var role = CURRENT_USER ? CURRENT_USER.role : 'guest';
   var allowed = ROLE_SIDEBAR_MAP[role] || [];
   var allItems = MOB_MENUS[section] || [];
+  // parttime/fulltime/employee 不顯示系統/功能/管理
+  var restrictedRoles = ['parttime','fulltime','employee'];
+  var restrictedSections = ['系統','功能','管理'];
+  if (restrictedRoles.indexOf(role) > -1 && restrictedSections.indexOf(section) > -1) {
+    mobNavClose();
+    return;
+  }
   var items = allItems.filter(function(it){
     var p = it.perm || '';
-    return !p || allowed.indexOf(p) > -1 || p === 'leave' || p === 'doccenter' || p === 'myrecords' || p === 'monthly';
+    if (!p) return true;
+    return allowed.indexOf(p) > -1;
   });
   var titleEl = document.getElementById('mob-submenu-title');
   var itemsEl = document.getElementById('mob-submenu-items');
@@ -6592,11 +6616,11 @@ function mobNavToggle(section) {
   if (!sub || !itemsEl) return;
   if (titleEl) titleEl.textContent = section;
   itemsEl.innerHTML = '';
-  items.forEach(function(it, idx) {
+  items.forEach(function(it) {
     var div = document.createElement('div');
     div.className = 'mob-sub-item';
     div.innerHTML = '<span style="font-size:18px;">'+it.icon+'</span><span style="font-size:14px;font-weight:500;color:#c8c4b4;">'+it.label+'</span>';
-    (function(i,s){ div.onclick = function(){ mobSubExec(i,s); }; })(idx, section);
+    (function(action){ div.onclick = function(){ action(); mobNavClose(); }; })(it.action);
     itemsEl.appendChild(div);
   });
   sub.style.display = 'block';
@@ -6606,6 +6630,7 @@ function mobNavToggle(section) {
   if (activeTab) activeTab.classList.add('active');
 }
 function mobSubExec(idx, section) {
+  // 保留向後相容，現在主要用直接 action binding
   var items = MOB_MENUS[section] || [];
   if (items[idx]) items[idx].action();
   mobNavClose();
