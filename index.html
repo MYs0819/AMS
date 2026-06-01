@@ -1086,12 +1086,12 @@ html, body {
   #acc-add-btn {
     display: flex !important;
     font-size: 11px !important;
-    padding: 0 10px !important;
-    height: 30px !important;
+    padding: 0 8px !important;
+    height: 28px !important;
     white-space: nowrap;
     flex-shrink: 0;
     min-width: 0;
-    margin-right: 13px;
+    margin-right: 4px;
   }
   /* 帳號管理標題列：不換行，讓按鈕和標題共存 */
   #page-account > div:first-child > div:first-child {
@@ -1447,6 +1447,62 @@ html, body {
 }
 #rp-mobile-list  { display: none; }
 
+
+
+/* ============================================================
+   手機版：數據分析橫向滑動 + Tab篩選顯示 + 數據分析標題調整
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* ── 數據分析標題列：字縮小避免換行 ── */
+  #analytics-main-title {
+    font-size: 13px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── 數據分析：統計卡片區 → 橫向 scroll，4個一頁 ── */
+  #page-analytics .ana-stats-row {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 8px;
+    padding: 10px 14px 4px;
+    scrollbar-width: none;
+  }
+  #page-analytics .ana-stats-row::-webkit-scrollbar { display: none; }
+  #page-analytics .ana-stats-row > div {
+    flex: 0 0 calc(50% - 8px);   /* 手機：一次顯示2個 */
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  /* ── 數據分析：圖表區 → 橫向 scroll，一次一圖 ── */
+  #page-analytics .ana-charts-row {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    padding: 10px 14px;
+    scrollbar-width: none;
+  }
+  #page-analytics .ana-charts-row::-webkit-scrollbar { display: none; }
+  #page-analytics .ana-charts-row > div {
+    flex: 0 0 calc(100% - 4px);  /* 手機：一次顯示1個圖 */
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  /* ── 申請頁面：Tab 篩選列在手機版保留顯示 ── */
+  #page-main      .tab-bar,
+  #page-myrecords .tab-bar,
+  #page-monthly   .tab-bar,
+  #page-monthly-all .tab-bar { display: flex !important; }
+}
 
 </style>
 
@@ -1836,7 +1892,7 @@ html, body {
               <div class="doccenter-sidebar-item" onclick="dcSwitch(this,'meeting')">📝 會議紀錄<span class="doccenter-count" id="cnt-meeting">0</span></div>
               <div class="doccenter-sidebar-item" onclick="dcSwitch(this,'other')">🧭 其他事項<span class="doccenter-count" id="cnt-other">0</span></div>
               <div class="doccenter-sidebar-spacer"></div>
-              <button class="doccenter-add-cat-btn" onclick="dcAddCategory()">＋ 新增分類</button>
+              <button class="doccenter-add-cat-btn" id="dc-add-cat-btn" onclick="dcAddCategory()">＋ 新增分類</button>
             </div>
             <!-- 右側內容 -->
             <div class="doccenter-content" id="dc-content-view">
@@ -1886,7 +1942,7 @@ html, body {
           </div>
 
           <!-- 統計摘要列：總申請 + 7種假別 -->
-          <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:10px 18px 0;flex-shrink:0;">
+          <div class="ana-stats-row" style="display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:10px 18px 0;flex-shrink:0;">
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:8px;padding:8px 10px;text-align:center;">
               <div style="font-size:11px;color:#9a9680;margin-bottom:2px;">總申請</div>
               <div style="font-size:20px;font-weight:700;color:#e8e4d8;" id="ana-total" style="color:#c9a84c;">—</div>
@@ -1930,7 +1986,7 @@ html, body {
           </div>
 
           <!-- 上半：4欄圖表 -->
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 18px 0;flex-shrink:0;">
+          <div class="ana-charts-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 18px 0;flex-shrink:0;">
 
             <!-- C1: 申請類型 環狀圖 + 引線標籤 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;">
@@ -1983,7 +2039,7 @@ html, body {
           </div>
 
           <!-- 下半：折線圖 + 部門明細 -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 18px 14px;flex:1;min-height:0;">
+          <div class="ana-charts-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 18px 14px;flex:1;min-height:0;">
 
             <!-- 折線圖 -->
             <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
@@ -5965,6 +6021,12 @@ function applyPermissions(role) {
     item.style.cursor        = '';
   });
 
+  // 文件中心新增分類：只有 admin/boss 才顯示
+  var dcAddBtn = document.getElementById('dc-add-cat-btn');
+  if (dcAddBtn) {
+    dcAddBtn.style.display = (role === 'admin' || role === 'boss') ? '' : 'none';
+  }
+
   // sidebar section 標題：若整個 section 的項目都隱藏，則隱藏標題
   document.querySelectorAll('.sidebar-section').forEach(function(sec){
     var items = sec.querySelectorAll('.sidebar-nav-item');
@@ -5983,6 +6045,8 @@ function applyPermissions(role) {
     }
   });
 }
+var MAIL_DOMAINS = ['gmail.com','yahoo.com.tw','yahoo.com','outlook.com','hotmail.com','icloud.com','msn.com'];
+
 function updateMailSuggestions() {
   var mailEl = document.getElementById('login-mail');
   var val    = mailEl ? mailEl.value : '';
