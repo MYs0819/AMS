@@ -1245,6 +1245,7 @@ html, body {
     flex-direction: column;
   }
   .app-body {
+    display: flex;
     flex: 1;
     overflow: hidden;
     flex-direction: column;
@@ -1269,6 +1270,7 @@ html, body {
   justify-content: space-around;
   z-index: 600;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  overflow: hidden;
   transition: height .2s ease;
 }
 .mob-nav-item {
@@ -6713,15 +6715,15 @@ function toggleMobNav() {
   var icon = document.getElementById('mob-nav-knob-icon');
   var items = nav ? nav.querySelectorAll('.mob-nav-item') : [];
   if (_mobNavCollapsed) {
-    if (nav) { nav.style.height = '0px'; nav.style.overflow = 'hidden'; }
-    items.forEach(function(el){ el.style.visibility = 'hidden'; });
+    if (nav) { nav.style.height = '8px'; }
+    items.forEach(function(el){ el.style.opacity = '0'; el.style.pointerEvents = 'none'; });
     if (icon) icon.textContent = '▲';
-    if (knob) knob.style.bottom = '4px';  /* 貼近底部 */
+    if (knob) { knob.style.bottom = '8px'; }
   } else {
-    if (nav) { nav.style.height = ''; nav.style.overflow = ''; }
-    items.forEach(function(el){ el.style.visibility = ''; });
+    if (nav) { nav.style.height = '58px'; }
+    items.forEach(function(el){ el.style.opacity = ''; el.style.pointerEvents = ''; });
     if (icon) icon.textContent = '▼';
-    if (knob) knob.style.bottom = '58px'; /* 在 nav 上方 */
+    if (knob) { knob.style.bottom = '58px'; }
   }
   mobNavClose();
 }
