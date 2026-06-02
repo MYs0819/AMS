@@ -1085,13 +1085,18 @@ html, body {
   /* 新增帳號按鈕顯示 */
   #acc-add-btn {
     display: flex !important;
-    font-size: 11px !important;
-    padding: 0 8px !important;
-    height: 28px !important;
+    align-items: center;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+    height: 32px !important;
     white-space: nowrap;
     flex-shrink: 0;
     min-width: 0;
-    margin-right: 4px;
+    margin-right: 12px;
+    background: var(--color-gold) !important;
+    color: #1c1c15 !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
   }
   /* 帳號管理標題列：不換行，讓按鈕和標題共存 */
   #page-account > div:first-child > div:first-child {
@@ -1450,58 +1455,76 @@ html, body {
 
 
 /* ============================================================
-   手機版：數據分析橫向滑動 + Tab篩選顯示 + 數據分析標題調整
+   手機版：數據分析橫向滑動 + Tab篩選顯示
    ============================================================ */
 
 @media (max-width: 768px) {
 
-  /* ── 數據分析標題列：字縮小避免換行 ── */
+  /* ── 數據分析標題：恢復正常（兩行結構由 HTML 控制）── */
   #analytics-main-title {
-    font-size: 13px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 15px !important;
+    white-space: normal;
   }
 
-  /* ── 數據分析：統計卡片區 → 橫向 scroll，4個一頁 ── */
+  /* ── 數據分析：統計卡片區 → 橫向 scroll，4個一組 ── */
   #page-analytics .ana-stats-row {
-    display: flex;
+    display: flex !important;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
     gap: 8px;
     padding: 10px 14px 4px;
     scrollbar-width: none;
+    grid-template-columns: unset !important;
   }
   #page-analytics .ana-stats-row::-webkit-scrollbar { display: none; }
   #page-analytics .ana-stats-row > div {
-    flex: 0 0 calc(50% - 8px);   /* 手機：一次顯示2個 */
+    flex: 0 0 calc(50% - 8px);
     scroll-snap-align: start;
     min-width: 0;
   }
 
-  /* ── 數據分析：圖表區 → 橫向 scroll，一次一圖 ── */
+  /* ── 數據分析：圖表區 → 橫向 scroll，每次一個圖 ── */
   #page-analytics .ana-charts-row {
-    display: flex;
+    display: flex !important;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
-    gap: 12px;
+    gap: 10px;
     padding: 10px 14px;
     scrollbar-width: none;
+    grid-template-columns: unset !important;
+    flex-shrink: 0;
   }
   #page-analytics .ana-charts-row::-webkit-scrollbar { display: none; }
   #page-analytics .ana-charts-row > div {
-    flex: 0 0 calc(100% - 4px);  /* 手機：一次顯示1個圖 */
+    flex: 0 0 calc(100vw - 60px); /* 一次1個圖，幾乎全寬 */
     scroll-snap-align: start;
     min-width: 0;
+    max-width: calc(100vw - 60px);
   }
 
   /* ── 申請頁面：Tab 篩選列在手機版保留顯示 ── */
   #page-main      .tab-bar,
   #page-myrecords .tab-bar,
   #page-monthly   .tab-bar,
-  #page-monthly-all .tab-bar { display: flex !important; }
+  #page-monthly-all .tab-bar {
+    display: flex !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-card);
+  }
+  #page-main      .tab-bar .tab-item,
+  #page-myrecords .tab-bar .tab-item,
+  #page-monthly   .tab-bar .tab-item,
+  #page-monthly-all .tab-bar .tab-item {
+    flex: 1;
+    min-width: 70px;
+    font-size: 11px;
+    height: 38px;
+    cursor: pointer;
+  }
 }
 
 </style>
@@ -1644,7 +1667,7 @@ html, body {
         <p class="sidebar-section-label">管理</p>
         <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
-        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
+        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據圖表分析</a>
         <a href="#" class="sidebar-nav-item" data-perm="account" onclick="return showPage('feedback-mgr',this)"><span class="sidebar-icon">💬</span>意見回饋</a>
         <a href="#" class="sidebar-nav-item" data-perm="account" onclick="return showPage('report-mgr',this)"><span class="sidebar-icon">🚨</span>問題回報</a>
       </div>
@@ -1926,7 +1949,10 @@ html, body {
 
           <!-- 標題列（跟文件中心同高）-->
           <div class="inner-page-header" style="border-bottom-color:#c9a84c;background-color:#2a2a2a;">
-            <p id="analytics-main-title" class="inner-page-title" style="color:#e8e4d8;">📊 2026年 05月 數據分析</p>
+            <div style="display:flex;flex-direction:column;">
+              <p id="analytics-main-title" class="inner-page-title" style="color:#e8e4d8;font-size:15px;line-height:1.3;">📊 2026年 05月</p>
+              <span style="font-size:11px;color:#c9a84c;font-weight:600;letter-spacing:.04em;">數據圖表分析</span>
+            </div>
             <div style="display:flex;align-items:center;gap:8px;">
               <span style="color:#9a9680;font-size:11px;">年度</span>
               <select id="anaYear" onchange="updateAnalytics()" style="height:26px;padding:0 6px;border-radius:5px;border:1px solid #555;background:#3a3a3a;color:#e8e4d8;font-size:11px;width:62px;">
@@ -3543,7 +3569,7 @@ var dcPage       = 1;
 var DC_LIST_PER  = 7;
 var DC_GRID_PER  = 12;
 var DC_PER_PAGE  = 7;
-var dcCatLabels  = {all:'全部文件',hr:'人事相關',admin:'行政表單',training:'教育訓練',announce:'企業公告',law:'法規公告',other:'其他'};
+var dcCatLabels  = {all:'全部文件',hr:'人事相關',admin:'行政表單',training:'教育訓練',announce:'企業公告',law:'法規公告',other:'其他事項'};
 var dcDlStyle    = 'display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border-radius:4px;border:1px solid #666;background-color:#555;color:#c9a84c;font-family:var(--font-body);font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;';
 
 /* ── 讀取文件列表（從 GAS）── */
@@ -3659,6 +3685,9 @@ function dcBuildFileList(files) {
   if (!area || !grid) return;
   area.innerHTML = '';
   grid.innerHTML = '';
+  var isAdmin = CURRENT_USER && (CURRENT_USER.role === 'admin' || CURRENT_USER.role === 'boss');
+  var delBtnHtml  = isAdmin ? '<button class="dc-del-btn" onclick="dcDeleteItem(this)" title="刪除">✕</button>' : '';
+  var delCardHtml = isAdmin ? '<button class="dc-card-del-btn" onclick="dcDeleteCard(this)" title="刪除">✕</button>' : '';
 
   // 更新分類計數（用中文→key對應）
   var counts = {all:0,hr:0,admin:0,training:0,announce:0,law:0,other:0};
@@ -3675,7 +3704,7 @@ function dcBuildFileList(files) {
   files.forEach(function(f){
     // f.cat 是中文，轉成 key 給 data-cat（供分類過濾用）
     var catKey   = dcLabelToKey[f.cat] || 'other';
-    var tagLabel = f.cat || '其他';
+    var tagLabel = f.cat === '其他' ? '其他事項' : (f.cat || '其他事項');
     var icon     = dcFileIcon(f.name); // 🖼️ 圖片 / 📋 PDF / 📄 其他
     var dlUrl    = 'https://drive.google.com/uc?export=download&id=' + f.fileId;
     var viewUrl  = 'https://drive.google.com/file/d/' + f.fileId + '/preview';
@@ -3702,7 +3731,7 @@ function dcBuildFileList(files) {
         (canPreview ? '<button style="'+dcDlStyle.replace('text-decoration:none','')+'border:1px solid #555;border-radius:5px;background:#444;cursor:pointer;font-size:11px;height:26px;padding:0 8px;white-space:nowrap;" onclick="dcPreviewFile(\''+f.fileId+'\',\''+f.name+'\')">👁 預覽</button>' : '') +
         '<a style="'+dcDlStyle+'font-size:11px;height:26px;padding:0 8px;display:flex;align-items:center;justify-content:center;" href="'+dlUrl+'" target="_blank">⬇ 下載</a>' +
       '</div>' +
-      '<button class="dc-del-btn" onclick="dcDeleteItem(this)" title="刪除">✕</button>';
+      delBtnHtml;
     area.appendChild(li);
 
     // 圖示模式
@@ -3715,7 +3744,7 @@ function dcBuildFileList(files) {
       '<span class="doccenter-card-name">' + dcStripExt(f.name) + '</span>' +
       '<span class="doccenter-card-date">' + dcFormatDate(f.date) + '</span>' +
       '<a class="doccenter-card-dl" href="' + dlUrl + '" target="_blank">⬇</a>' +
-      '<button class="dc-card-del-btn" onclick="dcDeleteCard(this)" title="刪除">✕</button>';
+      delCardHtml;
     (function(id, nm){ gc.addEventListener('click', function(){ if(canPreview) dcPreviewFile(id, nm); }); })(f.fileId, f.name);
     grid.appendChild(gc);
   });
@@ -3963,7 +3992,7 @@ function dcAddCategory(){
 }
 
 /* ══ 資料夾 compat ══ */
-var folderTitles = {all:'全部文件',hr:'人事相關',finance:'財務報表',law:'法規公告',training:'教育訓練',other:'其他'};
+var folderTitles = {all:'全部文件',hr:'人事相關',finance:'財務報表',law:'法規公告',training:'教育訓練',other:'其他事項'};
 function switchFolder(el, cat) {
   document.querySelectorAll('.folder-sidebar-item').forEach(function(i){i.classList.remove('active');});
   el.classList.add('active');
@@ -4141,7 +4170,7 @@ function updateAnalytics() {
   var month = (document.getElementById('anaMonth') || {}).value || String(new Date().getMonth()+1).padStart(2,'0');
   var title = document.getElementById('analytics-main-title');
   var trendTitle = document.getElementById('ana-trend-title');
-  if (title) title.textContent = '📊 ' + year + '年 ' + (anaAllMode ? '全年度' : month + '月') + ' 數據分析';
+  if (title) title.textContent = '📊 ' + year + '年 ' + (anaAllMode ? '全年度' : month + '月');
   if (trendTitle) trendTitle.textContent = anaAllMode ? '全年度每月申請趨勢' : month + '月 每週申請趨勢';
 
   // 若 ALL_APPS_DATA 是空的，先抓取
