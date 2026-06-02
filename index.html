@@ -1093,7 +1093,7 @@ html, body {
     white-space: nowrap;
     flex-shrink: 0;
     min-width: max-content;
-    margin-right: 12px;
+    margin-right: 11px;
     background: var(--color-gold) !important;
     color: #1c1c15 !important;
     border: none !important;
@@ -1269,6 +1269,8 @@ html, body {
   justify-content: space-around;
   z-index: 600;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  overflow: visible; /* 讓凸點顯示在 nav 上方 */
+  transition: height .2s ease;
 }
 .mob-nav-item {
   flex: 1;
@@ -1469,7 +1471,7 @@ html, body {
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
     gap: 6px;
-    padding: 10px 12px 6px;
+    padding: 10px 16px 6px; /* 左右對齊圖表列 */
     scrollbar-width: none;
     grid-template-columns: unset !important;
   }
@@ -1694,6 +1696,15 @@ html, body {
 
     <!-- ══ 手機底部導覽列（≤768px 顯示）══ -->
     <nav id="mobile-bottom-nav" style="display:none;">
+      <!-- 折疊控制凸點 -->
+      <div id="mob-nav-toggle-knob"
+           onclick="toggleMobNav()"
+           style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                  width:48px;height:16px;background:#2a2a1e;border:1px solid #3a3a2a;
+                  border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;
+                  cursor:pointer;z-index:601;-webkit-tap-highlight-color:transparent;">
+        <span id="mob-nav-knob-icon" style="font-size:10px;color:#9a9680;line-height:1;">▼</span>
+      </div>
       <a class="mob-nav-item" id="mnav-文件" onclick="mobNavToggle('文件')">
         <span class="mob-nav-icon">📁</span><span class="mob-nav-label">文件</span>
       </a>
@@ -2075,12 +2086,8 @@ html, body {
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>❌ 已退件</span><span style="color:#f44336;font-weight:600;">1件，7%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:7%;height:100%;background:linear-gradient(90deg,#f44336,#ef9a9a);border-radius:999px;"></div></div></div>
               </div>
             </div>
-          </div>
 
-          <!-- 下半：折線圖 + 部門明細（合入可滑動圖表列）-->
-          <div class="ana-charts-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 18px 14px;flex:1;min-height:0;">
-
-            <!-- 折線圖 -->
+            <!-- C5: 每週申請趨勢 -->
             <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">全年度每月申請趨勢</p>
               <div style="flex:1;min-height:0;display:flex;align-items:stretch;">
@@ -2201,6 +2208,7 @@ html, body {
             </div>
 
           </div><!-- end 下半 -->
+          </div><!-- end 合一橫向滑動列 -->
         </div>
       </div>
 
@@ -6696,6 +6704,26 @@ var MOB_MENUS = {
   ]
 };
 var _mobActiveSection = '';
+var _mobNavCollapsed = false;
+function toggleMobNav() {
+  _mobNavCollapsed = !_mobNavCollapsed;
+  var nav = document.getElementById('mobile-bottom-nav');
+  var knob = document.getElementById('mob-nav-knob-icon');
+  var items = nav ? nav.querySelectorAll('.mob-nav-item') : [];
+  if (_mobNavCollapsed) {
+    if (nav) nav.style.height = '8px';
+    if (nav) nav.style.overflow = 'hidden';
+    items.forEach(function(el){ el.style.display='none'; });
+    if (knob) knob.textContent = '▲';
+  } else {
+    if (nav) nav.style.height = '';
+    if (nav) nav.style.overflow = '';
+    items.forEach(function(el){ el.style.display=''; });
+    if (knob) knob.textContent = '▼';
+  }
+  mobNavClose();
+}
+
 function mobNavToggle(section) {
   if (_mobActiveSection === section) { mobNavClose(); return; }
   _mobActiveSection = section;
