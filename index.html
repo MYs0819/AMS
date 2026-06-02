@@ -1269,7 +1269,6 @@ html, body {
   justify-content: space-around;
   z-index: 600;
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  overflow: visible; /* 讓凸點顯示在 nav 上方 */
   transition: height .2s ease;
 }
 .mob-nav-item {
@@ -1310,6 +1309,7 @@ html, body {
 /* 手機版：底部 nav 出現時 */
 @media (max-width: 768px) {
   #mobile-bottom-nav { display: flex !important; }
+  #mob-nav-toggle-knob { display: flex !important; }
   .app-sidebar        { display: none !important; }
 }
 
@@ -1696,15 +1696,6 @@ html, body {
 
     <!-- ══ 手機底部導覽列（≤768px 顯示）══ -->
     <nav id="mobile-bottom-nav" style="display:none;">
-      <!-- 折疊控制凸點 -->
-      <div id="mob-nav-toggle-knob"
-           onclick="toggleMobNav()"
-           style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
-                  width:48px;height:16px;background:#2a2a1e;border:1px solid #3a3a2a;
-                  border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;
-                  cursor:pointer;z-index:601;-webkit-tap-highlight-color:transparent;">
-        <span id="mob-nav-knob-icon" style="font-size:10px;color:#9a9680;line-height:1;">▼</span>
-      </div>
       <a class="mob-nav-item" id="mnav-文件" onclick="mobNavToggle('文件')">
         <span class="mob-nav-icon">📁</span><span class="mob-nav-label">文件</span>
       </a>
@@ -1721,6 +1712,16 @@ html, body {
         <span class="mob-nav-icon">🔧</span><span class="mob-nav-label">管理</span>
       </a>
     </nav>
+
+    <!-- 底部導覽列折疊凸點（獨立 fixed 元素，不影響其他頁面）-->
+    <div id="mob-nav-toggle-knob"
+         onclick="toggleMobNav()"
+         style="display:none;position:fixed;bottom:58px;left:50%;transform:translateX(-50%);
+                width:48px;height:16px;background:#2a2a1e;border:1px solid #3a3a2a;
+                border-radius:8px 8px 0 0;align-items:center;justify-content:center;
+                cursor:pointer;z-index:599;-webkit-tap-highlight-color:transparent;">
+      <span id="mob-nav-knob-icon" style="font-size:10px;color:#9a9680;line-height:1;">▼</span>
+    </div>
 
     <!-- 手機選單：展開式子選單 -->
     <div id="mob-submenu-overlay" onclick="mobNavClose()" style="display:none;position:fixed;inset:0;z-index:590;background:rgba(0,0,0,.45);"></div>
@@ -6707,19 +6708,20 @@ var _mobActiveSection = '';
 var _mobNavCollapsed = false;
 function toggleMobNav() {
   _mobNavCollapsed = !_mobNavCollapsed;
-  var nav = document.getElementById('mobile-bottom-nav');
-  var knob = document.getElementById('mob-nav-knob-icon');
+  var nav  = document.getElementById('mobile-bottom-nav');
+  var knob = document.getElementById('mob-nav-toggle-knob');
+  var icon = document.getElementById('mob-nav-knob-icon');
   var items = nav ? nav.querySelectorAll('.mob-nav-item') : [];
   if (_mobNavCollapsed) {
-    if (nav) nav.style.height = '8px';
-    if (nav) nav.style.overflow = 'hidden';
-    items.forEach(function(el){ el.style.display='none'; });
-    if (knob) knob.textContent = '▲';
+    if (nav) { nav.style.height = '0px'; nav.style.overflow = 'hidden'; }
+    items.forEach(function(el){ el.style.visibility = 'hidden'; });
+    if (icon) icon.textContent = '▲';
+    if (knob) knob.style.bottom = '4px';  /* 貼近底部 */
   } else {
-    if (nav) nav.style.height = '';
-    if (nav) nav.style.overflow = '';
-    items.forEach(function(el){ el.style.display=''; });
-    if (knob) knob.textContent = '▼';
+    if (nav) { nav.style.height = ''; nav.style.overflow = ''; }
+    items.forEach(function(el){ el.style.visibility = ''; });
+    if (icon) icon.textContent = '▼';
+    if (knob) knob.style.bottom = '58px'; /* 在 nav 上方 */
   }
   mobNavClose();
 }
