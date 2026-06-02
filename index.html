@@ -1475,7 +1475,7 @@ html, body {
   }
   #page-analytics .ana-stats-row::-webkit-scrollbar { display: none; }
   #page-analytics .ana-stats-row > div {
-    flex: 0 0 calc(25% - 6px); /* 4個一排 */
+    flex: 0 0 calc(25% - 5px); /* 4個一排 */
     scroll-snap-align: start;
     min-width: 72px;
   }
@@ -1486,18 +1486,19 @@ html, body {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
-    gap: 0;
+    gap: 12px;
     padding: 10px 16px;
     scrollbar-width: none;
     grid-template-columns: unset !important;
     flex-shrink: 0;
   }
   #page-analytics .ana-charts-row::-webkit-scrollbar { display: none; }
-  #page-analytics .ana-charts-row > div {
-    flex: 0 0 calc(100vw - 64px); /* 全寬 - padding, 置中 */
+  /* 每個圖表卡片佔全寬（手機一次看一個）*/
+  #page-analytics .ana-chart-slide {
+    flex: 0 0 calc(100vw - 56px) !important;
     scroll-snap-align: center;
     min-width: 0;
-    margin: 0 auto;
+    max-width: calc(100vw - 56px);
   }
 
   /* ── 數據分析頁：允許滑動 ── */
@@ -1515,10 +1516,13 @@ html, body {
     display: flex !important;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border-radius: var(--radius-lg); /* 四角圓 */
-    border: 1px solid var(--color-border-card) !important;
-    border-bottom: 1px solid var(--color-border-card) !important; /* 還原 bottom */
-    margin-bottom: 8px;
+    border-radius: var(--radius-lg) !important;
+    border: 1.5px solid var(--color-border-card) !important;
+    border-bottom: 1.5px solid var(--color-border-card) !important;
+    margin-bottom: 10px;
+    margin-top: 4px;
+    box-shadow: var(--shadow-card);
+    flex-shrink: 0;
   }
   #page-main      .tab-bar .tab-item,
   #page-myrecords .tab-bar .tab-item,
@@ -1526,8 +1530,10 @@ html, body {
   #page-monthly-all .tab-bar .tab-item {
     flex: 1;
     min-width: 72px;
-    font-size: 11px;
-    height: 40px;
+    font-size: 12px;
+    height: 42px;
+    font-weight: 600;
+    border-bottom: none !important;
   }
 }
 
@@ -1671,7 +1677,7 @@ html, body {
         <p class="sidebar-section-label">管理</p>
         <p class="sidebar-section-sub">主管查閱</p>
         <a href="#" class="sidebar-nav-item" data-perm="salary" onclick="showToastGlobal('薪資單功能開發中…','info');return false;"><span class="sidebar-icon">💰</span>薪資單</a>
-        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據圖表分析</a>
+        <a href="#" class="sidebar-nav-item" data-perm="analytics" onclick="return showPage('analytics',this)"><span class="sidebar-icon">📈</span>數據分析</a>
         <a href="#" class="sidebar-nav-item" data-perm="account" onclick="return showPage('feedback-mgr',this)"><span class="sidebar-icon">💬</span>意見回饋</a>
         <a href="#" class="sidebar-nav-item" data-perm="account" onclick="return showPage('report-mgr',this)"><span class="sidebar-icon">🚨</span>問題回報</a>
       </div>
@@ -2022,7 +2028,7 @@ html, body {
           <div class="ana-charts-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 18px 0;flex-shrink:0;">
 
             <!-- C1: 申請類型 環狀圖 + 引線標籤 -->
-            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+            <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">申請類型分布</p>
               <div style="width:100%;display:flex;justify-content:center;">
                 <svg id="ana-type-chart" viewBox="-80 -70 360 340" style="width:100%;max-width:300px;overflow:visible;">
@@ -2035,7 +2041,7 @@ html, body {
             </div>
 
             <!-- C2: 部門×假別 雙環 -->
-            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;width:100%;">部門 × 假別</p>
               <div style="width:100%;display:flex;justify-content:center;">
                 <svg id="ana-dual-ring-svg" viewBox="0 0 200 200" style="width:100%;max-width:200px;">
@@ -2052,14 +2058,14 @@ html, body {
               </div>
             </div>
             <!-- C3: 假別量 -->
-            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">假別申請量</p>
               <div id="ana-leave-bars" style="display:flex;flex-direction:column;flex:1;height:100%;gap:0;overflow-y:auto;">
               </div>
             </div>
 
             <!-- C4: 申請狀態 -->
-            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">申請狀態分布</p>
               <div id="ana-status-bars" style="display:flex;flex-direction:column;gap:11px;">
                 <div><div style="display:flex;justify-content:space-between;font-size:10px;color:#c8c4b4;margin-bottom:3px;"><span>⏳ 進行中</span><span style="color:#c9a84c;font-weight:600;">6件，40%</span></div><div style="height:9px;background:#222;border-radius:999px;overflow:hidden;"><div style="width:40%;height:100%;background:linear-gradient(90deg,#c9a84c,#d4b96a);border-radius:999px;"></div></div></div>
@@ -2071,11 +2077,11 @@ html, body {
             </div>
           </div>
 
-          <!-- 下半：折線圖 + 部門明細 -->
+          <!-- 下半：折線圖 + 部門明細（合入可滑動圖表列）-->
           <div class="ana-charts-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 18px 14px;flex:1;min-height:0;">
 
             <!-- 折線圖 -->
-            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
               <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">全年度每月申請趨勢</p>
               <div style="flex:1;min-height:0;display:flex;align-items:stretch;">
                 <svg id="ana-trend-svg" viewBox="0 0 500 150" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
@@ -2139,7 +2145,7 @@ html, body {
             </div>
 
             <!-- 各部門申請明細 -->
-            <div style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;">
               <p style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">各部門申請明細</p>
               <div id="ana-dept-list" style="display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:0;">
 
