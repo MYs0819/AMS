@@ -453,7 +453,7 @@ html, body {
 
 /* 文件中心 / 數據分析 等全高頁面（無 padding 貼滿）*/
 #page-doccenter.active, #page-analytics.active, .page-section { display:none;flex-direction:column;gap:var(--space-4);overflow-x:hidden; }
-.page-section.active { display:flex; flex-direction:column; }
+.page-section.active { display:flex; flex-direction:column; flex:1; min-height:0; }
 #page-doccenter.active { display:flex;flex:1;min-height:0;flex-direction:column; }
 #page-workhour.active, #page-labor.active, #page-analytics.active, #page-monthly-all.active, #page-extraops.active { display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden; }
 
@@ -1012,7 +1012,7 @@ html, body {
   .app-sidebar { display: none !important; }
 
   /* ── Body 改為直列 ── */
-  .app-body { flex-direction: column; }
+  .app-body { display: flex; flex-direction: column; }
 
   /* ── Main 留出底部 nav 空間 ── */
   .app-main {
@@ -1093,7 +1093,7 @@ html, body {
     white-space: nowrap;
     flex-shrink: 0;
     min-width: max-content;
-    margin-right: 11px;
+    margin-right: 13px;
     background: var(--color-gold) !important;
     color: #1c1c15 !important;
     border: none !important;
@@ -1494,7 +1494,6 @@ html, body {
     padding: 10px 16px;
     scrollbar-width: none;
     grid-template-columns: unset !important;
-    flex-shrink: 0;
   }
   #page-analytics .ana-charts-row::-webkit-scrollbar { display: none; }
   /* 每個圖表卡片佔全寬（手機一次看一個）*/
@@ -1503,6 +1502,7 @@ html, body {
     scroll-snap-align: center;
     min-width: 0;
     max-width: calc(100vw - 56px);
+    height: auto;
   }
 
   /* ── 數據分析頁：允許滑動 ── */
@@ -6715,10 +6715,10 @@ function toggleMobNav() {
   var icon = document.getElementById('mob-nav-knob-icon');
   var items = nav ? nav.querySelectorAll('.mob-nav-item') : [];
   if (_mobNavCollapsed) {
-    if (nav) { nav.style.height = '8px'; }
+    if (nav) { nav.style.height = '6px'; }
     items.forEach(function(el){ el.style.opacity = '0'; el.style.pointerEvents = 'none'; });
     if (icon) icon.textContent = '▲';
-    if (knob) { knob.style.bottom = '8px'; }
+    if (knob) { knob.style.bottom = '6px'; knob.style.display = 'flex'; }
   } else {
     if (nav) { nav.style.height = '58px'; }
     items.forEach(function(el){ el.style.opacity = ''; el.style.pointerEvents = ''; });
