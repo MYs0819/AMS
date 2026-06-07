@@ -453,7 +453,7 @@ html, body {
 
 /* 文件中心 / 數據分析 等全高頁面（無 padding 貼滿）*/
 #page-doccenter.active, #page-analytics.active, .page-section { display:none;flex-direction:column;gap:var(--space-4);overflow-x:hidden; }
-.page-section.active { display:flex; flex-direction:column; flex:1; min-height:0; }
+.page-section.active { display:flex; flex-direction:column; }
 #page-doccenter.active { display:flex;flex:1;min-height:0;flex-direction:column; }
 #page-workhour.active, #page-labor.active, #page-analytics.active, #page-monthly-all.active, #page-extraops.active { display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden; }
 
@@ -1696,42 +1696,6 @@ html, body {
 
     </aside>
 
-    <!-- ══ 手機底部導覽列（≤768px 顯示）══ -->
-    <nav id="mobile-bottom-nav" style="display:none;">
-      <a class="mob-nav-item" id="mnav-文件" onclick="mobNavToggle('文件')">
-        <span class="mob-nav-icon">📁</span><span class="mob-nav-label">文件</span>
-      </a>
-      <a class="mob-nav-item" id="mnav-申請" onclick="mobNavToggle('申請')">
-        <span class="mob-nav-icon">📝</span><span class="mob-nav-label">申請</span>
-      </a>
-      <a class="mob-nav-item" id="mnav-系統" onclick="mobNavToggle('系統')">
-        <span class="mob-nav-icon">⚙️</span><span class="mob-nav-label">系統</span>
-      </a>
-      <a class="mob-nav-item" id="mnav-功能" onclick="mobNavToggle('功能')">
-        <span class="mob-nav-icon">🗂</span><span class="mob-nav-label">功能</span>
-      </a>
-      <a class="mob-nav-item" id="mnav-管理" onclick="mobNavToggle('管理')">
-        <span class="mob-nav-icon">🔧</span><span class="mob-nav-label">管理</span>
-      </a>
-    </nav>
-
-    <!-- 底部導覽列折疊凸點（獨立 fixed 元素，不影響其他頁面）-->
-    <div id="mob-nav-toggle-knob"
-         onclick="toggleMobNav()"
-         style="display:none;position:fixed;bottom:58px;left:50%;transform:translateX(-50%);
-                width:48px;height:16px;background:#2a2a1e;border:1px solid #3a3a2a;
-                border-radius:8px 8px 0 0;align-items:center;justify-content:center;
-                cursor:pointer;z-index:599;-webkit-tap-highlight-color:transparent;">
-      <span id="mob-nav-knob-icon" style="font-size:10px;color:#9a9680;line-height:1;">▼</span>
-    </div>
-
-    <!-- 手機選單：展開式子選單 -->
-    <div id="mob-submenu-overlay" onclick="mobNavClose()" style="display:none;position:fixed;inset:0;z-index:590;background:rgba(0,0,0,.45);"></div>
-    <div id="mob-submenu" style="display:none;position:fixed;bottom:58px;left:0;right:0;z-index:595;background:#1f1f17;border-top:1px solid #3a3a2a;border-radius:16px 16px 0 0;padding:12px 8px 6px;max-height:55vh;overflow-y:auto;">
-      <div id="mob-submenu-title" style="font-size:11px;font-weight:700;color:#9a9680;letter-spacing:.08em;padding:0 8px 8px;text-transform:uppercase;"></div>
-      <div id="mob-submenu-items" style="display:flex;flex-direction:column;gap:2px;"></div>
-    </div>
-
     <!-- ══ 主內容 ══ -->
     <main class="app-main">
 
@@ -2912,8 +2876,45 @@ html, body {
 
 
 </main>
+  </div><!-- end app-body -->
+
+  <!-- ══ 手機底部導覽列（position:fixed，不影響 flex layout）══ -->
+  <nav id="mobile-bottom-nav" style="display:none;">
+    <a class="mob-nav-item" id="mnav-文件" onclick="mobNavToggle('文件')">
+      <span class="mob-nav-icon">📁</span><span class="mob-nav-label">文件</span>
+    </a>
+    <a class="mob-nav-item" id="mnav-申請" onclick="mobNavToggle('申請')">
+      <span class="mob-nav-icon">📝</span><span class="mob-nav-label">申請</span>
+    </a>
+    <a class="mob-nav-item" id="mnav-系統" onclick="mobNavToggle('系統')">
+      <span class="mob-nav-icon">⚙️</span><span class="mob-nav-label">系統</span>
+    </a>
+    <a class="mob-nav-item" id="mnav-功能" onclick="mobNavToggle('功能')">
+      <span class="mob-nav-icon">🗂</span><span class="mob-nav-label">功能</span>
+    </a>
+    <a class="mob-nav-item" id="mnav-管理" onclick="mobNavToggle('管理')">
+      <span class="mob-nav-icon">🔧</span><span class="mob-nav-label">管理</span>
+    </a>
+  </nav>
+
+  <!-- 底部導覽列折疊凸點 -->
+  <div id="mob-nav-toggle-knob"
+       onclick="toggleMobNav()"
+       style="display:none;position:fixed;bottom:58px;left:50%;transform:translateX(-50%);
+              width:48px;height:16px;background:#2a2a1e;border:1px solid #3a3a2a;
+              border-radius:8px 8px 0 0;align-items:center;justify-content:center;
+              cursor:pointer;z-index:599;-webkit-tap-highlight-color:transparent;">
+    <span id="mob-nav-knob-icon" style="font-size:10px;color:#9a9680;line-height:1;">▼</span>
   </div>
-</div>
+
+  <!-- 手機選單：展開式子選單 -->
+  <div id="mob-submenu-overlay" onclick="mobNavClose()" style="display:none;position:fixed;inset:0;z-index:590;background:rgba(0,0,0,.45);"></div>
+  <div id="mob-submenu" style="display:none;position:fixed;bottom:58px;left:0;right:0;z-index:595;background:#1f1f17;border-top:1px solid #3a3a2a;border-radius:16px 16px 0 0;padding:12px 8px 6px;max-height:55vh;overflow-y:auto;">
+    <div id="mob-submenu-title" style="font-size:11px;font-weight:700;color:#9a9680;letter-spacing:.08em;padding:0 8px 8px;text-transform:uppercase;"></div>
+    <div id="mob-submenu-items" style="display:flex;flex-direction:column;gap:2px;"></div>
+  </div>
+
+</div><!-- end app-wrapper -->
 <!-- 帳號 Modal -->
 <div class="modal-overlay" id="accModal" onclick="if(event.target===this)closeModal('accModal')">
   <div style="background:#fff;border-radius:16px;padding:32px 36px;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:18px;">
@@ -3242,6 +3243,9 @@ function showPage(pageId, el) {
   document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
   var t = document.getElementById('page-' + pageId);
   if (t) t.classList.add('active');
+  // 切換頁面時捲回頂端
+  var appMain = document.querySelector('.app-main');
+  if (appMain) appMain.scrollTop = 0;
   document.querySelectorAll('.sidebar-nav-item:not(.external)').forEach(function(i) { i.classList.remove('active'); });
   if (el) {
     el.classList.add('active');
