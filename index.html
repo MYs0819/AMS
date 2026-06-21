@@ -925,6 +925,91 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   opacity:0; transition:opacity .15s;
 }
 .leave-filter-card:hover .leave-tip { opacity:1; }
+
+/* ============================================================
+   手機版底部分類導覽列／抽屜（沿用桌面版既有色彩變數與 class，
+   預設隱藏，僅在 ≤768px 時於下方 @media 中顯示）
+   ============================================================ */
+.mobile-tabbar{display:none;}
+.mobile-sidebar-backdrop{display:none;}
+
+/* ============================================================
+   RWD 手機版（≤768px）
+   原則：不新增獨立的視覺系統，全部沿用桌面版既有 class 與
+   --color-*／--space-* 等設計 token，只調整版面排列方式與位置
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* ── Header：留白縮小、允許換行、隱藏次要文字 ── */
+  .app-header{ height:auto; min-height:var(--header-height); padding:8px 12px; flex-wrap:wrap; row-gap:8px; }
+  .header-subtitle{ display:none; }
+  .header-title{ font-size:15px; }
+  .header-logo{ width:30px; height:30px; }
+  .header-right{ gap:6px; flex-wrap:wrap; }
+  .btn,.btn-feedback,.btn-danger{ width:auto; padding:0 10px; font-size:11px; }
+  .user-chip-name{ display:none; }
+
+  /* ── 主內容：留白縮小，底部預留空間給手機分類導覽列 ── */
+  .app-main{ padding:14px 12px 76px 12px; }
+
+  /* ── 側邊欄：桌機版「左側固定欄」→ 手機版改為「底部可滑出抽屜」
+     （沿用 .app-sidebar / .sidebar-section / .sidebar-nav-item 原本的樣式，
+       只是用 position + transform 改變它出現的位置） ── */
+  .app-body{ position:relative; }
+  .app-sidebar{
+    position:fixed; left:0; right:0; bottom:0; top:auto;
+    width:100%; max-height:75vh;
+    border-right:none; border-top:1px solid var(--color-border-sidebar);
+    border-radius:16px 16px 0 0;
+    box-shadow:0 -8px 24px rgba(0,0,0,.25);
+    transform:translateY(100%);
+    transition:transform .28s ease;
+    z-index:2000;
+  }
+  .app-sidebar.mobile-open{ transform:translateY(0); }
+
+  .mobile-sidebar-backdrop{
+    display:block; position:fixed; inset:0; background:rgba(0,0,0,.45);
+    z-index:1900; opacity:0; pointer-events:none; transition:opacity .2s;
+  }
+  .mobile-sidebar-backdrop.show{ opacity:1; pointer-events:auto; }
+
+  /* ── 底部分類導覽列：沿用側邊欄同一套色票，只是換個位置呈現分類 ── */
+  .mobile-tabbar{
+    display:flex; position:fixed; left:0; right:0; bottom:0;
+    height:60px; background-color:var(--color-bg-sidebar);
+    border-top:1px solid var(--color-border-sidebar);
+    z-index:1950; overflow-x:auto;
+  }
+  .mobile-tab-item{
+    flex:1 0 auto; min-width:62px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2px; font-family:var(--font-body); font-size:10px;
+    color:var(--sidebar-item-color); cursor:pointer; border-top:2px solid transparent;
+    padding:4px 6px; user-select:none;
+  }
+  .mobile-tab-item .mobile-tab-icon{ font-size:18px; }
+  .mobile-tab-item.active{ color:var(--color-gold-light); border-top-color:var(--color-gold); }
+
+  /* ── 統計卡片：沿用 .stat-card 樣式本身，只改成 2 欄排列 ── */
+  .stats-grid{ grid-template-columns:repeat(2,1fr) !important; gap:8px; }
+
+  /* ── 表格：欄寬維持桌面版設定，改用橫向捲動瀏覽 ── */
+  .table-section{ overflow-x:auto; }
+  .data-table{ min-width:760px; }
+
+  /* ── Tab 列：字級／高度縮小避免擠壓 ── */
+  .tab-item{ font-size:12px; padding:0 6px; height:40px; }
+
+  /* ── 工具列：搜尋框可伸縮，篩選列換行 ── */
+  .toolbar{ padding:10px 12px; }
+  .search-box{ width:auto; flex:1 1 140px; }
+  .toolbar-right{ width:100%; justify-content:space-between; margin-left:0; }
+
+  /* ── Modal：左右留白縮小，沿用原本卡片樣式 ── */
+  .form-modal-box,.feedback-modal-box,.reject-modal-box{ padding:18px 16px; }
+  #reviewFlowBar{ flex-wrap:wrap !important; row-gap:8px; }
+}
 </style>
 
   <meta property="og:title" content="📝｜MYs系統｜人資行政管理系統" />
@@ -2261,6 +2346,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 </main>
   </div><!-- end app-body -->
 
+  <!-- 手機版底部分類導覽列（內容由 JS 依現有側邊欄 .sidebar-section 動態產生，非新增資料） -->
+  <nav class="mobile-tabbar" id="mobileTabbar"></nav>
+  <!-- 手機版側邊欄抽屜背景遮罩 -->
+  <div class="mobile-sidebar-backdrop" id="mobileSidebarBackdrop" onclick="closeMobileSidebar()"></div>
 
 </div><!-- end app-wrapper -->
 <!-- 帳號 Modal -->
@@ -2588,6 +2677,7 @@ function filterMallLeave(type, el) {
 
 /* ══ 右側介面跳轉 ══ */
 function showPage(pageId, el) {
+  if (typeof closeMobileSidebar === 'function') closeMobileSidebar();
   document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
   var t = document.getElementById('page-' + pageId);
   if (t) t.classList.add('active');
@@ -5458,7 +5548,54 @@ function applyPermissions(role) {
       div.style.display = '';
     }
   });
+  // 手機版底部分類導覽列：依目前可見的 sidebar-section 重新產生
+  if (typeof buildMobileTabbar === 'function') buildMobileTabbar();
 }
+
+/* ══ 手機版：底部分類導覽列 + 側邊欄抽屜 ══
+   說明：完全沿用桌面版既有的 .app-sidebar / .sidebar-section / .sidebar-nav-item
+   資料與樣式，這裡只是另外做一個「進入點」，點擊後把同一份側邊欄
+   用 CSS 從畫面下方滑出來，並捲動到對應分類，不重複建立任何選單資料 ══ */
+var _mobSidebarOpenSection = null;
+function buildMobileTabbar() {
+  var bar = document.getElementById('mobileTabbar');
+  if (!bar) return;
+  bar.innerHTML = '';
+  document.querySelectorAll('.app-sidebar .sidebar-section').forEach(function(sec){
+    if (sec.style.display === 'none') return; // 權限隱藏的分類不顯示在手機導覽列
+    var label = sec.querySelector('.sidebar-section-label');
+    var firstItem = sec.querySelector('.sidebar-nav-item');
+    if (!label || !firstItem) return;
+    var iconEl = firstItem.querySelector('.sidebar-icon');
+    var btn = document.createElement('div');
+    btn.className = 'mobile-tab-item';
+    btn.innerHTML = '<span class="mobile-tab-icon">' + (iconEl ? iconEl.textContent : '📁') + '</span><span>' + label.textContent + '</span>';
+    btn.onclick = function(){ toggleMobileSidebarSection(sec, btn); };
+    bar.appendChild(btn);
+  });
+}
+function toggleMobileSidebarSection(sec, btn) {
+  var sidebar = document.querySelector('.app-sidebar');
+  if (!sidebar) return;
+  var isOpen = sidebar.classList.contains('mobile-open');
+  if (isOpen && _mobSidebarOpenSection === sec) { closeMobileSidebar(); return; }
+  sidebar.classList.add('mobile-open');
+  var backdrop = document.getElementById('mobileSidebarBackdrop');
+  if (backdrop) backdrop.classList.add('show');
+  document.querySelectorAll('.mobile-tab-item').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  _mobSidebarOpenSection = sec;
+  setTimeout(function(){ sec.scrollIntoView({block:'start', behavior:'smooth'}); }, 50);
+}
+function closeMobileSidebar() {
+  var sidebar = document.querySelector('.app-sidebar');
+  var backdrop = document.getElementById('mobileSidebarBackdrop');
+  if (sidebar) sidebar.classList.remove('mobile-open');
+  if (backdrop) backdrop.classList.remove('show');
+  document.querySelectorAll('.mobile-tab-item').forEach(function(b){ b.classList.remove('active'); });
+  _mobSidebarOpenSection = null;
+}
+
 var MAIL_DOMAINS = ['gmail.com','yahoo.com.tw','yahoo.com','outlook.com','hotmail.com','icloud.com','msn.com'];
 
 function updateMailSuggestions() {
@@ -7070,6 +7207,10 @@ function initGjCard() {
 filterTable();
 dcLoadFiles();
 applyBlur(true); // 預設模糊，initAuth 登入成功後解除
+// 手機版：sidebar 內的外部連結（target=_blank，不會經過 showPage）點擊後也收合抽屜
+document.querySelectorAll('.app-sidebar .sidebar-nav-item.external').forEach(function(item){
+  item.addEventListener('click', function(){ if (typeof closeMobileSidebar === 'function') closeMobileSidebar(); });
+});
 initAuth(); // 進入文件中心時立即從 GAS 載入
 </script>
 
