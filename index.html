@@ -927,6 +927,51 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .leave-filter-card:hover .leave-tip { opacity:1; }
 
 /* ============================================================
+   手機版卡片共用樣式
+   ── 申請類（mob-app-card）、資訊類（mob-info-card / mic-*）、帳號類（acc-mobile-card）
+   全部沿用 --color-* / --space-* / --radius-* / --font-* 設計 token
+   ============================================================ */
+.mob-app-card{
+  background:var(--color-bg-card);border:1px solid var(--color-border-card);
+  border-radius:var(--radius-lg);padding:14px 16px;
+  display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow-card);
+}
+.mob-app-card+.mob-app-card{margin-top:10px;}
+.mob-app-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.mob-info-card{
+  background:var(--color-bg-card);border:1px solid var(--color-border-card);
+  border-radius:var(--radius-lg);padding:14px 16px;
+  display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-card);
+}
+.mob-info-card+.mob-info-card{margin-top:10px;}
+.mic-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.mic-type{font-size:11px;font-weight:600;color:var(--color-text-muted);margin-bottom:2px;}
+.mic-name{font-size:15px;font-weight:600;color:var(--color-text-primary);}
+.mic-status{font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+.mic-preview{font-size:12px;color:var(--color-text-secondary);}
+.mic-time{color:var(--color-text-muted);font-family:var(--font-mono);font-size:11px;}
+.mic-detail{display:none;padding-top:8px;border-top:1px solid var(--color-border-card);margin-top:2px;gap:8px;flex-direction:column;}
+.mic-detail.open{display:flex;}
+.mic-full-content{font-size:13px;color:var(--color-text-primary);line-height:1.6;white-space:pre-wrap;}
+.mic-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.mic-btn{font-size:11px;height:30px;padding:0 14px;border-radius:6px;border:1.5px solid #90caf9;background:#deeeff;color:#5b9bd5;font-weight:600;cursor:pointer;}
+.mic-toggle{text-align:right;font-size:11px;color:var(--color-text-muted);cursor:pointer;padding-top:4px;user-select:none;}
+.acc-mobile-card{
+  background:var(--color-bg-card);border:1px solid var(--color-border-card);
+  border-radius:var(--radius-lg);padding:14px 16px;
+  display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow-card);
+}
+.acc-mobile-card+.acc-mobile-card{margin-top:10px;}
+.acc-mobile-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.acc-mobile-card-name{font-size:15px;font-weight:600;color:var(--color-text-primary);}
+.acc-mobile-card-mail{font-size:11px;color:var(--color-text-muted);margin-top:2px;}
+.acc-mobile-card-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.acc-mobile-card-detail{display:none;padding-top:8px;border-top:1px solid var(--color-border-card);margin-top:2px;flex-direction:column;gap:10px;}
+.acc-mobile-card-detail.open{display:flex;}
+.acc-mobile-card-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.acc-mobile-card-actions button{font-size:11px;height:30px;padding:0 12px;border-radius:6px;border:1.5px solid var(--color-border-table);cursor:pointer;font-weight:600;}
+
+/* ============================================================
    手機版底部分類導覽列／抽屜（沿用桌面版既有色彩變數與 class，
    預設隱藏，僅在 ≤768px 時於下方 @media 中顯示）
    ============================================================ */
@@ -1009,6 +1054,45 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   /* ── Modal：左右留白縮小，沿用原本卡片樣式 ── */
   .form-modal-box,.feedback-modal-box,.reject-modal-box{ padding:18px 16px; }
   #reviewFlowBar{ flex-wrap:wrap !important; row-gap:8px; }
+
+  /* ── 表格隱藏 → 卡片顯示（申請類 6 頁 + 帳號管理）── */
+  /* 隱藏桌面版表格區塊（toolbar 保留不隱，只隱 table 本身） */
+  #page-main    .table-section table,
+  #page-main    .table-section .table-footer,
+  #page-myrecords .table-section table,
+  #page-myrecords .table-section .table-footer,
+  #page-monthly   .table-section table,
+  #page-monthly   .table-section .table-footer,
+  #page-monthly-all .table-section table,
+  #page-monthly-all .table-section .table-footer,
+  #page-feedback-mgr .table-section table,
+  #page-feedback-mgr .table-section .table-footer,
+  #page-report-mgr .table-section table,
+  #page-report-mgr .table-section .table-footer,
+  #acc-desktop-table table,
+  #acc-desktop-table .table-footer
+  { display:none !important; }
+
+  /* 顯示手機版卡片容器 */
+  #main-mobile-list,
+  #main-mob-pagination,
+  #my-mobile-list,
+  #my-mob-pagination,
+  #mon-mobile-list,
+  #mon-mob-pagination,
+  #mall-mobile-list,
+  #mall-mob-pagination,
+  #fb-mobile-list,
+  #rp-mobile-list,
+  #acc-mobile-list
+  { display:block !important; }
+
+  /* 分頁容器在手機版改為 flex 置中 */
+  #main-mob-pagination,
+  #my-mob-pagination,
+  #mon-mob-pagination,
+  #mall-mob-pagination
+  { display:flex !important; justify-content:center; padding:8px 0; }
 }
 </style>
 
