@@ -971,6 +971,21 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 .acc-mobile-card-actions{display:flex;gap:8px;flex-wrap:wrap;}
 .acc-mobile-card-actions button{font-size:11px;height:30px;padding:0 12px;border-radius:6px;border:1.5px solid var(--color-border-table);cursor:pointer;font-weight:600;}
 
+/* mob-app-card 展開詳細區（與 mic-detail 同邏輯）*/
+.mob-app-card-detail{display:none;padding-top:8px;border-top:1px solid var(--color-border-card);margin-top:2px;flex-direction:column;gap:8px;}
+.mob-app-card-detail.open{display:flex;}
+
+/* 手機版迷你分類面板（預設隱藏）*/
+#mob-submenu-panel{
+  display:none;position:fixed;left:0;right:0;bottom:60px;
+  background:var(--color-bg-sidebar);
+  border-top:1px solid var(--color-border-sidebar);
+  border-radius:16px 16px 0 0;
+  box-shadow:0 -4px 20px rgba(0,0,0,.25);
+  z-index:1940;max-height:55vh;overflow-y:auto;padding:8px 0;
+}
+#mob-submenu-panel.show{display:block;}
+
 /* ============================================================
    手機版底部分類導覽列／抽屜（沿用桌面版既有色彩變數與 class，
    預設隱藏，僅在 ≤768px 時於下方 @media 中顯示）
@@ -1054,6 +1069,32 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   /* ── Modal：左右留白縮小，沿用原本卡片樣式 ── */
   .form-modal-box,.feedback-modal-box,.reject-modal-box{ padding:18px 16px; }
   #reviewFlowBar{ flex-wrap:wrap !important; row-gap:8px; }
+
+  /* ── 側邊欄在手機版改由迷你面板取代，本體隱藏 ── */
+  .app-sidebar{ display:none !important; }
+
+  /* ── 統計列（所有申請/申請紀錄/本月紀錄/本月查詢）：強制單排橫向捲動 ── */
+  #page-main .stats-grid,
+  #page-myrecords .stats-grid,
+  #page-monthly .stats-grid,
+  #page-monthly-all .stats-grid {
+    display:flex !important;
+    overflow-x:auto;
+    gap:8px;
+    padding-bottom:4px;
+    -webkit-overflow-scrolling:touch;
+  }
+  #page-main .stats-grid .stat-card,
+  #page-myrecords .stats-grid .stat-card,
+  #page-monthly .stats-grid .stat-card,
+  #page-monthly-all .stats-grid .stat-card {
+    flex:0 0 88px;
+    min-width:88px;
+  }
+
+  /* ── 帳號管理：總帳號數 → 總數（手機版 label 縮短）── */
+  #page-account .stat-card:first-child .stat-card-label{ font-size:0; }
+  #page-account .stat-card:first-child .stat-card-label::after{ content:'總數'; font-size:var(--font-size-sm); }
 
   /* ── 表格隱藏 → 卡片顯示（申請類 6 頁 + 帳號管理）── */
   /* 隱藏桌面版表格區塊（toolbar 保留不隱，只隱 table 本身） */
@@ -4421,9 +4462,13 @@ function buildAppMobileCard(a, listEl, prefix, idx) {
     ? fmtDateOnly(a.startDate||a.endDate||a.quitPlanDate)
     : fmtDRange(a.startDate, a.endDate);
   var subtype = a.subtype || a.type || '—';
-  var proofHtml = proofBadge(a);  // 附件狀態（含無須附件判斷）
-  var cardKey = prefix + '-' + idx;
+  var proofHtml = proofBadge(a);
+  var cardKey  = prefix + '-' + idx;
+  var detailId = 'mob-app-detail-' + prefix + '-' + idx;
   MOB_APP_DATA[cardKey] = a;
+
+  var r1 = a.reviewer  || (isDone||isReject ? '—' : '待審核');
+  var r2 = a.verifier  || (isReject ? '未覆核' : (a.reviewer ? '待覆核' : '—'));
 
   var card = document.createElement('div');
   card.className = 'mob-app-card';
@@ -4437,13 +4482,29 @@ function buildAppMobileCard(a, listEl, prefix, idx) {
       '</div>' +
       '<span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;white-space:nowrap;flex-shrink:0;background:'+sBg+';color:'+sColor+';">'+sLabel+'</span>' +
     '</div>' +
-    '<div style="font-size:12px;color:var(--color-text-muted);font-family:var(--font-mono);">' + dateStr + '</div>' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">' +
-      proofHtml +
-      '<button onclick="mobAppCardOpen(\''+cardKey+'\')" style="font-size:11px;padding:6px 16px;border-radius:6px;cursor:pointer;border:1.5px solid #90caf9;background:#deeeff;color:#5b9bd5;font-weight:600;-webkit-tap-highlight-color:transparent;">查看進度</button>' +
-    '</div>';
+    '<div class="mob-app-card-detail" id="'+detailId+'">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;color:var(--color-text-primary);">' +
+        '<div><span style="color:var(--color-text-muted);font-size:11px;">編號　</span>' + (a.id||'—') + '</div>' +
+        '<div><span style="color:var(--color-text-muted);font-size:11px;">起訖　</span>' + dateStr + '</div>' +
+        '<div><span style="color:var(--color-text-muted);font-size:11px;">審核人</span> ' + r1 + '</div>' +
+        '<div><span style="color:var(--color-text-muted);font-size:11px;">覆核人</span> ' + r2 + '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">' +
+        proofHtml +
+        '<button onclick="mobAppCardOpen(\''+cardKey+'\')" style="font-size:11px;padding:6px 16px;border-radius:6px;cursor:pointer;border:1.5px solid #90caf9;background:#deeeff;color:#5b9bd5;font-weight:600;-webkit-tap-highlight-color:transparent;">查看進度</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="mic-toggle" onclick="toggleMobAppCard(\''+detailId+'\',this)">▼ 展開</div>';
   listEl.appendChild(card);
 }
+
+function toggleMobAppCard(id, el) {
+  var d = document.getElementById(id);
+  if (!d) return;
+  d.classList.toggle('open');
+  if (el) el.textContent = d.classList.contains('open') ? '▲ 收起' : '▼ 展開';
+}
+
 
 function renderMainTable(apps) {
   var tbody = document.getElementById('tableBody');
@@ -5659,22 +5720,47 @@ function buildMobileTabbar() {
   });
 }
 function toggleMobileSidebarSection(sec, btn) {
-  var sidebar = document.querySelector('.app-sidebar');
-  if (!sidebar) return;
-  var isOpen = sidebar.classList.contains('mobile-open');
-  if (isOpen && _mobSidebarOpenSection === sec) { closeMobileSidebar(); return; }
-  sidebar.classList.add('mobile-open');
-  var backdrop = document.getElementById('mobileSidebarBackdrop');
-  if (backdrop) backdrop.classList.add('show');
-  document.querySelectorAll('.mobile-tab-item').forEach(function(b){ b.classList.remove('active'); });
+  var isActive = btn.classList.contains('active');
+  closeMobileSidebar();
+  if (isActive) return; // 再點同一個 → 收起
+
+  // 建立或取得迷你面板
+  var panel = document.getElementById('mob-submenu-panel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'mob-submenu-panel';
+    document.getElementById('mobileTabbar').parentNode.insertBefore(
+      panel, document.getElementById('mobileTabbar')
+    );
+  }
+  panel.innerHTML = '';
+
+  // 只把這個分類下可見的 nav item 複製進面板
+  sec.querySelectorAll('.sidebar-nav-item').forEach(function(item){
+    if (item.style.display === 'none') return;
+    var el = document.createElement('div');
+    el.className = item.className;
+    el.innerHTML  = item.innerHTML;
+    var onclickAttr = item.getAttribute('onclick');
+    if (onclickAttr) {
+      // 在原本的 onclick 後加上關閉面板
+      el.setAttribute('onclick', onclickAttr + '; closeMobileSidebar();');
+    } else {
+      el.onclick = function(){ closeMobileSidebar(); };
+    }
+    panel.appendChild(el);
+  });
+
+  panel.classList.add('show');
   btn.classList.add('active');
   _mobSidebarOpenSection = sec;
-  setTimeout(function(){ sec.scrollIntoView({block:'start', behavior:'smooth'}); }, 50);
+  var backdrop = document.getElementById('mobileSidebarBackdrop');
+  if (backdrop) backdrop.classList.add('show');
 }
 function closeMobileSidebar() {
-  var sidebar = document.querySelector('.app-sidebar');
+  var panel = document.getElementById('mob-submenu-panel');
+  if (panel) panel.classList.remove('show');
   var backdrop = document.getElementById('mobileSidebarBackdrop');
-  if (sidebar) sidebar.classList.remove('mobile-open');
   if (backdrop) backdrop.classList.remove('show');
   document.querySelectorAll('.mobile-tab-item').forEach(function(b){ b.classList.remove('active'); });
   _mobSidebarOpenSection = null;
