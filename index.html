@@ -1134,6 +1134,64 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   #mon-mob-pagination,
   #mall-mob-pagination
   { display:flex !important; justify-content:center; padding:8px 0; }
+
+  /* ── 底部導覽列收起/展開 ──
+     正常：tabbar 60px + toggle-strip 18px = 78px 共高
+     收起：tabbar 隱藏，只剩 toggle-strip 18px
+  ── */
+  .mobile-tabbar{ padding-bottom:18px; }   /* 讓 toggle-strip 有位置 */
+  .mob-tabbar-toggle{
+    position:fixed; left:0; right:0; bottom:0;
+    height:18px; background-color:var(--color-bg-sidebar);
+    border-top:1px solid var(--color-border-sidebar);
+    display:flex; align-items:center; justify-content:center;
+    z-index:1960; cursor:pointer; user-select:none;
+    font-size:10px; color:var(--sidebar-item-color); gap:3px;
+  }
+  .mobile-tabbar.collapsed{ height:0; overflow:hidden; padding-bottom:0; border-top:none; }
+  .mobile-tabbar.collapsed ~ .mob-tabbar-toggle{ border-top:1px solid var(--color-border-sidebar); }
+  .app-main{ transition:padding-bottom .2s; }
+  .app-main.tabbar-collapsed{ padding-bottom:20px; }
+
+  /* ── 數據分析頁手機版：scroll-snap 橫向滑動 ── */
+  /* 統計卡片區（8 個，每次顯示 4 個） */
+  #page-analytics .ana-stats-row{
+    display:flex !important;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    gap:8px;
+    padding:10px 12px 4px !important;
+    scrollbar-width:none;
+  }
+  #page-analytics .ana-stats-row::-webkit-scrollbar{ display:none; }
+  #page-analytics .ana-stats-row > div{
+    flex:0 0 calc(25% - 6px);
+    min-width:calc(25% - 6px);
+    scroll-snap-align:start;
+  }
+
+  /* 圖表區（每次顯示 1 張，置中） */
+  #page-analytics .ana-charts-row{
+    display:flex !important;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    gap:12px;
+    padding:12px 12px 8px !important;
+    scrollbar-width:none;
+    align-items:flex-start;
+  }
+  #page-analytics .ana-charts-row::-webkit-scrollbar{ display:none; }
+  #page-analytics .ana-chart-slide{
+    flex:0 0 calc(100vw - 48px) !important;
+    min-width:calc(100vw - 48px) !important;
+    width:calc(100vw - 48px) !important;
+    scroll-snap-align:center;
+    grid-column:unset !important;   /* 取消電腦版 span 2 設定 */
+  }
 }
 </style>
 
@@ -2473,6 +2531,10 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
 
   <!-- 手機版底部分類導覽列（內容由 JS 依現有側邊欄 .sidebar-section 動態產生，非新增資料） -->
   <nav class="mobile-tabbar" id="mobileTabbar"></nav>
+  <!-- 底部導覽列收起/展開細條 -->
+  <div class="mob-tabbar-toggle" id="mobTabbarToggle" onclick="toggleMobileTabbar()">
+    <span id="mobTabbarToggleIcon">▼</span><span id="mobTabbarToggleLabel">收起</span>
+  </div>
   <!-- 手機版側邊欄抽屜背景遮罩 -->
   <div class="mobile-sidebar-backdrop" id="mobileSidebarBackdrop" onclick="closeMobileSidebar()"></div>
 
@@ -5764,6 +5826,28 @@ function closeMobileSidebar() {
   if (backdrop) backdrop.classList.remove('show');
   document.querySelectorAll('.mobile-tab-item').forEach(function(b){ b.classList.remove('active'); });
   _mobSidebarOpenSection = null;
+}
+
+/* ── 底部導覽列收起/展開 ── */
+function toggleMobileTabbar() {
+  var bar    = document.getElementById('mobileTabbar');
+  var icon   = document.getElementById('mobTabbarToggleIcon');
+  var label  = document.getElementById('mobTabbarToggleLabel');
+  var main   = document.querySelector('.app-main');
+  if (!bar) return;
+  var isCollapsed = bar.classList.contains('collapsed');
+  if (isCollapsed) {
+    bar.classList.remove('collapsed');
+    if (main) main.classList.remove('tabbar-collapsed');
+    if (icon)  icon.textContent  = '▼';
+    if (label) label.textContent = '收起';
+  } else {
+    closeMobileSidebar(); // 先收起迷你面板
+    bar.classList.add('collapsed');
+    if (main) main.classList.add('tabbar-collapsed');
+    if (icon)  icon.textContent  = '▲';
+    if (label) label.textContent = '展開';
+  }
 }
 
 var MAIL_DOMAINS = ['gmail.com','yahoo.com.tw','yahoo.com','outlook.com','hotmail.com','icloud.com','msn.com'];
