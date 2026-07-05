@@ -1085,12 +1085,18 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   #page-myrecords .stats-grid .stat-card .stat-card-unit,
   #page-monthly .stats-grid .stat-card .stat-card-unit { font-size:10px; }
 
-  /* ── 所有申請/本月查詢 — 假別統計行橫向捲動(防止蓋住下方stats) + stats 同排縮小 ── */
+  /* ── 所有申請/本月查詢：假別列改成 flex 橫向捲動（解決蓋住 stats 問題）── */
   #page-main > div:first-child,
   #page-monthly-all > div:first-child {
+    display:flex !important;
     overflow-x:auto; overflow-y:visible;
     -webkit-overflow-scrolling:touch;
-    padding-bottom:4px;
+    gap:8px; padding-bottom:4px;
+    grid-template-columns:unset !important;
+  }
+  #page-main > div:first-child > div,
+  #page-monthly-all > div:first-child > div {
+    flex:0 0 100px; min-width:100px;
   }
   #page-main .stats-grid,
   #page-monthly-all .stats-grid {
@@ -1129,7 +1135,34 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
   #page-account .stat-card:first-child .stat-card-label{ font-size:0; }
   #page-account .stat-card:first-child .stat-card-label::after{ content:'總數'; font-size:var(--font-size-sm); }
 
-  /* ── 文件中心：手機版改卡片樣式（加強陰影+垂直排列）── */
+  /* ── 文件中心 RWD：分類欄 → 橫向 Tab 列，文件區佔全寬 ── */
+  .doccenter-wrap{ flex-direction:column; overflow-y:auto; }
+  .doccenter-sidebar{
+    width:100%; height:auto; max-height:none;
+    flex-direction:row; flex-wrap:nowrap;
+    border-right:none; border-bottom:1px solid #555; border-radius:0;
+    overflow-x:auto; overflow-y:hidden;
+    padding:4px 0 0; flex-shrink:0;
+    scrollbar-width:none;
+  }
+  .doccenter-sidebar::-webkit-scrollbar{ display:none; }
+  .doccenter-sidebar-label{ display:none; }
+  .doccenter-sidebar-spacer{ display:none; }
+  .doccenter-add-cat-btn{ display:none; }
+  .doccenter-sidebar-item{
+    flex:0 0 auto; white-space:nowrap;
+    padding:8px 14px; border-left:none;
+    border-bottom:2px solid transparent; border-radius:0; font-size:13px;
+  }
+  .doccenter-sidebar-item.active{
+    border-left:none; border-bottom-color:var(--color-gold);
+    background-color:transparent;
+  }
+  .doccenter-content{
+    border-radius:0; padding:var(--space-3) var(--space-4); min-height:0;
+  }
+  .doccenter-content-title{ font-size:15px; }
+  /* 文件卡片：垂直排列加強 */
   .doccenter-file-item{
     flex-direction:column; align-items:flex-start; gap:6px;
     padding:14px 16px; border-radius:var(--radius-lg);
@@ -1709,7 +1742,7 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
             <div class="ana-chart-slide" style="background:#333;border:1px solid #4a4a4a;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;grid-column:span 2;">
               <p id="ana-trend-title" style="font-size:12px;font-weight:600;color:#e8e4d8;text-align:center;">全年度每月申請趨勢</p>
               <div style="flex:1;min-height:0;display:flex;align-items:stretch;">
-                <svg id="ana-trend-svg" viewBox="0 0 500 150" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
+                <svg id="ana-trend-svg" viewBox="0 0 500 220" style="width:100%;overflow:visible;" preserveAspectRatio="xMidYMid meet">
                   <defs>
                     <linearGradient id="tg3" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/>
@@ -1717,16 +1750,16 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
                     </linearGradient>
                   </defs>
                   <!-- 軸線 -->
-                  <line x1="40" y1="10" x2="40" y2="120" stroke="#555" stroke-width="1"/>
-                  <line x1="40" y1="120" x2="495" y2="120" stroke="#555" stroke-width="1"/>
+                  <line x1="40" y1="10" x2="40" y2="190" stroke="#555" stroke-width="1"/>
+                  <line x1="40" y1="190" x2="495" y2="190" stroke="#555" stroke-width="1"/>
                   <!-- 水平格線 + Y標籤 -->
                   <line x1="40" y1="10"  x2="495" y2="10"  stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
-                  <line x1="40" y1="44"  x2="495" y2="44"  stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
-                  <line x1="40" y1="77"  x2="495" y2="77"  stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
+                  <line x1="40" y1="70"  x2="495" y2="70"  stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
+                  <line x1="40" y1="130" x2="495" y2="130" stroke="#444" stroke-width="0.5" stroke-dasharray="4,4"/>
                   <text x="34" y="14"  text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">15</text>
-                  <text x="34" y="48"  text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">10</text>
-                  <text x="34" y="81"  text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">5</text>
-                  <text x="34" y="124" text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">0</text>
+                  <text x="34" y="74"  text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">10</text>
+                  <text x="34" y="134" text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">5</text>
+                  <text x="34" y="194" text-anchor="end" font-size="9" fill="#777" font-family="sans-serif">0</text>
                   <!-- 12個月 X座標: 40 + i*41.36, i=0..11 -->
                   <!-- 資料: 4,6,5,9,7,8,12,10,11,14,11,15 → y=120-(v/15)*110 -->
                   <!-- y: 90.7,76,83.3,54,68.7,61.3,32,46.7,39.3,17.3,39.3,10 -->
@@ -1938,9 +1971,9 @@ html,body{height:100%;font-family:var(--font-body);font-size:var(--font-size-bas
                 <option value="07">07</option><option value="08">08</option><option value="09">09</option>
                 <option value="10">10</option><option value="11">11</option><option value="12">12</option>
               </select>
+              <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出</button>
             </div>
             <div class="toolbar-right">
-              <button class="btn" onclick="exportMyRecords()" style="font-size:12px;">💾 匯出</button>
               <span class="toolbar-info" id="my-toolbar-info"><span id="my-page-info"></span></span>
             </div>
           </div>
@@ -4038,7 +4071,7 @@ function updateAnalytics() {
         return source.filter(function(a){ return normalizeApplyDate(a.applyDate).slice(0,7)===(year+'/'+m); }).length;
       });
       var maxM = Math.max.apply(null, monthCounts.concat([1]));
-      var svgW=455, svgH=110, padL=40, padR=40, padT=10, padB=20;
+      var svgW=455, svgH=180, padL=40, padR=40, padT=10, padB=20;
       var w = svgW-padL-padR, h = svgH-padT-padB;
       var pts = months.map(function(m,i){ return {x:padL+i*w/11, y:padT+h-(monthCounts[i]/maxM)*h}; });
       var pathD = pts.map(function(p,i){ return (i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1); }).join(' ');
@@ -4080,7 +4113,7 @@ function updateAnalytics() {
       }
       var maxW = Math.max.apply(null, weekCounts.concat([1]));
       var nW = weekCounts.length;
-      var svgW2=455, svgH2=110, padL2=40, padR2=40, padT2=30, padB2=18;
+      var svgW2=455, svgH2=180, padL2=40, padR2=40, padT2=30, padB2=18;
       var w2 = svgW2-padL2-padR2, h2 = svgH2-padT2-padB2;
       var pts2 = weekCounts.map(function(cnt3,i){ return {x:padL2+(nW<2?w2/2:i*w2/(nW-1)), y:padT2+h2-(cnt3/maxW)*h2}; });
       var svgW2Inner = '<defs><linearGradient id="tg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.45"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0.03"/></linearGradient></defs>';
