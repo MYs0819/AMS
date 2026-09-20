@@ -251,7 +251,7 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;font-family:var(-
    invert(1) 先把它翻成「黑底白字」，再用 mix-blend-mode:screen 讓黑色部分融進深色標題列，
    只留下白色的字，效果接近去背。等之後有透明底 PNG 再換掉這段即可。 */
 .header-sc-logo{
-  height:25px;width:auto;vertical-align:middle;margin-left:6px;   /* 手機板LOGO高度 */
+  height:25px;width:auto;vertical-align:middle;margin-left:6px;
   filter:invert(1) brightness(1.15) contrast(1.25);
   mix-blend-mode:screen;opacity:.9;
 }
@@ -891,7 +891,8 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;font-family:var(-
   .header-brand{ gap:6px; min-width:0; flex-shrink:1; overflow:hidden; }
   .header-title-group{ min-width:0; overflow:hidden; }
   .header-title{ font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
-  .header-sc-logo{ height:9x; margin-left:4px; }  /* 手機板LOGO高度 */
+  .header-title-sub{ display:none; }
+  .header-sc-logo{ height:15px; margin-left:4px; }
   .header-logo{ width:22px; height:22px; flex-shrink:0; }
   .header-right{ gap:4px; flex-wrap:nowrap; flex-shrink:0; }
   .btn,.btn-feedback,.btn-danger{ width:auto; padding:0 8px; font-size:10px; white-space:nowrap; }
