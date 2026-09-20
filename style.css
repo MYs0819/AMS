@@ -891,7 +891,7 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;font-family:var(-
   .header-brand{ gap:6px; min-width:0; flex-shrink:1; overflow:hidden; }
   .header-title-group{ min-width:0; overflow:hidden; }
   .header-title{ font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
-  .header-sc-logo{ height:17x; margin-left:4px; }  /* 手機板LOGO高度 */
+  .header-sc-logo{ height:14x; margin-left:4px; }  /* 手機板LOGO高度 */
   .header-logo{ width:22px; height:22px; flex-shrink:0; }
   .header-right{ gap:4px; flex-wrap:nowrap; flex-shrink:0; }
   .btn,.btn-feedback,.btn-danger{ width:auto; padding:0 8px; font-size:10px; white-space:nowrap; }
