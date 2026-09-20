@@ -892,7 +892,7 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;font-family:var(-
   .header-title-group{ min-width:0; overflow:hidden; }
   .header-title{ font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
   .header-title-sub{ display:none; }
-  .header-sc-logo{ height:15px; margin-left:4px; }
+  .header-sc-logo{ height:18px; margin-left:4px; }
   .header-logo{ width:22px; height:22px; flex-shrink:0; }
   .header-right{ gap:4px; flex-wrap:nowrap; flex-shrink:0; }
   .btn,.btn-feedback,.btn-danger{ width:auto; padding:0 8px; font-size:10px; white-space:nowrap; }
