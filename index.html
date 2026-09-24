@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="style.css">
 
   <meta property="og:title" content="📝｜MYs系統｜行政公告管理系統" />
-  <meta property="og:description" content="各類行政表單、公告通知及意見反映與申訴" />
+  <meta property="og:description" content="各類行政表單與企業各式公告！" />
 </head>
 <body>
 
@@ -192,7 +192,7 @@
       <div class="header-title-group">
         <span class="header-title">行政公告管理系統<span class="header-title-sub"> Social Company</span><img src="assets/SC_LOGO.jpg" alt="Social Company" class="header-sc-logo" /></span>
         <span class="header-subtitle" id="header-copyright">© Copyright 2026 MYs System Version:v1.0.0.0-09-18-2026-115</span>
-        <span class="mob-header-copyright">© Copyright 2026 MYs System Version:b1.0.0.0-04-13-2026-115</span>
+        <span class="mob-header-copyright">© Copyright 2026 MYs System Version:v1.1.0.0-09-25-2026-115</span>
       </div>
     </div>
     <div class="header-right">
@@ -1035,7 +1035,7 @@ function submitBug() {
 /* ══ 文件中心（串接 GAS API）══ */
 
 // ★★★ 部署 GAS 後貼上你的 Web App URL ★★★
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyp5Zhu6wz5JGlBz1twdWGwydmNIk-YVtkq_O2DaOcwb847Eg5y7x-E0J9uoRXsnOK5/exec';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwhEObp-VvllnUDw63UpTcJkSbWglqPpD_NYZwZG1bZUH6P3QGoee1XoTNq8MDfsIDI/exec';
 
 /* ── 帶 timeout 的 fetch（避免長時間 pending 卡 UI）── */
 function fetchWithTimeout(url, options, timeoutMs) {
@@ -2188,23 +2188,22 @@ function doLogin() {
   btn.disabled = true; btn.textContent = '登入中…';
   errEl.textContent = '';
 
-  // 從 GAS 驗證帳號
-  var url = GAS_URL + '?action=login&mail=' + encodeURIComponent(mail) + '&v=' + Date.now();
+  // 從 GAS 驗證帳號：密碼比對移到後端做（mail + 密碼都對才會回傳 success:true）。
+  // 這裡沿用 GET（跟 getFiles/getAccounts 等讀取用的方式一致）而不是改成 POST，
+  // 是因為這個系統的 GAS 部署方式下，只有 GET 的回應讀得到內容，
+  // POST 的回應是讀不到的（其他寫入類動作都用 no-cors 打完就重新整理列表來繞過這個限制），
+  // 如果登入也改用 POST 會直接讀不到回傳值、整個登入會壞掉，所以維持 GET，只是把密碼一起帶上。
+  var url = GAS_URL + '?action=login&mail=' + encodeURIComponent(mail) + '&password=' + encodeURIComponent(pass) + '&v=' + Date.now();
   fetchWithTimeout(url, {method:'GET', cache:'no-store'}, 8000)
     .then(function(r){ return r.json(); })
     .then(function(data){
       btn.disabled = false; btn.textContent = '登 入';
       if (!data.success || !data.account) {
-        errEl.textContent = '帳號不存在或已停用';
+        errEl.textContent = data.error || '帳號不存在或密碼錯誤';
         return;
       }
+      // 密碼已在後端驗證完成（mail + 密碼都正確才會回傳 success:true），前端不用也不會再比對密碼
       var acc = data.account;
-      // 密碼比對：強制轉字串（避免 Sheets 把純數字密碼轉成 number）
-      if (String(acc.password).trim() !== String(pass).trim()) {
-        errEl.textContent = '密碼錯誤，請重新輸入';
-        return;
-      }
-      // 登入成功
       CURRENT_USER = { mail:acc.mail, name:acc.name, team:acc.team, title:acc.title, role:acc.role };
       localStorage.setItem('mys_user', JSON.stringify(CURRENT_USER));
   sessionStorage.setItem('mys_user', JSON.stringify(CURRENT_USER));
